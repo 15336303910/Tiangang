@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: tg-common
+Implementation-Version: 0.0.1
+Built-By: Administrator
+Implementation-Vendor-Id: cn.plou.common
+Build-Jdk: 1.8.0_131
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/tg-common
+Created-By: Maven Integration for Eclipse
+
