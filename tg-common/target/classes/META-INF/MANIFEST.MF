@@ -3,7 +3,7 @@ Implementation-Title: tg-common
 Implementation-Version: 0.0.1
 Built-By: wuzidong
 Implementation-Vendor-Id: cn.plou.common
-Build-Jdk: 1.8.0_141
+Build-Jdk: 1.8.0_181
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/tg-common
 Created-By: Maven Integration for Eclipse
