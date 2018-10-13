@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.mbusReadmodel.dao.MbusReadmodelMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.mbusReadmodel.entity.MbusReadmodel">
+    <id column="mbus_readmodel_id" jdbcType="VARCHAR" property="mbusReadmodelId" />
+    <result column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
+    <result column="mbus_readmodel_code" jdbcType="VARCHAR" property="mbusReadmodelCode" />
+    <result column="install_time" jdbcType="TIMESTAMP" property="installTime" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="isvirtual" jdbcType="VARCHAR" property="isvirtual" />
+    <result column="channelstate" jdbcType="VARCHAR" property="channelstate" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.meterMessage.mbusReadmodel.vo.MbusReadmodelInfo">
+    <id column="mbus_readmodel_id" jdbcType="VARCHAR" property="mbusReadmodelId" />
+    <result column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
+    <result column="mbus_position" jdbcType="VARCHAR" property="mbusPosition" />
+    <result column="mbus_readmodel_code" jdbcType="VARCHAR" property="mbusReadmodelCode" />
+    <result column="install_time" jdbcType="TIMESTAMP" property="installTime" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="isvirtual" jdbcType="VARCHAR" property="isvirtual" />
+    <result column="isvirtual_name" jdbcType="VARCHAR" property="isvirtualName" />
+    <result column="channelstate" jdbcType="VARCHAR" property="channelstate" />
+    <result column="channelstate_name" jdbcType="VARCHAR" property="channelstateName" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mbus_readmodel_id, mbus_id, mbus_readmodel_code, install_time, factory, equipment_no, 
+    position, company_id, notes, memo1, memo2, create_date, create_user,
+    update_date, update_user, isvirtual, channelstate, isvalid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mbus_readmodel_info
+    where mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByMbusId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from mbus_readmodel_info
+    where mbus_id = #{mbusId,jdbcType=VARCHAR} and isvalid=1
+  </select>
+
+  <select id="selectMbusReadmodelByCompanyId" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    mbus_readmodel_id,mbus_readmodel_code
+    from mbus_readmodel_info
+    where company_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="selectAllMbusReadmodel" parameterType="map" resultMap="BaseInfoMap">
+    select
+    m.mbus_readmodel_id mbus_readmodel_id, m.mbus_id mbus_id, m.mbus_readmodel_code mbus_readmodel_code, m.install_time install_time,
+    m.factory factory,m.equipment_no equipment_no,c.company_name company_name,
+    m.position position, m.company_id company_id, m.notes notes, m.memo1 memo1, m.memo2 memo2, m.create_date create_date, m.create_user create_user,
+    m.update_date update_date, m.update_user update_user, m.isvirtual isvirtual, m.channelstate channelstate,
+    mi.mbus_position mbus_position, m.isvalid isvalid
+    from mbus_readmodel_info m
+    left join mbus_info mi on m.mbus_id=mi.mbus_code
+    left join company_info c on m.company_id=c.company_id
+    where m.isvalid=1
+    <if test="companyIds!=null">
+    <if test="companyIds.size()> 0">
+      and m.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    </if>
+    <if test="mbusIds!=null">
+    <if test="mbusIds.size()> 0">
+      and m.mbus_id in
+      <foreach collection="mbusIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    </if>
+    <if test="mbusReadmodelVo != null">
+      <if test="mbusReadmodelVo.mbusId!=null">
+        and m.mbus_id like concat('%',#{mbusReadmodelVo.mbusId},'%')
+      </if>
+      <if test="mbusReadmodelVo.mbusReadmodelCode!=null">
+        and m.mbus_readmodel_code like concat('%',#{mbusReadmodelVo.mbusReadmodelCode},'%')
+      </if>
+      <if test="mbusReadmodelVo.installTime!=null">
+        and m.install_time =#{mbusReadmodelVo.installTime}
+      </if>
+      <if test="mbusReadmodelVo.factory!=null">
+        and m.factory =#{mbusReadmodelVo.factory}
+      </if>
+      <if test="mbusReadmodelVo.equipmentNo!=null">
+        and m.equipment_no =#{mbusReadmodelVo.equipmentNo}
+      </if>
+      <if test="mbusReadmodelVo.position!=null">
+        and m.position like concat('%',#{mbusReadmodelVo.position},'%')
+      </if>
+      <if test="mbusReadmodelVo.companyId!=null">
+        and m.company_id =#{mbusReadmodelVo.companyId}
+      </if>
+      <if test="mbusReadmodelVo.isvirtual!=null">
+        and m.isvirtual =#{mbusReadmodelVo.isvirtual}
+      </if>
+      <if test="mbusReadmodelVo.notes!=null">
+        and m.notes like concat('%',#{mbusReadmodelVo.notes},'%')
+      </if>
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <!--<if test="page!=null">-->
+      <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mbus_readmodel_info
+    where mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteMbusReadmodelBatchByIds" parameterType="java.util.List">
+    delete from mbus_readmodel_info
+    where mbus_readmodel_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <update id="setDelMbusReadmodelBatch" parameterType="java.util.List">
+    update  mbus_readmodel_info set isvalid=0
+    where mbus_readmodel_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.entity.MbusReadmodel">
+    insert into mbus_readmodel_info (mbus_readmodel_id, mbus_id, mbus_readmodel_code, 
+      install_time, factory, equipment_no, 
+      position, company_id, position_key, 
+      notes, memo1, memo2, 
+      create_date, create_user, update_date, 
+      update_user, isvirtual, channelstate, 
+      isvalid)
+    values (#{mbusReadmodelId,jdbcType=VARCHAR}, #{mbusId,jdbcType=VARCHAR}, #{mbusReadmodelCode,jdbcType=VARCHAR}, 
+      #{installTime,jdbcType=TIMESTAMP}, #{factory,jdbcType=VARCHAR}, #{equipmentNo,jdbcType=VARCHAR}, 
+      #{position,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{positionKey,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{isvirtual,jdbcType=VARCHAR}, #{channelstate,jdbcType=VARCHAR}, 
+      #{isvalid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.entity.MbusReadmodel">
+    insert into mbus_readmodel_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id,
+      </if>
+      <if test="mbusId != null">
+        mbus_id,
+      </if>
+      <if test="mbusReadmodelCode != null">
+        mbus_readmodel_code,
+      </if>
+      <if test="installTime != null">
+        install_time,
+      </if>
+      <if test="factory != null">
+        factory,
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="isvirtual != null">
+        isvirtual,
+      </if>
+      <if test="channelstate != null">
+        channelstate,
+      </if>
+      <if test="isvalid != null">
+        isvalid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mbusReadmodelId != null">
+        #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelCode != null">
+        #{mbusReadmodelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factory != null">
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isvirtual != null">
+        #{isvirtual,jdbcType=VARCHAR},
+      </if>
+      <if test="channelstate != null">
+        #{channelstate,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.entity.MbusReadmodel">
+    update mbus_readmodel_info
+    <set>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelCode != null">
+        mbus_readmodel_code = #{mbusReadmodelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        install_time = #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isvirtual != null">
+        isvirtual = #{isvirtual,jdbcType=VARCHAR},
+      </if>
+      <if test="channelstate != null">
+        channelstate = #{channelstate,jdbcType=VARCHAR},
+      </if>
+      <if test="isvalid != null">
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.entity.MbusReadmodel">
+    update mbus_readmodel_info
+    set mbus_id = #{mbusId,jdbcType=VARCHAR},
+      mbus_readmodel_code = #{mbusReadmodelCode,jdbcType=VARCHAR},
+      install_time = #{installTime,jdbcType=TIMESTAMP},
+      factory = #{factory,jdbcType=VARCHAR},
+      equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      position = #{position,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      position_key = #{positionKey,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      isvirtual = #{isvirtual,jdbcType=VARCHAR},
+      channelstate = #{channelstate,jdbcType=VARCHAR},
+      isvalid = #{isvalid,jdbcType=INTEGER}
+    where mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateMbusReadmodelBatch" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.vo.MbusReadmodelVo">
+    update mbus_readmodel_info
+    <set>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelCode != null">
+        mbus_readmodel_code = #{mbusReadmodelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        install_time = #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+
+      <if test="isvirtual != null">
+        isvirtual = #{isvirtual,jdbcType=VARCHAR},
+      </if>
+      <if test="channelstate != null">
+        channelstate = #{channelstate,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where mbus_readmodel_id in
+    <foreach collection="mbusReadmodelIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  
+  <update id="updateMbusReadmodelBatchAllStation" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.vo.MbusReadmodelVo">
+    update mbus_readmodel_info
+    <set>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelCode != null">
+        mbus_readmodel_code = #{mbusReadmodelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        install_time = #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+
+      <if test="isvirtual != null">
+        isvirtual = #{isvirtual,jdbcType=VARCHAR},
+      </if>
+      <if test="channelstate != null">
+        channelstate = #{channelstate,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+     where 
+	<foreach collection="communitys" item="item" index="index"  separator="OR">
+	    `consumer_id` LIKE CONCAT(#{item},'%')
+	</foreach>
+  </update>
+  
+  <update id="updateMbusReadmodelBatchAll" parameterType="cn.plou.web.system.meterMessage.mbusReadmodel.vo.MbusReadmodelVo">
+    update mbus_readmodel_info
+    <set>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelCode != null">
+        mbus_readmodel_code = #{mbusReadmodelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        install_time = #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+
+      <if test="isvirtual != null">
+        isvirtual = #{isvirtual,jdbcType=VARCHAR},
+      </if>
+      <if test="channelstate != null">
+        channelstate = #{channelstate,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+      where consumer_id like (CONCAT(#{batchModifyId,jdbcType=VARCHAR},'%'))
+  </update>
+</mapper>

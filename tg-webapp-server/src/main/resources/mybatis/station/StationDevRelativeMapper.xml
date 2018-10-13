@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.stationDevRelative.dao.StationDevRelativeMapper" >
+  <resultMap id="BaseResultMap" type="cn.plou.web.station.stationDevRelative.entity.StationDevRelative" >
+    <id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="sourceid" property="sourceid" jdbcType="VARCHAR" />
+    <result column="index" property="index" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    primary_id, id, sourceid, index, notes, create_date, create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from station_dev_relative
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="findHPumpIdsBySystemId" resultType="java.lang.String" parameterType="java.lang.String" >
+    select 
+    id
+    from station_dev_relative
+    where sourceid = #{systemId,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from station_dev_relative
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.station.stationDevRelative.entity.StationDevRelative" >
+    insert into station_dev_relative (primary_id, id, sourceid, 
+      index, notes, create_date, 
+      create_user, update_date, update_user
+      )
+    values (#{primaryId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, #{sourceid,jdbcType=VARCHAR}, 
+      #{index,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.station.stationDevRelative.entity.StationDevRelative" >
+    insert into station_dev_relative
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        primary_id,
+      </if>
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sourceid != null" >
+        sourceid,
+      </if>
+      <if test="index != null" >
+        index,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null" >
+        #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null" >
+        #{index,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.stationDevRelative.entity.StationDevRelative" >
+    update station_dev_relative
+    <set >
+      <if test="id != null" >
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null" >
+        sourceid = #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null" >
+        index = #{index,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.station.stationDevRelative.entity.StationDevRelative" >
+    update station_dev_relative
+    set id = #{id,jdbcType=VARCHAR},
+      sourceid = #{sourceid,jdbcType=VARCHAR},
+      index = #{index,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

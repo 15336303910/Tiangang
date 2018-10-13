@@ -1,0 +1,133 @@
+package cn.plou.web.system.permission.login.token;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.system.permission.login.vo.LoginVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 通过Redis存储和验证token的实现类
+ */
+@Component
+public class RedisTokenManager implements TokenManager {
+
+    //@Qualifier("stringRedisTemplate")
+   /* @Autowired
+    private RedisTemplate<String,String> redis;*/
+
+    //    @Autowired
+//    public void setRedis(RedisTemplate redis) {
+//        this.redis = redis;
+//        //泛型设置成Long后必须更改对应的序列化方案
+////        redis.setKeySerializer(new JdkSerializationRedisSerializer());
+//        redis.getStringSerializer();
+//    }
+    public LoginCountModel creatLoginCount(String userId) {
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            Integer count = 1;
+            LoginCountModel model = new LoginCountModel(userId, count);
+            jedis.set(userId, count.toString());
+            //System.out.println("登录次数:"+jedis.get(userId));
+            return model;
+        } finally {
+            RedisUtil.returnSource(jedis);
+        }
+
+    }
+
+    public TokenModel createToken(LoginVo loginVo, String userId) {
+        //使用uuid作为源token
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            if (jedis.exists(userId)) {
+                deleteToken(userId);
+                //throw new BusinessException("您的账号已在别处登录，继续登录将使对方被迫下线");
+            }
+            String token = UUID.randomUUID().toString().replace("-", "");
+            //TokenModel model = new TokenModel(userId,token,1);
+            TokenModel model = new TokenModel(userId, token);
+            //存储到redis并设置过期时间
+            //redis.boundValueOps(userId).set(token, Constant.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+            jedis.set(userId, token);
+        /*//token七天过期
+        if(loginVo.getRememberMe()!=null){
+            if(loginVo.getRememberMe().equals("true")){
+                jedis.expire(userId,604800);
+            }else{
+                jedis.expire(userId,7200);
+            }
+        }*/
+            //jedis.set((userId+","+token), "1");
+            System.out.println("生成的token:" + jedis.get(userId));
+            return model;
+        } finally {
+            RedisUtil.returnSource(jedis);
+        }
+    }
+
+    public TokenModel getToken(String authentication) {
+        if (authentication == null || authentication.length() == 0) {
+            return null;
+        }
+        String[] param = authentication.split("_");
+        if (param.length != 2) {
+            return null;
+        }
+        //使用userId和源token简单拼接成的token，可以增加加密措施
+        String userId = param[0];
+        String token = param[1];
+        //Integer loginCount = Integer.parseInt(param[2]);
+        //System.out.println("传过来的token:"+token);
+        //return new TokenModel(userId, token,loginCount);
+        return new TokenModel(userId, token);
+    }
+
+    public boolean checkToken(TokenModel model) {
+        if (model == null) {
+            return false;
+        }
+        //String token = redis.boundValueOps(model.getUserId()).get();
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            String token = jedis.get(model.getUserId());
+            if (token == null || !token.equals(model.getToken())) {
+                return false;
+            }
+            return true;
+        } finally {
+            RedisUtil.returnSource(jedis);
+        }
+        // System.out.println("缓存中的token:"+token);
+        //如果验证成功，说明此用户进行了一次有效操作，延长token的过期时间
+        //redis.boundValueOps(model.getUserId()).expire(Constant.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+    }
+
+    public void deleteToken(String userId) {
+        //redis.delete(userId);
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            jedis.del(userId);
+            //jedis.flushAll();
+        } finally {
+            RedisUtil.returnSource(jedis);
+        }
+    }
+}

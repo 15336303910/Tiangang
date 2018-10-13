@@ -1,0 +1,2063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.meter.dao.MeterMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.meter.entity.Meter">
+    <id column="meter_id" jdbcType="VARCHAR" property="meterId" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="address_1st" jdbcType="VARCHAR" property="address1st" />
+    <result column="address_2nd" jdbcType="VARCHAR" property="address2nd" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
+    <result column="mbus_pro" jdbcType="VARCHAR" property="mbusPro" />
+    <result column="mbus_readmodel_id" jdbcType="VARCHAR" property="mbusReadmodelId" />
+    <result column="repeater_id" jdbcType="VARCHAR" property="repeaterId" />
+    <result column="meter_type" jdbcType="VARCHAR" property="meterType" />
+    <result column="sim_card" jdbcType="VARCHAR" property="simCard" />
+    <result column="running_state" jdbcType="VARCHAR" property="runningState" />
+    <result column="install_address" jdbcType="VARCHAR" property="installAddress" />
+    <result column="meter_error_time" jdbcType="TIMESTAMP" property="meterErrorTime" />
+    <result column="meter_position" jdbcType="VARCHAR" property="meterPosition" />
+    <result column="super_meter_id" jdbcType="VARCHAR" property="superMeterId" />
+    <result column="valve_meter_id" jdbcType="VARCHAR" property="valveMeterId" />
+    <result column="main_meter_id" jdbcType="VARCHAR" property="mainMeterId" />
+    <result column="use_start_date" jdbcType="TIMESTAMP" property="useStartDate" />
+    <result column="next_check_time" jdbcType="TIMESTAMP" property="nextCheckTime" />
+    <result column="install_height" jdbcType="DECIMAL" property="installHeight" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="memo3" jdbcType="VARCHAR" property="memo3" />
+    <result column="memo4" jdbcType="VARCHAR" property="memo4" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="basecode" jdbcType="DECIMAL" property="basecode" />
+    <result column="meter_subtype" jdbcType="VARCHAR" property="meterSubtype" />
+    <result column="steel" jdbcType="VARCHAR" property="steel" />
+    <result column="water_address" jdbcType="VARCHAR" property="waterAddress" />
+    <result column="meter_state" jdbcType="VARCHAR" property="meterState" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="diameter" jdbcType="VARCHAR" property="diameter" />
+    <result column="precisiona" jdbcType="DECIMAL" property="precisiona" />
+    <result column="soft_ver" jdbcType="VARCHAR" property="softVer" />
+    <result column="hard_ver" jdbcType="VARCHAR" property="hardVer" />
+    <result column="common_flow" jdbcType="DECIMAL" property="commonFlow" />
+    <result column="minimum_flow" jdbcType="DECIMAL" property="minimumFlow" />
+    <result column="temperature_differ" jdbcType="DECIMAL" property="temperatureDiffer" />
+    <result column="temperature_range" jdbcType="DECIMAL" property="temperatureRange" />
+    <result column="baud_rate" jdbcType="VARCHAR" property="baudRate" />
+    <result column="max_bound" jdbcType="VARCHAR" property="maxBound" />
+    <result column="limtspeed" jdbcType="DECIMAL" property="limtspeed" />
+    <result column="ctrlflag" jdbcType="INTEGER" property="ctrlflag" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="systemId" jdbcType="VARCHAR" property="systemId" />
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.meterMessage.meter.vo.MeterInfo">
+    <id column="meter_id" jdbcType="VARCHAR" property="meterId" />
+    <result column="consumerId" jdbcType="VARCHAR" property="consumerId" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="address1st" jdbcType="VARCHAR" property="address1st" />
+    <result column="address2nd" jdbcType="VARCHAR" property="address2nd" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="protocolName" jdbcType="VARCHAR" property="protocolName" />
+    <result column="mbusId" jdbcType="VARCHAR" property="mbusId" />
+    <result column="mbusPro" jdbcType="VARCHAR" property="mbusPro" />
+    <result column="mbusProName" jdbcType="VARCHAR" property="mbusProName" />
+    <result column="mbusReadmodelId" jdbcType="VARCHAR" property="mbusReadmodelId" />
+    <result column="repeaterId" jdbcType="VARCHAR" property="repeaterId" />
+    <result column="meterType" jdbcType="VARCHAR" property="meterType" />
+    <result column="meterTypeName" jdbcType="VARCHAR" property="meterTypeName" />
+    <result column="simCard" jdbcType="VARCHAR" property="simCard" />
+    <result column="runningState" jdbcType="VARCHAR" property="runningState" />
+    <result column="runningStateName" jdbcType="VARCHAR" property="runningStateName" />
+    <result column="installAddress" jdbcType="VARCHAR" property="installAddress" />
+    <result column="meterErrorTime" jdbcType="TIMESTAMP" property="meterErrorTime" />
+    <result column="meterPosition" jdbcType="VARCHAR" property="meterPosition" />
+    <result column="meterPositionName" jdbcType="VARCHAR" property="meterPositionName" />
+    <result column="superMeterId" jdbcType="VARCHAR" property="superMeterId" />
+    <result column="valveMeterId" jdbcType="VARCHAR" property="valveMeterId" />
+    <result column="mainMeterId" jdbcType="VARCHAR" property="mainMeterId" />
+    <result column="useStartDate" jdbcType="TIMESTAMP" property="useStartDate" />
+    <result column="nextCheckTime" jdbcType="TIMESTAMP" property="nextCheckTime" />
+    <result column="installHeight" jdbcType="DECIMAL" property="installHeight" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="memo3" jdbcType="VARCHAR" property="memo3" />
+    <result column="memo4" jdbcType="VARCHAR" property="memo4" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="basecode" jdbcType="DECIMAL" property="basecode" />
+    <result column="meterSubtype" jdbcType="VARCHAR" property="meterSubtype" />
+    <result column="meterSubtypeName" jdbcType="VARCHAR" property="meterSubtype" />
+    <result column="steel" jdbcType="VARCHAR" property="steel" />
+    <result column="waterAddress" jdbcType="VARCHAR" property="waterAddress" />
+    <result column="meterState" jdbcType="VARCHAR" property="meterState" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="factoryName" jdbcType="VARCHAR" property="factoryName" />
+    <result column="diameter" jdbcType="VARCHAR" property="diameter" />
+    <result column="precisiona" jdbcType="DECIMAL" property="precisiona" />
+    <result column="softVer" jdbcType="VARCHAR" property="softVer" />
+    <result column="hardVer" jdbcType="VARCHAR" property="hardVer" />
+    <result column="commonFlow" jdbcType="DECIMAL" property="commonFlow" />
+    <result column="minimumFlow" jdbcType="DECIMAL" property="minimumFlow" />
+    <result column="temperatureDiffer" jdbcType="DECIMAL" property="temperatureDiffer" />
+    <result column="temperatureRange" jdbcType="DECIMAL" property="temperatureRange" />
+    <result column="baudRate" jdbcType="VARCHAR" property="baudRate" />
+    <result column="maxBound" jdbcType="VARCHAR" property="maxBound" />
+    <result column="limtspeed" jdbcType="DECIMAL" property="limtspeed" />
+    <result column="ctrlflag" jdbcType="INTEGER" property="ctrlflag" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="systemId" jdbcType="VARCHAR" property="systemId" />
+    <result column="systemName" jdbcType="VARCHAR" property="systemName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    meter_id, consumer_id, address_1st, address_2nd, protocol, mbus_id, mbus_pro, mbus_readmodel_id, 
+    repeater_id, meter_type, sim_card, running_state, install_address, meter_error_time, 
+    meter_position, super_meter_id, valve_meter_id, main_meter_id, use_start_date, next_check_time, 
+    install_height, longitude, latitude, company_id, position_key, address, notes, memo1, 
+    memo2, memo3, memo4, create_date, create_user, update_date, update_user, basecode, 
+    meter_subtype, steel, water_address, meter_state, factory, diameter, soft_ver,precisiona,
+    hard_ver, common_flow, minimum_flow, temperature_differ, temperature_range, baud_rate, 
+    max_bound, limtspeed, ctrlflag, isvalid,systemId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="InfoMap">
+     select
+    m.meter_id, m.consumer_id consumerId,m.rowno, m.address_1st address1st, m.address_2nd address2nd, m.protocol,
+    m.mbus_id, m.mbus_pro, m.mbus_readmodel_id,
+    m.repeater_id repeaterId, m.meter_type,
+    m.sim_card simCard, m.running_state,
+    m.install_address installAddress, m.meter_error_time meterErrorTime,
+    m.meter_position meterPosition,
+    m.super_meter_id superMeterId, m.valve_meter_id valveMeterId, m.main_meter_id mainMeterId,
+    m.use_start_date useStartDate, m.next_check_time nextCheckTime,m.install_height installHeight,
+    m.longitude, m.latitude, m.company_id,c.company_name companyName, m.address, m.notes, m.basecode,
+    m.meter_subtype meterSubtype, m.steel, m.meter_state meterState, m.factory, m.diameter, m.soft_ver softVer,m.precisiona,
+    m.hard_ver hardVer, m.common_flow commonFlow, m.minimum_flow minimumFlow, m.temperature_differ temperatureDiffer,
+    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag, m.system_id,s.system_name 
+    from meter_info m
+    JOIN company_info c ON m.company_id=c.company_id
+    left JOIN system_info s ON m.system_id=s.system_id
+    where m.meter_id = #{meterId,jdbcType=VARCHAR}
+    and m.isvalid=1
+  </select>
+
+  <!--<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from meter_info-->
+    <!--where meter_id = #{meterId,jdbcType=VARCHAR}-->
+    <!--and isvalid=1-->
+  <!--</select>-->
+
+  <select id="selectAllIds" parameterType="map" resultType="java.lang.String">
+    select meter_id
+    from meter_info
+    where meter_type=#{meterType} and consumer_id=#{consumerId}
+  </select>
+
+  <select id="selectMeterDownInforByConsumer"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    meter_id,  address_2nd
+    from meter_info
+    where  isvalid = 1 and consumer_id=#{consumerId}
+  </select>
+
+  <select id="selectAllMeter" parameterType="map" resultMap="InfoMap">
+    select
+    m.meter_id, m.consumer_id consumerId,m.rowno, m.address_1st address1st, m.address_2nd address2nd, m.protocol,
+    m.mbus_id mbusId, m.mbus_pro mbusPro, m.mbus_readmodel_id mbusReadModelId,m.soft_ver softVer,m.water_address waterAddress,
+    m.repeater_id repeaterId, m.meter_type meterType,m.sim_card simCard, m.running_state runningState,
+    m.install_address installAddress, m.meter_error_time meterErrorTime,m.meter_position meterPosition,
+    m.super_meter_id superMeterId, m.valve_meter_id valveMeterId, m.main_meter_id mainMeterId,
+    m.use_start_date useStartDate, m.next_check_time nextCheckTime,m.install_height installHeight,
+    m.longitude, m.latitude, m.company_id,c.company_name companyName, m.address, m.notes, m.basecode,
+    m.meter_subtype meterSubtype, m.steel, m.meter_state meterState, m.factory, m.diameter, m.precisiona,
+    m.hard_ver hardVer, m.common_flow commonFlow, m.minimum_flow minimumFlow, m.temperature_differ temperatureDiffer,
+    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag, m.system_id, s.system_name 
+    from meter_info m
+    left JOIN company_info c ON m.company_id=c.company_id 
+    left JOIN system_info s ON m.system_id=s.system_id 
+    where  m.isvalid = 1 and m.meter_id is not null
+    <if test="companyIds.size() != 0">
+      and m.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="stationId!=null">
+      and m.consumer_id=#{stationId}
+    </if>
+    <if test="commuityId!=null">
+      and m.consumer_id=#{commuityId}
+    </if>
+    <if test="buildingId!=null">
+      and m.consumer_id=#{buildingId}
+    </if>
+    <if test="unitId!=null">
+      and m.consumer_id=#{unitId}
+    </if>
+    <if test="houseId!=null">
+      and m.consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+      <if test="searchCondition.address1st != null">
+        and m.address_1st = #{address1st,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address2nd != null">
+        and m.address_2nd like concat('%',#{searchCondition.address2nd,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="searchCondition.protocol != null">
+        and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusId != null">
+        and m.mbus_id = #{searchCondition.mbusId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusPro != null">
+        and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusReadmodelId != null">
+        and m.mbus_readmodel_id = #{searchCondition.mbusReadmodelId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.repeaterId != null">
+        and m.repeater_id = #{searchCondition.repeaterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterType != null">
+        and m.meter_type = #{searchCondition.meterType,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.simCard != null">
+        and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.runningState != null">
+        and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.installAddress != null">
+        and m.install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterErrorTime != null">
+        and m.meter_error_time = #{searchCondition.meterErrorTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.meterPosition != null">
+        and m.meter_position = #{searchCondition.meterPosition,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.superMeterId != null">
+        and m.super_meter_id = #{searchCondition.superMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.valveMeterId != null">
+        and m.valve_meter_id = #{searchCondition.valveMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mainMeterId != null">
+        and m.main_meter_id = #{searchCondition.mainMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.useStartDate != null">
+        and m.use_start_date = #{searchCondition.useStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.nextCheckTime != null">
+        and m.next_check_time = #{searchCondition.nextCheckTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.installHeight != null">
+        and m.install_height = #{searchCondition.installHeight,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.longitude != null">
+        and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.latitude != null">
+        and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.companyId != null">
+        and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.precisiona != null">
+        and m.precisiona = #{searchCondition.precisiona,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address != null">
+        and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.notes != null">
+        and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.basecode != null">
+        and m.basecode = #{searchCondition.basecode,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.meterSubtype != null">
+        and m.meter_subtype = #{searchCondition.meterSubtype,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.steel != null">
+        and m.steel = #{searchCondition.steel,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterState != null">
+        and m.meter_state = #{searchCondition.meterState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.factory != null">
+        and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.diameter != null">
+        and m.diameter = #{searchCondition.diameter,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and m.soft_ver = #{searchCondition.softVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.hardVer != null">
+        and m.hard_ver = #{searchCondition.hardVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and m.soft_ver = #{searchCondition.softVer}
+      </if>
+      <if test="searchCondition.waterAddress != null">
+        and m.water_address = #{searchCondition.waterAddress}
+      </if>
+      <if test="searchCondition.baudRate != null">
+        and m.baud_rate = #{searchCondition.baudRate,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.maxBound != null">
+        and m.max_bound = #{searchCondition.maxBound,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.limtspeed != null">
+        and m.limtspeed = #{searchCondition.limtspeed,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.ctrlflag != null">
+        and m.ctrlflag = #{searchCondition.ctrlflag,jdbcType=INTEGER}
+      </if>
+      <if test="searchCondition.systemId != null">
+        and m.system_id = #{searchCondition.systemId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size() != 0">
+        and m.consumer_id in
+        <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectMeterListCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*) from meter_info
+    where  isvalid = 1 and meter_id is not null
+    <if test="companyIds.size() != 0">
+      and company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="stationId!=null">
+      and consumer_id=#{stationId}
+    </if>
+    <if test="commuityId!=null">
+      and consumer_id=#{commuityId}
+    </if>
+    <if test="buildingId!=null">
+      and consumer_id=#{buildingId}
+    </if>
+    <if test="unitId!=null">
+      and consumer_id=#{unitId}
+    </if>
+    <if test="houseId!=null">
+      and consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+      <if test="searchCondition.address1st != null">
+        and address_1st = #{address1st,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address2nd != null">
+        and address_2nd = #{searchCondition.address2nd,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.protocol != null">
+        and protocol = #{searchCondition.protocol,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusId != null">
+        and mbus_id = #{searchCondition.mbusId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusPro != null">
+        and mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusReadmodelId != null">
+        and mbus_readmodel_id = #{searchCondition.mbusReadmodelId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.repeaterId != null">
+        and repeater_id = #{searchCondition.repeaterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterType != null">
+        and meter_type = #{searchCondition.meterType,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.simCard != null">
+        and sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.runningState != null">
+        and running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.installAddress != null">
+        and install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterErrorTime != null">
+        and meter_error_time = #{searchCondition.meterErrorTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.meterPosition != null">
+        and meter_position = #{searchCondition.meterPosition,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.superMeterId != null">
+        and super_meter_id = #{searchCondition.superMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.valveMeterId != null">
+        and valve_meter_id = #{searchCondition.valveMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mainMeterId != null">
+        and main_meter_id = #{searchCondition.mainMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.useStartDate != null">
+        and use_start_date = #{searchCondition.useStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.nextCheckTime != null">
+        and next_check_time = #{searchCondition.nextCheckTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.installHeight != null">
+        and install_height = #{searchCondition.installHeight,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.longitude != null">
+        and longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.latitude != null">
+        and latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.companyId != null">
+        and company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.precisiona != null">
+        and precisiona = #{searchCondition.precisiona,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address != null">
+        and address = #{searchCondition.address,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.notes != null">
+        and notes = #{searchCondition.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.basecode != null">
+        and basecode = #{searchCondition.basecode,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.meterSubtype != null">
+        and meter_subtype = #{searchCondition.meterSubtype,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.steel != null">
+        and steel = #{searchCondition.steel,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterState != null">
+        and meter_state = #{searchCondition.meterState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.factory != null">
+        and factory = #{searchCondition.factory,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.diameter != null">
+        and diameter = #{searchCondition.diameter,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and soft_ver = #{searchCondition.softVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.hardVer != null">
+        and hard_ver = #{searchCondition.hardVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and soft_ver = #{searchCondition.softVer}
+      </if>
+      <if test="searchCondition.waterAddress != null">
+        and water_address = #{searchCondition.waterAddress}
+      </if>
+      <if test="searchCondition.baudRate != null">
+        and baud_rate = #{searchCondition.baudRate,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.maxBound != null">
+        and max_bound = #{searchCondition.maxBound,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.limtspeed != null">
+        and limtspeed = #{searchCondition.limtspeed,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.ctrlflag != null">
+        and ctrlflag = #{searchCondition.ctrlflag,jdbcType=INTEGER}
+      </if>
+      <if test="searchCondition.systemId != null">
+        and m.system_id = #{searchCondition.systemId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size() != 0">
+        and consumer_id in
+        <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from meter_info
+    where meter_id = #{meterId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from meter_info
+    where meter_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.meter.entity.Meter">
+    insert into meter_info (meter_id, consumer_id, address_1st, 
+      address_2nd, protocol, mbus_id, 
+      mbus_pro, mbus_readmodel_id, repeater_id, 
+      meter_type, sim_card, running_state, 
+      install_address, meter_error_time, meter_position, 
+      super_meter_id, valve_meter_id, main_meter_id, 
+      use_start_date, next_check_time, install_height, 
+      longitude, latitude, company_id, 
+      position_key, address, notes, 
+      memo1, memo2, memo3, 
+      memo4, create_date, create_user, 
+      update_date, update_user, basecode, 
+      meter_subtype, steel, water_address, 
+      meter_state, factory, diameter,  soft_ver, hard_ver,
+      common_flow, minimum_flow, temperature_differ, 
+      temperature_range, baud_rate, max_bound, 
+      limtspeed, ctrlflag, isvalid,system_id
+      )
+    values (#{meterId,jdbcType=VARCHAR}, #{consumerId,jdbcType=VARCHAR}, #{address1st,jdbcType=VARCHAR}, 
+      #{address2nd,jdbcType=VARCHAR}, #{protocol,jdbcType=VARCHAR}, #{mbusId,jdbcType=VARCHAR}, 
+      #{mbusPro,jdbcType=VARCHAR}, #{mbusReadmodelId,jdbcType=VARCHAR}, #{repeaterId,jdbcType=VARCHAR}, 
+      #{meterType,jdbcType=VARCHAR}, #{simCard,jdbcType=VARCHAR}, #{runningState,jdbcType=VARCHAR}, 
+      #{installAddress,jdbcType=VARCHAR}, #{meterErrorTime,jdbcType=TIMESTAMP}, #{meterPosition,jdbcType=VARCHAR}, 
+      #{superMeterId,jdbcType=VARCHAR}, #{valveMeterId,jdbcType=VARCHAR}, #{mainMeterId,jdbcType=VARCHAR}, 
+      #{useStartDate,jdbcType=TIMESTAMP}, #{nextCheckTime,jdbcType=TIMESTAMP}, #{installHeight,jdbcType=DECIMAL}, 
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{positionKey,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{memo3,jdbcType=VARCHAR}, 
+      #{memo4,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{basecode,jdbcType=DECIMAL}, 
+      #{meterSubtype,jdbcType=VARCHAR}, #{steel,jdbcType=VARCHAR}, #{waterAddress,jdbcType=VARCHAR}, 
+      #{meterState,jdbcType=VARCHAR}, #{factory,jdbcType=VARCHAR}, #{diameter,jdbcType=VARCHAR}, 
+      #{softVer,jdbcType=VARCHAR}, #{hardVer,jdbcType=VARCHAR},
+      #{commonFlow,jdbcType=DECIMAL}, #{minimumFlow,jdbcType=DECIMAL}, #{temperatureDiffer,jdbcType=DECIMAL}, 
+      #{temperatureRange,jdbcType=DECIMAL}, #{baudRate,jdbcType=VARCHAR}, #{maxBound,jdbcType=VARCHAR}, 
+      #{limtspeed,jdbcType=DECIMAL}, #{ctrlflag,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER}, #{systemId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.meter.entity.Meter">
+    insert into meter_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="meterId != null">
+        meter_id,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="address1st != null">
+        address_1st,
+      </if>
+      <if test="address2nd != null">
+        address_2nd,
+      </if>
+      <if test="protocol != null">
+        protocol,
+      </if>
+      <if test="mbusId != null">
+        mbus_id,
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro,
+      </if>
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id,
+      </if>
+      <if test="repeaterId != null">
+        repeater_id,
+      </if>
+      <if test="meterType != null">
+        meter_type,
+      </if>
+      <if test="simCard != null">
+        sim_card,
+      </if>
+      <if test="runningState != null">
+        running_state,
+      </if>
+      <if test="installAddress != null">
+        install_address,
+      </if>
+      <if test="meterErrorTime != null">
+        meter_error_time,
+      </if>
+      <if test="meterPosition != null">
+        meter_position,
+      </if>
+      <if test="superMeterId != null">
+        super_meter_id,
+      </if>
+      <if test="valveMeterId != null">
+        valve_meter_id,
+      </if>
+      <if test="mainMeterId != null">
+        main_meter_id,
+      </if>
+      <if test="useStartDate != null">
+        use_start_date,
+      </if>
+      <if test="nextCheckTime != null">
+        next_check_time,
+      </if>
+      <if test="installHeight != null">
+        install_height,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="precisiona != null">
+        precisiona,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="memo3 != null">
+        memo3,
+      </if>
+      <if test="memo4 != null">
+        memo4,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="basecode != null">
+        basecode,
+      </if>
+      <if test="meterSubtype != null">
+        meter_subtype,
+      </if>
+      <if test="steel != null">
+        steel,
+      </if>
+      <if test="waterAddress != null">
+        water_address,
+      </if>
+      <if test="meterState != null">
+        meter_state,
+      </if>
+      <if test="factory != null">
+        factory,
+      </if>
+      <if test="diameter != null">
+        diameter,
+      </if>
+      <if test="softVer != null">
+        soft_ver,
+      </if>
+      <if test="hardVer != null">
+        hard_ver,
+      </if>
+      <if test="commonFlow != null">
+        common_flow,
+      </if>
+      <if test="minimumFlow != null">
+        minimum_flow,
+      </if>
+      <if test="temperatureDiffer != null">
+        temperature_differ,
+      </if>
+      <if test="temperatureRange != null">
+        temperature_range,
+      </if>
+      <if test="baudRate != null">
+        baud_rate,
+      </if>
+      <if test="maxBound != null">
+        max_bound,
+      </if>
+      <if test="limtspeed != null">
+        limtspeed,
+      </if>
+      <if test="ctrlflag != null">
+        ctrlflag,
+      </if>
+      <if test="isvalid != null">
+        isvalid,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="meterId != null">
+        #{meterId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="address1st != null">
+        #{address1st,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelId != null">
+        #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="repeaterId != null">
+        #{repeaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="installAddress != null">
+        #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterErrorTime != null">
+        #{meterErrorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meterPosition != null">
+        #{meterPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="superMeterId != null">
+        #{superMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="valveMeterId != null">
+        #{valveMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainMeterId != null">
+        #{mainMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartDate != null">
+        #{useStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextCheckTime != null">
+        #{nextCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installHeight != null">
+        #{installHeight,jdbcType=DECIMAL},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="precisiona != null">
+        #{precisiona,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="memo3 != null">
+        #{memo3,jdbcType=VARCHAR},
+      </if>
+      <if test="memo4 != null">
+        #{memo4,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="basecode != null">
+        #{basecode,jdbcType=DECIMAL},
+      </if>
+      <if test="meterSubtype != null">
+        #{meterSubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="steel != null">
+        #{steel,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAddress != null">
+        #{waterAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterState != null">
+        #{meterState,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="diameter != null">
+        #{diameter,jdbcType=VARCHAR},
+      </if>
+      <if test="softVer != null">
+        #{softVer,jdbcType=VARCHAR},
+      </if>
+      <if test="hardVer != null">
+        #{hardVer,jdbcType=VARCHAR},
+      </if>
+      <if test="commonFlow != null">
+        #{commonFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="minimumFlow != null">
+        #{minimumFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureDiffer != null">
+        #{temperatureDiffer,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureRange != null">
+        #{temperatureRange,jdbcType=DECIMAL},
+      </if>
+      <if test="baudRate != null">
+        #{baudRate,jdbcType=VARCHAR},
+      </if>
+      <if test="maxBound != null">
+        #{maxBound,jdbcType=VARCHAR},
+      </if>
+      <if test="limtspeed != null">
+        #{limtspeed,jdbcType=DECIMAL},
+      </if>
+      <if test="ctrlflag != null">
+        #{ctrlflag,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.meter.entity.Meter">
+    update meter_info
+    <set>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="address1st != null">
+        address_1st = #{address1st,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        address_2nd = #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="repeaterId != null">
+        repeater_id = #{repeaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        sim_card = #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        running_state = #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="installAddress != null">
+        install_address = #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterErrorTime != null">
+        meter_error_time = #{meterErrorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meterPosition != null">
+        meter_position = #{meterPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="superMeterId != null">
+        super_meter_id = #{superMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="valveMeterId != null">
+        valve_meter_id = #{valveMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainMeterId != null">
+        main_meter_id = #{mainMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartDate != null">
+        use_start_date = #{useStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextCheckTime != null">
+        next_check_time = #{nextCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installHeight != null">
+        install_height = #{installHeight,jdbcType=DECIMAL},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="precisiona != null">
+        precisiona = #{precisiona,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="memo3 != null">
+        memo3 = #{memo3,jdbcType=VARCHAR},
+      </if>
+      <if test="memo4 != null">
+        memo4 = #{memo4,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="basecode != null">
+        basecode = #{basecode,jdbcType=DECIMAL},
+      </if>
+      <if test="meterSubtype != null">
+        meter_subtype = #{meterSubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="steel != null">
+        steel = #{steel,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAddress != null">
+        water_address = #{waterAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterState != null">
+        meter_state = #{meterState,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="diameter != null">
+        diameter = #{diameter,jdbcType=VARCHAR},
+      </if>
+      <if test="softVer != null">
+        soft_ver = #{softVer,jdbcType=VARCHAR},
+      </if>
+      <if test="hardVer != null">
+        hard_ver = #{hardVer,jdbcType=VARCHAR},
+      </if>
+      <if test="commonFlow != null">
+        common_flow = #{commonFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="minimumFlow != null">
+        minimum_flow = #{minimumFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureDiffer != null">
+        temperature_differ = #{temperatureDiffer,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureRange != null">
+        temperature_range = #{temperatureRange,jdbcType=DECIMAL},
+      </if>
+      <if test="baudRate != null">
+        baud_rate = #{baudRate,jdbcType=VARCHAR},
+      </if>
+      <if test="maxBound != null">
+        max_bound = #{maxBound,jdbcType=VARCHAR},
+      </if>
+      <if test="limtspeed != null">
+        limtspeed = #{limtspeed,jdbcType=DECIMAL},
+      </if>
+      <if test="ctrlflag != null">
+        ctrlflag = #{ctrlflag,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where meter_id = #{meterId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.meter.entity.Meter">
+    update meter_info
+    set consumer_id = #{consumerId,jdbcType=VARCHAR},
+      address_1st = #{address1st,jdbcType=VARCHAR},
+      address_2nd = #{address2nd,jdbcType=VARCHAR},
+      protocol = #{protocol,jdbcType=VARCHAR},
+      mbus_id = #{mbusId,jdbcType=VARCHAR},
+      mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR},
+      repeater_id = #{repeaterId,jdbcType=VARCHAR},
+      meter_type = #{meterType,jdbcType=VARCHAR},
+      sim_card = #{simCard,jdbcType=VARCHAR},
+      running_state = #{runningState,jdbcType=VARCHAR},
+      install_address = #{installAddress,jdbcType=VARCHAR},
+      meter_error_time = #{meterErrorTime,jdbcType=TIMESTAMP},
+      meter_position = #{meterPosition,jdbcType=VARCHAR},
+      super_meter_id = #{superMeterId,jdbcType=VARCHAR},
+      valve_meter_id = #{valveMeterId,jdbcType=VARCHAR},
+      main_meter_id = #{mainMeterId,jdbcType=VARCHAR},
+      use_start_date = #{useStartDate,jdbcType=TIMESTAMP},
+      next_check_time = #{nextCheckTime,jdbcType=TIMESTAMP},
+      install_height = #{installHeight,jdbcType=DECIMAL},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      position_key = #{positionKey,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      memo3 = #{memo3,jdbcType=VARCHAR},
+      memo4 = #{memo4,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      basecode = #{basecode,jdbcType=DECIMAL},
+      meter_subtype = #{meterSubtype,jdbcType=VARCHAR},
+      steel = #{steel,jdbcType=VARCHAR},
+      water_address = #{waterAddress,jdbcType=VARCHAR},
+      meter_state = #{meterState,jdbcType=VARCHAR},
+      factory = #{factory,jdbcType=VARCHAR},
+      diameter = #{diameter,jdbcType=VARCHAR},
+      soft_ver = #{softVer,jdbcType=VARCHAR},
+      hard_ver = #{hardVer,jdbcType=VARCHAR},
+      common_flow = #{commonFlow,jdbcType=DECIMAL},
+      minimum_flow = #{minimumFlow,jdbcType=DECIMAL},
+      temperature_differ = #{temperatureDiffer,jdbcType=DECIMAL},
+      temperature_range = #{temperatureRange,jdbcType=DECIMAL},
+      baud_rate = #{baudRate,jdbcType=VARCHAR},
+      max_bound = #{maxBound,jdbcType=VARCHAR},
+      limtspeed = #{limtspeed,jdbcType=DECIMAL},
+      ctrlflag = #{ctrlflag,jdbcType=INTEGER},
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      system_id = #{systemId,jdbcType=VARCHAR}
+    where meter_id = #{meterId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateDelBatchByIds" parameterType="java.util.List">
+    update meter_info
+    set isvalid = 0,
+    update_date = #{updateDate,jdbcType=TIMESTAMP},
+    update_user = #{updateUser,jdbcType=VARCHAR}
+    where meter_id in
+    <foreach collection="meterIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateBatchByIds" parameterType="cn.plou.web.system.meterMessage.meter.vo.MeterVo">
+    update meter_info
+    <set>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="address1st != null">
+        address_1st = #{address1st,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        address_2nd = #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="repeaterId != null">
+        repeater_id = #{repeaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        sim_card = #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        running_state = #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="installAddress != null">
+        install_address = #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterErrorTime != null">
+        meter_error_time = #{meterErrorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meterPosition != null">
+        meter_position = #{meterPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="superMeterId != null">
+        super_meter_id = #{superMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="valveMeterId != null">
+        valve_meter_id = #{valveMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainMeterId != null">
+        main_meter_id = #{mainMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartDate != null">
+        use_start_date = #{useStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextCheckTime != null">
+        next_check_time = #{nextCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installHeight != null">
+        install_height = #{installHeight,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="basecode != null">
+        basecode = #{basecode,jdbcType=DECIMAL},
+      </if>
+      <if test="meterSubtype != null">
+        meter_subtype = #{meterSubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="steel != null">
+        steel = #{steel,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAddress != null">
+        water_address = #{waterAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterState != null">
+        meter_state = #{meterState,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="diameter != null">
+        diameter = #{diameter,jdbcType=VARCHAR},
+      </if>
+      <if test="softVer != null">
+        soft_ver = #{softVer,jdbcType=VARCHAR},
+      </if>
+      <if test="hardVer != null">
+        hard_ver = #{hardVer,jdbcType=VARCHAR},
+      </if>
+      <if test="commonFlow != null">
+        common_flow = #{commonFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="minimumFlow != null">
+        minimum_flow = #{minimumFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureDiffer != null">
+        temperature_differ = #{temperatureDiffer,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureRange != null">
+        temperature_range = #{temperatureRange,jdbcType=DECIMAL},
+      </if>
+      <if test="baudRate != null">
+        baud_rate = #{baudRate,jdbcType=VARCHAR},
+      </if>
+      <if test="maxBound != null">
+        max_bound = #{maxBound,jdbcType=VARCHAR},
+      </if>
+      <if test="limtspeed != null">
+        limtspeed = #{limtspeed,jdbcType=DECIMAL},
+      </if>
+      <if test="precisiona != null">
+        precisiona = #{precisiona},
+      </if>
+      <if test="ctrlflag != null">
+        ctrlflag = #{ctrlflag,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where meter_id in
+    <foreach collection="meterIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  
+  <update id="updateMeterBatchAll" parameterType="cn.plou.web.system.meterMessage.meter.vo.MeterVo">
+    update meter_info
+    <set>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="address1st != null">
+        address_1st = #{address1st,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        address_2nd = #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="repeaterId != null">
+        repeater_id = #{repeaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        sim_card = #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        running_state = #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="installAddress != null">
+        install_address = #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterErrorTime != null">
+        meter_error_time = #{meterErrorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meterPosition != null">
+        meter_position = #{meterPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="superMeterId != null">
+        super_meter_id = #{superMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="valveMeterId != null">
+        valve_meter_id = #{valveMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainMeterId != null">
+        main_meter_id = #{mainMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartDate != null">
+        use_start_date = #{useStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextCheckTime != null">
+        next_check_time = #{nextCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installHeight != null">
+        install_height = #{installHeight,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="basecode != null">
+        basecode = #{basecode,jdbcType=DECIMAL},
+      </if>
+      <if test="meterSubtype != null">
+        meter_subtype = #{meterSubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="steel != null">
+        steel = #{steel,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAddress != null">
+        water_address = #{waterAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterState != null">
+        meter_state = #{meterState,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="diameter != null">
+        diameter = #{diameter,jdbcType=VARCHAR},
+      </if>
+      <if test="softVer != null">
+        soft_ver = #{softVer,jdbcType=VARCHAR},
+      </if>
+      <if test="hardVer != null">
+        hard_ver = #{hardVer,jdbcType=VARCHAR},
+      </if>
+      <if test="commonFlow != null">
+        common_flow = #{commonFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="minimumFlow != null">
+        minimum_flow = #{minimumFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureDiffer != null">
+        temperature_differ = #{temperatureDiffer,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureRange != null">
+        temperature_range = #{temperatureRange,jdbcType=DECIMAL},
+      </if>
+      <if test="baudRate != null">
+        baud_rate = #{baudRate,jdbcType=VARCHAR},
+      </if>
+      <if test="maxBound != null">
+        max_bound = #{maxBound,jdbcType=VARCHAR},
+      </if>
+      <if test="limtspeed != null">
+        limtspeed = #{limtspeed,jdbcType=DECIMAL},
+      </if>
+      <if test="precisiona != null">
+        precisiona = #{precisiona},
+      </if>
+      <if test="ctrlflag != null">
+        ctrlflag = #{ctrlflag,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where consumer_id like (CONCAT(#{batchModifyId,jdbcType=VARCHAR},'%'))
+  </update>
+  
+  <update id="updateMeterBatchAllStation" parameterType="cn.plou.web.system.meterMessage.meter.vo.MeterVo">
+    update meter_info
+    <set>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="address1st != null">
+        address_1st = #{address1st,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        address_2nd = #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusId != null">
+        mbus_id = #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusReadmodelId != null">
+        mbus_readmodel_id = #{mbusReadmodelId,jdbcType=VARCHAR},
+      </if>
+      <if test="repeaterId != null">
+        repeater_id = #{repeaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        sim_card = #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        running_state = #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="installAddress != null">
+        install_address = #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterErrorTime != null">
+        meter_error_time = #{meterErrorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meterPosition != null">
+        meter_position = #{meterPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="superMeterId != null">
+        super_meter_id = #{superMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="valveMeterId != null">
+        valve_meter_id = #{valveMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainMeterId != null">
+        main_meter_id = #{mainMeterId,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartDate != null">
+        use_start_date = #{useStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextCheckTime != null">
+        next_check_time = #{nextCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installHeight != null">
+        install_height = #{installHeight,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="basecode != null">
+        basecode = #{basecode,jdbcType=DECIMAL},
+      </if>
+      <if test="meterSubtype != null">
+        meter_subtype = #{meterSubtype,jdbcType=VARCHAR},
+      </if>
+      <if test="steel != null">
+        steel = #{steel,jdbcType=VARCHAR},
+      </if>
+      <if test="waterAddress != null">
+        water_address = #{waterAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="meterState != null">
+        meter_state = #{meterState,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="diameter != null">
+        diameter = #{diameter,jdbcType=VARCHAR},
+      </if>
+      <if test="softVer != null">
+        soft_ver = #{softVer,jdbcType=VARCHAR},
+      </if>
+      <if test="hardVer != null">
+        hard_ver = #{hardVer,jdbcType=VARCHAR},
+      </if>
+      <if test="commonFlow != null">
+        common_flow = #{commonFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="minimumFlow != null">
+        minimum_flow = #{minimumFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureDiffer != null">
+        temperature_differ = #{temperatureDiffer,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureRange != null">
+        temperature_range = #{temperatureRange,jdbcType=DECIMAL},
+      </if>
+      <if test="baudRate != null">
+        baud_rate = #{baudRate,jdbcType=VARCHAR},
+      </if>
+      <if test="maxBound != null">
+        max_bound = #{maxBound,jdbcType=VARCHAR},
+      </if>
+      <if test="limtspeed != null">
+        limtspeed = #{limtspeed,jdbcType=DECIMAL},
+      </if>
+      <if test="precisiona != null">
+        precisiona = #{precisiona},
+      </if>
+      <if test="ctrlflag != null">
+        ctrlflag = #{ctrlflag,jdbcType=INTEGER},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=VARCHAR},
+      </if>
+    </set>
+	  where 
+	<foreach collection="communitys" item="item" index="index"  separator="OR">
+	   `consumer_id` LIKE CONCAT(#{item},'%')
+	</foreach>
+  </update>
+  
+  <select id="getMaxMeterId" parameterType="java.lang.String" resultType="java.lang.String">
+     select
+       max(meter_id)
+     from meter_info
+     where meter_id like (CONCAT(#{typeAndConsumerId},'%'))
+  </select>
+  
+  <select id="getMeterCountbyCommuityId" parameterType="java.lang.String" resultType="java.lang.Integer">
+     select
+       count(meter_id)
+     from meter_info
+     where meter_id like (CONCAT('__',#{commuityId},'%'))
+  </select>
+  
+  <insert id= "addBatch" parameterType="java.util.List">
+    insert into meter_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+            meter_id,rowno,consumer_id,address_1st,address_2nd,protocol,mbus_id,mbus_pro,mbus_readmodel_id,repeater_id,meter_type,sim_card,running_state,
+            install_address,meter_error_time,meter_position,super_meter_id,valve_meter_id,main_meter_id,use_start_date,next_check_time,install_height,
+            longitude,latitude,company_id,address,notes,basecode,meter_subtype,
+            steel,water_address,meter_state,factory,diameter,precisiona,soft_ver,hard_ver,common_flow,minimum_flow,temperature_differ,temperature_range,
+            baud_rate,max_bound,limtspeed,ctrlflag,isvalid,system_id
+        </trim>
+    values 
+	<foreach collection="list" item="meter" index="index" separator=",">
+	(
+		#{meter.meterId,jdbcType=VARCHAR},#{meter.rowno,jdbcType=VARCHAR},#{meter.consumerId,jdbcType=VARCHAR},#{meter.address1st,jdbcType=VARCHAR},
+		#{meter.address2nd,jdbcType=VARCHAR},#{meter.protocol,jdbcType=VARCHAR},#{meter.mbusId,jdbcType=VARCHAR},#{meter.mbusPro,jdbcType=VARCHAR},
+		#{meter.mbusReadmodelId,jdbcType=VARCHAR},#{meter.repeaterId,jdbcType=VARCHAR},#{meter.meterType,jdbcType=VARCHAR},#{meter.simCard,jdbcType=VARCHAR},
+		#{meter.runningState,jdbcType=VARCHAR},#{meter.installAddress,jdbcType=VARCHAR},#{meter.meterErrorTime,jdbcType=VARCHAR},
+		#{meter.meterPosition,jdbcType=VARCHAR},#{meter.superMeterId,jdbcType=VARCHAR},#{meter.valveMeterId,jdbcType=VARCHAR},
+		#{meter.mainMeterId,jdbcType=VARCHAR},#{meter.useStartDate,jdbcType=VARCHAR},#{meter.nextCheckTime,jdbcType=VARCHAR},
+		#{meter.installHeight,jdbcType=DECIMAL},#{meter.longitude,jdbcType=VARCHAR},#{meter.latitude,jdbcType=VARCHAR},#{meter.companyId,jdbcType=VARCHAR},
+		#{meter.address,jdbcType=VARCHAR},#{meter.notes,jdbcType=VARCHAR},#{meter.basecode,jdbcType=DECIMAL},#{meter.meterSubtype,jdbcType=VARCHAR},
+		#{meter.steel,jdbcType=VARCHAR},#{meter.waterAddress,jdbcType=VARCHAR},#{meter.meterState,jdbcType=VARCHAR},#{meter.factory,jdbcType=VARCHAR},
+		#{meter.diameter,jdbcType=VARCHAR},#{meter.precisiona,jdbcType=DECIMAL},#{meter.softVer,jdbcType=VARCHAR},#{meter.hardVer,jdbcType=VARCHAR},
+		#{meter.commonFlow,jdbcType=DECIMAL},#{meter.minimumFlow,jdbcType=DECIMAL},#{meter.temperatureDiffer,jdbcType=DECIMAL},
+		#{meter.temperatureRange,jdbcType=DECIMAL},#{meter.baudRate,jdbcType=VARCHAR},#{meter.maxBound,jdbcType=VARCHAR},#{meter.limtspeed,jdbcType=DECIMAL},
+		#{meter.ctrlflag,jdbcType=INTEGER},#{meter.isvalid,jdbcType=INTEGER},#{meter.systemId,jdbcType=VARCHAR}
+    )
+	</foreach>
+	ON DUPLICATE KEY UPDATE
+		meter_id=values(meter_id),
+		rowno=values(rowno),
+		consumer_id=values(consumer_id),
+		address_1st=values(address_1st),
+		address_2nd=values(address_2nd),
+		protocol=values(protocol),
+		mbus_id=values(mbus_id),
+		mbus_pro=values(mbus_pro),
+		mbus_readmodel_id=values(mbus_readmodel_id),
+		repeater_id=values(repeater_id),
+		meter_type=values(meter_type),
+		sim_card=values(sim_card),
+		running_state=values(running_state),
+		install_address=values(install_address),
+		meter_error_time=values(meter_error_time),
+		meter_position=values(meter_position),
+		super_meter_id=values(super_meter_id),
+		valve_meter_id=values(valve_meter_id),
+		main_meter_id=values(main_meter_id),
+		use_start_date=values(use_start_date),
+		next_check_time=values(next_check_time),
+		install_height=values(install_height),
+		longitude=values(longitude),
+		latitude=values(latitude),
+		company_id=values(company_id),
+		address=values(address),
+		notes=values(notes),
+		basecode=values(basecode),
+		meter_subtype=values(meter_subtype),
+		steel=values(steel),
+		water_address=values(water_address),
+		meter_state=values(meter_state),
+		factory=values(factory),
+		diameter=values(diameter),
+		precisiona=values(precisiona),
+		soft_ver=values(soft_ver),
+		hard_ver=values(hard_ver),
+		common_flow=values(common_flow),
+		minimum_flow=values(minimum_flow),
+		temperature_differ=values(temperature_differ),
+		temperature_range=values(temperature_range),
+		baud_rate=values(baud_rate),
+		max_bound=values(max_bound),
+		limtspeed=values(limtspeed),
+		ctrlflag=values(ctrlflag),
+		isvalid=values(isvalid),
+	    system_id=values(system_id)
+	</insert>
+
+  <select id="selectALLAddress2nd" parameterType="java.util.List" resultType="java.lang.String">
+    select address_2nd
+    from meter_info
+    <if test="meterIds != null">
+      <if test="meterIds.size()!=0">
+        where meter_id in
+        <foreach collection="meterIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+
+  </select>
+
+	<select id="selectMeterByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    select meter_id,consumer_id,mbus_id,protocol,address_2nd from meter_info
+    where meter_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+  
+  <select id="selectMeterBycomuitysIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    select meter_id,consumer_id,mbus_id,protocol,address_2nd from meter_info
+    where consumer_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+  <select id="selectMeterByotherId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select meter_id,consumer_id,mbus_id,protocol,address_2nd from meter_info
+    where consumer_id like (concat(#{consumerId},'%')) limit 0,200000
+  </select>
+  
+  <select id="selectAllMeter2" parameterType="map" resultMap="InfoMap">
+    select
+    m.meter_id, m.consumer_id consumerId,m.rowno, m.address_1st address1st, m.address_2nd address2nd, m.protocol,
+    m.mbus_id mbusId, m.mbus_pro mbusPro, m.mbus_readmodel_id mbusReadModelId,m.soft_ver softVer,m.water_address waterAddress,
+    m.repeater_id repeaterId, m.meter_type meterType,m.sim_card simCard, m.running_state runningState,
+    m.install_address installAddress, m.meter_error_time meterErrorTime,m.meter_position meterPosition,
+    m.super_meter_id superMeterId, m.valve_meter_id valveMeterId, m.main_meter_id mainMeterId,
+    m.use_start_date useStartDate, m.next_check_time nextCheckTime,m.install_height installHeight,
+    m.longitude, m.latitude, m.company_id,c.company_name companyName, m.address, m.notes, m.basecode,
+    m.meter_subtype meterSubtype, m.steel, m.meter_state meterState, m.factory, m.diameter, m.precisiona,
+    m.hard_ver hardVer, m.common_flow commonFlow, m.minimum_flow minimumFlow, m.temperature_differ temperatureDiffer,
+    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag,m.system_id,s.system_name 
+    from meter_info m
+    left JOIN company_info c ON m.company_id=c.company_id
+    left JOIN system_info s ON m.system_id=s.system_id 
+    where  m.isvalid = 1 and m.meter_id is not null
+    <if test="companyIds.size() != 0">
+      and m.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <choose>
+		<when test="stationIds.size() != 0">
+			and ((m.meter_position='1' and m.consumer_id in
+			<foreach collection="stationIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			)
+			<if test="commuityIds.size() != 0">
+				 or left(m.consumer_id,10) in
+				<foreach collection="commuityIds" item="item" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</when>
+		<when test="stationIds.size() == 0 and commuityIds.size() != 0">
+			and left(m.consumer_id,10) in
+			<foreach collection="commuityIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</when>
+	</choose>
+    <if test="buildingId!=null">
+      and m.consumer_id like(concat(#{buildingId},'%'))
+    </if>
+    <if test="unitId!=null">
+      and m.consumer_id like(concat(#{unitId},'%'))
+    </if>
+    <if test="houseId!=null">
+      and m.consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+      <if test="searchCondition.address1st != null">
+        and m.address_1st = #{address1st,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address2nd != null">
+        and m.address_2nd like concat('%',#{searchCondition.address2nd,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="searchCondition.protocol != null">
+        and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusId != null">
+        and m.mbus_id = #{searchCondition.mbusId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusPro != null">
+        and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusReadmodelId != null">
+        and m.mbus_readmodel_id = #{searchCondition.mbusReadmodelId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.repeaterId != null">
+        and m.repeater_id = #{searchCondition.repeaterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterType != null">
+        and m.meter_type = #{searchCondition.meterType,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.simCard != null">
+        and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.runningState != null">
+        and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.installAddress != null">
+        and m.install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterErrorTime != null">
+        and m.meter_error_time = #{searchCondition.meterErrorTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.meterPosition != null">
+        and m.meter_position = #{searchCondition.meterPosition,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.superMeterId != null">
+        and m.super_meter_id = #{searchCondition.superMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.valveMeterId != null">
+        and m.valve_meter_id = #{searchCondition.valveMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mainMeterId != null">
+        and m.main_meter_id = #{searchCondition.mainMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.useStartDate != null">
+        and m.use_start_date = #{searchCondition.useStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.nextCheckTime != null">
+        and m.next_check_time = #{searchCondition.nextCheckTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.installHeight != null">
+        and m.install_height = #{searchCondition.installHeight,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.longitude != null">
+        and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.latitude != null">
+        and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.companyId != null">
+        and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.precisiona != null">
+        and m.precisiona = #{searchCondition.precisiona,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address != null">
+        and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.notes != null">
+        and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.basecode != null">
+        and m.basecode = #{searchCondition.basecode,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.meterSubtype != null">
+        and m.meter_subtype = #{searchCondition.meterSubtype,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.steel != null">
+        and m.steel = #{searchCondition.steel,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterState != null">
+        and m.meter_state = #{searchCondition.meterState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.factory != null">
+        and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.diameter != null">
+        and m.diameter = #{searchCondition.diameter,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and m.soft_ver = #{searchCondition.softVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.hardVer != null">
+        and m.hard_ver = #{searchCondition.hardVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and m.soft_ver = #{searchCondition.softVer}
+      </if>
+      <if test="searchCondition.waterAddress != null">
+        and m.water_address = #{searchCondition.waterAddress}
+      </if>
+      <if test="searchCondition.baudRate != null">
+        and m.baud_rate = #{searchCondition.baudRate,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.maxBound != null">
+        and m.max_bound = #{searchCondition.maxBound,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.limtspeed != null">
+        and m.limtspeed = #{searchCondition.limtspeed,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.ctrlflag != null">
+        and m.ctrlflag = #{searchCondition.ctrlflag,jdbcType=INTEGER}
+      </if>
+      <if test="searchCondition.systemId != null">
+        and m.system_id = #{searchCondition.systemId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size() != 0">
+        and m.consumer_id in
+        <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+  
+  <select id="selectMeterListCount2" parameterType="map" resultType="java.lang.Integer">
+    select count(*) from meter_info
+    where  isvalid = 1 and meter_id is not null
+    <if test="companyIds.size() != 0">
+      and company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <choose>
+		<when test="stationIds.size() != 0">
+			and ((meter_position='1' and consumer_id in
+			<foreach collection="stationIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			)
+			<if test="commuityIds.size() != 0">
+				 or left(consumer_id,10) in
+				<foreach collection="commuityIds" item="item" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</when>
+		<when test="stationIds.size() == 0 and commuityIds.size() != 0">
+			and left(consumer_id,10) in
+			<foreach collection="commuityIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</when>
+	</choose>
+    <if test="buildingId!=null">
+      and consumer_id like(concat(#{buildingId},'%'))
+    </if>
+    <if test="unitId!=null">
+      and consumer_id like(concat(#{unitId},'%'))
+    </if>
+    <if test="houseId!=null">
+      and consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+      <if test="searchCondition.address1st != null">
+        and address_1st = #{address1st,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address2nd != null">
+        and address_2nd = #{searchCondition.address2nd,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.protocol != null">
+        and protocol = #{searchCondition.protocol,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusId != null">
+        and mbus_id = #{searchCondition.mbusId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusPro != null">
+        and mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mbusReadmodelId != null">
+        and mbus_readmodel_id = #{searchCondition.mbusReadmodelId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.repeaterId != null">
+        and repeater_id = #{searchCondition.repeaterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterType != null">
+        and meter_type = #{searchCondition.meterType,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.simCard != null">
+        and sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.runningState != null">
+        and running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.installAddress != null">
+        and install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterErrorTime != null">
+        and meter_error_time = #{searchCondition.meterErrorTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.meterPosition != null">
+        and meter_position = #{searchCondition.meterPosition,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.superMeterId != null">
+        and super_meter_id = #{searchCondition.superMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.valveMeterId != null">
+        and valve_meter_id = #{searchCondition.valveMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.mainMeterId != null">
+        and main_meter_id = #{searchCondition.mainMeterId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.useStartDate != null">
+        and use_start_date = #{searchCondition.useStartDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.nextCheckTime != null">
+        and next_check_time = #{searchCondition.nextCheckTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="searchCondition.installHeight != null">
+        and install_height = #{searchCondition.installHeight,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.longitude != null">
+        and longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.latitude != null">
+        and latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.companyId != null">
+        and company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.precisiona != null">
+        and precisiona = #{searchCondition.precisiona,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.address != null">
+        and address = #{searchCondition.address,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.notes != null">
+        and notes = #{searchCondition.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.basecode != null">
+        and basecode = #{searchCondition.basecode,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.meterSubtype != null">
+        and meter_subtype = #{searchCondition.meterSubtype,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.steel != null">
+        and steel = #{searchCondition.steel,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.meterState != null">
+        and meter_state = #{searchCondition.meterState,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.factory != null">
+        and factory = #{searchCondition.factory,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.diameter != null">
+        and diameter = #{searchCondition.diameter,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and soft_ver = #{searchCondition.softVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.hardVer != null">
+        and hard_ver = #{searchCondition.hardVer,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.softVer != null">
+        and soft_ver = #{searchCondition.softVer}
+      </if>
+      <if test="searchCondition.waterAddress != null">
+        and water_address = #{searchCondition.waterAddress}
+      </if>
+      <if test="searchCondition.baudRate != null">
+        and baud_rate = #{searchCondition.baudRate,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.maxBound != null">
+        and max_bound = #{searchCondition.maxBound,jdbcType=VARCHAR}
+      </if>
+      <if test="searchCondition.limtspeed != null">
+        and limtspeed = #{searchCondition.limtspeed,jdbcType=DECIMAL}
+      </if>
+      <if test="searchCondition.ctrlflag != null">
+        and ctrlflag = #{searchCondition.ctrlflag,jdbcType=INTEGER}
+      </if>
+      <if test="searchCondition.systemId != null">
+        and m.system_id = #{searchCondition.systemId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size() != 0">
+        and consumer_id in
+        <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+  </select>
+  <update id="modifyMeterAddressbyConsumer" parameterType="map">
+    	update meter_info
+    		set address = replace(address,#{orgAddress},#{changedAdress}) where consumer_id like (concat(#{consumerId},'%'))
+  </update>
+  
+   <update id="modifyMeterAddress" parameterType="map">
+    	update meter_info
+    		set address = #{address} where consumer_id = #{consumerId}
+     </update>  
+    
+</mapper>

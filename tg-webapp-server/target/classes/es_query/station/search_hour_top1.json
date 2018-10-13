@@ -1,0 +1,34 @@
+{
+  "from": 0,
+  "size": 1,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "match_phrase": {
+                  "sourceid": {
+                    "query": "{{sourceid}}"
+                  }
+                }
+              },
+              {
+                "range": {
+                  "time": {
+                    "from": "{{from}}",
+                    "to": "{{to}}",
+                    "include_lower": false,
+                    "include_upper": false,
+                    "boost": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

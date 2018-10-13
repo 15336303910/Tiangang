@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.heatManage.housecontrol.dao.HouseControlDao">
+<insert id="insertControl" parameterType="cn.plou.web.heatManage.housecontrol.domain.HouseControlDO" >
+    insert into balance_valve_control_temp_h (primary_id, read_time, control_flag, 
+      control_type, dtu_state_flag, read_over_flag, 
+      more_flag, more_time, node_select, 
+      id_select, user_name, para1, 
+      para2, para3, para4, 
+      para5, company_id)
+    values (#{primaryId,jdbcType=VARCHAR}, #{readTime,jdbcType=VARCHAR}, #{controlFlag,jdbcType=VARCHAR}, 
+      #{controlType,jdbcType=VARCHAR}, #{dtuStateFlag,jdbcType=VARCHAR}, #{readOverFlag,jdbcType=VARCHAR}, 
+      #{moreFlag,jdbcType=VARCHAR}, #{moreTime,jdbcType=VARCHAR}, #{nodeSelect,jdbcType=VARCHAR}, 
+      #{idSelect,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{para1,jdbcType=VARCHAR}, 
+      #{para2,jdbcType=VARCHAR}, #{para3,jdbcType=VARCHAR}, #{para4,jdbcType=VARCHAR}, 
+      #{para5,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR})
+  </insert>
+  <select id="controlInfoList" resultType="cn.plou.web.heatManage.housecontrol.domain.HouseControlInfoDO">
+		select a.primary_id as primaryId,m.meter_id as meterId,a.rowno as rowno,m.consumer_id as consumerId,a.running_state as runningState,
+		a.limit_status as limitStatus,a.execution_step as executionStep,a.fixed_step as fixedStep,a.power_protection as powerProtection,
+		a.set_temperature as setTemperature,a.room_temperature as roomTemperature,a.sys_read_time as sysReadTime,a.company_id as companyId,
+		a.step_total as stepTotal,a.base_step as baseStep,a.fur_step as furStep,a.open_time as openTime,a.intervals as intervals,
+		a.point_step as pointStep,a.wireless as wireless,a.current_times as currentTimes,a.locks as locks,a.indoor_col_time as indoorColTime,
+		a.read_time as readTime,a.heating_area as heatingArea,a.flowing_index as flowingIndex,a.flow_upper_ratio as flowUpperRatio,
+		a.flow_upper_value as flowUpperValue,a.max_flow_threshold as maxFlowThreshold,a.flow_give_mode as flowGiveMode,a.cal_kind as calKind,
+		a.control_commond as controlCommond,a.adjust_model as adjustModel,a.correct_coefficient as correctCoefficient,a.flow_rate as flowRate,
+		a.flow_last as flowLast,a.flow_now as flowNow,a.action_now as actionNow,a.control_addr as controlAddr,a.mbus_id as mbusId,
+		b.address,
+		commod.type_name as controlCommondName,
+		adjmodel.type_name as adjustModelName,
+		adjmodel.type_name as runningStateName,
+		givemode.type_name as flowGiveModeName,
+		calkd.type_name as calKindName,
+		actionow.type_name as actionNowName,
+		limstatus.type_name as limitStatusName,
+		loc.type_name as locksName,
+		powerProtection.type_name as powerProtectionName,
+		wireles.type_name as wirelessName		 
+        from valve_data_now as a 
+		RIGHT JOIN meter_info as m on m.meter_id = a.meter_id and m.meter_type='metertype_02' 
+        left outer join houses_info as b on b.consumer_id = a.consumer_id 
+        left outer join type_mst as commod on commod.id = a.control_commond 
+        left outer join type_mst as adjmodel on adjmodel.id = a.adjust_model 
+        left outer join type_mst as runstate on runstate.id = a.running_state 
+        left outer join type_mst as givemode on givemode.id = a.flow_give_mode  
+        left outer join type_mst as calkd on calkd.id = a.cal_kind 
+        left outer join type_mst as actionow on actionow.id = a.action_now 
+        left outer join type_mst as limstatus on limstatus.id = a.limit_status  
+        left outer join type_mst as loc on loc.id = a.locks  
+        left outer join type_mst as powerProtection on powerProtection.id = a.power_protection 
+        left outer join type_mst as wireles on wireles.id = a.wireless 
+		    <where>
+		         1=1  
+				 <if test="companyId != null">
+			      and substring(a.consumer_id,1,5)=#{companyId}
+			    </if> 
+				 <if test="stationId != null">
+			      and substring(a.consumer_id,1,10) in (
+			      select commuity_id from commuity_info where station_id=#{stationId}
+			      )
+			    </if>
+			    <if test="commuityId != null">
+			      and substring(a.consumer_id,1,10)=#{commuityId}
+			    </if>
+			    <if test="buildingNo != null">
+			      and substring(a.consumer_id,1,13)=#{buildingNo}
+			    </if>
+			    <if test="unitId != null">
+			     and substring(a.consumer_id,1,15)=#{unitId}
+			    </if>
+			    <if test="houseIds != null">
+			     and a.consumer_id in(#{houseIds})
+			    </if> 
+			    <if test="useHeatStatus != null">
+			      and b.heating_status =#{useHeatStatus}
+			    </if>
+			    <if test="houseType != null">
+			      and b.houseType =#{houseType}
+			    </if>
+				<if test="topFlow != null">
+			      and a.flow_now >=a.flow_upper_value+${topFlow}
+			    </if>
+				<if test="topRoomTemp != null">
+			      and a.room_temperature >=a.set_temperature+${topRoomTemp}
+			    </if>
+				<if test="bottomRoomTemp != null">
+			      and a.room_temperature >=a.set_temperature-${bottomRoomTemp}
+			    </if>
+				<if test="controlCommond != null">
+			      and a.controlCommond =#{control_commond}
+			    </if>
+				<if test="adjustModel != null">
+			      and a.adjust_model =#{adjustModel}
+			    </if>		
+		  	</where>
+        <choose>
+            <when test="sortby != null and sortby.trim() != ''">
+                order by a.${sortby} ${order}
+            </when>
+			<otherwise>
+                order by a.consumer_id asc
+			</otherwise>
+        </choose>
+		<if test="page != null and pageSize != null">
+			limit ${page}, ${pageSize}
+		</if>
+	</select>
+	<update id="operControlInfo" parameterType="java.util.HashMap" >
+    update valve_data_now
+   <set>
+      <if test="flowingIndex != null">
+        flowing_index = #{flowingIndex},
+      </if>
+      <if test="flowUpperRatio != null">
+        flow_upper_ratio = #{flowUpperRatio},
+      </if>
+      <if test="flowGiveMode != null">
+        flow_give_mode = #{flowGiveMode},
+      </if>
+      <if test="calKind != null">
+        cal_kind = #{calKind},
+      </if>
+      <if test="maxFlowThreshold != null">
+        max_flow_threshold = #{maxFlowThreshold},
+      </if>
+      <if test="flowUpperValue != null">
+        flow_upper_value = #{flowUpperValue},
+      </if>
+      <if test="controlCommond != null">
+        control_commond = #{controlCommond},
+      </if>
+      <if test="adjustModel != null">
+        adjust_model = #{adjustModel},
+      </if>
+   </set>
+   <where>
+	1=1
+	<if test="type =='house' and houseIds != null">
+		and meter_id in (${houseIds})
+	</if>
+	<if test="type !='house' and location != null">
+		and meter_id like ('02${location}%')
+	</if>
+</where>
+  </update>
+  <update id="operDevInfo" parameterType="java.util.HashMap" >
+    update valve_data_now
+   <set>
+      <if test="powerProtection != null">
+        power_protection = #{powerProtection},
+      </if>
+      <if test="baseStep != null">
+        base_step = ${baseStep},
+      </if>
+      <if test="furStep != null">
+        fur_step = ${furStep},
+      </if>
+      <if test="pointStep != null">
+        point_step = ${pointStep},
+      </if>
+      <if test="intervals != null">
+        intervals = ${intervals},
+      </if>
+   </set>
+   <where>
+	1=1
+	<if test="type =='house' and houseIds != null">
+		and meter_id in (${houseIds})
+	</if>
+	<if test="type !='house' and location != null">
+		and meter_id like ('02${location}%')
+	</if>
+</where>
+
+  </update>
+  <select id="controlInfoListCount" resultType="java.lang.Integer">
+		select count(*) from valve_data_now as a
+		    <where>
+		         1=1 
+				 <if test="companyId != null">
+			      and substring(a.consumer_id,1,5)=#{companyId}
+			    </if> 
+				 <if test="stationId != null">
+			      and substring(a.consumer_id,1,10) in (
+			      select commuity_id from commuity_info where station_id=#{stationId}
+			      )
+			    </if>
+			    <if test="commuityId != null">
+			      and substring(a.consumer_id,1,10)=#{commuityId}
+			    </if>
+			    <if test="buildingNo != null">
+			      and substring(a.consumer_id,1,13)=#{buildingNo}
+			    </if>
+			    <if test="unitId != null">
+			     and substring(a.consumer_id,1,15)=#{unitId}
+			    </if>
+			    <if test="houseIds != null">
+			     and a.consumer_id in(#{houseIds})
+			    </if> 
+		  	</where>
+	</select>
+</mapper>

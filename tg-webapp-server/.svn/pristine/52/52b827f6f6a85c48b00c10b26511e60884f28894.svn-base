@@ -1,0 +1,43 @@
+package cn.plou.web.heatManage.monitor.service;
+
+import java.util.List;
+import java.util.Map;
+
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+import cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO;
+
+/**
+ * 
+ * 
+ * @author chglee
+ * @email 1992lcg@163.com
+ * @date 2018-06-29 09:26:54
+ */
+public interface RunningDataTotalService {
+	
+	RunningDataTotalDO get(String consumerId);
+	
+	BuildingRunningDataTotalVO getBuildingVO(Map<String, Object> map);
+	
+	BuildingRunningDataTotalVO statisticsData(Map<String, Object> map);
+	
+	List<RunningDataTotalDO> list(Map<String, Object> map);
+	
+	List<RunningDataTotalDO> houseList(Map<String, Object> map);
+	
+	List<BuildingRunningDataTotalVO> listByBuilding(Map<String, Object> map);
+	
+	List<BuildingRunningDataTotalVO> getAllCommunity(Map<String, Object> map);
+
+	List<BuildingRunningDataTotalVO> getAllBuilding(String consumerId);
+	 
+	BuildingRunningDataTotalVO buildingDataVo(Map<String, Object> map);
+	
+	int houseListCount(Map<String, Object> map);
+	
+	int count(Map<String, Object> map);
+	
+	int getCommunityCount(Map<String, Object> map);
+	
+	int getBuildingCount(Map<String, Object> map);
+}

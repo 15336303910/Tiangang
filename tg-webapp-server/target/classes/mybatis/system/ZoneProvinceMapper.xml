@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.zoneProvince.dao.ZoneProvinceMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince">
+    <id column="z_p_id" jdbcType="VARCHAR" property="zPId" />
+    <result column="z_p_provinceid" jdbcType="VARCHAR" property="zPProvinceid" />
+    <result column="z_p_province" jdbcType="VARCHAR" property="zPProvince" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    z_p_id, z_p_provinceid, z_p_province
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from zone_province_info
+    where z_p_id = #{zPId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllZoneProvince"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zone_province_info
+  </select>
+
+  <select id="selectZoneProvinceByZCCityid"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zone_province_info
+    where z_p_provinceid=(select z_c_provinceid from zone_city_info where z_c_cityid=#{zCCityid})
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zone_province_info
+    where z_p_id = #{zPId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince">
+    insert into zone_province_info (z_p_id, z_p_provinceid, z_p_province
+      )
+    values (#{zPId,jdbcType=VARCHAR}, #{zPProvinceid,jdbcType=VARCHAR}, #{zPProvince,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince">
+    insert into zone_province_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="zPId != null">
+        z_p_id,
+      </if>
+      <if test="zPProvinceid != null">
+        z_p_provinceid,
+      </if>
+      <if test="zPProvince != null">
+        z_p_province,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="zPId != null">
+        #{zPId,jdbcType=VARCHAR},
+      </if>
+      <if test="zPProvinceid != null">
+        #{zPProvinceid,jdbcType=VARCHAR},
+      </if>
+      <if test="zPProvince != null">
+        #{zPProvince,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince">
+    update zone_province_info
+    <set>
+      <if test="zPProvinceid != null">
+        z_p_provinceid = #{zPProvinceid,jdbcType=VARCHAR},
+      </if>
+      <if test="zPProvince != null">
+        z_p_province = #{zPProvince,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where z_p_id = #{zPId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince">
+    update zone_province_info
+    set z_p_provinceid = #{zPProvinceid,jdbcType=VARCHAR},
+      z_p_province = #{zPProvince,jdbcType=VARCHAR}
+    where z_p_id = #{zPId,jdbcType=VARCHAR}
+  </update>
+</mapper>

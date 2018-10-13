@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.weather.dao.WeatherMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.weather.entity.Weather">
+  <id column="weather_id" jdbcType="VARCHAR" property="weatherId" />
+  <result column="city" jdbcType="VARCHAR" property="city" />
+  <result column="notes" jdbcType="VARCHAR" property="notes" />
+  <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+  <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+  <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+  <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="proviance" jdbcType="VARCHAR" property="proviance"/>
+</resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.commonMessage.weather.vo.WeatherInfo">
+    <id column="weather_id" jdbcType="VARCHAR" property="weatherId" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="proviance" jdbcType="VARCHAR" property="proviance"/>
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="z_c_city" jdbcType="VARCHAR" property="cityName" />
+    <result column="z_a_area" jdbcType="VARCHAR" property="areaName"/>
+    <result column="z_p_province" jdbcType="VARCHAR" property="provianceName"/>
+    <result column="address" jdbcType="VARCHAR" property="address"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    weather_id, city, notes, memo1, memo2, create_date, create_user, update_date, update_user,proviance
+  </sql>
+
+  <!--增加采集天气城市信息-->
+  <insert id="insertWeather" parameterType="cn.plou.web.system.commonMessage.weather.entity.Weather">
+    insert into weather_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="weatherId != null">
+        weather_id,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="proviance != null">
+        proviance,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="weatherId != null">
+        #{weatherId,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="proviance != null">
+        #{proviance,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteBatchByIds" parameterType="java.lang.String">
+    delete from weather_info
+    where weather_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
+  <update id="updateWeatherBathch" parameterType="cn.plou.web.system.commonMessage.weather.vo.WeatherVo">
+    update weather_info
+    <set>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where weather_id in
+    <foreach collection="weatherIds" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="updateWeather" parameterType="cn.plou.web.system.commonMessage.weather.entity.Weather">
+    update weather_info
+    <set>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where weather_id = #{weatherId,jdbcType=VARCHAR}
+  </update>
+
+  <!--查全部-->
+  <select id="selectAllWeather" parameterType="map" resultMap="BaseInfoMap">
+    select
+    w.weather_id, w.city, w.notes, w.memo1, w.memo2, w.create_date, w.create_user, w.update_date, w.update_user,w.proviance,
+    c.z_c_city,a.z_a_area,p.z_p_province
+    from weather_info w
+    left join zone_city_info c on w.city = c.z_c_cityid
+    left join zone_area_info a on w.weather_id = z_a_areaid
+    left join zone_province_info p on w.proviance = z_p_provinceid
+    where
+    1 = 1
+    <if test="zProvianceId != null">
+      and w.proviance = #{zProvianceId}
+    </if>
+    <if test="cityId != null">
+      and w.city = #{cityId}
+    </if>
+    <if test="areaId != null">
+      and w.weather_id = #{areaId}
+    </if>
+    <if test="weatherVo != null">
+      <if test="weatherVo.notes != null">
+        and w.notes like concat ('%',#{weatherVo.notes},'%')
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="page != null">
+      <if test="pageSize != null">
+        limit ${page},${pageSize}
+      </if>
+    </if>
+  </select>
+
+
+
+  <!--<insert id="insert" parameterType="cn.plou.web.system.commonMessage.weather.entity.Weather">-->
+    <!--insert into weather_info (weather_id, city, notes, -->
+      <!--memo1, memo2, create_date, -->
+      <!--create_user, update_date, update_user-->
+      <!--)-->
+    <!--values (#{weatherId,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, -->
+      <!--#{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, -->
+      <!--#{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}-->
+      <!--)-->
+  <!--</insert>-->
+
+  <!--&lt;!&ndash;按Id查&ndash;&gt;-->
+  <!--<select id="selectWeatherById" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+  <!--select-->
+  <!--<include refid="Base_Column_List" />-->
+  <!--from weather_info-->
+  <!--where weather_id = #{weatherId,jdbcType=VARCHAR}-->
+  <!--</select>-->
+
+  <select id="selectWeatherCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from weather_info w
+    where
+    1 = 1
+    <if test="zProvianceId != null">
+      and w.proviance = #{zProvianceId}
+    </if>
+    <if test="cityId != null">
+      and w.city = #{cityId}
+    </if>
+    <if test="areaId != null">
+      and w.weather_id = #{areaId}
+    </if>
+    <if test="weatherVo != null">
+      <if test="weatherVo.notes != null">
+        and w.notes like concat ('%',#{weatherVo.notes},'%')
+      </if>
+    </if>
+  </select>
+</mapper>

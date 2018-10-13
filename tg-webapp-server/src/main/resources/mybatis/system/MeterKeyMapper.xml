@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.meterKey.dao.MeterKeyMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.meterKey.entity.MeterKey">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="address_2nd" jdbcType="VARCHAR" property="address2nd" />
+    <result column="meter_key" jdbcType="VARCHAR" property="meterKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, address_2nd, meter_key
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from meter_key
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllMeterKeyByAddress2nds" parameterType="java.util.List" resultMap="BaseResultMap">
+    select mk.id, mk.address_2nd, mk.meter_key
+    from meter_key mk
+    where 1=1
+    <if test="address2nds!=null">
+      <if test="address2nds.size()>0">
+        and mk.address_2nd in
+        <foreach collection="address2nds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+  </select>
+
+  <select id="selectAllMeterKey" parameterType="map" resultMap="BaseResultMap">
+    select
+    mk.id, mk.address_2nd, mk.meter_key
+    from meter_key mk
+    join meter_info m on mk.address_2nd=m.address_2nd
+    where 1=1
+    <if test="meterIds!=null">
+      <if test="meterIds.size()>0">
+        and m.meter_id in
+        <foreach collection="meterIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <!--<if test="page!=null">-->
+      <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from meter_key
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.meterKey.entity.MeterKey">
+    insert into meter_key (id, address_2nd, meter_key
+      )
+    values (#{id,jdbcType=VARCHAR}, #{address2nd,jdbcType=VARCHAR}, #{meterKey,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.meterKey.entity.MeterKey">
+    insert into meter_key
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="address2nd != null">
+        address_2nd,
+      </if>
+      <if test="meterKey != null">
+        meter_key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="address2nd != null">
+        #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="meterKey != null">
+        #{meterKey,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.meterKey.entity.MeterKey">
+    update meter_key
+    <set>
+      <if test="address2nd != null">
+        address_2nd = #{address2nd,jdbcType=VARCHAR},
+      </if>
+      <if test="meterKey != null">
+        meter_key = #{meterKey,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.meterKey.entity.MeterKey">
+    update meter_key
+    set address_2nd = #{address2nd,jdbcType=VARCHAR},
+      meter_key = #{meterKey,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

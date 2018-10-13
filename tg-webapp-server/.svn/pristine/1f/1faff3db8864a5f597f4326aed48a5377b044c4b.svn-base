@@ -1,0 +1,48 @@
+package cn.plou.web.heatManage.history.domain;
+
+import java.io.Serializable;
+
+import lombok.Data;
+
+@Data
+public class WkfDataDO  implements Serializable {
+	private String source; // 地址信息
+  private String primaryId;
+  private String meterId;
+  private String sysReadTime;
+  private String rowno;
+  private String consumerId;
+  private String controlRole;
+  private String regulationMode;
+  private Double openness;
+  private String runningState;
+  private String actionLimit;
+  private String limitStatus;
+  private Double executionStep;
+  private Double fixedStep;
+  private String currntWork;
+  private String upperControlCommand;
+  private Double flowSpeed;
+  private Double upperLimitFlow;
+  private Double maxFlowThreshold;
+  private String powerProtection;
+  private Double correctionFactor1;
+  private Double correctionFactor2;
+  private Double setTemperature;
+  private Double roomTemperature; 
+  private String companyId;
+  private String notes;
+  private String meterType;
+  private Double stepTotal;
+  private Double baseStep;
+  private Double furStep;
+  private Double openTime;
+  private Double intervals;
+  private Double cal;
+  private Double pointStep;
+  private Double wireless;
+  private String currentTimes;
+  private String locks;
+  private String indoorColTime;
+  private String readTime;
+}

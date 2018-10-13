@@ -1,0 +1,140 @@
+2018-10-11 09:59:21 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@19c05860].  Returning null to indicate a session could not be found.
+2018-10-11 09:59:22 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Content type 'text/plain;charset=UTF-8' not supported
+2018-10-11 09:59:25 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-11 09:59:52 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@74afe864].  Returning null to indicate a session could not be found.
+2018-10-11 09:59:52 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-11 09:59:53 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} created. 
+select 
+     count(primary_id)
+    from alarm_info
+    where result = ?
+     
+       and station_id in 
+        (  
+			?
+	    )
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} Parameters : [0, 1]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} Types : [INTEGER, VARCHAR]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} executed. 89.819801 millis. 
+select 
+     count(primary_id)
+    from alarm_info
+    where result = ?
+     
+       and station_id in 
+        (  
+			?
+	    )
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000, rs-50000} open
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000, rs-50000} Header: [COUNT0]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000, rs-50000} Result: [1]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000, rs-50000} closed
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} closed
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} created. 
+SELECT type as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in 
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+    group by type
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} Parameters : [1, 2018-10-11 00:00:00.0, 2018-10-11 23:59:59.0]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} Types : [VARCHAR, TIMESTAMP, TIMESTAMP]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} executed. 6.142374 millis. 
+SELECT type as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in 
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+    group by type
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001, rs-50001} open
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001, rs-50001} Header: [type, total]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001, rs-50001} closed
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} closed
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} created. 
+SELECT COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+      
+  		and result = ?
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} Parameters : [1, 2018-10-11 00:00:00.0, 2018-10-11 23:59:59.0, 1]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} Types : [VARCHAR, TIMESTAMP, TIMESTAMP, INTEGER]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} executed. 10.776454 millis. 
+SELECT COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+      
+  		and result = ?
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002, rs-50002} open
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002, rs-50002} Header: [total]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002, rs-50002} Result: [0]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002, rs-50002} closed
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} closed
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003} created. 
+SELECT level as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+    group by level
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003} Parameters : [1, 2018-10-11 00:00:00.0, 2018-10-11 23:59:59.0]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003} Types : [VARCHAR, TIMESTAMP, TIMESTAMP]
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003} executed. 7.461412 millis. 
+SELECT level as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+     
+       and station_id in
+        (  
+			?
+	    ) 
+     
+     
+  		and end_time >= ? and end_time <= ?
+     
+    group by level
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003, rs-50003} open
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003, rs-50003} Header: [level, total]
+2018-10-11 09:59:53 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003, rs-50003} closed
+2018-10-11 09:59:53 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20003} closed
+2018-10-11 09:59:53 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-11 09:59:53 [INFO ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：alarmStat调用结束,消耗时间：0.7030000000000001s

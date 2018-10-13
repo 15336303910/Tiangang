@@ -1,0 +1,6 @@
+package cn.plou.web.balance.dataAnalysis.vo;
+
+import cn.plou.web.balance.dataAnalysis.entity.BalanceValveData;
+
+public class BalanceValveDataInfo extends BalanceValveData {
+}

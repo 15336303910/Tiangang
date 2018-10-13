@@ -1,0 +1,130 @@
+package cn.plou.web.system.commonMessage.heatingTime.controller;
+
+import cn.plou.web.common.config.common.BaseController;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime;
+import cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTimeKey;
+import cn.plou.web.system.commonMessage.heatingTime.service.HeatingTimeService;
+import cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeInfo;
+import cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeListInfo;
+import cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeSelectInfo;
+import cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+import static cn.plou.web.common.utils.PageInfo.getPageInfo;
+
+@RestController
+@RequestMapping("${systemPath}/heatingTime")
+@EnableSwagger2
+@Api(description = "供暖时间信息")
+public class HeatingTimeController  {
+
+    @Autowired
+    HeatingTimeService heatingTimeService;
+    @Resource
+    StationService  stationService;
+
+    @ApiOperation(value = "添加一个供暖时间信息")
+    @PostMapping("/addHeatingTime")
+    @RequiresPermissions("30401")
+    public Boolean addWeather(@RequestBody HeatingTime heatingTime){
+       heatingTime.setPrimaryId(heatingTimeService.getNewId());
+        return  heatingTimeService.addHeatingTime(heatingTime) == 1;
+    }
+
+    @ApiOperation(value = "根据id批量删除供暖时间信息")
+    @DeleteMapping("/deleteHeatingTimeBatchByIds")
+    @RequiresPermissions("30402")
+    public Boolean deleteHeatingTimeBatchByIds(@RequestBody List<String> primaryIds){
+        return heatingTimeService.deleteBatchByIds(primaryIds) == primaryIds.size();
+    }
+
+    @ApiOperation(value="批量修改供暖时间信息")
+    @PutMapping("/modifyHeatingTimeBatch")
+    @RequiresPermissions("30403")
+    public Boolean modifyHeatingTimeBatch(@RequestBody HeatingTimeVo heatingTimeVo){
+       return heatingTimeService.modifyHeatingTimeBatch(heatingTimeVo) == heatingTimeVo.getPrimaryIds().size();
+    }
+
+    @ApiOperation(value="修改供暖时间信息")
+    @PutMapping("/modifyHeatingTime")
+    @RequiresPermissions("30403")
+    public Boolean modifyHeatingTime(@RequestBody HeatingTime heatingTime){
+        return heatingTimeService.modifyHeatingById(heatingTime) == 1;
+    }
+
+    @ApiOperation(value = "根据id获取对应供暖时间信息")
+    @PostMapping("/getHeatingTimeById")
+    @RequiresPermissions("30404")
+    public Root getHeatingTimeById(@RequestBody String primaryId){
+        Root root = new Root();
+        root.setData(heatingTimeService.getHeatingTimeById(primaryId));
+        return root;
+    }
+
+    @ApiOperation(value = "根据查询条件获取供暖时间信息")
+    @PostMapping("/getAllHeatingTime")
+    @RequiresPermissions("30404")
+    public Root getAllHeatingTime(@RequestBody HeatingTimeSelectInfo heatingTimeSelectInfo){
+        Root root = new Root();
+        /*if(heatingTimeSelectInfo.getCompanyId()==null){
+            heatingTimeSelectInfo.setCompanyId(Constant.companyId);
+        }*/
+        PageHelper.startPage(heatingTimeSelectInfo.getPage(),heatingTimeSelectInfo.getPageSize());
+        HeatingTimeListInfo heatingTimeListInfo = heatingTimeService.getAllHeatingTime(heatingTimeSelectInfo.getCompanyId(),heatingTimeSelectInfo.getStationId(),
+                heatingTimeSelectInfo.getSearchCondition(),heatingTimeSelectInfo.getOrder(),heatingTimeSelectInfo.getSortby(),null,null);
+        root.setData(heatingTimeListInfo.getHeatingTimeInfoList());
+        //PageInfo pageInfo = new PageInfo(heatingTimeList);
+        root.setCond(getCond(heatingTimeSelectInfo.getPage(),heatingTimeSelectInfo.getPageSize(), heatingTimeListInfo.getCount(),heatingTimeSelectInfo.getOrder(),heatingTimeSelectInfo.getSortby()));
+        return root;
+    }
+
+    @ApiOperation(value = "获取全部企业和全部站的下拉框")
+    @GetMapping("/getAllCompanyAndAllStationDownInfo")
+    public Root getAllCompanyAndAllStationDownInfo(){
+        Root root = new Root();
+        root.setData(heatingTimeService.getAllCompanyAndAllStationDownInfo());
+        return root;
+    }
+
+
+
+
+
+
+    @ApiOperation(value = "根据公司id获取供暖年度列表")
+    @GetMapping("/getAnnualByCompanyId")
+    public Object getAnnualByCompanyId(@RequestParam("companyId") String  companyId){
+        return heatingTimeService.getAnnualByCompanyId(companyId);
+    }
+
+
+
+
+    @ApiOperation(value = "根据id(公司id  站id，小区id等)获取供暖年度列表")
+    @GetMapping("/getAnnualById")
+    public Object getAnnualById(@RequestParam("id") String  id){
+        if(id.length()!=6){
+            return heatingTimeService.getAnnualByCompanyId(id.substring(0,5));
+        }else{//站
+            String  companyId= stationService.getStationById(id).getCompanyId();
+            return  heatingTimeService.getAnnualByCompanyId(companyId);
+        }
+
+    }
+
+}

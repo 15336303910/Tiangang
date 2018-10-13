@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.organizationMessage.staff.dao.StaffMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.organizationMessage.staff.entity.Staff">
+    <id column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="tel1" jdbcType="VARCHAR" property="tel1" />
+    <result column="tel2" jdbcType="VARCHAR" property="tel2" />
+    <result column="duty" jdbcType="VARCHAR" property="duty" />
+    <result column="home_address" jdbcType="VARCHAR" property="homeAddress" />
+    <result column="tel3" jdbcType="VARCHAR" property="tel3" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.organizationMessage.staff.vo.StaffInfo">
+    <id column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="tel1" jdbcType="VARCHAR" property="tel1" />
+    <result column="tel2" jdbcType="VARCHAR" property="tel2" />
+    <result column="duty" jdbcType="VARCHAR" property="duty" />
+    <result column="home_address" jdbcType="VARCHAR" property="homeAddress" />
+    <result column="tel3" jdbcType="VARCHAR" property="tel3" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    staff_id, staff_name, department_id, tel1, tel2, duty, home_address, tel3, notes, 
+    memo1, memo2, create_date, create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from staff_info
+    where staff_id = #{staffId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectStaffByDepartmentId" parameterType="java.lang.String" resultMap = "BaseResultMap">
+    select staff_id,staff_name
+    from staff_info
+    where department_id = #{departmentId}
+  </select>
+
+  <insert id="insertStaff" parameterType="cn.plou.web.system.organizationMessage.staff.entity.Staff">
+    insert into staff_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="staffId != null">
+        staff_id,
+      </if>
+      <if test="staffName != null">
+        staff_name,
+      </if>
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="tel1 != null">
+        tel1,
+      </if>
+      <if test="tel2 != null">
+        tel2,
+      </if>
+      <if test="duty != null">
+        duty,
+      </if>
+      <if test="homeAddress != null">
+        home_address,
+      </if>
+      <if test="tel3 != null">
+        tel3,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="staffId != null">
+        #{staffId,jdbcType=VARCHAR},
+      </if>
+      <if test="staffName != null">
+        #{staffName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="tel1 != null">
+        #{tel1,jdbcType=VARCHAR},
+      </if>
+      <if test="tel2 != null">
+        #{tel2,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null">
+        #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="tel3 != null">
+        #{tel3,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from staff_info
+    where staff_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <update id="updateStaffById" parameterType="cn.plou.web.system.organizationMessage.staff.entity.Staff">
+    update staff_info
+    <set>
+      <if test="staffName != null">
+        staff_name = #{staffName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="tel1 != null">
+        tel1 = #{tel1,jdbcType=VARCHAR},
+      </if>
+      <if test="tel2 != null">
+        tel2 = #{tel2,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        duty = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="homeAddress != null">
+        home_address = #{homeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="tel3 != null">
+        tel3 = #{tel3,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where staff_id = #{staffId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateStaffBatch" parameterType="cn.plou.web.system.organizationMessage.staff.vo.StaffVo">
+    update staff_info
+    <set>
+      <if test="staffName != null">
+        staff_name = #{staffName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="tel1 != null">
+        tel1 = #{tel1,jdbcType=VARCHAR},
+      </if>
+      <if test="tel2 != null">
+        tel2 = #{tel2,jdbcType=VARCHAR},
+      </if>
+      <if test="duty != null">
+        duty = #{duty,jdbcType=VARCHAR},
+      </if>
+      <if test="tel3 != null">
+        tel3 = #{tel3,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where staff_id in
+    <foreach collection="staffIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+    select
+    staff_id
+    from staff_info
+  </select>
+
+  <select id="selectStaffById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from staff_info
+    where staff_id = #{staffId,jdbcType=VARCHAR}
+  </select>
+
+ <select id="selectAllStaff" parameterType="map" resultMap="BaseInfoMap">
+   select
+   s.staff_id, s.staff_name, s.department_id, s.tel1, s.tel2, s.duty, s.home_address, s.tel3, s.notes,
+   s.memo1, s.memo2, s.create_date, s.create_user, s.update_date, s.update_user, d.department_name, c.company_name, c.company_id
+   from staff_info s
+   left join department_info d
+   on s.department_id = d.department_id
+   LEFT JOIN company_info c
+   ON d.company_id = c.company_id
+   where 1 = 1
+   <if test="companyIds!=null">
+   <if test="companyIds.size() > 0">
+     and c.company_id in
+     <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+       #{item}
+     </foreach>
+   </if>
+   </if>
+   <if test="staffVo != null">
+     <if test="staffVo.staffName != null">
+       and s.staff_name LIKE concat('%',#{staffVo.staffName},'%')
+     </if>
+     <if test="staffVo.duty != null">
+       and s.duty LIKE concat('%',#{staffVo.duty},'%')
+     </if>
+     <if test="staffVo.departmentId != null">
+       and s.department_id = #{staffVo.departmentId}
+     </if>
+     <if test="staffVo.tel1 != null">
+       and s.tel1 LIKE concat('%',#{staffVo.tel1},'%')
+     </if>
+     <if test="staffVo.tel2 != null">
+       and s.tel2 LIKE concat('%',#{staffVo.tel2},'%')
+     </if>
+     <if test="staffVo.tel3 != null">
+       and s.tel3 LIKE concat('%',#{staffVo.tel3},'%')
+     </if>
+     <if test="staffVo.homeAddress != null">
+       and s.home_address LIKE concat('%',#{staffVo.homeAddress},'%')
+     </if>
+   </if>
+   <if test="sortby != null">
+     order by ${sortby}
+   </if>
+   <if test="order != null">
+     ${order}
+   </if>
+   <!--<if test="page != null">-->
+     <!--<if test="pageSize != null">-->
+       <!--limit ${page},${pageSize}-->
+     <!--</if>-->
+   <!--</if>-->
+ </select>
+</mapper>

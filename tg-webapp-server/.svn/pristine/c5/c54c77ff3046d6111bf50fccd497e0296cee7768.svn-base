@@ -1,0 +1,80 @@
+package cn.plou.web.system.commonMessage.weather.service.impl;
+
+import cn.plou.web.common.utils.CamelCaseUtil;
+import cn.plou.web.system.baseMessage.company.dao.CompanyMapper;
+import cn.plou.web.system.baseMessage.zoneArea.service.ZoneAreaService;
+import cn.plou.web.system.baseMessage.zoneCity.service.ZoneCityService;
+import cn.plou.web.system.baseMessage.zoneProvince.entity.ZoneProvince;
+import cn.plou.web.system.baseMessage.zoneProvince.service.ZoneProvinceService;
+import cn.plou.web.system.commonMessage.weather.dao.WeatherMapper;
+import cn.plou.web.system.commonMessage.weather.entity.Weather;
+import cn.plou.web.system.commonMessage.weather.service.WeathrtService;
+import cn.plou.web.system.commonMessage.weather.vo.WeatherInfo;
+import cn.plou.web.system.commonMessage.weather.vo.WeatherListInfo;
+import cn.plou.web.system.commonMessage.weather.vo.WeatherVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class WeathrtServiceImpl implements WeathrtService {
+
+    @Autowired
+    private WeatherMapper weatherMapper;
+    @Autowired
+    private ZoneAreaService zoneAreaService;
+    @Autowired
+    private ZoneCityService zoneCityService;
+    @Autowired
+    private ZoneProvinceService zoneProvinceService;
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    //增加采集天气城市信息
+   public int addWeather(Weather weather){
+       weather.setCity(zoneCityService.getZoneCityByZAAreaid(weather.getWeatherId()).getzCCityid());
+       weather.setProviance(zoneProvinceService.getZoneProvinceByZCCityid(weather.getCity()).getzPProvinceid());
+        return weatherMapper.insertWeather(weather);
+   }
+
+    @Override
+    public int deleteBatchByIds(List<String> ids) {
+        return weatherMapper.deleteBatchByIds(ids);
+    }
+
+    @Override
+    public int modifyWeather(Weather weather) {
+        return weatherMapper.updateWeather(weather);
+    }
+
+    @Override
+    public int modifyWeatherBatch(WeatherVo weatherVo) {
+        return weatherMapper.updateWeatherBathch(weatherVo);
+    }
+
+//    @Override
+//    public String getNewId() {
+//        return getMaxIdNoSize(weatherMapper.selectAllIds());
+//    }
+
+
+    //按条件查询所有采集天气城市信息
+    public WeatherListInfo getAllWeather(WeatherVo weatherVo, String order, String sortby, String zProvianceId, String cityId, String areaId, Integer page, Integer pageSize){
+       if(page!=null){
+           page = (page -1) * pageSize;
+       }
+       WeatherListInfo weatherListInfo = new WeatherListInfo();
+       List<WeatherInfo> weatherInfos = weatherMapper.selectAllWeather(weatherVo,order,sortby,zProvianceId,cityId,areaId,page,pageSize);
+        for(WeatherInfo weatherInfo:weatherInfos){
+            weatherInfo.setAddress(weatherInfo.getProvianceName()+weatherInfo.getCityName()+weatherInfo.getAreaName());
+        }
+        weatherListInfo.setWeatherInfoList(weatherInfos);
+        weatherListInfo.setCount(weatherMapper.selectWeatherCount(weatherVo,zProvianceId,cityId,areaId));
+        return weatherListInfo;
+    }
+}

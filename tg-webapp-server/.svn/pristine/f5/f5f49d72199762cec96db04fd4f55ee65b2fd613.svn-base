@@ -1,0 +1,113 @@
+package cn.plou.web.charge.chargeconfig.vo;
+
+//import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+//@Data
+public class AccountSummaryListVO {
+
+
+    private Date minAccountTime;
+    private Date maxAccountTime;
+    private String address;
+    private String id;
+    private BigDecimal advHeatCost;
+    private BigDecimal sumAccount;
+    private BigDecimal oweAccount;
+    private BigDecimal accountRate;
+    private BigDecimal sumReceivable;
+    private BigDecimal marginNow;
+    private Integer accountTimes;
+
+    public Date getMinAccountTime() {
+        return minAccountTime;
+    }
+
+    public void setMinAccountTime(Date minAccountTime) {
+        this.minAccountTime = minAccountTime;
+    }
+
+    public Date getMaxAccountTime() {
+        return maxAccountTime;
+    }
+
+    public void setMaxAccountTime(Date maxAccountTime) {
+        this.maxAccountTime = maxAccountTime;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public BigDecimal getAdvHeatCost() {
+        return advHeatCost;
+    }
+
+    public void setAdvHeatCost(BigDecimal advHeatCost) {
+        this.advHeatCost = advHeatCost;
+    }
+
+    public BigDecimal getSumAccount() {
+        return sumAccount;
+    }
+
+    public void setSumAccount(BigDecimal sumAccount) {
+        this.sumAccount = sumAccount;
+    }
+
+    public BigDecimal getOweAccount() {
+        return oweAccount;
+    }
+
+    public void setOweAccount(BigDecimal oweAccount) {
+        this.oweAccount = oweAccount;
+    }
+
+    public BigDecimal getAccountRate() {
+        return accountRate;
+    }
+
+    public void setAccountRate(BigDecimal accountRate) {
+        this.accountRate = accountRate;
+    }
+
+    public BigDecimal getSumReceivable() {
+        return sumReceivable;
+    }
+
+    public void setSumReceivable(BigDecimal sumReceivable) {
+        this.sumReceivable = sumReceivable;
+    }
+
+    public BigDecimal getMarginNow() {
+        return marginNow;
+    }
+
+    public void setMarginNow(BigDecimal marginNow) {
+        this.marginNow = marginNow;
+    }
+
+    public Integer getAccountTimes() {
+        return accountTimes;
+    }
+
+    public void setAccountTimes(Integer accountTimes) {
+        this.accountTimes = accountTimes;
+    }
+
+
+}

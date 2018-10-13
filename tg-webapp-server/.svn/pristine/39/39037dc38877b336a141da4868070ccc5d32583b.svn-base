@@ -1,0 +1,734 @@
+package cn.plou.web.system.baseMessage.unit.service.impl;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+import cn.plou.web.common.importDataBatch.ImportResult;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.common.utils.SerializeUtil;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.service.impl.BuildServiceImpl;
+import cn.plou.web.system.baseMessage.commuity.entity.Commuity;
+import cn.plou.web.system.baseMessage.commuity.service.impl.CommuityServiceImpl;
+import cn.plou.web.system.baseMessage.commuity.vo.CommuityInfo;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.company.service.impl.CompanyServiceImpl;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.house.vo.HouseInfo;
+import cn.plou.web.common.idgenerater.service.IDGenerater;
+import cn.plou.web.system.baseMessage.station.service.impl.StationServiceImpl;
+import cn.plou.web.system.baseMessage.unit.dao.UnitMapper;
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.baseMessage.unit.service.UnitService;
+import cn.plou.web.system.baseMessage.unit.vo.*;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.meterMessage.mbus.service.MbusService;
+import cn.plou.web.system.meterMessage.meter.entity.Meter;
+import cn.plou.web.system.meterMessage.meter.service.MeterService;
+import cn.plou.web.system.meterMessage.meter.vo.MeterInfo;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.Jedis;
+
+import javax.servlet.ServletRequest;
+import java.io.*;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static cn.plou.web.common.importDataBatch.CleanOnTime.cleanTempFile;
+import static cn.plou.web.common.utils.Tools.getCellValue;
+import static cn.plou.web.common.utils.Tools.getMaxId;
+
+@Component
+public class UnitServiceImpl implements UnitService {
+    @Autowired
+    private UnitMapper unitMapper;
+    @Autowired
+    private CommuityServiceImpl commuityService;
+    @Autowired
+    private BuildServiceImpl buildService;
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+    @Autowired
+    private HouseService houseService;
+    @Autowired
+    private MeterService meterService;
+    @Autowired
+    private MbusService mbusService;
+    @Autowired
+    private TypeMstService typeMstService;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private IDGenerater idGenerater;
+    @Override
+    public List<Unit> getUnitTree(String buildingId) {
+        return unitMapper.selectUnitTree(buildingId);
+    }
+
+    @Override
+    public Unit getUnitById(String unitId) {
+        return unitMapper.selectByPrimaryKey(unitId);
+    }
+
+    @Override
+    public Unit getUnitByName(String companyId, String commuityName, String buildingName, String unitName) {
+        String buildingId = buildService.getBuildByName(commuityName, buildingName, companyId).getBuildingNo();
+        return unitMapper.selectUnitByName(buildingId, unitName);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addUnit(Unit unit) {
+        //unit.setAddress(commuityService.getCommuityById(unit.getUnitId().substring(0,10)).getCommuityName()+" "+buildService.getBuildById(unit.getBuildingId()).getBuildingName()+" "+unit.getUnitName());
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("unit");
+        userPageHistory.setAct("addUnit");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        
+        unit.setUnitId(idGenerater.generateUnitId(unit.getBuildingId(),1,true).get(0));
+        unit.setRowno(unit.getUnitId());
+       // unit.setRowno(idGenerater.generateUnitId(unit.getBuildingId(),1,true).get(0));
+        unit.setCompanyId(unit.getBuildingId().substring(0,5));
+        
+        return unitMapper.insertSelective(unit);
+    }
+
+    public List<String> getBuildingIdsByCommuityIds(List<String> commuityIds) {
+        List<String> buildingIds = new ArrayList<String>();
+        for (String commuityId : commuityIds) {
+            buildingIds.addAll(buildService.getBuildNosByCommuityId(commuityId));
+        }
+        return buildingIds;
+    }
+
+    @Override
+    public UnitListInfo getAllUnit(Integer page, Integer pageSize, String order, String sortby, String companyId, String stationId, String commuityId, String buildingId, UnitVo unitVo) {
+        Integer start = null;
+        if (page != null) {
+            start = (page - 1) * pageSize;
+        }
+        UnitListInfo unitListInfo = new UnitListInfo();
+        List<String> buildingIds = new ArrayList<String>();
+        if (buildingId == null) {
+        /*if(companyId==null&&stationId==null&&commuityId==null&&buildingId==null){
+            commuityIds.addAll(commuityService.getCommuityIdsByCompanyId(Constant.companyId));
+            buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+        }else{
+            if(companyId != null){
+                commuityIds.addAll(commuityService.getCommuityIdsByCompanyId(companyId));
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(stationId != null){
+                for(Commuity commuity: commuityService.getTreeList(stationId)){
+                    commuityIds.add(commuity.getCommuityId());
+                }
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(commuityId!=null){
+                commuityIds.add(commuityId);
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(buildingId!=null){
+                buildingIds.add(buildingId);
+            }
+        }*/
+        	List<String> commuityIds = commuityService.getCommuityIdsList(companyId, stationId, commuityId);
+
+        /*if(companyId==null&&stationId==null&&commuityId==null&&buildingId==null){
+            commuityIds.addAll(commuityService.getCommuityIdsByCompanyId(Constant.companyId));
+            buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+        }else{
+            if(companyId != null){
+                commuityIds.addAll(commuityService.getCommuityIdsByCompanyId(companyId));
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(stationId != null){
+                for(Commuity commuity: commuityService.getTreeList(stationId)){
+                    commuityIds.add(commuity.getCommuityId());
+                }
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(commuityId!=null){
+                commuityIds.add(commuityId);
+                buildingIds.addAll(getBuildingIdsByCommuityIds(commuityIds));
+            }
+            if(buildingId!=null){
+                buildingIds.add(buildingId);
+            }
+        }*/
+            buildingIds.addAll(buildService.getBuildNosByCommuityIds(commuityIds));
+        } else {
+            buildingIds.add(buildingId);
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("unit");
+        userPageHistory.setAct("getAllUnit");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        List<UnitInfo> unitInfos = unitMapper.selectAllUnit(start, pageSize, order, sortby, buildingIds, unitVo);
+        unitListInfo.setCount(unitMapper.selectUnitListCount(buildingIds, unitVo));
+        //查找数据字典项字段的名称
+        if (unitInfos.size() != 0) {
+            List<TypeMst> typeMstList = typeMstService.getAllTypeMstByRedis();
+            for (UnitInfo unitInfo : unitInfos) {
+                unitInfo.setControlTypeName(typeMstService.getTypeNameById(typeMstList, unitInfo.getControlType()));
+                unitInfo.setHeatingFormName(typeMstService.getTypeNameById(typeMstList, unitInfo.getHeatingForm()));
+                unitInfo.setHasBuildMeterName(typeMstService.getTypeNameById(typeMstList, unitInfo.getHasBuildMeter()));
+                unitInfo.setHasBalanceValveName(typeMstService.getTypeNameById(typeMstList, unitInfo.getHasBalanceValve()));
+                unitInfo.setWaterControlTypeName(typeMstService.getTypeNameById(typeMstList, unitInfo.getWaterControlType()));
+                unitInfo.setWaterHasBuildMeterName(typeMstService.getTypeNameById(typeMstList, unitInfo.getWaterHasBuildMeterName()));
+                unitInfo.setDiameterName(typeMstService.getTypeNameById(typeMstList,unitInfo.getDiameter()));
+//                if(unitInfo.getControlType()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getControlType())==null){
+//                        unitInfo.setControlTypeName(null);
+//                    }else{
+//                        unitInfo.setControlTypeName(typeMstService.getTypeMstById(unitInfo.getControlType()).getTypeName());
+//                    }
+//                }
+//                if(unitInfo.getHeatingForm()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getHeatingForm())==null){
+//                        unitInfo.setHeatingFormName(null);
+//                    }else{
+//                        unitInfo.setHeatingFormName(typeMstService.getTypeMstById(unitInfo.getHeatingForm()).getTypeName());
+//                    }
+//                }
+//                if(unitInfo.getHasBuildMeter()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getHasBuildMeter())==null){
+//                        unitInfo.setHasBuildMeterName(null);
+//                    }else{
+//                        unitInfo.setHasBuildMeterName(typeMstService.getTypeMstById(unitInfo.getHasBuildMeter()).getTypeName());
+//                    }
+//                }
+//                if(unitInfo.getHasBalanceValve()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getHasBalanceValve())==null){
+//                        unitInfo.setHasBalanceValveName(null);
+//                    }else{
+//                        unitInfo.setHasBalanceValveName(typeMstService.getTypeMstById(unitInfo.getHasBalanceValve()).getTypeName());
+//                    }
+//                }
+//                if(unitInfo.getWaterControlType()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getWaterControlType())==null){
+//                        unitInfo.setWaterControlTypeName(null);
+//                    }else{
+//                        unitInfo.setWaterControlTypeName(typeMstService.getTypeMstById(unitInfo.getWaterControlType()).getTypeName());
+//                    }
+//                }if(unitInfo.getWaterHasBuildMeter()!=null){
+//                    if(typeMstService.getTypeMstById(unitInfo.getWaterHasBuildMeterName())==null){
+//                        unitInfo.setWaterHasBuildMeterName(null);
+//                    }else{
+//                        unitInfo.setWaterHasBuildMeterName(typeMstService.getTypeMstById(unitInfo.getWaterHasBuildMeterName()).getTypeName());
+//                    }
+//                }
+            }
+        }
+        unitListInfo.setUnitInfoList(unitInfos);
+        return unitListInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBatchByIds(List<String> unitIds) {
+        for (String unitId : unitIds) {
+            List<Meter> meters = meterService.getMeterDownInforByConsumer(unitId);
+            List<Mbus> mbuses = mbusService.geDownInfoByConsumerId(unitId);
+            List<House> houseInfos = houseService.getHouseByUnitId(unitId);
+            if (meters.size() != 0 || mbuses.size() != 0 || houseInfos.size() != 0) {
+                throw new BusinessException(getUnitById(unitId).getUnitName() + "单元下有关联项，不能删除");
+            }
+        }
+
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("unit");
+        userPageHistory.setAct("deleteBatchByIds");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return unitMapper.deleteBatchByIds(unitIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyBatch(UnitVo unitVo) {
+        /*if(unitVo.getBuildingId()!=null){
+            for(String unitId:unitVo.getUnitIds()){
+                unitVo.setAddress(commuityService.getCommuityById(unitId.substring(0,10)).getCommuityName()+" "+buildService.getBuildById(unitVo.getBuildingId()).getBuildingName()+" "+getUnitById(unitId).getUnitName());
+            }
+        }*/
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("unit");
+        userPageHistory.setAct("modifyBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        if(unitVo.getBatchCheckbox()){
+        	if(unitVo.getBatchModifyType().equals("station")){
+        		List<String> comuitys = commuityService.getCommuityIdsList(null, unitVo.getBatchModifyId(), null);
+        		unitVo.setCommunitys(comuitys);
+        		return unitMapper.updateBatchAllStation(unitVo);
+        	}else{
+        		return unitMapper.updateBatchAll(unitVo);
+        	}
+        }else{
+        	return unitMapper.updateBatch(unitVo);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyUnit(Unit unit) {
+       /* if(unit.getBuildingId()!=null){
+            unit.setAddress(commuityService.getCommuityById(unit.getUnitId().substring(0,10)).getCommuityName()+" "+buildService.getBuildById(unit.getBuildingId()).getBuildingName()+" "+getUnitById(unit.getUnitId()).getUnitName());
+        }
+*/
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("unit");
+        userPageHistory.setAct("modifyUnit");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return unitMapper.updateByPrimaryKeySelective(unit);
+    }
+
+    @Override
+    public ImportResult importExcel(MultipartFile multipartFile, ServletRequest request) {
+        Workbook workbook = null;
+        ImportResult importResult = new ImportResult();
+        String fileName = multipartFile.getOriginalFilename();
+        ErrorInfo errorInfo = new ErrorInfo();
+        List<ErrorInfo> errorInfos = new ArrayList<>();
+        Map<String,List<Unit>> unitsMap = new HashMap<>();
+        CellStyle style = null;
+        int successCount = 0;
+        if (fileName.endsWith("xls")) {
+            try {
+                workbook = new HSSFWorkbook(multipartFile.getInputStream());
+                style = (HSSFCellStyle) workbook.createCellStyle();
+                style.setFillForegroundColor(HSSFColor.RED.index);
+                //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (fileName.endsWith("xlsx")) {
+            try {
+                workbook = new XSSFWorkbook(multipartFile.getInputStream());
+                style = ((XSSFWorkbook) workbook).createCellStyle();
+                style.setFillForegroundColor(IndexedColors.RED.getIndex());
+                ((XSSFCellStyle) style).setFillPattern(CellStyle.SOLID_FOREGROUND);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new BusinessException("文件不是Excel文件");
+        }
+        Sheet sheet = workbook.getSheet("单元信息");
+        //一共有多少行
+        int totalData = 0;
+        int rows = sheet.getLastRowNum();
+        if (rows == 0) {
+            throw new BusinessException("请填写数据");
+        }
+        
+        Map<String, Company> mapCompany = new HashMap<>();	//公司名，和公司
+        Map<String, Map<String, Commuity>> mapCommuity = new HashMap<>();	//公司ID，和小区名,小区的map
+        Map<String, Map<String, Build>> mapBuild = new HashMap<>();	//小区ID，和楼名,楼的map
+        
+        for (int i = 1; i <= rows + 1; i++) {
+            //读取左上端单元格
+            Row row = sheet.getRow(i);
+            if (row != null) {
+            	if (companyService.isCellVolid(row,17, errorInfos,style)) {
+                	totalData++;
+                    Unit unit = new Unit();
+                    String companyName = getCellValue(row.getCell(0));
+                    Company company = companyService.getCompanyByNameAndToMap(companyName, mapCompany);
+                    if (company == null) {
+                        errorInfo.setPosition("第" + (i + 1) + "行，第1列");
+                        errorInfo.setErrorType("不存在的公司名");
+                        errorInfo.setRequired(true);
+                        errorInfos.add(errorInfo);
+                        try {
+                            row.getCell(0).setCellStyle(style);
+                        } catch (Exception e) {
+                        }
+                        continue;
+                    } else {
+                        unit.setCompanyId(company.getCompanyId());
+                    }
+                    
+                    Map<String, Commuity> commuitys = commuityService.getCommuityByIdAndToMap(company, mapCommuity);
+                    Commuity commuity = null;
+                    if (getCellValue(row.getCell(1)).length() != 0) {
+											 commuity = commuitys.get(getCellValue(row.getCell(1)));
+										}
+                    if (getCellValue(row.getCell(1)).length() == 0 || commuity == null) {
+                        errorInfo.setPosition("第" + (i + 1) + "行，第2列");
+                        errorInfo.setErrorName("小区名称");
+                        errorInfo.setErrorType("不存在的小区名");
+                        errorInfo.setRequired(true);
+                        errorInfos.add(errorInfo);
+                        try {
+                            row.getCell(1).setCellStyle(style);
+                        } catch (Exception e) {
+                        }
+                        continue;
+                    }
+                    
+                    Map<String, Build> builds = buildService.getBuildByIdAndToMap(commuity, mapBuild);
+                    Build build = null;
+                    if (getCellValue(row.getCell(2)).length() != 0){
+                    	build = builds.get(getCellValue(row.getCell(2)));
+                    }
+                    if (getCellValue(row.getCell(2)).length() == 0 || build == null) {
+                        errorInfo.setPosition("第" + (i + 1) + "行，第3列");
+                        errorInfo.setErrorName("建筑物名称");
+                        errorInfo.setErrorType("不存在的建筑物名");
+                        errorInfo.setRequired(true);
+                        errorInfos.add(errorInfo);
+                        try {
+                            row.getCell(2).setCellStyle(style);
+                        } catch (Exception e) {
+                        }
+                        continue;
+                    }else{
+                    	unit.setBuildingId(build.getBuildingNo());
+                    }
+                    
+                    unit.setUnitName(getCellValue(row.getCell(3)));
+                    if (getCellValue(row.getCell(4)).length() != 0) {
+                        try {
+                            unit.setBuildingArea(new BigDecimal(getCellValue(row.getCell(4))));
+                        } catch (Exception e) {
+                            errorInfo.setPosition("第" + (i + 1) + "行，第5列");
+                            errorInfo.setErrorType("字符串类型转换错误");
+                            errorInfos.add(errorInfo);
+                            try {
+                                row.getCell(4).setCellStyle(style);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+                    if (getCellValue(row.getCell(5)).length() != 0) {
+                        try {
+                            unit.setDiameter(getCellValue(row.getCell(5)));
+                        } catch (Exception e) {
+                            errorInfo.setPosition("第" + (i + 1) + "行，第6列");
+                            errorInfo.setErrorType("字符串不能转换成整数");
+                            errorInfos.add(errorInfo);
+                            try {
+                                row.getCell(5).setCellStyle(style);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+                    if (getCellValue(row.getCell(6)).trim().length() != 0) {
+                        try {
+                            unit.setControlType(getCellValue(row.getCell(6)));
+                        } catch (Exception e) {
+                            errorInfo.setPosition("第" + (i + 1) + "行，第7列");
+                            errorInfo.setErrorType("字符串类型转换错误");
+                            errorInfos.add(errorInfo);
+                            try {
+                                row.getCell(6).setCellStyle(style);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+
+                    unit.setFloorNum((getCellValue(row.getCell(7))));
+                    if (getCellValue(row.getCell(8)).length() != 0) {
+                        try {
+                            unit.setFloorHouse(new BigDecimal(getCellValue(row.getCell(8))));
+                        } catch (Exception e) {
+                            errorInfo.setPosition("第" + (i + 1) + "行，第9列");
+                            errorInfo.setErrorType("字符串类型转换错误");
+                            errorInfos.add(errorInfo);
+                            try {
+                                row.getCell(8).setCellStyle(style);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+                    unit.setHeatingForm(getCellValue(row.getCell(9)));
+                    unit.setHasBuildMeter(getCellValue(row.getCell(10)));
+                    unit.setHasBalanceValve(getCellValue(row.getCell(11)));
+                    String addr = getCellValue(row.getCell(12));
+                    if(addr.isEmpty()){
+                    	addr = getCellValue(row.getCell(1)) + " "+ getCellValue(row.getCell(2)) + " " + unit.getUnitName();
+                    }
+                    unit.setAddress(addr);
+                    unit.setNotes(getCellValue(row.getCell(13)));
+                    unit.setMemo1(getCellValue(row.getCell(14)));
+                    unit.setMemo2(getCellValue(row.getCell(15)));
+                    unit.setFloorNum((getCellValue(row.getCell(7))));
+                    if (getCellValue(row.getCell(16)).length() != 0) {
+                        try {
+                            unit.setIndex(Integer.parseInt(getCellValue(row.getCell(16))));
+                        } catch (Exception e) {
+                            errorInfo.setPosition("第" + (i + 1) + "行，第17列");
+                            errorInfo.setErrorType("字符串不能转换成整数");
+                            errorInfos.add(errorInfo);
+                            try {
+                                row.getCell(16).setCellStyle(style);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+                   
+                    Tools.addMap(commuity.getCommuityId(), unitsMap, unit);
+
+                    if (errorInfo.getPosition() == null) {
+                        successCount += 1;
+                    }
+                }else{
+                    rows -= 1;
+                }
+            }
+     }
+     if(errorInfos.size()>0){
+         String path = null;
+         String path1 = null;
+         try {
+             path = request.getServletContext().getRealPath("") + "/errorFile/";
+             //path = "C:/errorFile/";
+             File file = new File(path);
+             if (!file.exists()) {
+                 file.mkdirs();
+             }
+             path1 = "unit-" + UserUtils.getUserId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xlsx";
+             path += path1;
+             new File(path).createNewFile();
+             FileOutputStream out = new FileOutputStream(path);
+             workbook.write(out);
+             out.close();
+         } catch (FileNotFoundException e) {
+             e.printStackTrace();
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         cleanTempFile(path,24);
+         importResult.setErrorFilePath("/errorFile/" + path1);
+     }
+        importResult.setTotalCount(totalData);
+        importResult.setFailList(errorInfos);
+        importResult.setFailCount(totalData - successCount);
+
+        importResult.setId(UserUtils.getUserId() + UUID.randomUUID().toString().replace("-", "") + "unit");
+        
+        
+		if (importResult.getFailList().size() == 0) {
+			// addUnitBatch(importResult.getId());			
+			for(String key: unitsMap.keySet()){
+				//id批量生成
+				idGenerater.generateUnitIdsbyCommuityWithUpdat(key, unitsMap.get(key));
+				unitMapper.addBatch(unitsMap.get(key));
+			}
+		}
+        return importResult;
+    }
+
+    @Override
+    public String exportExcel(ServletRequest request,UnitSelectInfo unitSelectInfo) {
+        String path1 = (UUID.randomUUID().toString().replace("-",""))+"-unit.xlsx";
+        // 第一步，创建一个webbook，对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        XSSFSheet sheet = wb.createSheet("Sheet1");
+        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+        XSSFRow row = sheet.createRow(0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中
+        XSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+
+        XSSFCell cell = row.createCell(0);
+        cell.setCellValue("单元Id");
+        cell.setCellStyle(style);
+        cell = row.createCell(1);
+        cell.setCellValue("单元Id2");
+        cell.setCellStyle(style);
+        cell = row.createCell(2);
+        cell.setCellValue("建筑物Id");
+        cell.setCellStyle(style);
+        cell = row.createCell(3);
+        cell.setCellValue("单元名称");
+        cell.setCellStyle(style);
+        cell = row.createCell(4);
+        cell.setCellValue("建筑面积");
+        cell.setCellStyle(style);
+        cell = row.createCell(5);
+        cell.setCellValue("单元管径");
+        cell.setCellStyle(style);
+        cell = row.createCell(6);
+        cell.setCellValue("控制方式");
+        cell.setCellStyle(style);
+        cell = row.createCell(7);
+        cell.setCellValue("楼层数");
+        cell.setCellStyle(style);
+        cell = row.createCell(8);
+        cell.setCellValue("每层住户");
+        cell.setCellStyle(style);
+        cell = row.createCell(9);
+        cell.setCellValue("采暖形式");
+        cell.setCellStyle(style);
+        cell = row.createCell(10);
+        cell.setCellValue("栋表安装");
+        cell.setCellStyle(style);
+        cell = row.createCell(11);
+        cell.setCellValue("平衡阀安装");
+        cell.setCellStyle(style);
+        cell = row.createCell(12);
+        cell.setCellValue("公司Id");
+        cell.setCellStyle(style);
+        cell = row.createCell(13);
+        cell.setCellValue("地址全称");
+        cell.setCellStyle(style);
+        cell = row.createCell(14);
+        cell.setCellValue("备注");
+        cell.setCellStyle(style);
+        cell = row.createCell(15);
+        cell.setCellValue("保留字段1");
+        cell.setCellStyle(style);
+        cell = row.createCell(16);
+        cell.setCellValue("保留字段2");
+        cell.setCellStyle(style);
+        cell = row.createCell(17);
+        cell.setCellValue("控制方式");
+        cell.setCellStyle(style);
+        cell = row.createCell(18);
+        cell.setCellValue("栋表安装");
+        cell.setCellStyle(style);
+        cell = row.createCell(19);
+        cell.setCellValue("显示排序");
+        cell.setCellStyle(style);
+        cell = row.createCell(20);
+        cell.setCellValue("有效标志");
+        cell.setCellStyle(style);
+
+        // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
+        List<UnitInfo> list = getAllUnit(null,null,null,null,unitSelectInfo.getCompanyId(),unitSelectInfo.getStationId(),unitSelectInfo.getCommuityId(),unitSelectInfo.getBuildingId(),unitSelectInfo.getSearchCondition()).getUnitInfoList();
+        for (int i = 0; i < list.size(); i++){
+            row = sheet.createRow(i + 1);
+            UnitInfo unitInfo = list.get(i);
+            // 第四步，创建单元格，并设置值
+            row.createCell(0).setCellValue(unitInfo.getUnitId());
+            row.createCell(1).setCellValue(unitInfo.getRowno());
+            row.createCell(2).setCellValue(unitInfo.getBuildingId());
+            if(unitInfo.getUnitName()!=null){
+                row.createCell(3).setCellValue(unitInfo.getUnitName());
+            }
+            if(unitInfo.getBuildingArea()!=null){
+                row.createCell(4).setCellValue(unitInfo.getBuildingArea()+"");
+            }
+
+            if(unitInfo.getDiameter()!=null){
+                row.createCell(5).setCellValue(unitInfo.getDiameter());
+            }
+            if(unitInfo.getControlType()!=null){
+                row.createCell(6).setCellValue(unitInfo.getControlType());
+            }
+            if(unitInfo.getFloorNum()!=null){
+                row.createCell(7).setCellValue(unitInfo.getFloorNum());
+            }
+            if(unitInfo.getFloorHouse()!=null){
+                row.createCell(8).setCellValue(unitInfo.getFloorHouse()+"");
+            }
+            if(unitInfo.getHeatingForm()!=null){
+                row.createCell(9).setCellValue(unitInfo.getHeatingForm());
+            }
+            if(unitInfo.getHasBuildMeter()!=null){
+                row.createCell(10).setCellValue(unitInfo.getHasBuildMeter());
+            }
+            if(unitInfo.getHasBalanceValve()!=null){
+                row.createCell(11).setCellValue(unitInfo.getHasBalanceValve());
+            }
+            if(unitInfo.getCompanyId()!=null){
+                row.createCell(12).setCellValue(unitInfo.getCompanyId());
+            }
+            if(unitInfo.getAddress()!=null){
+                row.createCell(13).setCellValue(unitInfo.getAddress());
+            }
+            if(unitInfo.getNotes()!=null){
+                row.createCell(14).setCellValue(unitInfo.getNotes());
+            }
+            if(unitInfo.getMemo1()!=null){
+                row.createCell(15).setCellValue(unitInfo.getMemo1());
+            }
+            if(unitInfo.getMemo2()!=null){
+                row.createCell(16).setCellValue(unitInfo.getMemo2());
+            }
+            if(unitInfo.getWaterControlType()!=null){
+                row.createCell(17).setCellValue(unitInfo.getWaterControlType());
+            }
+            if(unitInfo.getWaterHasBuildMeter()!=null){
+                row.createCell(18).setCellValue(unitInfo.getWaterHasBuildMeter());
+            }
+            if(unitInfo.getIndex()!=null){
+                row.createCell(19).setCellValue(unitInfo.getIndex());
+            }
+            if(unitInfo.getIsvalid()!=null){
+                row.createCell(20).setCellValue(unitInfo.getIsvalid());
+            }
+
+           /* cell = row.createCell(3);
+            cell.setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(stu.getTime()));*/
+        }
+        //第六步,输出Excel文件
+        OutputStream output= null;
+        String path = request.getServletContext().getRealPath("/");
+        try {
+            output = new FileOutputStream(path+path1);
+            wb.write(output);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path1;
+    }
+
+		public Map<String, Unit> getUnitByIdAndToMap(Build build, Map<String, Map<String, Unit>> mapUnit) {
+			Map<String, Unit> map = mapUnit.get(build.getBuildingNo());
+			System.out.println("-----------------" + build.getBuildingNo() + "------------------");
+			if(map == null){
+				map = new HashMap<String, Unit>();
+				List<Unit> list = this.getUnitTree(build.getBuildingNo());
+				for(Unit info:list){
+					map.put(info.getUnitName(), info);
+				}
+				mapUnit.put(build.getBuildingNo(), map);
+			}
+			return map;
+		}
+
+		@Override
+		public Integer getMaxUnitId(String buildId) {
+			Integer index = 0;
+			try{
+			String id = unitMapper.getMaxUnitId(buildId);
+			if (id != null && !id.isEmpty()) {
+				index = Integer.valueOf(id.substring(13, 15));
+			}
+			}catch(Exception ex){
+				System.out.println("--------------生成单元ID报错------------");
+			}
+			return index;
+		}
+
+		@Override
+		public List<Unit> getAllUnitByCommuity(String commuity) {
+			return unitMapper.getAllUnitByCommuity(commuity);
+		}
+}

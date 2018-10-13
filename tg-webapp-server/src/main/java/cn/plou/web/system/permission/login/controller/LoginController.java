@@ -1,0 +1,330 @@
+package cn.plou.web.system.permission.login.controller;
+
+import cn.plou.web.charge.chargeconfig.entity.BankInterfaceInfo;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceInfoService;
+import cn.plou.web.charge.chargeconfig.vo.BankInterfaceInfoVO;
+import cn.plou.web.common.config.common.BaseController;
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.*;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.permission.login.token.LoginCountModel;
+import cn.plou.web.system.permission.login.vo.LoginInfo;
+import cn.plou.web.system.permission.login.token.Authorization;
+import cn.plou.web.system.permission.login.token.TokenManager;
+import cn.plou.web.system.permission.login.token.TokenModel;
+import cn.plou.web.system.permission.login.vo.LoginVo;
+import cn.plou.web.system.permission.menu.service.MenuService;
+import cn.plou.web.system.permission.menu.vo.MenuInfo;
+import cn.plou.web.system.permission.userLogin.dao.UserLoginMapper;
+import cn.plou.web.system.permission.userLogin.entity.UserLogin;
+import cn.plou.web.system.permission.userLogin.service.UserLoginService;
+import cn.plou.web.system.permission.userLogin.vo.UserLoginInfo;
+import cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory;
+import cn.plou.web.system.permission.userLoginHistory.service.UserLoginHistoryService;
+import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.util.Assert;
+import org.apache.tomcat.jni.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import redis.clients.jedis.Jedis;
+
+import javax.servlet.http.HttpServletRequest;
+import java.net.SocketException;
+import java.util.*;
+
+import static cn.plou.web.common.utils.Tools.getLocalIP;
+
+/**
+ * 获取和删除token的请求地址，在Restful设计中其实就对应着登录和退出登录的资源映射
+ */
+@RestController
+@RequestMapping("/log")
+@Api("登录登出")
+//@CrossOrigin(allowedHeaders = {"Authorization","Origin", "X-Requested-With", "Content-Type", "Accept"})
+public class LoginController {
+
+
+    @Autowired
+    private UserLoginService userRepository;
+    @Autowired
+    private TokenManager tokenManager;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private UserLoginHistoryService userLoginHistoryService;
+    @Autowired
+    private UserLoginMapper userLoginMapper;
+    @Autowired
+    private TypeMstService typeMstService;
+    @Autowired
+    private BankInterfaceInfoService bankInterfaceInfoService;
+
+    @RequestMapping(value = "login",method = RequestMethod.POST)
+    @ApiOperation("登录")
+    public LoginInfo login(@RequestBody LoginVo loginVo) {
+
+        Assert.notNull(loginVo.getUserCode(), "userCode can not be empty");
+        Assert.notNull(loginVo.getPassword(), "password can not be empty");
+        Assert.notNull(loginVo.getVerCode(), "verificationCode can not be empty");
+
+        //根据用户输入的用户名获取相应用户名的详细用户信息
+        UserLogin user = userRepository.getUserLoginById(loginVo.getUserCode());
+
+        if (user == null)
+            throw new BusinessException(Constant.DEFAULT_ERROR_STATUS_CODE, "用户名不存在");
+
+        UsernamePasswordToken token  = new UsernamePasswordToken(user.getUserCode(), loginVo.getPassword());
+        try {
+            SecurityUtils.getSubject().login(token);
+        }catch (UnknownAccountException | LockedAccountException e){
+            throw new BusinessException(Constant.DEFAULT_ERROR_STATUS_CODE, e.getMessage());
+        }
+
+        UserLoginInfo userLoginInfo = new UserLoginInfo();
+        userLoginInfo.setUserCode(user.getUserCode());
+
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+
+            //定义变量记录用户登录次数
+            Integer loginCount = 1;
+            //根据缓存判断用户在24小时内是否登录失败过
+            if (jedis.get(user.getUserCode()) == null || jedis.get(user.getUserCode()).length() == 32) {
+                //如果没登录过，生成登录次数为1的缓存
+                tokenManager.creatLoginCount(user.getUserCode());
+            } else {
+                //如果登录过，获取在缓存中记录的登录次数
+                loginCount = Integer.parseInt(jedis.get(user.getUserCode()));
+            }
+            //System.out.println("生成的缓存中登录次数为"+loginCount);
+            //缓存中的验证码
+            String code = jedis.get(loginVo.getVerCodeId());
+            LoginInfo loginInfo = new LoginInfo();
+
+            if (user == null || !user.getUserPsw().equals(SecureUtils.md5(loginVo.getPassword()))) {
+                //if (user == null || !user.getUserPsw().equals(loginVo.getPassword())) {
+                jedis.set(user.getUserCode(), (loginCount + 1) + "");
+                //System.out.println("登录失败时缓存中登录次数为"+loginCount);
+                //当24小时内连续登录次数超过最大值，锁定账户
+                if (Integer.parseInt(jedis.get(user.getUserCode())) > Constant.MAX_LOGIN_COUNT) {
+                    userLoginInfo.setStatus("0");
+                    userLoginMapper.updateByPrimaryKeySelective(userLoginInfo);
+                    tokenManager.deleteToken(user.getUserCode());
+                    throw new BusinessException("账号已锁定，请联系管理员");
+                }
+                throw new BusinessException("用户名或密码错误");
+
+            } else if (!loginVo.getVerCode().equals(code)) {
+                throw new BusinessException("验证码错误");
+            }
+            tokenManager.deleteToken(user.getUserCode());
+
+            //生成一个token，保存用户登录状态
+            TokenModel model = tokenManager.createToken(loginVo, user.getUserCode());
+
+//            loginInfo.setTokenModel(model);
+//            loginInfo.setMenus(menuService.getAllMenuByRoleId(user.getUserCode()));
+
+            UserLoginHistory userLoginHistory = new UserLoginHistory();
+            try {
+                userLoginHistory.setIp(getLocalIP());
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+
+            //七天免登陆
+            if (loginVo.getRemember() != null && loginVo.getRemember().equals("true")) {
+                jedis.expire(model.getUserId(), 7 * 24 * 60 * 60);
+            } else {
+                jedis.expire(model.getUserId(), 2 * 60 * 60);
+            }
+
+            //将数据字典List放到缓存里
+//            if (jedis.exists("typeMstList".getBytes())) {
+//                jedis.del("typeMstList".getBytes());
+//            }
+            List<TypeMst> typeMstList = typeMstService.getAllTypeMst();
+            byte[] typeMstListBytes = SerializeUtil.serialize(typeMstList);
+            jedis.set("typeMstList".getBytes(), typeMstListBytes);
+
+            //把权限放到缓存里
+//            if (jedis.exists("perms".getBytes())) {
+//                jedis.del("perms".getBytes());
+//            }
+            List<MenuInfo> menuInfoList = menuService.getAllMenuByRoleId(user.getUserCode());
+            loginInfo.setTokenModel(model);
+            loginInfo.setMenus(menuInfoList);
+            List<String> perms = new ArrayList<>();
+            for(MenuInfo menuInfo:menuInfoList){
+                perms.add(menuInfo.getmId());
+            }
+//            List<String> perms = menuService.listPerms(model.getUserId());
+            byte[] permsBytes = SerializeUtil.serialize(perms);
+            jedis.set("perms".getBytes(), permsBytes);
+
+
+            userLoginHistory.setUserCode(user.getUserCode());
+            userLoginHistory.setUsername(user.getUsername());
+            userLoginHistory.setIpcity(loginVo.getCity());
+            userLoginHistoryService.addUserLoginHistory(userLoginHistory);
+
+            jedis.del(loginVo.getVerCodeId());
+            userLoginInfo.setLasttime(new Date());
+            userLoginMapper.updateByPrimaryKeySelective(userLoginInfo);
+            //model.setLoginCount(1);
+            return loginInfo;
+        }finally {
+            RedisUtil.returnSource(jedis);
+        }
+    }
+
+
+    @RequestMapping(value = "loginforthird",method = RequestMethod.POST)
+    @ApiOperation("登录")
+    //public LoginInfo login(@RequestBody BankInterfaceInfoVO bankInterfaceInfoVO) {
+        public Map<String,Object> loginforthird(@RequestParam Map<String, Object> params) {
+
+        Assert.notNull(params.get("platformCode"), "platform can not be empty");
+        Assert.notNull(params.get("bankIp"), "ip can not be empty");
+        Assert.notNull(params.get("bankPort"), "port can not be empty");
+
+        String bankIp = params.get("bankIp").toString();
+        String platformCode = params.get("platformCode").toString();
+        String bankPort = params.get("bankPort").toString();
+        if(platformCode.length() < 5){
+            throw new BusinessException("platformCode不合法，platformCode："+platformCode);
+        }
+
+        String companyId = platformCode.substring(0, 5);
+        //根据用户输入的用户名获取相应用户名的详细用户信息
+        BankInterfaceInfo bankInterfaceInfo = bankInterfaceInfoService.selectByBankIp(bankIp,companyId);
+        if(bankInterfaceInfo == null){
+            throw new BusinessException("不存在第三方记录，ip："+bankIp);
+        }
+        else if(
+                //!bankInterfaceInfo.getBankPort().equals(bankPort) || 先把port给注释掉吧
+                !bankInterfaceInfo.getPlatformCode().equals(platformCode)
+                ){
+            throw new BusinessException("不存在第三方记录，平台码："+platformCode);
+        }
+
+        UserLogin user = userRepository.getUserLoginById(bankInterfaceInfo.getUserCode());
+
+        if (user == null)
+            throw new BusinessException(Constant.DEFAULT_ERROR_STATUS_CODE, "用户名不存在");
+
+        UsernamePasswordToken token  = new UsernamePasswordToken(user.getUserCode(), "");
+        try {
+            SecurityUtils.getSubject().login(token);
+        }catch (UnknownAccountException | LockedAccountException e){
+            throw new BusinessException(Constant.DEFAULT_ERROR_STATUS_CODE, e.getMessage());
+        }
+
+        UserLoginInfo userLoginInfo = new UserLoginInfo();
+        userLoginInfo.setUserCode(user.getUserCode());
+
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+
+            //定义变量记录用户登录次数
+            Integer loginCount = 1;
+            //根据缓存判断用户在24小时内是否登录失败过
+            if (jedis.get(user.getUserCode()) == null || jedis.get(user.getUserCode()).length() == 32) {
+                //如果没登录过，生成登录次数为1的缓存
+                tokenManager.creatLoginCount(user.getUserCode());
+            } else {
+                //如果登录过，获取在缓存中记录的登录次数
+                loginCount = Integer.parseInt(jedis.get(user.getUserCode()));
+            }
+            //缓存中的验证码
+//            String code = jedis.get(loginVo.getVerCodeId());
+           LoginInfo loginInfo = new LoginInfo();
+//
+//            if (user == null || !user.getUserPsw().equals(SecureUtils.md5(loginVo.getPassword()))) {
+//                //if (user == null || !user.getUserPsw().equals(loginVo.getPassword())) {
+//                jedis.set(user.getUserCode(), (loginCount + 1) + "");
+//                //System.out.println("登录失败时缓存中登录次数为"+loginCount);
+//                //当24小时内连续登录次数超过最大值，锁定账户
+//                if (Integer.parseInt(jedis.get(user.getUserCode())) > Constant.MAX_LOGIN_COUNT) {
+//                    userLoginInfo.setStatus("0");
+//                    userLoginMapper.updateByPrimaryKeySelective(userLoginInfo);
+//                    tokenManager.deleteToken(user.getUserCode());
+//                    throw new BusinessException("账号已锁定，请联系管理员");
+//                }
+//                throw new BusinessException("用户名或密码错误");
+//
+//            } else if (!loginVo.getVerCode().equals(code)) {
+//                throw new BusinessException("验证码错误");
+//            }
+            tokenManager.deleteToken(user.getUserCode());
+
+            LoginVo loginVo = new LoginVo();
+            //生成一个token，保存用户登录状态
+            TokenModel model = tokenManager.createToken(loginVo, user.getUserCode());
+
+            loginInfo.setTokenModel(model);
+            //loginInfo.setMenus(menuService.getAllMenuByRoleId(user.getUserCode()));
+
+            UserLoginHistory userLoginHistory = new UserLoginHistory();
+            try {
+                userLoginHistory.setIp(getLocalIP());
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+
+            //2小时免登陆
+            jedis.expire(model.getUserId(), 2 * 60 * 60);
+
+            List<TypeMst> typeMstList = typeMstService.getAllTypeMst();
+            byte[] typeMstListBytes = SerializeUtil.serialize(typeMstList);
+            jedis.set("typeMstList".getBytes(), typeMstListBytes);
+
+//            List<String> perms = menuService.listPerms(model.getUserId());
+//            byte[] permsBytes = SerializeUtil.serialize(perms);
+//            jedis.set("perms".getBytes(), permsBytes);
+
+            userLoginHistory.setUserCode(user.getUserCode());
+            userLoginHistory.setUsername(user.getUsername());
+            //userLoginHistory.setIpcity(loginVo.getCity());
+            userLoginHistoryService.addUserLoginHistory(userLoginHistory);
+
+            //jedis.del(loginVo.getVerCodeId());
+            userLoginInfo.setLasttime(new Date());
+            userLoginMapper.updateByPrimaryKeySelective(userLoginInfo);
+            Map<String,Object> map = new HashMap<>();
+            map.put("loginInfo",loginInfo);
+            map.put("bankInterfaceInfo",bankInterfaceInfo);
+
+            return map;
+        }finally {
+            RedisUtil.returnSource(jedis);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE,value = "/logout")
+    //@Authorization
+    @ApiOperation("登出")
+    public int logout(HttpServletRequest request){
+        /*String userId = UserUtils.getUserId();
+        tokenManager.deleteToken(userId);*/
+        String authorization = ((HttpServletRequest)request).getHeader(Constant.AUTHORIZATION);
+        String userId = authorization.substring(0,authorization.indexOf("_"));
+        tokenManager.deleteToken(userId);
+        return 1;
+    }
+
+}

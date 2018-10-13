@@ -1,0 +1,154 @@
+package cn.plou.web.charge.chargeconfig.service;
+
+import cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO;
+import cn.plou.web.charge.chargeconfig.dto.InfoObject;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.vo.ChargeHouseDataVO;
+import cn.plou.web.charge.chargeconfig.vo.ChargeSumVO;
+import cn.plou.web.charge.chargeconfig.vo.HeatInfoVO;
+import cn.plou.web.charge.chargeconfig.vo.UserYearHeatDetailInfo;
+import cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee;
+import cn.plou.web.common.config.common.BasePageEntity;
+import com.github.pagehelper.PageInfo;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public interface UserYearHeatService {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(UserYearHeat record);
+
+    int insertSelective(UserYearHeat record);
+
+    void insertByBatch(List<UserYearHeat> userYearHeats);
+
+    UserYearHeat selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(UserYearHeat record);
+
+    int updateByPrimaryKey(UserYearHeat record);
+
+    List<UserYearHeat> findAllUserYearHeats();
+
+    UserYearHeat findLastUserYearHeats();
+
+    List<UserYearHeat> findAllUserYearHeatsByAnnual(String annual);
+
+    UserYearHeat findByUserAndAnnual(String consumerId, String annual);
+
+    PageInfo<UserYearHeat> findByUser(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<UserYearHeatDetailInfo> findUserYearHeatDetailInfo(String consumerId, String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<UserYearHeat> findByUserForOldAnnual(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<UserYearHeat> findFeeLessByBuildingNo(String buildingNo,BasePageEntity basePageEntity);
+
+
+
+    int deleteByConsumerIds(String consumerIds, String commuityIds, String annual);
+
+    int deleteByConsumerId(String consumerId, String communityId, String annual);
+
+    BigDecimal getOldYearOwe(String consumerId, String annual);
+
+    /**
+     * @param consumerId
+     * @param annuals
+     * @return  特定年度的欠费费用
+     */
+    BigDecimal getchoosedYearOwe(String consumerId, List<String> annuals);
+
+
+    PageInfo<UserYearHeatLateFee> calcLateFee( String dateNow, String order, String sortby, Integer page, Integer pageSize);
+
+
+    /**
+     * @param id
+     * @return
+     * 清欠中心首页获取顶部统计数据
+     */
+    List<ClearTaskDTO>    getStatisticalData(String   id);
+
+
+
+    InfoObject  handleListData(  List<ClearTaskDTO>   clearTaskDTOS,String  annual);
+
+    List<UserYearHeat> findAllUserYearHeatsByConsumerIds(List<String> consumerIds);
+
+    Integer getCountByAnnual(String companyId,String annual);
+
+
+    PageInfo<ChargeSumVO>  getChargeSumByAnnual(String companyId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<ChargeHouseDataVO>  getChargeHouseDataList(String stationIds, String commuityIds, String hasGenerated, String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    Integer selectCountByChargeType(String companyId,String annual,String chargeType);
+
+
+    Integer selectCountNotHeating(String companyId,String annual);
+
+
+    int deleteByCompanyId(String companyId, String annual);
+
+    int deleteByCommuityIds(List<String> commuityIds, String annual);
+
+    int deleteByStationIds(List<String> stationIds, String annual);
+
+
+    int deleteByConsumerIds(List<String> consumerIds, String annual);
+
+
+
+    int insertForGenerated1(String companyId, String annual,String lastannual, String createUser);
+    int insertForGenerated2(String companyId, String annual,String lastannual, String createUser);
+    int insertForGenerated3(String companyId, String annual,String lastannual, String createUser);
+
+
+
+    int insertForGenerated1ForOneStationAllCommunity(String stationId, String annual,String createUser);
+    int insertForGenerated2ForOneStationAllCommunity(String stationId, String annual,String createUser);
+    int insertForGenerated3ForOneStationAllCommunity(String stationId, String annual,String createUser);
+
+    int insertForGenerated1ForSelectedCommunity(List<String>  commuityIds, String annual, String createUser);
+    int insertForGenerated2ForSelectedCommunity(List<String>  commuityIds, String annual, String createUser);
+    int insertForGenerated3ForSelectedCommunity(List<String>  commuityIds, String annual, String createUser);
+
+    int insertForGenerated1ForSelectedConsumer(List<String>  consumerIds, String annual, String createUser);
+    int insertForGenerated2ForSelectedConsumer(List<String>  consumerIds, String annual, String createUser);
+    int insertForGenerated3ForSelectedConsumer(List<String>  consumerIds, String annual, String createUser);
+
+
+    int updateForGenerated2(String companyId, String annual);
+    int updateForGenerated3(String companyId, String annual, Date startTime);
+    int updateForGenerated4(String companyId, String annual, Date endTime);
+
+
+    int updateForGenerated2ForOneStationAllCommunity(String stationId, String annual);
+    int updateForGenerated3ForOneStationAllCommunity(String stationId, String annual, Date startTime);
+    int updateForGenerated4ForOneStationAllCommunity(String stationId, String annual, Date endTime);
+
+
+    int updateForGenerated2ForSelectedCommunity(List<String>  commuityIds, String annual);
+    int updateForGenerated3ForSelectedCommunity(List<String>  commuityIds, String annual, Date startTime);
+    int updateForGenerated4ForSelectedCommunity(List<String>  commuityIds, String annual, Date endTime);
+
+
+
+
+
+    int updateForGenerated2ForSelectedConsumer(List<String>  consumerIds, String annual);
+    int updateForGenerated3ForSelectedConsumer(List<String>  consumerIds, String annual, Date startTime);
+    int updateForGenerated4ForSelectedConsumer(List<String>  consumerIds, String annual, Date endTime);
+
+    PageInfo<HeatInfoVO>  getHeatInfoList(String companyId,String heatPriceType, String order, String sortby, Integer page, Integer pageSize);
+
+}

@@ -1,0 +1,54 @@
+package cn.plou.web.system.baseMessage.system.dao;
+
+import cn.plou.web.system.baseMessage.system.entity.System;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfoVo;
+import cn.plou.web.system.baseMessage.system.vo.SystemVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface SystemMapper {
+    int deleteByPrimaryKey(String systemId);
+
+    int insert(System record);
+
+    int insertSelective(System record);
+
+    System selectByPrimaryKey(String systemId);
+
+    int updateByPrimaryKeySelective(System record);
+
+    int updateByPrimaryKey(System record);
+
+    /*List<SystemInfo> selectAllSystem(@Param("start")Integer start,
+                                     @Param("pageSize")Integer pageSize,
+                                     @Param("order") String order,
+                                     @Param("sortby") String sortby,
+                                     @Param("stationIds")List<String> stationIds,
+                                     @Param("systemVo") SystemVo systemVo);*/
+
+    int deletSystemeBatchByIds(List<String> systemIds);
+
+    int updateBatch(SystemVo systemVo);
+
+    List<String> selectAllSyetemIds();
+    List<SystemInfo> selectAllSystem(@Param("start")Integer start,
+                                     @Param("pageSize")Integer pageSize,
+                                     @Param("order") String order,
+                                     @Param("sortby") String sortby,
+                                     @Param("companyIds")List<String> companyIds,
+                                     @Param("stationId")String stationId,
+                                     @Param("systemVo") SystemVo systemVo);
+    Integer selectSystemListCount(@Param("companyIds")List<String> companyIds,
+                                  @Param("stationId")String stationId,
+                                  @Param("systemVo") SystemVo systemVo);
+
+		List<SystemInfo> getSystemByIds(@Param("systemIds")List<String> systemIds);
+
+		String getMaxSystemId();
+
+		List<SystemInfoVo> getSystemByStationIds(@Param("systemIds")List<String> systemIds);
+		List<SystemInfoVo> getSystemByCompanyIds(@Param("companyIds")List<String> companyIds);
+		
+}

@@ -1,0 +1,39 @@
+package cn.plou.web.system.baseMessage.company.service;
+
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+import cn.plou.web.common.utils.TreeNode;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.vo.CompanyInfo;
+import cn.plou.web.system.baseMessage.company.vo.CompanyListInfo;
+import cn.plou.web.system.baseMessage.company.vo.CompanyVo;
+
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public interface CompanyService {
+    Company get(String comapnyId);
+    int insertSelective(Company company);
+    int deleteBatchByIds(List<String>companyIds);
+    CompanyListInfo getAllCompany(Integer start, Integer end, String order, String sortby, String companyId, CompanyVo companyVo);
+    //int updateBatch(List<String>companyIds,Map<String,String> companyVo);
+    int updateBatch(CompanyVo companyVo);
+    List<Company> getDownInfo(String roleId);
+    //List<TreeNode<Company>> getTree(String roleId,String companyId);
+    List<Company> getCompanyByPid(String companyId);
+    List<Company> getCompanyAndSelfByPid(String companyId);
+    TreeNode<Company> buildCompanyTree(String roleId);
+    List<String> getCompanyIdsByPid(String companyId);
+    int updateByIdSelective(Company company);
+    List<Company> getAllJuniorCompany(String companyId);
+    public List<Company> getCompanyByRole(String roleId);
+    public List<String> getCompanyIdsByCompanyId(String companyId);
+    public Company getCompanyByName(String companyName);
+    public Company getCompanyByNameAndToMap(String companyName, Map<String, Company> mapCompany);
+    public Boolean isCellVolid(Row row, int num, List<ErrorInfo> errorInfos, CellStyle style);
+    public Integer getMaxCompanyId();
+}

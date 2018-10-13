@@ -1,0 +1,482 @@
+package cn.plou.web.heatManage.monitor.controller;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.plou.web.heatManage.monitor.domain.*;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.web.common.utils.PageUtils;
+import cn.plou.web.common.utils.Query;
+import cn.plou.web.common.utils.R;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.heatManage.diagnose.service.MbusInfoService;
+import cn.plou.web.heatManage.diagnose.service.MeterInfoService;
+import cn.plou.web.heatManage.diagnose.vo.MeterInfoVO;
+import cn.plou.web.heatManage.history.domain.HeatMeterDataDO;
+import cn.plou.web.heatManage.history.domain.WkfDataDO;
+import cn.plou.web.heatManage.history.service.HistoryDataService;
+import cn.plou.web.heatManage.monitor.service.RunningDataTotalService;
+import cn.plou.web.heatManage.monitor.service.SystemMarkersService;
+import cn.plou.web.heatManage.monitor.service.WeatherDataService;
+import cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.service.BuildService;
+import cn.plou.web.system.baseMessage.commuity.entity.Commuity;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.baseMessage.unit.service.UnitService;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+
+/**
+ * 用户运行数据汇总
+ * 
+ * @author liuxiadong
+ * @Date 2018年6月29日 上午9:40:34
+ */
+
+@RestController
+@RequestMapping("${heatManagePath}/monitor/house")
+public class HouseRunningDataController {
+	@Autowired
+	private RunningDataTotalService runningDataTotalService;
+
+	@Autowired
+	private WeatherDataService dataService;
+
+	@Autowired
+	private HistoryDataService historyDataService;
+
+	@Autowired
+	private CompanyService companyService;
+
+	@Autowired
+	private CommuityService commuityService;
+
+	@Autowired
+	private BuildService buildService;
+
+	@Autowired
+	private UnitService unitService;
+
+	@Autowired
+	private HouseService houseService;
+
+	@Autowired
+	private SystemMarkersService systemMarkersService;
+
+	@Autowired
+	private MbusInfoService mbusInfoService;
+
+	@Autowired
+	private MeterInfoService meterInfoService;
+
+	@Autowired
+	private TypeMstService typeMstService;
+
+	/**
+	 * 户用图-楼汇总信息
+	 * 
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/getBuildingUseHeatData/{buildingId}/{beginTime}/{endTime}")
+	public Object getBuildingUseHeatData(@PathVariable("buildingId") String buildingId,
+			@PathVariable("beginTime") String beginTime, @PathVariable("endTime") String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("consumerId", buildingId);
+		params.put("beginTime", beginTime);
+		params.put("endTime", endTime);
+
+		BuildingRunningDataTotalVO data = runningDataTotalService.getBuildingVO(params);
+
+		JSONObject jsonBuildingObject = new JSONObject();
+		// 楼汇总信息
+		Commuity community = commuityService.getCommuityById(buildingId.substring(0, 10));
+		jsonBuildingObject.put("communityName", community.getCommuityName());
+		Build build = buildService.getBuildById(buildingId);
+		jsonBuildingObject.put("buildingName", build.getBuildingName());
+		jsonBuildingObject.put("unitCnts", build.getUnitNum());
+		jsonBuildingObject.put("totalHouseCnts", data.getHouseCnts());
+
+		// 设备汇总信息
+		MeterInfoVO meterVo = meterInfoService.getByBuilding(buildingId);
+		if (meterVo == null) {
+			jsonBuildingObject.put("totalMeterCnts", 0);
+			jsonBuildingObject.put("totalFlowMeterCnts", 0);
+			jsonBuildingObject.put("totalWkfCnts", 0);
+			jsonBuildingObject.put("totalMbusCnts", 0);
+			jsonBuildingObject.put("totalPhfCnts", 0);
+			jsonBuildingObject.put("totalTmpCollectorCnts", 0);
+		} else {
+			jsonBuildingObject.put("totalMeterCnts", meterVo.getTotalMeterCnts());
+			jsonBuildingObject.put("totalFlowMeterCnts", meterVo.getTotalFlowMeterCnts());
+			jsonBuildingObject.put("totalWkfCnts", meterVo.getTotalWkfCnts());
+			jsonBuildingObject.put("totalMbusCnts", meterVo.getTotalMbusCnts());
+			jsonBuildingObject.put("totalPhfCnts", meterVo.getTotalPhfCnts());
+			jsonBuildingObject.put("totalTmpCollectorCnts", meterVo.getTotalTmpCollectorCnts());
+		}
+		// 运行参数汇总
+		jsonBuildingObject.put("inWaterTmp", data.getInWaterTmp());
+		jsonBuildingObject.put("outWaterTmp", data.getOutWaterTmp());
+		jsonBuildingObject.put("totalFlow", data.getTotalFlow());
+		jsonBuildingObject.put("totalPower", data.getTotalPower());
+
+		return jsonBuildingObject;
+	}
+
+	/**
+	 * 数据列表-统计信息
+	 * 
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/getStatisticsData/{type}/{consumerId}/{beginTime}/{endTime}")
+	public Object getStatisticsData(@PathVariable("type") String type, @PathVariable("consumerId") String consumerId,
+			@PathVariable("beginTime") String beginTime, @PathVariable("endTime") String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("type", type);
+		params.put("consumerId", consumerId);
+		// params.put("beginTime", beginTime);
+		// params.put("endTime", endTime);
+
+		BuildingRunningDataTotalVO data = runningDataTotalService.statisticsData(params);
+
+		JSONObject jsonBuildingObject = new JSONObject();
+		// 楼汇总信息
+		jsonBuildingObject.put("unitCnts", data.getUnitCnts());
+		jsonBuildingObject.put("totalHouseCnts", data.getHouseCnts());
+		jsonBuildingObject.put("heatArea", Tools.formatBigDecimalTo2(data.getTotalHeatArea()));
+		jsonBuildingObject.put("area", Tools.formatBigDecimalTo2(data.getTotalArea()));
+
+		jsonBuildingObject.put("avgInWaterTmp", Tools.formatBigDecimalTo2(data.getInWaterTmp()));
+		jsonBuildingObject.put("avgOutWaterTmp", Tools.formatBigDecimalTo2(data.getOutWaterTmp()));
+		jsonBuildingObject.put("avgHouseTmp", Tools.formatBigDecimalTo2(data.getHouseTmp()));
+		jsonBuildingObject.put("outsideTmp", Tools.formatBigDecimalTo2(data.getOutsideTmp()));
+
+		jsonBuildingObject.put("avgFlow", Tools.formatBigDecimalTo2(data.getFlow()));
+		jsonBuildingObject.put("avgPower", Tools.formatBigDecimalTo2(data.getPower()));
+		jsonBuildingObject.put("heatIndex", Tools.formatBigDecimalTo2(data.getHeatIndex()));
+		jsonBuildingObject.put("flowIndex", Tools.formatBigDecimalTo2(data.getFlowIndex()));
+		jsonBuildingObject.put("indexCalc", Tools.formatBigDecimalTo2(data.getAdjHeatingIndex()));
+
+		return jsonBuildingObject;
+	}
+
+	/**
+	 * 户图用-用户实时主要数据
+	 * 
+	 * @param bId
+	 * @param interval
+	 * @param cId
+	 * @return
+	 */
+	@GetMapping("/getHouseRealTimeData/{buildingId}/{beginTime}/{endTime}")
+	public Object getHouseRealTimeData(@PathVariable("buildingId") String buildingId, @PathVariable("beginTime") String beginTime,
+			@PathVariable("endTime") String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("beginTime", beginTime);
+		params.put("endTime", endTime);
+		JSONArray jsonUnitArray = new JSONArray();
+		List<Unit> unitList = unitService.getUnitTree(buildingId);
+
+		Map<String, House> houses = houseService.getHouseByUnitIds(unitList);
+		List<TypeMst> typeNmes = typeMstService.getTypeMstByTypeKbn("open_status", null, null, null, 1, 10000).getList();
+
+		for (Unit unit : unitList) {
+			JSONObject jsonUnitObject = new JSONObject();
+			jsonUnitObject.put("unitName", unit.getUnitName());
+			params.put("consumerId", unit.getUnitId());
+			List<RunningDataTotalDO> runningDataTotalList = runningDataTotalService.list(params);
+			String floorNum = "";
+			if (unit.getFloorNum() == null || unit.getFloorNum().isEmpty()) {
+				floorNum = new Integer(runningDataTotalList.size() / 2).toString();
+			} else {
+				floorNum = unit.getFloorNum();
+			}
+			jsonUnitObject.put("unitFloorCnts", floorNum);
+			JSONArray jsonHouseArray = new JSONArray();
+			if (runningDataTotalList.size() == 0) {
+				jsonUnitObject.put("houses", jsonHouseArray);
+				jsonUnitArray.add(jsonUnitObject);
+				continue;
+			}
+			// jsonUnitObject.put("unitFloorCnts", runningDataTotalList.size());
+			// 每个单元的户数组
+
+			for (RunningDataTotalDO data : runningDataTotalList) {
+				JSONObject jsonHouseObject = new JSONObject();
+				// 一户的信息
+				testData(data);
+				House house = houses.get(data.getConsumerId());
+				jsonHouseObject.put("floor", house.getRoomName().substring(0, house.getRoomName().length() - 2));
+				jsonHouseObject.put("houseId", house.getConsumerId());
+				jsonHouseObject.put("houseNo", house.getRoomName());
+				jsonHouseObject.put("houseTmp", data.getRoomTemperatureRead());
+				jsonHouseObject.put("houseTmpSet", data.getRoomTemperatureSet());
+				jsonHouseObject.put("inWaterTmp", data.getInTemperature());
+				jsonHouseObject.put("outWaterTmp", data.getOutTemperature());
+				if (data.getInTemperature() != null && data.getOutTemperature() != null) {
+					jsonHouseObject.put("tmpDiff", data.getInTemperature().subtract(data.getOutTemperature()));
+				} else {
+					jsonHouseObject.put("tmpDiff", 0);
+				}
+				jsonHouseObject.put("flow", data.getFlowSpeed());
+				jsonHouseObject.put("topFlow", data.getFlowUpperLimit());
+				jsonHouseObject.put("flowIndex", data.getFlowingIndex());
+
+				String typeNme = typeMstService.getTypeNameById(typeNmes, data.getOpenStatus());// open_status
+				jsonHouseObject.put("openStatus", typeNme);
+				jsonHouseObject.put("openStatusId", data.getOpenStatus());
+				jsonHouseObject.put("adjHeatingIndex", data.getAdjHeatingIndex());
+				jsonHouseArray.add(jsonHouseObject);
+			}
+			jsonUnitObject.put("houses", jsonHouseArray);
+			jsonUnitArray.add(jsonUnitObject);
+		}
+
+		return jsonUnitArray;
+	}
+
+	/**
+	 * 数据列表-用户列表
+	 * 
+	 * @param bId
+	 * @param interval
+	 * @param cId
+	 * @return
+	 */
+	@GetMapping("/getHouseRealTimeDataList")
+	public PageUtils getHouseRealTimeDataList(@RequestParam Map<String, Object> params) {
+		//
+		// @PathVariable("type") String type, @PathVariable("consumerId") String
+		// consumerId,
+		// @PathVariable("beginTime") String beginTime, @PathVariable("endTime")
+		// String
+		// endTime
+		// String limit,String offset
+		Query query = new Query(params);
+
+		List<RunningDataTotalDO> runningDataTotalList = runningDataTotalService.houseList(query);
+		// 每个单元的户数组
+		JSONArray jsonHouseArray = new JSONArray();
+		for (RunningDataTotalDO data : runningDataTotalList) {
+			JSONObject jsonHouseObject = new JSONObject();
+			// 一户的信息
+			testData(data);
+			jsonHouseObject.put("houseId", data.getConsumerId());
+			if (data.getSystemReadTime() != null){
+				jsonHouseObject.put("updateTime", DateFormatUtils.format(data.getSystemReadTime(), "yyyy-MM-dd HH:mm:ss"));
+			}
+			jsonHouseObject.put("houseAddress", data.getAddress());
+			jsonHouseObject.put("inWaterTmp", data.getInTemperature());
+			jsonHouseObject.put("outWaterTmp", data.getOutTemperature());
+			if (data.getInTemperature() != null && data.getOutTemperature() != null) {
+				jsonHouseObject.put("tmpDiff", data.getInTemperature().subtract(data.getOutTemperature()));
+			} else {
+				jsonHouseObject.put("tmpDiff", new BigDecimal(0));
+			}
+			jsonHouseObject.put("flow", data.getFlowSpeed());
+			jsonHouseObject.put("power", data.getPower());
+			jsonHouseObject.put("houseTmp", data.getRoomTemperatureRead());
+			jsonHouseObject.put("totalFlow", data.getFlow());
+			jsonHouseObject.put("totalHeat", data.getHeat());
+			jsonHouseObject.put("adjHeatingIndex", data.getAdjHeatingIndex());
+			jsonHouseArray.add(jsonHouseObject);
+		}
+
+		// 查询列表数据
+		int total = runningDataTotalService.houseListCount(query);
+		PageUtils pageUtils = new PageUtils(JSONArray.parseArray(jsonHouseArray.toJSONString(), Object.class), total);
+		return pageUtils;
+	}
+
+	private void testData(RunningDataTotalDO model) {
+
+		Field[] field = model.getClass().getDeclaredFields(); // 获取实体类的所有属性，返回Field数组
+
+		for (int j = 0; j < field.length; j++) { // 遍历所有属性
+			String name = field[j].getName(); // 获取属性的名字
+			name = name.substring(0, 1).toUpperCase() + name.substring(1); // 将属性的首字符大写，方便构造get，set方法
+			String type = field[j].getGenericType().toString(); // 获取属性的类型
+			if (type.equals("class java.math.BigDecimal")) { // 如果type是类类型，则前面包含"class
+																									// ，后面跟类名
+				Method mset;
+				Method mget;
+				try {
+					mget = model.getClass().getMethod("get" + name);
+					BigDecimal val = (BigDecimal) (mget.invoke(model));
+					if (val == null) {
+						
+						Method method =  model.getClass().getDeclaredMethod("set" + name, new Class[]{BigDecimal.class});
+						//mset = model.getClass().getMethod("set" + name);
+						method.invoke(model, new Object[]{new BigDecimal(0)}); // 调用getter方法获取属性值
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * 户图-弹出曲线-室外温度
+	 * 
+	 * @param type
+	 * @param id
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@GetMapping("/getHouseOutTmp/{type}/{id}/{beginTime}/{endTime}")
+	public Object getHouseOutTmp(@PathVariable("type") String type, @PathVariable("id") String id,
+			@PathVariable("beginTime") String beginTime, @PathVariable("endTime") String endTime) {
+		Company info = companyService.get(id);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("city", info.getCity());
+		params.put("beginTime", beginTime);
+		params.put("endTime", endTime);
+		List<WeatherDataDO> dataList = dataService.list(params);
+
+		JSONArray jsonHouseArray = new JSONArray();
+		for (WeatherDataDO data : dataList) {
+			JSONObject jsonHouseObject = new JSONObject();
+			// 一户的信息
+			jsonHouseObject.put("tmp", data.getTemperature());
+			jsonHouseObject.put("time", data.getReadTime());
+
+			jsonHouseArray.add(jsonHouseObject);
+		}
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("data", jsonHouseArray);
+
+		return jsonObject;
+	}
+
+	/**
+	 * 户图-弹出曲线-单用户运行数据
+	 * 
+	 * @param type
+	 * @param id
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@GetMapping("/getESSingleHouseRunningData/{houseId}/{beginTime}/{endTime}")
+	public Object getESSingleHouseRunningData(@PathVariable("houseId") String houseId,
+			@PathVariable("beginTime") String beginTime, @PathVariable("endTime") String endTime) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("consumerId", houseId);
+		params.put("beginTime", beginTime);
+		params.put("endTime", endTime);
+		List<RunningDataTotalDO> runningDataHistoryList = historyDataService.list(params);
+
+		JSONArray jsonHouseArray = new JSONArray();
+		for (RunningDataTotalDO data : runningDataHistoryList) {
+			JSONObject jsonHouseObject = new JSONObject();
+			// 一户的信息
+			jsonHouseObject.put("inTmp", data.getRoomTemperatureRead());
+			jsonHouseObject.put("outTmp", data.getOutdoorTemperature());
+			jsonHouseObject.put("inWaterTmp", data.getInTemperature());
+			jsonHouseObject.put("outWaterTmp", data.getOutTemperature());
+			jsonHouseObject.put("tmpDiff", data.getInTemperature().subtract(data.getOutTemperature()));
+			jsonHouseObject.put("power", data.getPower());
+			jsonHouseObject.put("flow", data.getFlowSpeed());
+			jsonHouseObject.put("time", data.getSystemReadTime());
+			jsonHouseObject.put("adjHeatingIndex", data.getAdjHeatingIndex());
+			jsonHouseArray.add(jsonHouseObject);
+		}
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("data", jsonHouseArray);
+
+		return jsonObject;
+	}
+
+	/**
+	 * 户图-弹出曲线-单用户运行数据es
+	 * 
+	 * @param type
+	 * @param id
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	@GetMapping("/getSingleHouseRunningData/{houseId}/{beginTime}/{endTime}")
+	public Object getSingleHouseRunningData(@PathVariable("houseId") String houseId, @PathVariable("beginTime") String beginTime,
+			@PathVariable("endTime") String endTime) {
+		return getESSingleHouseRunningData(houseId, beginTime, endTime);
+	}
+
+	/**
+	 * 户图、楼图-获取颜色标识数据
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	@GetMapping("/markers/{companyId}")
+	public Object getMarks(@PathVariable("companyId") String companyId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("companyId", companyId);
+		List<SystemMarkersDO> list = systemMarkersService.list(params);
+
+		return list;
+	}
+
+	/**
+	 * 保存颜色标识
+	 * 
+	 * @param params
+	 * @return
+	 */
+	@PostMapping("/markers")
+	public R saveMarks(@RequestParam Map<String, Object> params) {
+		// {"companyId":"2",field:"power","data":{"field": "power", "content":
+		// [{"name":
+		// "下下限报警", "color": "blue", "value": "10"}, {}, {}, {}]}}
+		SystemMarkersDO marker = new SystemMarkersDO();
+		marker.setCompanyId(params.get("companyId").toString());
+		marker.setField(params.get("field").toString());
+		marker.setData(params.get("data").toString());
+		systemMarkersService.save(marker);
+		System.out.println(marker.getId());
+		return R.ok(marker.getId().toString());
+	}
+
+	/**
+	 * 
+	 * @param params
+	 * @return
+	 */
+	@PutMapping("/markers")
+	public R updateMarks(@RequestParam Map<String, Object> params) {
+		// {"id":"2","data":{"field": "power", "content": [{"name": "下下限报警",
+		// "color":
+		// "blue", "value": "10"}, {}, {}, {}]}}
+		SystemMarkersDO marker = systemMarkersService.get(Integer.parseInt(params.get("id").toString()));
+		marker.setData(params.get("data").toString());
+
+		systemMarkersService.update(marker);
+		return R.ok();
+	}
+}

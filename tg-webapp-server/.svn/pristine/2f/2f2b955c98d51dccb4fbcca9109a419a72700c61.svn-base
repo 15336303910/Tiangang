@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.pipe.dao.PipeMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.pipe.entity.Pipe">
+    <id column="pipe_type_id" jdbcType="VARCHAR" property="pipeTypeId" />
+    <id column="pipe_type_name" jdbcType="VARCHAR" property="pipeTypeName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="pipe_source_id" jdbcType="VARCHAR" property="pipeSourceId" />
+    <result column="pipe_length" jdbcType="VARCHAR" property="pipeLength" />
+    <result column="pipeFormat" jdbcType="VARCHAR" property="pipeFormat"/>
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+
+  <resultMap id="InfoMap" type="cn.plou.web.system.baseMessage.pipe.vo.PipeInfo">
+    <id column="pipe_type_id" jdbcType="VARCHAR" property="pipeTypeId" />
+    <id column="pipeTypeName" jdbcType="VARCHAR" property="pipeTypeName" />
+    <result column="pipeTypeNameName" jdbcType="VARCHAR" property="pipeTypeNameName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="pipeSourceId" jdbcType="VARCHAR" property="pipeSourceId" />
+    <result column="pipeSourceName" jdbcType="VARCHAR" property="pipeSourceName" />
+    <result column="pipeLength" jdbcType="VARCHAR" property="pipeLength" />
+    <result column="pipeLengthName" jdbcType="VARCHAR" property="pipeLengthName" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="pipeFormat" jdbcType="VARCHAR" property="pipeFormat"/>
+    <result column="pipeFormatName" jdbcType="VARCHAR" property="pipeFormatName"/>
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    pipe_type_id, pipe_type_name, company_id, pipe_source_id, pipe_length, notes, memo1, 
+    memo2, create_date, create_user, update_date, update_user,pipe_format
+  </sql>
+
+  <select id="selectAllPipe" parameterType="cn.plou.web.system.baseMessage.pipe.vo.PipeSelectInfo" resultMap="InfoMap">
+    /*select
+    p.pipe_type_id, p.pipe_type_name ,
+    (select type_name from type_mst where type_kbn='pipe_type_name' and type_id=p.pipe_type_name) pipeTypeNameName,
+    p.company_id,c.company_name companyName, p.pipe_source_id pipeSourceId,
+    p.pipe_length pipeLength, p.notes, p.memo1,
+    (select type_name from type_mst where type_kbn='pipe_length' and type_id=p.pipe_length) pipeLengthName,
+    p.memo2, p.create_date, p.create_user, p.update_date, p.update_user*/
+    select
+    p.pipe_type_id, p.pipe_type_name pipeTypeName,
+    p.company_id,c.company_name companyName, p.pipe_source_id pipeSourceId,
+    p.pipe_length pipeLength, p.notes, p.memo1,p.pipe_format pipeFormat,
+    p.memo2, p.create_date, p.create_user, p.update_date, p.update_user
+    from pipe_info p
+    left JOIN company_info c ON p.company_id=c.company_id
+    where p.pipe_type_id is not null
+    <if test="companyIds != null">
+      <if test="companyIds.size()!=0">
+        and p.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId!=null">
+      and p.pipe_source_id = #{stationId}
+    </if>
+    <if test="pipeVo != null">
+      <if test="pipeVo.pipeSourceId != null">
+        and p.pipe_source_id = #{pipeVo.pipeSourceId,jdbcType=VARCHAR}
+      </if>
+      <if test="pipeVo.pipeLength != null">
+        and p.pipe_length = #{pipeVo.pipeLength,jdbcType=INTEGER}
+      </if>
+      <if test="pipeVo.notes != null">
+        and p.notes = #{pipeVo.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="pipeVo.pipeTypeName!=null">
+         and p.pipe_type_name=#{pipeVo.pipeTypeName}
+      </if>
+      <if test="pipeVo.pipeFormat!=null">
+         and p.pipe_format=#{pipeVo.pipeFormat}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectPipeDownInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    p.pipe_type_id, p.pipe_type_name
+    from pipe_info p
+    where p.pipe_source_id = #{ascriptionId}
+  </select>
+
+  <select id="selectPipeListCount" parameterType="cn.plou.web.system.baseMessage.pipe.vo.PipeSelectInfo" resultType="java.lang.Integer">
+    select
+    count(*)
+    from pipe_info p
+    where p.pipe_type_id is not null
+    <if test="companyIds.size() != 0">
+      and p.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="stationId!=null">
+      and p.pipe_source_id = #{stationId}
+    </if>
+    <if test="pipeVo != null">
+      <if test="pipeVo.pipeSourceId != null">
+        and p.pipe_source_id = #{pipeVo.pipeSourceId,jdbcType=VARCHAR}
+      </if>
+      <if test="pipeVo.pipeLength != null">
+        and p.pipe_length = #{pipeVo.pipeLength,jdbcType=INTEGER}
+      </if>
+      <if test="pipeVo.notes != null">
+        and p.notes = #{pipeVo.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="pipeVo.pipeTypeName!=null">
+        and p.pipe_type_name=#{pipeVo.pipeTypeName}
+      </if>
+      <if test="pipeVo.pipeFormat!=null">
+        and p.pipe_format=#{pipeVo.pipeFormat}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.pipe.entity.PipeKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pipe_info
+    where pipe_type_id = #{pipeKey.pipeTypeId,jdbcType=VARCHAR}
+    and pipe_type_name = #{pipeKey.pipeTypeName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllPipeIds" resultType="java.lang.String">
+    select
+    pipe_type_id
+    from pipe_info
+  </select>
+
+  <delete id="deletePipeBatchByIds" parameterType="cn.plou.web.system.baseMessage.pipe.entity.PipeKey" >
+      delete from pipe_info
+      where
+      pipe_type_id = #{pipeTypeId} and pipe_type_name = #{pipeTypeName}
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.pipe.entity.Pipe">
+    insert into pipe_info (pipe_type_id, pipe_type_name, company_id, 
+      pipe_source_id, pipe_length, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user
+      )
+    values (#{pipeTypeId,jdbcType=VARCHAR}, #{pipeTypeName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{pipeSourceId,jdbcType=VARCHAR}, #{pipeLength,jdbcType=INTEGER}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.pipe.entity.Pipe">
+    insert into pipe_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pipeTypeId != null">
+        pipe_type_id,
+      </if>
+      <if test="pipeTypeName != null">
+        pipe_type_name,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="pipeSourceId != null">
+        pipe_source_id,
+      </if>
+      <if test="pipeLength != null">
+        pipe_length,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="pipeFormat != null">
+        pipe_format,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pipeTypeId != null">
+        #{pipeTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeTypeName != null">
+        #{pipeTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeSourceId != null">
+        #{pipeSourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeFormat != null">
+        #{pipeFormat},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.pipe.entity.Pipe">
+    update pipe_info
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeSourceId != null">
+        pipe_source_id = #{pipeSourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeFormat!=null">
+        pipe_format = #{pipeFormat},
+      </if>
+    </set>
+    where pipe_type_id = #{pipeTypeId,jdbcType=VARCHAR}
+    and pipe_type_name = #{pipeTypeName,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatchSelective" parameterType="cn.plou.web.system.baseMessage.pipe.vo.PipeVo">
+    update pipe_info
+    <set>
+      <if test="pipeTypeName != null">
+        pipe_type_name = #{pipeTypeName},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeSourceId != null">
+        pipe_source_id = #{pipeSourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeFormat!=null">
+        pipe_format = #{pipeFormat},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+      where
+    <if test="pipeKeyList.size()==1">
+      <foreach collection="pipeKeyList" item="item" index="index">
+        pipe_type_id = #{item.pipeTypeId,jdbcType=VARCHAR}
+        and pipe_type_name = #{item.pipeTypeName,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="pipeKeyList.size()>1">
+      <foreach collection="pipeKeyList" item="item" index="index">
+        <if test="index != pipeKeyList.size()-1">
+          pipe_type_id = #{item.pipeTypeId,jdbcType=VARCHAR}
+          and pipe_type_name = #{item.pipeTypeName,jdbcType=VARCHAR} or
+        </if>
+        <if test="index == pipeKeyList.size()-1">
+        pipe_type_id = #{item.pipeTypeId,jdbcType=VARCHAR}
+        and pipe_type_name = #{item.pipeTypeName,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </if>
+
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.pipe.entity.Pipe">
+    update pipe_info
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      pipe_source_id = #{pipeSourceId,jdbcType=VARCHAR},
+      pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where pipe_type_id = #{pipeTypeId,jdbcType=VARCHAR}
+      and pipe_type_name = #{pipeTypeName,jdbcType=VARCHAR}
+  </update>
+</mapper>

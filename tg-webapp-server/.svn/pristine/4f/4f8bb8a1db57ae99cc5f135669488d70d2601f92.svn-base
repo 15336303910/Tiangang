@@ -1,0 +1,115 @@
+package cn.plou.web.charge.chargeconfig.service;
+
+import cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO;
+import cn.plou.web.charge.chargeconfig.dto.InfoObject;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.vo.ChargeHouseDataVO;
+import cn.plou.web.charge.chargeconfig.vo.ChargeSumVO;
+import cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee;
+import cn.plou.web.common.config.common.BasePageEntity;
+import com.github.pagehelper.PageInfo;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public interface UserYearHeatService {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(UserYearHeat record);
+
+    int insertSelective(UserYearHeat record);
+
+    void insertByBatch(List<UserYearHeat> userYearHeats);
+
+    UserYearHeat selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(UserYearHeat record);
+
+    int updateByPrimaryKey(UserYearHeat record);
+
+    List<UserYearHeat> findAllUserYearHeats();
+
+    UserYearHeat findLastUserYearHeats();
+
+    List<UserYearHeat> findAllUserYearHeatsByAnnual(String annual);
+
+    UserYearHeat findByUserAndAnnual(String consumerId, String annual);
+
+    PageInfo<UserYearHeat> findByUser(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+    PageInfo<UserYearHeat> findByUserForOldAnnual(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<UserYearHeat> findFeeLessByBuildingNo(String buildingNo,BasePageEntity basePageEntity);
+
+
+
+    int deleteByConsumerIds(String consumerIds, String commuityIds, String annual);
+
+    int deleteByConsumerId(String consumerId, String communityId, String annual);
+
+    BigDecimal getOldYearOwe(String consumerId, String annual);
+
+
+    PageInfo<UserYearHeatLateFee> calcLateFee(String annual, String dateNow, String order, String sortby, Integer page, Integer pageSize);
+
+
+    /**
+     * @param id
+     * @return
+     * 清欠中心首页获取顶部统计数据
+     */
+    List<ClearTaskDTO>    getStatisticalData(String   id);
+
+
+
+    InfoObject  handleListData(  List<ClearTaskDTO>   clearTaskDTOS,String  annual);
+
+    List<UserYearHeat> findAllUserYearHeatsByConsumerIds(List<String> consumerIds);
+
+    Integer getCountByAnnual(String companyId,String annual);
+
+
+    PageInfo<ChargeSumVO>  getChargeSumByAnnual(String companyId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    PageInfo<ChargeHouseDataVO>  getChargeHouseDataList(String stationIds, String commuityIds, String hasGenerated, String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    Integer selectCountByChargeType(String companyId,String chargeType);
+
+    int deleteByCompanyId(String companyId, String annual);
+    //int insertForGenerated(String companyId, String annual,String lastannual, String createUser);
+    int insertForGenerated1(String companyId, String annual,String lastannual, String createUser);
+    int insertForGenerated2(String companyId, String annual,String lastannual, String createUser);
+    int insertForGenerated3(String companyId, String annual,String lastannual, String createUser);
+
+
+//    int insertForGeneratedHeatingStatus1(String companyId, String annual,String lastannual, String createUser);
+//    int insertForGeneratedHeatingStatusNull(String companyId, String annual,String lastannual, String createUser);
+//    int insertForGeneratedNotHeatingStatus1(String companyId, String annual,String lastannual, String createUser);
+
+
+
+//    int updateForGenerated0(String companyId, String annual);
+//    int updateForGenerated1(String companyId, String annual);
+    int updateForGenerated2(String companyId, String annual);
+    int updateForGenerated3(String companyId, String annual, Date startTime);
+    int updateForGenerated4(String companyId, String annual, Date endTime);
+
+
+
+//    int insertForGeneratedHeatingStatus1_1(String companyId, String annual,String lastannual, String createUser);
+//    int insertForGeneratedHeatingStatus1_2(String companyId, String annual,String lastannual, String createUser);
+//    int insertForGeneratedHeatingStatus1_3(String companyId, String annual,String lastannual, String createUser);
+//    int insertForGeneratedHeatingStatus1_4(String companyId, String annual,String lastannual, String createUser);
+
+
+
+
+
+
+
+}

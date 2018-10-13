@@ -1,0 +1,118 @@
+package cn.plou.web.charge.chargeconfig.vo;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+/**
+ * @Description:
+ * @Param:
+ * @Return:
+ * @Author:
+ * @Date:
+ */
+@Data
+public class UserYearAccountDetailForOldYearVO {
+
+    private String companyId;
+    private String consumerId;
+    private BigDecimal accountCost;
+    private String accountType;
+    private String notes;
+    private String idcard;
+    private String name;
+    private String tel;
+    private String userCompany;
+    private BigDecimal needTotal;
+    private List<AnnualsVO> annuals;
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public BigDecimal getAccountCost() {
+        return accountCost;
+    }
+
+    public void setAccountCost(BigDecimal accountCost) {
+        this.accountCost = accountCost;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getUserCompany() {
+        return userCompany;
+    }
+
+    public void setUserCompany(String userCompany) {
+        this.userCompany = userCompany;
+    }
+
+    public BigDecimal getNeedTotal() {
+        return needTotal;
+    }
+
+    public void setNeedTotal(BigDecimal needTotal) {
+        this.needTotal = needTotal;
+    }
+
+    public List<AnnualsVO> getAnnuals() {
+        return annuals;
+    }
+
+    public void setAnnuals(List<AnnualsVO> annuals) {
+        this.annuals = annuals;
+    }
+
+}

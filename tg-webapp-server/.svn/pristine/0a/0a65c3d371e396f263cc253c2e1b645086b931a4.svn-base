@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.heatingmanage.dao.ContractHeatInfoTmpMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfoTmp">
+        <id column="approve_serial" jdbcType="VARCHAR" property="approveSerial"/>
+        <result column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="contract_code" jdbcType="VARCHAR" property="contractCode"/>
+        <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+        <result column="a_name" jdbcType="VARCHAR" property="aName"/>
+        <result column="b_name" jdbcType="VARCHAR" property="bName"/>
+        <result column="scope" jdbcType="VARCHAR" property="scope"/>
+        <result column="area" jdbcType="DECIMAL" property="area"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="total" jdbcType="DECIMAL" property="total"/>
+        <result column="price_adj" jdbcType="DECIMAL" property="priceAdj"/>
+        <result column="account_all" jdbcType="DECIMAL" property="accountAll"/>
+        <result column="arrears_cost" jdbcType="DECIMAL" property="arrearsCost"/>
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName"/>
+        <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone"/>
+        <result column="file_path" jdbcType="VARCHAR" property="filePath"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="sign_date" jdbcType="TIMESTAMP" property="signDate"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="approve_res" jdbcType="VARCHAR" property="approveRes"/>
+        <result column="approve_name" jdbcType="VARCHAR" property="approveName"/>
+        <result column="approve_date" jdbcType="DATE" property="approveDate"/>
+        <result column="approve_type" jdbcType="VARCHAR" property="approveType"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        approve_serial, primary_id, company_id, contract_code, contract_name, a_name, b_name,
+        scope, area, unit_price, total, price_adj, account_all, arrears_cost, contact_name,
+        contact_phone, file_path, notes, sign_date, memo1, memo2, create_date, create_user,
+        update_date, update_user, approve_res, approve_name, approve_date, approve_type
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from contract_heat_info_tmp
+        where approve_serial = #{approveSerial,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from contract_heat_info_tmp
+        where approve_serial = #{approveSerial,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfoTmp">
+        insert into contract_heat_info_tmp (approve_serial, primary_id, company_id,
+            contract_code, contract_name, a_name,
+            b_name, scope, area,
+            unit_price, total, price_adj,
+            account_all, arrears_cost, contact_name,
+            contact_phone, file_path, notes,
+            sign_date, memo1, memo2,
+            create_date, create_user, update_date,
+            update_user, approve_res, approve_name,
+            approve_date, approve_type)
+        values (#{approveSerial,jdbcType=VARCHAR}, #{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
+            #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, #{aName,jdbcType=VARCHAR},
+            #{bName,jdbcType=VARCHAR}, #{scope,jdbcType=VARCHAR}, #{area,jdbcType=DECIMAL},
+            #{unitPrice,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL}, #{priceAdj,jdbcType=DECIMAL},
+            #{accountAll,jdbcType=DECIMAL}, #{arrearsCost,jdbcType=DECIMAL}, #{contactName,jdbcType=VARCHAR},
+            #{contactPhone,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR},
+            #{signDate,jdbcType=TIMESTAMP}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR},
+            #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+            #{updateUser,jdbcType=VARCHAR}, #{approveRes,jdbcType=VARCHAR}, #{approveName,jdbcType=VARCHAR},
+            #{approveDate,jdbcType=DATE}, #{approveType,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfoTmp">
+        update contract_heat_info_tmp
+        set primary_id = #{primaryId,jdbcType=VARCHAR},
+            company_id = #{companyId,jdbcType=VARCHAR},
+            contract_code = #{contractCode,jdbcType=VARCHAR},
+            contract_name = #{contractName,jdbcType=VARCHAR},
+            a_name = #{aName,jdbcType=VARCHAR},
+            b_name = #{bName,jdbcType=VARCHAR},
+            scope = #{scope,jdbcType=VARCHAR},
+            area = #{area,jdbcType=DECIMAL},
+            unit_price = #{unitPrice,jdbcType=DECIMAL},
+            total = #{total,jdbcType=DECIMAL},
+            price_adj = #{priceAdj,jdbcType=DECIMAL},
+            account_all = #{accountAll,jdbcType=DECIMAL},
+            arrears_cost = #{arrearsCost,jdbcType=DECIMAL},
+            contact_name = #{contactName,jdbcType=VARCHAR},
+            contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            file_path = #{filePath,jdbcType=VARCHAR},
+            notes = #{notes,jdbcType=VARCHAR},
+            sign_date = #{signDate,jdbcType=TIMESTAMP},
+            memo1 = #{memo1,jdbcType=VARCHAR},
+            memo2 = #{memo2,jdbcType=VARCHAR},
+            create_date = #{createDate,jdbcType=TIMESTAMP},
+            create_user = #{createUser,jdbcType=VARCHAR},
+            update_date = #{updateDate,jdbcType=TIMESTAMP},
+            update_user = #{updateUser,jdbcType=VARCHAR},
+            approve_res = #{approveRes,jdbcType=VARCHAR},
+            approve_name = #{approveName,jdbcType=VARCHAR},
+            approve_date = #{approveDate,jdbcType=DATE},
+            approve_type = #{approveType,jdbcType=VARCHAR}
+        where approve_serial = #{approveSerial,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getTodayLast" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from contract_heat_info_tmp
+        where company_id = #{companyId,jdbcType=VARCHAR}
+        and TO_DAYS(create_date) = TO_DAYS(NOW())
+        order by create_date desc LIMIT 1
+    </select>
+</mapper>

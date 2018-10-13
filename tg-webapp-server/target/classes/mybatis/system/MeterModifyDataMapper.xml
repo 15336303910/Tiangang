@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.meterModifyData.dao.MeterModifyDataMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.meterModifyData.entity.MeterModifyData">
+        <id column="rowno" jdbcType="VARCHAR" property="rowno"/>
+        <result column="meter_id" jdbcType="VARCHAR" property="meterId"/>
+        <result column="meter_type" jdbcType="VARCHAR" property="meterType"/>
+        <result column="consumer_id" jdbcType="VARCHAR" property="consumerId"/>
+        <result column="address_2nd" jdbcType="VARCHAR" property="address2nd"/>
+        <result column="flag" jdbcType="VARCHAR" property="flag"/>
+        <result column="meter_modify_time" jdbcType="TIMESTAMP" property="meterModifyTime"/>
+        <result column="modify_reason" jdbcType="VARCHAR" property="modifyReason"/>
+        <result column="old_metet_begin" jdbcType="VARCHAR" property="oldMetetBegin"/>
+        <result column="old_metet_end" jdbcType="VARCHAR" property="oldMetetEnd"/>
+        <result column="new_metet_address_2nd" jdbcType="VARCHAR" property="newMetetAddress2nd"/>
+        <result column="new_metet_begin" jdbcType="VARCHAR" property="newMetetBegin"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="factory" jdbcType="VARCHAR" property="factory"/>
+    </resultMap>
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.meterMessage.meterModifyData.vo.MeterModifyDataInfo">
+        <id column="rowno" jdbcType="VARCHAR" property="rowno"/>
+        <result column="meter_id" jdbcType="VARCHAR" property="meterId"/>
+        <result column="meter_type" jdbcType="VARCHAR" property="meterType"/>
+        <result column="meter_position" jdbcType="VARCHAR" property="meterPosition"/>
+        <result column="consumer_id" jdbcType="VARCHAR" property="consumerId"/>
+        <result column="address_2nd" jdbcType="VARCHAR" property="address2nd"/>
+        <result column="flag" jdbcType="VARCHAR" property="flag"/>
+        <result column="flag_name" jdbcType="VARCHAR" property="flagName"/>
+        <result column="meter_modify_time" jdbcType="TIMESTAMP" property="meterModifyTime"/>
+        <result column="modify_reason" jdbcType="VARCHAR" property="modifyReason"/>
+        <result column="old_metet_begin" jdbcType="VARCHAR" property="oldMetetBegin"/>
+        <result column="old_metet_end" jdbcType="VARCHAR" property="oldMetetEnd"/>
+        <result column="new_metet_address_2nd" jdbcType="VARCHAR" property="newMetetAddress2nd"/>
+        <result column="new_metet_begin" jdbcType="VARCHAR" property="newMetetBegin"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="consumer_name" jdbcType="VARCHAR" property="consumerName"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="factory" jdbcType="VARCHAR" property="factory"/>
+        <result column="factory_name" jdbcType="VARCHAR" property="factoryName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    rowno, meter_id, meter_type, consumer_id, address_2nd, flag, meter_modify_time, modify_reason,
+    old_metet_begin, old_metet_end, new_metet_address_2nd, new_metet_begin, company_id,
+    notes, memo1, memo2, create_date, create_user, update_date, update_user, factory
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from meter_modify_data
+        where meter_id = #{meterId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllMeterModifyData" parameterType="map" resultMap="BaseInfoMap">
+        select
+        m.rowno rowno, m.meter_id meter_id, m.meter_type meter_type,
+        m.consumer_id consumer_id, m.address_2nd address_2nd, m.flag flag,
+        m.meter_modify_time meter_modify_time, m.modify_reason modify_reason,mi.meter_position meter_position,
+        m.old_metet_begin old_metet_begin, m.old_metet_end old_metet_end, m.new_metet_address_2nd new_metet_address_2nd,
+        m.new_metet_begin new_metet_begin, m.company_id company_id,c.company_name company_name,m.notes notes, m.memo1
+        memo1, m.memo2 memo2,
+        m.create_date create_date, m.create_user create_user, m.update_date update_date, m.update_user update_user,
+        m.factory factory
+        from meter_modify_data m
+        left join meter_info mi on m.meter_id=mi.meter_id
+        left join company_info c on m.company_id=c.company_id
+        where 1=1
+        <if test="meterIds!=null">
+        <if test="meterIds.size()>0">
+            and m.meter_id in
+            <foreach collection="meterIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        </if>
+        <if test="meterModifyDataVo!=null">
+            <if test="meterModifyDataVo.meterId!=null">
+                and m.meter_id=#{meterModifyDataVo.meterId}
+            </if>
+            <if test="meterModifyDataVo.meterType!=null">
+                and m.meter_type=#{meterModifyDataVo.meterType}
+            </if>
+            <if test="meterModifyDataVo.flag!=null">
+                and m.flag=#{meterModifyDataVo.flag}
+            </if>
+            <if test="meterModifyDataVo.factory!=null">
+                and m.factory=#{meterModifyDataVo.factory}
+            </if>
+            <if test="meterModifyDataVo.notes!=null">
+                and m.notes=#{meterModifyDataVo.notes}
+            </if>
+        </if>
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+        <if test="order!=null">
+            ${order}
+        </if>
+        <!--<if test="page!=null">-->
+            <!--<if test="pageSize!=null">-->
+                <!--limit ${page},${pageSize}-->
+            <!--</if>-->
+        <!--</if>-->
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from meter_modify_data
+    where meter_id = #{meterId,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="cn.plou.web.system.meterMessage.meterModifyData.entity.MeterModifyData">
+     insert into meter_modify_data (rowno, meter_id, meter_type,
+      consumer_id, address_2nd, flag,
+      meter_modify_time, modify_reason, old_metet_begin,
+      old_metet_end, new_metet_address_2nd, new_metet_begin,
+      company_id, notes, memo1,
+      memo2, create_date, create_user,
+      update_date, update_user, factory
+      )
+    values (#{rowno,jdbcType=VARCHAR}, #{meterId,jdbcType=VARCHAR}, #{meterType,jdbcType=VARCHAR},
+      #{consumerId,jdbcType=VARCHAR}, #{address2nd,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR},
+      #{meterModifyTime,jdbcType=TIMESTAMP}, #{modifyReason,jdbcType=VARCHAR}, #{oldMetetBegin,jdbcType=VARCHAR},
+      #{oldMetetEnd,jdbcType=VARCHAR}, #{newMetetAddress2nd,jdbcType=VARCHAR}, #{newMetetBegin,jdbcType=VARCHAR},
+      #{companyId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR},
+      #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{factory,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.meterModifyData.entity.MeterModifyData">
+        insert into meter_modify_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rowno != null">
+                rowno,
+            </if>
+            <if test="meterId != null">
+                meter_id,
+            </if>
+            <if test="meterType != null">
+                meter_type,
+            </if>
+            <if test="consumerId != null">
+                consumer_id,
+            </if>
+            <if test="address2nd != null">
+                address_2nd,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+            <if test="meterModifyTime != null">
+                meter_modify_time,
+            </if>
+            <if test="modifyReason != null">
+                modify_reason,
+            </if>
+            <if test="oldMetetBegin != null">
+                old_metet_begin,
+            </if>
+            <if test="oldMetetEnd != null">
+                old_metet_end,
+            </if>
+            <if test="newMetetAddress2nd != null">
+                new_metet_address_2nd,
+            </if>
+            <if test="newMetetBegin != null">
+                new_metet_begin,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="memo1 != null">
+                memo1,
+            </if>
+            <if test="memo2 != null">
+                memo2,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="factory != null">
+                factory,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rowno != null">
+                #{rowno,jdbcType=VARCHAR},
+            </if>
+            <if test="meterId != null">
+                #{meterId,jdbcType=VARCHAR},
+            </if>
+            <if test="meterType != null">
+                #{meterType,jdbcType=VARCHAR},
+            </if>
+            <if test="consumerId != null">
+                #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="address2nd != null">
+                #{address2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="meterModifyTime != null">
+                #{meterModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyReason != null">
+                #{modifyReason,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetBegin != null">
+                #{oldMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetEnd != null">
+                #{oldMetetEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetAddress2nd != null">
+                #{newMetetAddress2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetBegin != null">
+                #{newMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="memo1 != null">
+                #{memo1,jdbcType=VARCHAR},
+            </if>
+            <if test="memo2 != null">
+                #{memo2,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                #{factory,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="cn.plou.web.system.meterMessage.meterModifyData.entity.MeterModifyData">
+        update meter_modify_data
+        <set>
+            <if test="meterId != null">
+                meter_id = #{meterId,jdbcType=VARCHAR},
+            </if>
+            <if test="meterType != null">
+                meter_type = #{meterType,jdbcType=VARCHAR},
+            </if>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="address2nd != null">
+                address_2nd = #{address2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="meterModifyTime != null">
+                meter_modify_time = #{meterModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyReason != null">
+                modify_reason = #{modifyReason,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetBegin != null">
+                old_metet_begin = #{oldMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetEnd != null">
+                old_metet_end = #{oldMetetEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetAddress2nd != null">
+                new_metet_address_2nd = #{newMetetAddress2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetBegin != null">
+                new_metet_begin = #{newMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="memo1 != null">
+                memo1 = #{memo1,jdbcType=VARCHAR},
+            </if>
+            <if test="memo2 != null">
+                memo2 = #{memo2,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where rowno = #{rowno,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.meterModifyData.entity.MeterModifyData">
+     update meter_modify_data
+    set meter_id = #{meterId,jdbcType=VARCHAR},
+      meter_type = #{meterType,jdbcType=VARCHAR},
+      consumer_id = #{consumerId,jdbcType=VARCHAR},
+      address_2nd = #{address2nd,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=VARCHAR},
+      meter_modify_time = #{meterModifyTime,jdbcType=TIMESTAMP},
+      modify_reason = #{modifyReason,jdbcType=VARCHAR},
+      old_metet_begin = #{oldMetetBegin,jdbcType=VARCHAR},
+      old_metet_end = #{oldMetetEnd,jdbcType=VARCHAR},
+      new_metet_address_2nd = #{newMetetAddress2nd,jdbcType=VARCHAR},
+      new_metet_begin = #{newMetetBegin,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      factory = #{factory,jdbcType=VARCHAR}
+    where rowno = #{rowno,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateMeterModifyDataBatch"
+            parameterType="cn.plou.web.system.meterMessage.meterModifyData.vo.MeterModifyDataVo">
+        update meter_modify_data
+        <set>
+            <if test="meterId != null">
+                meter_id = #{meterId,jdbcType=VARCHAR},
+            </if>
+            <if test="meterType != null">
+                meter_type = #{meterType,jdbcType=VARCHAR},
+            </if>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="address2nd != null">
+                address_2nd = #{address2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="meterModifyTime != null">
+                meter_modify_time = #{meterModifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifyReason != null">
+                modify_reason = #{modifyReason,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetBegin != null">
+                old_metet_begin = #{oldMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="oldMetetEnd != null">
+                old_metet_end = #{oldMetetEnd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetAddress2nd != null">
+                new_metet_address_2nd = #{newMetetAddress2nd,jdbcType=VARCHAR},
+            </if>
+            <if test="newMetetBegin != null">
+                new_metet_begin = #{newMetetBegin,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="memo1 != null">
+                memo1 = #{memo1,jdbcType=VARCHAR},
+            </if>
+            <if test="memo2 != null">
+                memo2 = #{memo2,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where rowno in
+        <foreach collection="rownos" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

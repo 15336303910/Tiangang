@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.commuity.dao.CommuityMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.commuity.entity.Commuity">
+    <id column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <id column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="commuity_name" jdbcType="VARCHAR" property="commuityName" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="commuity_area" jdbcType="VARCHAR" property="commuityArea" />
+    <result column="build_num" jdbcType="INTEGER" property="buildNum" />
+    <result column="unit_num" jdbcType="INTEGER" property="unitNum" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="build_year" jdbcType="VARCHAR" property="buildYear" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="has_build_meter" jdbcType="VARCHAR" property="hasBuildMeter" />
+    <result column="cbzq" jdbcType="VARCHAR" property="cbzq" />
+    <result column="xqzt" jdbcType="VARCHAR" property="xqzt" />
+    <result column="index" jdbcType="INTEGER" property="index" />
+    <result column="archives_id" jdbcType="VARCHAR" property="archivesId"/>
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.baseMessage.commuity.vo.CommuityInfo">
+    <id column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <id column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="stationName" jdbcType="VARCHAR" property="stationName"/>
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="commuityName" jdbcType="VARCHAR" property="commuityName" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="chargePerson" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="commuityArea" jdbcType="VARCHAR" property="commuityArea" />
+    <result column="buildNum" jdbcType="INTEGER" property="buildNum" />
+    <result column="unitNum" jdbcType="INTEGER" property="unitNum" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="buildYear" jdbcType="VARCHAR" property="buildYear" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="hasBuildMeter" jdbcType="VARCHAR" property="hasBuildMeter" />
+    <result column="hasBuildMeterName" jdbcType="VARCHAR" property="hasBuildMeterName" />
+    <result column="cbzq" jdbcType="VARCHAR" property="cbzq" />
+    <result column="cbzqName" jdbcType="VARCHAR" property="cbzqName" />
+    <result column="xqzt" jdbcType="VARCHAR" property="xqzt" />
+    <result column="xqztName" jdbcType="VARCHAR" property="xqztName" />
+    <result column="index" jdbcType="INTEGER" property="index" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    commuity_id, rowno, station_id, company_id, commuity_name, property, tel, charge_person, 
+    commuity_area, build_num, unit_num, address, build_year, longitude, latitude, notes, 
+    memo1, memo2, create_date, create_user, update_date, update_user, has_build_meter, 
+    cbzq, xqzt, `index`,archives_id
+  </sql>
+
+  <sql id="Useful_List">
+    commuity_id, rowno, station_id, company_id, commuity_name, property, tel, charge_person,
+    commuity_area, build_num, unit_num, address, build_year, longitude, latitude, notes,has_build_meter,`index`,archives_id
+  </sql>
+
+  <select id="selectTreeList" parameterType="map" resultMap="BaseResultMap">
+    select
+    commuity_id,commuity_name
+    from commuity_info
+    where station_id = #{stationId,jdbcType=VARCHAR}
+    <if test="commuityIds!=null and  commuityIds.size()>0 ">
+      and commuity_id in
+      <foreach collection="commuityIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+
+  <select id="selectCommuityByName" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Useful_List" />
+    from commuity_info
+    where commuity_name = #{commuityName,jdbcType=VARCHAR} and company_id = #{companyId}
+  </select>
+
+  <select id="selectAllCommuityIds" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    commuity_id
+    from commuity_info
+    <if test="companyId!=null">
+      where company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="selectCommuityIdsByStationId" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    commuity_id
+    from commuity_info
+    where station_id = #{stationId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCommuityCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*) from commuity_info c
+    where 1=1
+    <if test="companyIds!=null">
+      <if test="companyIds.size()!=0">
+      and c.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and c.station_id = #{stationId}
+    </if>
+    <if test="commuityId != null">
+      and c.commuity_id = #{commuityId}
+    </if>
+    <if test="commuityVo != null">
+      <if test="commuityVo.commuityName != null">
+        and c.commuity_name LIKE concat('%',#{commuityVo.commuityName},'%')
+      </if>
+      <if test="commuityVo.property != null">
+        and c.property LIKE concat('%',#{commuityVo.property},'%')
+      </if>
+      <if test="commuityVo.tel != null">
+        and c.tel LIKE concat('%',#{commuityVo.tel},'%')
+      </if>
+      <if test="commuityVo.chargePerson != null">
+        and c.charge_person LIKE concat('%',#{commuityVo.chargePerson},'%')
+      </if>
+      <if test="commuityVo.commuityArea != null">
+        and c.commuity_area LIKE concat('%',#{commuityVo.commuityArea},'%')
+      </if>
+      <if test="commuityVo.buildNum != null">
+        and c.build_num = #{commuityVo.buildNum,jdbcType=INTEGER}
+      </if>
+      <if test="commuityVo.unitNum != null">
+        and c.unit_num LIKE concat('%',#{commuityVo.unitNum},'%')
+      </if>
+      <if test="commuityVo.address != null">
+        and c.address LIKE concat('%',#{commuityVo.address},'%')
+      </if>
+      <if test="commuityVo.buildYear != null">
+        and c.build_year = #{commuityVo.buildYear,jdbcType=VARCHAR}
+      </if>
+      <if test="commuityVo.notes != null">
+        and c.notes LIKE concat('%',#{commuityVo.notes},'%')
+      </if>
+      <if test="commuityVo.hasBuildMeter != null">
+        and c.has_build_meter = #{commuityVo.hasBuildMeter,jdbcType=VARCHAR}
+      </if>
+      <if test="commuityVo.archivesId != null">
+        and c.archives_id = #{commuityVo.archivesId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="commuityIds != null">
+      <if test="commuityIds.size()!=0">
+        and c.commuity_id in
+        <foreach collection="commuityIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+  </select>
+
+  <select id="selectAllCommuity" parameterType="map" resultMap="InfoMap">
+    /*select
+    c.commuity_id, c.rowno, c.station_id, c.company_id, c.commuity_name commuityName, c.property, c.tel, c.charge_person chargePerson,c.`index`,
+    c.commuity_area commuityArea, c.build_num buildNum, c.unit_num unitNum, c.address, c.build_year buildYear, c.longitude, c.latitude, c.notes,
+    com.company_name companyName,s.station_name stationName,
+    (select type_name from type_mst where type_kbn='has_build_meter' and type_id=c.has_build_meter) hasBuildMeterName,
+    (select type_name from type_mst where type_kbn='cbzq' and type_id=c.cbzq) cbzqName,
+    (select type_name from type_mst where type_kbn='xqzt' and type_id=c.xqzt) xqzt*/
+    select
+    c.commuity_id, c.rowno, c.station_id, c.company_id, c.commuity_name commuityName, c.property, c.tel, c.charge_person chargePerson,c.`index`,
+    c.commuity_area commuityArea, c.build_num buildNum, c.unit_num unitNum, c.address, c.build_year buildYear, c.longitude, c.latitude, c.notes,
+    com.company_name companyName,s.station_name stationName,c.has_build_meter hasBuildMeter,c.cbzq,c.xqzt,c.archives_id archivesId
+    from commuity_info c
+    left JOIN company_info com ON c.company_id=com.company_id
+    left JOIN station_info s ON c.station_id=s.station_id
+    where c.commuity_id is not null
+    <if test="companyIds != null">
+      <if test="companyIds.size()!=0">
+        and c.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and c.station_id = #{stationId}
+    </if>
+    <if test="commuityId != null">
+      and c.commuity_id = #{commuityId}
+    </if>
+    <if test="commuityVo != null">
+      <if test="commuityVo.commuityName != null">
+        and c.commuity_name LIKE concat('%',#{commuityVo.commuityName},'%')
+      </if>
+      <if test="commuityVo.property != null">
+        and c.property LIKE concat('%',#{commuityVo.property},'%')
+      </if>
+      <if test="commuityVo.tel != null">
+        and c.tel LIKE concat('%',#{commuityVo.tel},'%')
+      </if>
+      <if test="commuityVo.chargePerson != null">
+        and c.charge_person LIKE concat('%',#{commuityVo.chargePerson},'%')
+      </if>
+      <if test="commuityVo.commuityArea != null">
+        and c.commuity_area LIKE concat('%',#{commuityVo.commuityArea},'%')
+      </if>
+      <if test="commuityVo.buildNum != null">
+        and c.build_num = #{commuityVo.buildNum,jdbcType=INTEGER}
+      </if>
+      <if test="commuityVo.unitNum != null">
+        and c.unit_num LIKE concat('%',#{commuityVo.unitNum},'%')
+      </if>
+      <if test="commuityVo.address != null">
+        and c.address LIKE concat('%',#{commuityVo.address},'%')
+      </if>
+      <if test="commuityVo.buildYear != null">
+        and c.build_year = #{commuityVo.buildYear,jdbcType=VARCHAR}
+      </if>
+      <if test="commuityVo.notes != null">
+        and c.notes LIKE concat('%',#{commuityVo.notes},'%')
+      </if>
+      <if test="commuityVo.hasBuildMeter != null">
+        and c.has_build_meter = #{commuityVo.hasBuildMeter,jdbcType=VARCHAR}
+      </if>
+      <if test="commuityVo.archivesId != null">
+        and c.archives_id = #{commuityVo.archivesId,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size() != 0">
+        and c.commuity_id in
+        <foreach collection="commuityIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+	<choose>
+		<when test="sortby !=null ">
+			<if test="sortby != null">
+				order by ${sortby}
+			</if>
+			<if test="order != null">
+				${order}
+			</if>
+		</when>
+		<otherwise>
+		  order by c.index
+		</otherwise>
+	</choose>
+	<if test="start!=null and pageSize!=null">
+		limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectAllCommuityByRoleId" parameterType="map" resultMap="InfoMap">
+    select
+    c.commuity_id, c.rowno, c.station_id, c.company_id, c.commuity_name commuityName, c.property, c.tel, c.charge_person chargePerson,c.`index`,
+    c.commuity_area commuityArea, c.build_num buildNum, c.unit_num unitNum, c.address, c.build_year buildYear, c.longitude, c.latitude, c.notes,
+    com.company_name companyName,s.station_name stationName,c.has_build_meter hasBuildMeter,c.cbzq,c.xqzt
+    from commuity_info c
+    left JOIN company_info com ON c.company_id=com.company_id
+    left JOIN station_info s ON c.station_id=s.station_id
+    where c.commuity_id is not null
+    <if test="companyIds != null">
+      <if test="companyIds.size()!=0">
+        and c.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and c.station_id = #{stationId}
+    </if>
+    <if test="commuityId != null">
+      and c.commuity_id = #{commuityId}
+    </if>
+    <if test="commuityVo != null">
+      <if test="commuityVo.commuityName != null">
+        and c.commuity_name LIKE concat('%',#{commuityVo.commuityName},'%')
+      </if>
+      <if test="commuityVo.property != null">
+        and c.property LIKE concat('%',#{commuityVo.property},'%')
+      </if>
+      <if test="commuityVo.tel != null">
+        and c.tel LIKE concat('%',#{commuityVo.tel},'%')
+      </if>
+      <if test="commuityVo.chargePerson != null">
+        and c.charge_person LIKE concat('%',#{commuityVo.chargePerson},'%')
+      </if>
+      <if test="commuityVo.commuityArea != null">
+        and c.commuity_area LIKE concat('%',#{commuityVo.commuityArea},'%')
+      </if>
+      <if test="commuityVo.buildNum != null">
+        and c.build_num = #{commuityVo.buildNum,jdbcType=INTEGER}
+      </if>
+      <if test="commuityVo.unitNum != null">
+        and c.unit_num LIKE concat('%',#{commuityVo.unitNum},'%')
+      </if>
+      <if test="commuityVo.address != null">
+        and c.address LIKE concat('%',#{commuityVo.address},'%')
+      </if>
+      <if test="commuityVo.buildYear != null">
+        and c.build_year = #{commuityVo.buildYear,jdbcType=VARCHAR}
+      </if>
+      <if test="commuityVo.notes != null">
+        and c.notes LIKE concat('%',#{commuityVo.notes},'%')
+      </if>
+      <if test="commuityVo.hasBuildMeter != null">
+        and c.has_build_meter = #{commuityVo.hasBuildMeter,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="commuityIds != null">
+      <if test="commuityIds.size() != 0">
+        and c.commuity_id in
+        <foreach collection="commuityIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectCommuitysByCompanyId" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    commuity_id
+    from commuity_info
+    where company_id = #{companyId} limit 0,10000
+  </select>
+
+  <select id="selectAllCommuityUnique" resultType="cn.plou.web.system.baseMessage.commuity.vo.CommuityUnique">
+    select
+    commuity_name,company_id
+    from commuity_info
+    limit 0,10000
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.commuity.entity.CommuityKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Useful_List" />
+    from commuity_info
+    where commuity_id = #{commuityId,jdbcType=VARCHAR}
+      and station_id = #{stationId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Useful_List" />
+    from commuity_info
+    where commuity_id = #{commuityId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.commuity.entity.CommuityKey">
+    delete from commuity_info
+    where commuity_id = #{commuityId,jdbcType=VARCHAR}
+      and station_id = #{stationId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from commuity_info
+    where commuity_id in
+    <foreach collection="commuityIds" item="item" open="(" separator="," close=")" >
+      #{item}
+    </foreach>
+  </delete>
+
+
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.commuity.entity.Commuity">
+    insert into commuity_info (commuity_id, rowno, station_id, 
+      company_id, commuity_name, property, 
+      tel, charge_person, commuity_area, 
+      build_num, unit_num, address, 
+      build_year, longitude, latitude, 
+      notes, memo1, memo2, 
+      create_date, create_user, update_date, 
+      update_user, has_build_meter, cbzq, 
+      xqzt, index,archives_id)
+    values (#{commuityId,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, #{stationId,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{commuityName,jdbcType=VARCHAR}, #{property,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{chargePerson,jdbcType=VARCHAR}, #{commuityArea,jdbcType=VARCHAR}, 
+      #{buildNum,jdbcType=INTEGER}, #{unitNum,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
+      #{buildYear,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{hasBuildMeter,jdbcType=VARCHAR}, #{cbzq,jdbcType=INTEGER}, 
+      #{xqzt,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER},#{archivesId})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.commuity.entity.Commuity">
+    insert into commuity_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commuityId != null">
+        commuity_id,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="stationId != null">
+        station_id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="commuityName != null">
+        commuity_name,
+      </if>
+      <if test="property != null">
+        property,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="chargePerson != null">
+        charge_person,
+      </if>
+      <if test="commuityArea != null">
+        commuity_area,
+      </if>
+      <if test="buildNum != null">
+        build_num,
+      </if>
+      <if test="unitNum != null">
+        unit_num,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="buildYear != null">
+        build_year,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter,
+      </if>
+      <if test="cbzq != null">
+        cbzq,
+      </if>
+      <if test="xqzt != null">
+        xqzt,
+      </if>
+      <if test="index != null">
+        `index`,
+      </if>
+      <if test="archivesId != null">
+        archives_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commuityId != null">
+        #{commuityId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityName != null">
+        #{commuityName,jdbcType=VARCHAR},
+      </if>
+      <if test="property != null">
+        #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityArea != null">
+        #{commuityArea,jdbcType=VARCHAR},
+      </if>
+      <if test="buildNum != null">
+        #{buildNum,jdbcType=INTEGER},
+      </if>
+      <if test="unitNum != null">
+        #{unitNum,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="cbzq != null">
+        #{cbzq,jdbcType=VARCHAR},
+      </if>
+      <if test="xqzt != null">
+        #{xqzt,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null">
+        #{index,jdbcType=INTEGER},
+      </if>
+      <if test="archivesId != null">
+        #{archivesId},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateBatch" parameterType="cn.plou.web.system.baseMessage.commuity.vo.CommuityVo">
+    update commuity_info
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityName != null">
+        commuity_name = #{commuityName,jdbcType=VARCHAR},
+      </if>
+      <if test="property != null">
+        property = #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityArea != null">
+        commuity_area = #{commuityArea,jdbcType=VARCHAR},
+      </if>
+      <if test="buildNum != null">
+        build_num = #{buildNum,jdbcType=INTEGER},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="archivesId != null">
+        archives_id = #{archivesId},
+      </if>
+    </set>
+    where
+    <!--<if test="commuityKeys.size() == 1">
+      commuity_id = #{commuityKeys.commuityId,jdbcType=VARCHAR}
+      and station_id = #{commuityKeys.stationId,jdbcType=VARCHAR}
+    </if>
+    <if test="commuityKeys.size() > 1 ">
+      <foreach collection="commuityKeys" index="index" item="item">
+        <if test="index != commuityKeys.size()-1">
+          commuity_id = #{item.commuityId,jdbcType=VARCHAR}
+          and station_id = #{item.stationId,jdbcType=VARCHAR} or
+        </if>
+        <if test="index == commuityKeys.size()-1">
+          commuity_id = #{item.commuityId,jdbcType=VARCHAR}
+          and station_id = #{item.stationId,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </if>-->
+    commuity_id in
+    <foreach collection="commuityIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.commuity.entity.Commuity">
+    update commuity_info
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      commuity_name = #{commuityName,jdbcType=VARCHAR},
+      property = #{property,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      charge_person = #{chargePerson,jdbcType=VARCHAR},
+      commuity_area = #{commuityArea,jdbcType=VARCHAR},
+      build_num = #{buildNum,jdbcType=INTEGER},
+      unit_num = #{unitNum,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      build_year = #{buildYear,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      cbzq = #{cbzq,jdbcType=INTEGER},
+      xqzt = #{xqzt,jdbcType=VARCHAR},
+      index = #{index,jdbcType=INTEGER},
+      archives_id = #{archivesId}
+    where commuity_id = #{commuityId,jdbcType=VARCHAR}
+      and rowno = #{rowno,jdbcType=VARCHAR}
+      and station_id = #{stationId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.commuity.entity.Commuity">
+    update commuity_info
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityName != null">
+        commuity_name = #{commuityName,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="property != null">
+        property = #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityArea != null">
+        commuity_area = #{commuityArea,jdbcType=VARCHAR},
+      </if>
+      <if test="buildNum != null">
+        build_num = #{buildNum,jdbcType=INTEGER},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="cbzq != null">
+        cbzq = #{cbzq,jdbcType=VARCHAR},
+      </if>
+      <if test="xqzt != null">
+        xqzt = #{xqzt,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null">
+        `index` = #{index,jdbcType=INTEGER},
+      </if>
+      <if test="archivesId != null">
+        archives_id = #{archivesId},
+      </if>
+    </set>
+    where commuity_id = #{commuityId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getMaxCommuityId" parameterType="java.lang.String" resultType="java.lang.String">
+     select
+       max(commuity_id)
+     from commuity_info
+     where substring(commuity_id,1,5)=#{companyId}
+  </select>
+  
+  <select id="selectCommuityByConsumerIdLike" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    commuity_id,commuity_name,station_id
+    from commuity_info
+    where commuity_id like (concat(#{companyId},'%'))
+  </select>
+  
+  <select id="selectCommuityByStationIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    commuity_id,commuity_name,station_id
+    from commuity_info
+    where station_id in
+      <foreach collection="stationIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+  </select>
+</mapper>

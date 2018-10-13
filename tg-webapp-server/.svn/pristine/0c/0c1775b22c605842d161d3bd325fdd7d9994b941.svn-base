@@ -1,0 +1,168 @@
+package cn.plou.web.system.baseMessage.pipe.service.impl;
+
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.pipe.dao.PipeMapper;
+import cn.plou.web.system.baseMessage.pipe.entity.Pipe;
+import cn.plou.web.system.baseMessage.pipe.entity.PipeKey;
+import cn.plou.web.system.baseMessage.pipe.service.PipeService;
+import cn.plou.web.system.baseMessage.pipe.vo.PipeInfo;
+import cn.plou.web.system.baseMessage.pipe.vo.PipeListInfo;
+import cn.plou.web.system.baseMessage.pipe.vo.PipeVo;
+import cn.plou.web.system.baseMessage.producer.dao.ProducerMapper;
+import cn.plou.web.system.baseMessage.station.dao.StationMapper;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.UserPageHistoryService;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import static cn.plou.web.common.utils.Tools.getMaxId;
+
+@Component
+public class PipeServiceImpl implements PipeService {
+    @Autowired
+    private PipeMapper pipeMapper;
+    @Autowired
+    private ProducerMapper producerMapper;
+    @Autowired
+    private StationMapper stationMapper;
+    @Autowired
+    private UserPageHistoryService userPageHistoryService;
+    @Autowired
+    private TypeMstService typeMstService;
+    @Autowired
+    private CompanyService companyService;
+
+    @Override
+    public PipeListInfo getAllPipe(Integer page, Integer pageSize, String sortby, String order, PipeVo pipeVo, List<String> companyIds, String stationId) {
+        Integer start = null;
+        if(page!=null){
+            start = (page-1)*pageSize;
+        }
+        PipeListInfo pipeListInfo = new PipeListInfo();
+        List<PipeInfo> pipeInfos = pipeMapper.selectAllPipe(start,pageSize,sortby, order, pipeVo, companyIds,stationId);
+        if(pipeInfos.size()!=0){
+            for(PipeInfo pipeInfo:pipeInfos){
+                if(pipeInfo.getPipeSourceId()!=null){
+                    if(pipeInfo.getPipeSourceId().length()==5){
+                        if(producerMapper.selectByPrimaryKey(pipeInfo.getPipeSourceId())==null){
+                            pipeInfo.setPipeSourceName(null);
+                        }else{
+                            pipeInfo.setPipeSourceName(producerMapper.selectByPrimaryKey(pipeInfo.getPipeSourceId()).getProducerName());
+                        }
+                    }else if(pipeInfo.getPipeSourceId().length()==6){
+                        if(stationMapper.selectByPrimaryKey(pipeInfo.getPipeSourceId())==null){
+                            pipeInfo.setPipeSourceName(null);
+                        }else{
+                            pipeInfo.setPipeSourceName(stationMapper.selectByPrimaryKey(pipeInfo.getPipeSourceId()).getStationName());
+                        }
+                    }
+                    if(pipeInfo.getPipeLength()!=null){
+                        if(typeMstService.getTypeMstById(pipeInfo.getPipeLength())==null){
+                            pipeInfo.setPipeLengthName(null);
+                        }else{
+                            pipeInfo.setPipeLengthName(typeMstService.getTypeMstById(pipeInfo.getPipeLength()).getTypeName());
+                        }
+                    }
+                    if(pipeInfo.getPipeFormat()!=null){
+                        if(typeMstService.getTypeMstById(pipeInfo.getPipeFormat())==null){
+                            pipeInfo.setPipeFormatName(null);
+                        }else{
+                            pipeInfo.setPipeFormatName(typeMstService.getTypeMstById(pipeInfo.getPipeFormat()).getTypeName());
+                        }
+                    }
+                }
+            }
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipe");
+        userPageHistory.setAct("getAllPipe");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        pipeListInfo.setPipeInfoList(pipeInfos);
+        pipeListInfo.setCount(pipeMapper.selectPipeListCount(pipeVo, companyIds,stationId));
+        return pipeListInfo;
+    }
+
+    @Override
+    public Pipe getPipeById(PipeKey pipeKey) {
+        return pipeMapper.selectByPrimaryKey(pipeKey);
+    }
+
+    /*@Override
+    public int deleteBatchByIds(List<PipeKey> pipeKeyList) {
+        return pipeMapper.deletePipeBatchByIds(pipeKeyList);
+    }*/
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBatchByIds(List<PipeKey> pipeKeyList) {
+        for(PipeKey pipeKey:pipeKeyList){
+            pipeMapper.deletePipeBatchByIds(pipeKey);
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipe");
+        userPageHistory.setAct("deleteBatchByIds");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        return pipeKeyList.size();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addPipe(Pipe pipe) {
+        pipe.setCreateUser(UserUtils.getUserId());
+        pipe.setCreateDate(new Date());
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipe");
+        userPageHistory.setAct("addPipe");
+        pipe.setCreateUser(UserUtils.getUserId());
+        pipe.setCreateDate(new Date());
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        return pipeMapper.insertSelective(pipe);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyBatch(PipeVo pipeVo) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipe");
+        userPageHistory.setAct("modifyBatch");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        pipeVo.setUpdateUser(UserUtils.getUserId());
+        pipeVo.setUpdateDate(new Date());
+        return pipeMapper.updateBatchSelective(pipeVo);
+    }
+
+    @Override
+    public String getNewPipeId() {
+        if(pipeMapper.selectAllPipeIds().size()==0){
+            return "00001";
+        }
+        Integer max = getMaxId(pipeMapper.selectAllPipeIds(),0,5);
+        return String.format("%05d",max);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyPipe(Pipe pipe) {
+        pipe.setUpdateUser(UserUtils.getUserId());
+        pipe.setUpdateDate(new Date());
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipe");
+        userPageHistory.setAct("modifyPipe");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        pipe.setUpdateUser(UserUtils.getUserId());
+        pipe.setUpdateDate(new Date());
+        return pipeMapper.updateByPrimaryKeySelective(pipe);
+    }
+
+    @Override
+    public List<Pipe> getPipeDownInfo(String ascriptionId) {
+        return pipeMapper.selectPipeDownInfo(ascriptionId);
+    }
+
+}

@@ -1,0 +1,147 @@
+package cn.plou.web.system.organizationMessage.department.service.impl;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.organizationMessage.department.dao.DepartmentMapper;
+import cn.plou.web.system.organizationMessage.department.entity.Department;
+import cn.plou.web.system.organizationMessage.department.service.DepartmentService;
+import cn.plou.web.system.organizationMessage.department.vo.DepartmentInfo;
+import cn.plou.web.system.organizationMessage.department.vo.DepartmentListInfo;
+import cn.plou.web.system.organizationMessage.department.vo.DepartmentVo;
+import cn.plou.web.system.organizationMessage.staff.dao.StaffMapper;
+import cn.plou.web.system.organizationMessage.staff.service.StaffService;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffInfo;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffVo;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class DepartmentServiceImpl implements DepartmentService {
+    @Autowired
+    private DepartmentMapper departmentMapper;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+    @Autowired
+    private StaffService staffService;
+    @Autowired
+    private StaffMapper staffMapper;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addDepartment(Department department) {
+        if(department.getDepartmentId().equals(department.getSuperDepartmentId())){
+            throw new BusinessException("请填写正确上级部门信息");
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("dept");
+        userPageHistory.setAct("addDepartment");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return departmentMapper.insertSelective(department);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int dropDepartmentBatchByIds(List<String> departmentIds) {
+        for(String departmentId:departmentIds){
+            StaffVo staffVo = new StaffVo();
+            staffVo.setDepartmentId(departmentId);
+            List<StaffInfo> staffs = staffMapper.selectAllStaff(null,staffVo,null,null,null,null);
+            if(staffs.size()!=0){
+                throw new BusinessException(getDepartmentById(departmentId).getDepartmentName()+"下有所属信息，不能删除");
+            }
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("dept");
+        userPageHistory.setAct("dropDepartmentBatchByIds");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return departmentMapper.deleteBatchByIds(departmentIds);
+    }
+
+    @Override
+    public Department getDepartmentById(String departmentId) {
+
+        return departmentMapper.selectByPrimaryKey(departmentId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyDepartmentBatch(DepartmentVo departmentVo) {
+        for(String departmentId:departmentVo.getDepartmentIds()){
+            if(departmentId.equals(getDepartmentById(departmentId).getSuperDepartmentId())){
+                throw new BusinessException("请填写正确上级部门信息");
+            }
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("dept");
+        userPageHistory.setAct("modifyDepartmentBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return departmentMapper.updateBatch(departmentVo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public DepartmentListInfo getAllDepartment(Integer page, Integer pageSize, List<String> companyIds, String order, String sortby, DepartmentVo departmentVo) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        Integer start = null;
+        if(page!=null){
+            start = (page-1)*pageSize;
+        }
+        DepartmentListInfo departmentListInfo = new DepartmentListInfo();
+        userPageHistory.setCol("dept");
+        userPageHistory.setAct("getAllDepartment");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        List<DepartmentInfo> departmentInfos = departmentMapper.selectAll(start,pageSize,companyIds,order,sortby,departmentVo);
+        for(DepartmentInfo departmentInfo:departmentInfos){
+            if(departmentInfo.getSuperDepartmentId()!=null){
+                if(departmentMapper.selectByPrimaryKey(departmentInfo.getSuperDepartmentId())!=null){
+                    departmentInfo.setSuperDepartmentName(departmentMapper.selectByPrimaryKey(departmentInfo.getSuperDepartmentId()).getDepartmentName());
+                }else{
+                    departmentInfo.setSuperDepartmentName("无");
+                }
+            }
+        }
+        departmentListInfo.setDepartmentInfoList(departmentInfos);
+        departmentListInfo.setCount(departmentMapper.selectDepartmentCount(companyIds,departmentVo));
+        return departmentListInfo;
+    }
+
+    @Override
+    public String getNewDepartmentId() {
+        if(departmentMapper.selectAllDepIds()==null||departmentMapper.selectAllDepIds().size()==0){
+            return "1";
+        }else{
+            return getMaxIdNoSize(departmentMapper.selectAllDepIds());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyDepartment(Department department) {
+        if(department.getDepartmentId().equals(department.getSuperDepartmentId())){
+            throw new BusinessException("请填写正确上级部门信息");
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("dept");
+        userPageHistory.setAct("modifyDepartment");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return departmentMapper.updateByPrimaryKeySelective(department);
+    }
+
+    @Override
+    public List<Department> getDepartmentDownInfo(String companyId) {
+        if(companyId==null){
+            return null;
+        }
+        return departmentMapper.selectDownInfo(companyId);
+    }
+
+}

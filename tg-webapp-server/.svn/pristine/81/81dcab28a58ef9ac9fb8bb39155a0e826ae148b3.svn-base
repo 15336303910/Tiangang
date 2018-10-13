@@ -1,0 +1,189 @@
+package cn.plou.web.system.baseMessage.company.vo;
+
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Date;
+import java.util.List;
+
+public class CompanyVo {
+    private List<String> companyIds;
+    private String companyName;
+    private String industry;
+    private String superCompanyId;
+    private String companyType;
+    private String address;
+    private String companyNature;
+    private String companySummary;
+    private String city;
+    private String tel;
+    private String serviceTel;
+    private String email;
+    private String url;
+    private String longitude;
+    private String latitude;
+    private String notes;
+    private String proviance;
+    private String area;
+    private Date updateDate;
+    private String updateUser;
+
+    public String getProviance() {
+        return proviance;
+    }
+
+    public void setProviance(String proviance) {
+        this.proviance = proviance;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public List<String> getCompanyIds() {
+        return companyIds;
+    }
+
+    public void setCompanyIds(List<String> companyIds) {
+        this.companyIds = companyIds;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getSuperCompanyId() {
+        return superCompanyId;
+    }
+
+    public void setSuperCompanyId(String superCompanyId) {
+        this.superCompanyId = superCompanyId;
+    }
+
+    public String getCompanyType() {
+        return companyType;
+    }
+
+    public void setCompanyType(String companyType) {
+        this.companyType = companyType;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCompanyNature() {
+        return companyNature;
+    }
+
+    public void setCompanyNature(String companyNature) {
+        this.companyNature = companyNature;
+    }
+
+    public String getCompanySummary() {
+        return companySummary;
+    }
+
+    public void setCompanySummary(String companySummary) {
+        this.companySummary = companySummary;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getServiceTel() {
+        return serviceTel;
+    }
+
+    public void setServiceTel(String serviceTel) {
+        this.serviceTel = serviceTel;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+}

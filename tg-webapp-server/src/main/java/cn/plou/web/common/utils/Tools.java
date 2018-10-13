@@ -1,0 +1,624 @@
+package cn.plou.web.common.utils;
+
+import static cn.plou.web.common.constant.CKey.YMD;
+import static cn.plou.web.common.constant.CKey.YMDHMS__;
+import static cn.plou.web.common.constant.CKey.YMD_;
+import static cn.plou.web.common.constant.FuncKey.DATE_FORMAT;
+import static cn.plou.web.common.constant.FuncKey.DATE_TO_TIME_STR;
+import static cn.plou.web.common.constant.FuncKey.IS_BLANK;
+import static cn.plou.web.common.constant.FuncKey.TIME_STR_TO_DATE;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
+import cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+
+import cn.plou.web.common.constant.CKey;
+import cn.plou.web.common.exception.InvalidValueException;
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+
+/**
+ * 
+ *
+ * @Author : WangJiWei
+ * @Date : 2017年11月25日上午8:52:58
+ *
+ * @Comments :杂七杂八
+ *
+ */
+public class Tools {
+
+    private static final String ID_KEY = "10000";
+    private static NumberFormat numf = new DecimalFormat(ID_KEY);
+    private static Integer INCR_STEP = 1;// 递增梯度
+    private static final Logger log = LoggerFactory.getLogger(Tools.class);
+
+    /**
+     * 字符串处理
+     */
+	public static String strOpt(UnaryOperator<String> fun, String str) {
+		return fun.apply(str);
+	}
+
+	// 通过反射赋值
+	public static <T> void modelTrim(T model, T modelArm) {
+		Class<T> clazz = (Class<T>) model.getClass();
+		// 获取所有的bean中所有的成员变量
+		Field[] fields = clazz.getDeclaredFields();
+		for (int j = 0; j < fields.length; j++) {
+			// 获取所有的bean中变量类型为String的变量
+			if ("String".equals(fields[j].getType().getSimpleName())) {
+				try {
+					// 获取get方法名
+					String methodName = "get" + fields[j].getName().substring(0, 1).toUpperCase()
+							+ fields[j].getName().replaceFirst("\\w", "");
+					Method getMethod = clazz.getDeclaredMethod(methodName);
+					// 打破封装
+					getMethod.setAccessible(true);
+					// 得到该方法的值
+					Object methodValue = getMethod.invoke(model);
+					// 判断值是否为空或者为null,非的话这过滤前后空格
+					if (methodValue != null && !"".equals(methodValue)) {
+						// 获取set方法名
+						String setMethodName = "set" + fields[j].getName().substring(0, 1).toUpperCase()
+								+ fields[j].getName().replaceFirst("\\w", "");
+						// 得到get方法的Method对象,带参数
+						Class<T> clazz2 = (Class<T>) modelArm.getClass();
+						Method setMethod = clazz2.getDeclaredMethod(setMethodName, fields[j].getType());
+						setMethod.setAccessible(true);
+						// 赋值
+						setMethod.invoke(modelArm, (Object) String.valueOf(methodValue).trim());
+					}
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	// 关键代码 运行序列化和反序列化 进行深度拷贝
+	public static <T> List<T> deepCopy(List<T> src) throws IOException, ClassNotFoundException {
+		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+		ObjectOutputStream out = new ObjectOutputStream(byteOut);
+		out.writeObject(src);
+
+		ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
+		ObjectInputStream in = new ObjectInputStream(byteIn);
+		@SuppressWarnings("unchecked")
+		List<T> dest = (List<T>) in.readObject();
+		return dest;
+	}
+
+    /**
+     * 字符判断
+     */
+    public static Boolean is(Predicate<String> fun, String str) {
+	return fun.test(str);
+    }
+
+    /**
+     * 字符编码转换
+     */
+    public static String changeCharset(String str, Charset oldCharset, Charset newCharset)
+	    throws UnsupportedEncodingException {
+	return isNull(str) ? null : new String(str.getBytes(oldCharset), newCharset);
+    }
+
+    public static String isoToUtf(String str) throws UnsupportedEncodingException {
+	return changeCharset(str, Charsets.ISO_8859_1, Charsets.UTF_8);
+    }
+
+    /**
+     * 时间转化函数
+     */
+    public static String timeFunc(UnaryOperator<String> timeFormat, String format) {
+	return timeFormat.apply(format);
+    }
+
+    /**
+     * 时间转化函数
+     */
+    public static Date timeFunc(BiFunction<String, String, Date> timeToDate, String timeStr,
+	    String format) {
+	return timeToDate.apply(timeStr, format);
+    }
+
+    public static String timeFunc(BiFunction<Date, String, String> dateFunc, Date time,
+	    String format) {
+	return dateFunc.apply(time, format);
+    }
+
+    /**
+     * 字符是否为NULL或"",如果是空,返回true
+     */
+    public static Boolean isNull(String str) {
+	return is(IS_BLANK, str);
+    }
+
+    /**
+     * 字符是否相等
+     */
+    public static Boolean equals(String str1, String str2) {
+	return StringUtils.equals(str1, str2);
+    }
+
+    /**
+     * 集合是否有元素
+     */
+    public static <T> Boolean isNotEmpty(Collection<T> cons) {
+	return cons != null && cons.size() != 0;
+    }
+
+    /**
+     * <pre>
+     * 返回当前时间
+     * Format 默认:yyyy-MM-dd HH:mm:ss
+     * </pre>
+     */
+    public static String curTime(String format) {
+	return timeFunc(DATE_FORMAT, isNull(format) ? YMDHMS__ : format);
+    }
+
+    public static Date getDate() {
+	return new Date();
+    }
+
+    /**
+     * 返回当前时间戳
+     */
+    public static long currentTimeMillis() {
+	return Instant.now().toEpochMilli();
+    }
+
+    /**
+     * 时间字符串转日期
+     */
+    public static Date timeStrToDate(String timeStr, String timeStrFormat) {
+	return isNull(timeStr) ? null
+		: timeFunc(TIME_STR_TO_DATE, timeStr,
+			timeStrFormat = isNull(timeStrFormat) ? YMD_ : timeStrFormat);
+    }
+
+    /**
+     * 日期转字符串
+     */
+    public static String dateToTimeStr(Date time, String timeStrFormat) {
+	return timeFunc(DATE_TO_TIME_STR, time, isNull(timeStrFormat) ? YMDHMS__ : timeStrFormat);
+    }
+
+    public static String timeTF(String dateTime, long millisecond) {
+	Date t = timeStrToDate(dateTime, CKey.YMDHMS__);
+	return DateFormatUtils.format(t.getTime() + millisecond, YMDHMS__);
+    }
+
+    /**
+     * 当前时间字符串 <br>
+     * yyyy-MM-dd HH:mm:ss
+     */
+    public static String currentTime() {
+	return dateToTimeStr(getDate(), CKey.YMDHMS__);
+    }
+
+    /**
+     * 日期字符串转指定格式字符串
+     */
+    public static String timeFormat(String dateTime, String oldFormat, String newFormat) {
+	Date date = timeStrToDate(dateTime, oldFormat);
+	return dateToTimeStr(date, newFormat);
+    }
+
+    public static String dateChange(Date now, int days) {
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(now);
+	calendar.add(Calendar.DAY_OF_MONTH, days);
+	return dateToTimeStr(calendar.getTime(), CKey.YMD000);
+    }
+
+    public static String dateChange(Date now, int days, String format) {
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(now);
+	calendar.add(Calendar.DAY_OF_MONTH, days);
+	return dateToTimeStr(calendar.getTime(), format);
+    }
+
+    /**
+     * 
+     */
+    public static List<String> rangeDate(Date start, Date end) throws ParseException {
+	List<String> list = Lists.newArrayList();
+	list.add(dateToTimeStr(start, CKey.YMD_));
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(start);
+	while (calendar.getTime().compareTo(end) != 0) {
+	    calendar.add(Calendar.DAY_OF_MONTH, 1);
+	    list.add(dateToTimeStr(calendar.getTime(), CKey.YMD_));
+	}
+	return list;
+    }
+
+    /**
+     * 检查Obj是否为空
+     */
+    public static void checkNullOrEmpty(Object obj, String name) {
+	if (obj == null) {
+	    throw new InvalidValueException(name + " should not be null!");
+	}
+	if (isNull(obj.toString())) {
+	    throw new InvalidValueException(name + " should not be empty!");
+	}
+    }
+
+    public static String dateid() {
+	return DateFormatUtils.format(getDate(), YMD);
+    }
+
+    public static long formatTimestamp(long source) {
+	// source : Thu Apr 07 15:53:13 CST 2017
+	// return : Thu Apr 07 15:53:10 CST 2017
+	// 返回整10秒
+	return source / (1000 * 10) * (1000 * 10);
+    }
+
+    /**
+     * 编号
+     * 
+     * Rule : YYYYMMDD+5位的id , 从1开始 -> 2017092700001 , 2017092700002
+     */
+    public static Long generateNewID() {
+	return Long.parseLong(dateid() + numf.format(INCR_STEP));
+    }
+
+    /**
+     * 关闭IO流
+     */
+    public static void closeStream(java.io.Closeable stream) {
+	cleanup(log, stream);
+    }
+
+    public static void cleanup(Logger log, java.io.Closeable... closeables) {
+	for (java.io.Closeable c : closeables) {
+	    if (c != null) {
+		try {
+		    c.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    if (log != null) {
+			log.warn(e.getMessage());
+		    }
+		}
+	    }
+	}
+    }
+
+    /**
+     * 获取本地IP地址
+     * 
+     * @return
+     * @throws SocketException
+     */
+    public static String getLocalIP() throws SocketException {
+	String ip = "UnknownHost";
+	for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
+		.hasMoreElements();) {
+	    NetworkInterface intf = en.nextElement();
+	    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr
+		    .hasMoreElements();) {
+		InetAddress inetAddress = enumIpAddr.nextElement();
+		if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()
+			&& inetAddress.isSiteLocalAddress()) {
+		    ip = inetAddress.getHostAddress();
+		}
+	    }
+	}
+	return ip;
+    }
+
+    /**
+     * 获取进程ID
+     * 
+     * @return
+     */
+    public static String getProcessId() {
+	return ManagementFactory.getRuntimeMXBean().getName();
+    }
+
+    public final static class JDBCUtils {
+	/**
+	 * 释放数据库连接
+	 */
+	public static void releaseResource(Connection con, PreparedStatement ps, ResultSet rs) {
+
+	    if (null != rs) {
+		try {
+		    rs.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	    if (null != ps) {
+		try {
+		    ps.close();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	    if (null != con) {
+		try {
+		    con.close();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
+    }
+	
+  
+    public final static class Utf8 {
+	private static final Charset CHARSET = Charset.forName("UTF-8");
+
+	public static byte[] encode(CharSequence string) {
+	    try {
+		ByteBuffer bytes = CHARSET.newEncoder().encode(CharBuffer.wrap(string));
+		byte[] bytesCopy = new byte[bytes.limit()];
+		System.arraycopy(bytes.array(), 0, bytesCopy, 0, bytes.limit());
+		return bytesCopy;
+	    } catch (CharacterCodingException e) {
+		throw new IllegalArgumentException("Encoding failed", e);
+	    }
+	}
+
+	public static String decode(byte[] bytes) {
+	    try {
+		return CHARSET.newDecoder().decode(ByteBuffer.wrap(bytes)).toString();
+	    } catch (CharacterCodingException e) {
+		throw new IllegalArgumentException("Decoding failed", e);
+	    }
+	}
+    }
+	public static Integer getMaxId(List<String> stringList,Integer beginIndex,Integer endIndex){
+		List<Integer> integerList = new ArrayList<Integer>();
+		for(String singleString:stringList){
+			integerList.add(Integer.parseInt(singleString.substring(beginIndex,endIndex)));
+		}
+		Collections.sort(integerList);
+		Collections.reverse(integerList);
+		Integer max = integerList.get(0)+1;
+		return max;
+	}
+
+	public static String getMaxIdNoSize(List<String> stringList){
+		List<Integer> integerList = new ArrayList<Integer>();
+		for(String singleString:stringList){
+			integerList.add(Integer.parseInt(singleString));
+		}
+		Collections.sort(integerList);
+		Collections.reverse(integerList);
+		Integer max = integerList.get(0)+1;
+		return max.toString();
+	}
+
+	public static List removeDuplicate(List list){
+    	Set setTemp = new HashSet();
+		List listTemp = new ArrayList();
+		for(int i=0;i<list.size();i++){
+			setTemp.add(list.get(i));
+		}
+		listTemp.addAll(setTemp);
+		return listTemp;
+	}
+
+	public static int getPage(int rowCount, int pageSize) {
+		if (rowCount % pageSize != 0) {
+			rowCount = rowCount / pageSize + 1;
+		} else {
+			rowCount = rowCount / pageSize;
+		}
+		return rowCount;
+	}
+	/**
+     * 测试
+     * 
+     * @Author : WangJiwei
+     * @Date : 2017年11月25日上午9:31:42
+     * @Comments :
+     * @param args
+     *
+     */
+    public static void main(String[] args) throws Exception {
+
+	/*System.out.println(isNull(""));
+	System.out.println(isNull(null));
+	System.out.println(isNull(" 1 "));
+	System.out.println(isNull("      "));
+
+	System.out.println(curTime(null));
+	TimeUnit.SECONDS.sleep(2);
+	System.out.println(curTime(null));
+	System.out.println(timeStrToDate("2017-11-25 09:30:02", null));
+
+	System.out.println(timeFormat("2017-11-25 09:30:02", CKey.YMDHMS__, CKey.YMD000));
+	// System.out.println(EncodeEnum.ISO_8859_1.getName());
+
+	System.out.println(getLocalIP());
+	System.out.println(getProcessId());
+
+	String[] arr = { "a", "b", "c" };
+	System.out.println(StringUtils.join(arr, ","));*/
+//	String s1 = new String();
+//	s1 = "a1";
+//	String s2 = new String();
+//	s2 = "a1";
+//	List<String> list = new ArrayList<>();
+//	list.add(s1);
+//	list.add(s2);
+//	System.out.println(removeDuplicate(list));
+
+
+		getModelAttriButeType(new CheckAccountListVO());
+
+    }
+    
+   /**
+    * 从map中获取字段，如果获取不到返回空
+    * @param map
+    * @param mapName
+    * @return
+    */
+	public static String getMapValue(Map<String, Object> map, String mapName) {
+		if (map.get(mapName) != null) {
+			return map.get(mapName).toString();
+		}
+		return null;
+	}
+	
+	public static String genorInByList(List<String> list) {
+		String str = "";
+		if (list.size() > 0) {
+			str = "'" + list.get(0) + "'";
+			for (int i = 1; i < list.size(); i++) {
+				str += ",'" + list.get(i) + "'";
+			}
+		}
+		return str;
+	}
+	
+	public static String genorInByStringSplit(String strids) {
+		String str = "";
+		if (strids != null) {
+			List<String> list = Arrays.asList(strids.split(","));
+			if (list.size() > 0) {
+				str = "'" + list.get(0) + "'";
+				for (int i = 1; i < list.size(); i++) {
+					str += ",'" + list.get(i) + "'";
+				}
+			}
+		}
+		return str;
+	}
+	public static BigDecimal formatBigDecimalTo2(BigDecimal doub){
+		return formatBigDecimal(doub,2);
+	}
+	public static BigDecimal formatBigDecimal(BigDecimal doub, int sizeLen){
+		if(doub == null){
+			doub = new BigDecimal(0);
+			return doub;
+		}
+		BigDecimal d = doub.setScale(sizeLen, BigDecimal.ROUND_HALF_DOWN);
+		return  d;
+	}
+	
+	public static <T> void addMap(String key, Map<String, List<T>> mapInfoList, T info) {
+  	if(mapInfoList.containsKey(key)){
+  		mapInfoList.get(key).add(info);
+    }else{
+      List<T> infoList = new ArrayList<>();
+      infoList.add(info);
+      mapInfoList.put(key, infoList);
+    }
+	}
+	
+	public static <T> Boolean addMap(Map<String, List<T>> mapInfoList, List<T> infoList, Method method) {
+		for (T info : infoList) {
+			String key = "";
+			try {
+				key = (String) method.invoke(info, null);
+			} catch (Exception e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+				return false;
+			}
+			if (mapInfoList.containsKey(key)) {
+				mapInfoList.get(key).add(info);
+			} else {
+				List<T> InfoList = new ArrayList<>();
+				InfoList.add(info);
+				mapInfoList.put(key, InfoList);
+			}
+		}
+		return true;
+	}
+	public static String nkey = "-";
+
+	/**
+	 * java 读取文件中的属性类型
+	 * youbc  2018年9月30日10:03:06
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	public static Map<String,String> getModelAttriButeType(Object model) {
+		Field[] field = model.getClass().getDeclaredFields();        //获取实体类的所有属性，返回Field数组
+		Map<String,String> map = new HashMap<String, String>();
+		for(int j=0 ; j<field.length ; j++){     //遍历所有属性
+			String name = field[j].getName();    //获取属性的名字
+
+			//System.out.print("attribute name:"+name);
+			name = name.substring(0,1).toUpperCase()+name.substring(1); //将属性的首字符大写，方便构造get，set方法
+			String type = field[j].getGenericType().toString();    //获取属性的类型
+              /*if(type.equals("class java.lang.String")){   //如果type是类类型，则前面包含"class "，后面跟类名
+                  Method m = model.getClass().getMethod("get"+name);
+                  String value = (String) m.invoke(model);    //调用getter方法获取属性值
+                  if(value != null){
+
+                      System.out.println("attribute value:"+value);
+                  }
+              }*/
+			type = type.replace("class ", "");
+			//System.out.println("=>:"+type);
+			map.put(name, type);
+
+		}
+		System.out.println(map);
+		return map;
+	}
+
+	public static String convertNullToEmpty(String meterId) {
+		return (meterId == null) ? "" : meterId;
+	}
+}

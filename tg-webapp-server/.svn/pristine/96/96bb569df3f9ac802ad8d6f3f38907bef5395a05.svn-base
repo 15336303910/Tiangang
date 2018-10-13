@@ -1,0 +1,23 @@
+package cn.plou.web.balance.regulate.service.impl;
+
+import cn.plou.web.balance.distribution.dao.BalanceValveDataNowMapper;
+import cn.plou.web.balance.distribution.entity.BalanceValveDataNow;
+import cn.plou.web.balance.distribution.vo.BalanceValveDataNowVo;
+import cn.plou.web.balance.regulate.service.DeviationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DeviationServiceImpl implements DeviationService {
+    @Autowired
+    private BalanceValveDataNowMapper balanceValveDataNowMapper;
+    @Override
+    public BalanceValveDataNowVo getDeviationsByBalanceValve(String meterId) {
+        BalanceValveDataNow balanceValveDataNow = balanceValveDataNowMapper.selectByPrimaryKey(meterId);
+        BalanceValveDataNowVo balanceValveDataNowVo = new BalanceValveDataNowVo();
+        if(balanceValveDataNow!=null){
+            //balanceValveDataNowVo.setTemperatureDeviation(balanceValveDataNow.getTemperatureThreshold()-balanceValveDataNow.getSetTemperature());
+        }
+        return null;
+    }
+}

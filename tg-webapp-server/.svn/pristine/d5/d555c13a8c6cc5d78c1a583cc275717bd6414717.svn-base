@@ -1,0 +1,36 @@
+package cn.plou.web.mobile.station.service;
+
+import java.util.List;
+import java.util.Map;
+
+import cn.plou.web.mobile.station.query.AlarmsQuery;
+import cn.plou.web.station.alarm.entity.AlarmInfo;
+
+/** 
+ * @Project : tg-webapp-server 
+ * @File : AlarmService.java
+ * @Author : WangJiWei
+ * @Date : 2018年10月9日下午12:53:08 
+ *
+ * @Comments : 报警
+ * 
+ */
+public interface AlarmService {
+
+    /**
+     * 报警统计
+     */
+    public Map<String, Object> findAlarmStatistics(List<String> stationIds) throws Exception;
+
+    /**
+     * 报警日志查询
+     */
+    public List<AlarmInfo> findAlarms(AlarmsQuery query) throws Exception ;
+
+    /**
+     * 确认报警
+     */
+    public void verifyAlarm(String userId, List<String> alarmIds);
+    
+}
+

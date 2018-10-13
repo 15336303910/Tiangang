@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.zoneArea.dao.ZoneAreaMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.zoneArea.entity.ZoneArea">
+    <id column="z_a_id" jdbcType="VARCHAR" property="zAId" />
+    <result column="z_a_areaid" jdbcType="VARCHAR" property="zAAreaid" />
+    <result column="z_a_area" jdbcType="VARCHAR" property="zAArea" />
+    <result column="z_a_cityid" jdbcType="VARCHAR" property="zACityid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    z_a_id, z_a_areaid, z_a_area, z_a_cityid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from zone_area_info
+    where z_a_id = #{zAId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectZoneAreaByZACityid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zone_area_info
+    where z_a_cityid = #{zACityid,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from zone_area_info
+    where z_a_id = #{zAId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.zoneArea.entity.ZoneArea">
+    insert into zone_area_info (z_a_id, z_a_areaid, z_a_area, 
+      z_a_cityid)
+    values (#{zAId,jdbcType=VARCHAR}, #{zAAreaid,jdbcType=VARCHAR}, #{zAArea,jdbcType=VARCHAR}, 
+      #{zACityid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.zoneArea.entity.ZoneArea">
+    insert into zone_area_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="zAId != null">
+        z_a_id,
+      </if>
+      <if test="zAAreaid != null">
+        z_a_areaid,
+      </if>
+      <if test="zAArea != null">
+        z_a_area,
+      </if>
+      <if test="zACityid != null">
+        z_a_cityid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="zAId != null">
+        #{zAId,jdbcType=VARCHAR},
+      </if>
+      <if test="zAAreaid != null">
+        #{zAAreaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zAArea != null">
+        #{zAArea,jdbcType=VARCHAR},
+      </if>
+      <if test="zACityid != null">
+        #{zACityid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.zoneArea.entity.ZoneArea">
+    update zone_area_info
+    <set>
+      <if test="zAAreaid != null">
+        z_a_areaid = #{zAAreaid,jdbcType=VARCHAR},
+      </if>
+      <if test="zAArea != null">
+        z_a_area = #{zAArea,jdbcType=VARCHAR},
+      </if>
+      <if test="zACityid != null">
+        z_a_cityid = #{zACityid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where z_a_id = #{zAId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.zoneArea.entity.ZoneArea">
+    update zone_area_info
+    set z_a_areaid = #{zAAreaid,jdbcType=VARCHAR},
+      z_a_area = #{zAArea,jdbcType=VARCHAR},
+      z_a_cityid = #{zACityid,jdbcType=VARCHAR}
+    where z_a_id = #{zAId,jdbcType=VARCHAR}
+  </update>
+</mapper>

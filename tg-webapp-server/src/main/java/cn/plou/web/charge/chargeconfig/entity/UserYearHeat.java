@@ -1,0 +1,324 @@
+package cn.plou.web.charge.chargeconfig.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class UserYearHeat {
+    private String primaryId;
+
+    private String consumerId;
+
+    private String annual;
+
+    private BigDecimal heatingArea;
+
+    private BigDecimal payArea;
+
+    private BigDecimal sealArea;
+
+    private String areaPriceType;
+
+    private String heatUserType;
+
+    private BigDecimal prePrice;
+
+    private BigDecimal advHeatCost;
+
+    private BigDecimal sumReceivable;
+
+    private BigDecimal sumAccount;
+
+    private BigDecimal marginNow;
+
+    private String payOver;
+
+    private String heatingStatus;
+
+    private String sysautoHeatingStatus;
+
+    private String aroundHeating;
+
+    private BigDecimal totalValue;
+
+    private String companyId;
+
+    private Date actbeginTime;
+
+    private Date actendTime;
+
+    private BigDecimal heatTarget;
+
+    private String rowno;
+
+    private String notes;
+
+    private String memo1;
+
+    private String memo2;
+
+    private Date createDate;
+
+    private String createUser;
+
+    private Date updateDate;
+
+    private String updateUser;
+    private String name;
+    private String tel;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId == null ? null : primaryId.trim();
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId == null ? null : consumerId.trim();
+    }
+
+    public String getAnnual() {
+        return annual;
+    }
+
+    public void setAnnual(String annual) {
+        this.annual = annual == null ? null : annual.trim();
+    }
+
+    public BigDecimal getHeatingArea() {
+        return heatingArea;
+    }
+
+    public void setHeatingArea(BigDecimal heatingArea) {
+        this.heatingArea = heatingArea;
+    }
+
+    public BigDecimal getPayArea() {
+        return payArea;
+    }
+
+    public void setPayArea(BigDecimal payArea) {
+        this.payArea = payArea;
+    }
+
+    public BigDecimal getSealArea() {
+        return sealArea;
+    }
+
+    public void setSealArea(BigDecimal sealArea) {
+        this.sealArea = sealArea;
+    }
+
+    public String getAreaPriceType() {
+        return areaPriceType;
+    }
+
+    public void setAreaPriceType(String areaPriceType) {
+        this.areaPriceType = areaPriceType == null ? null : areaPriceType.trim();
+    }
+
+    public String getHeatUserType() {
+        return heatUserType;
+    }
+
+    public void setHeatUserType(String heatUserType) {
+        this.heatUserType = heatUserType == null ? null : heatUserType.trim();
+    }
+
+    public BigDecimal getPrePrice() {
+        return prePrice;
+    }
+
+    public void setPrePrice(BigDecimal prePrice) {
+        this.prePrice = prePrice;
+    }
+
+    public BigDecimal getAdvHeatCost() {
+        return advHeatCost;
+    }
+
+    public void setAdvHeatCost(BigDecimal advHeatCost) {
+        this.advHeatCost = advHeatCost;
+    }
+
+    public BigDecimal getSumReceivable() {
+        return sumReceivable;
+    }
+
+    public void setSumReceivable(BigDecimal sumReceivable) {
+        this.sumReceivable = sumReceivable;
+    }
+
+    public BigDecimal getSumAccount() {
+        return sumAccount;
+    }
+
+    public void setSumAccount(BigDecimal sumAccount) {
+        this.sumAccount = sumAccount;
+    }
+
+    public BigDecimal getMarginNow() {
+        return marginNow;
+    }
+
+    public void setMarginNow(BigDecimal marginNow) {
+        this.marginNow = marginNow;
+    }
+
+    public String getPayOver() {
+        return payOver;
+    }
+
+    public void setPayOver(String payOver) {
+        this.payOver = payOver == null ? null : payOver.trim();
+    }
+
+    public String getHeatingStatus() {
+        return heatingStatus;
+    }
+
+    public void setHeatingStatus(String heatingStatus) {
+        this.heatingStatus = heatingStatus == null ? null : heatingStatus.trim();
+    }
+
+    public String getSysautoHeatingStatus() {
+        return sysautoHeatingStatus;
+    }
+
+    public void setSysautoHeatingStatus(String sysautoHeatingStatus) {
+        this.sysautoHeatingStatus = sysautoHeatingStatus == null ? null : sysautoHeatingStatus.trim();
+    }
+
+    public String getAroundHeating() {
+        return aroundHeating;
+    }
+
+    public void setAroundHeating(String aroundHeating) {
+        this.aroundHeating = aroundHeating == null ? null : aroundHeating.trim();
+    }
+
+    public BigDecimal getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(BigDecimal totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId == null ? null : companyId.trim();
+    }
+
+    public Date getActbeginTime() {
+        return actbeginTime;
+    }
+
+    public void setActbeginTime(Date actbeginTime) {
+        this.actbeginTime = actbeginTime;
+    }
+
+    public Date getActendTime() {
+        return actendTime;
+    }
+
+    public void setActendTime(Date actendTime) {
+        this.actendTime = actendTime;
+    }
+
+    public BigDecimal getHeatTarget() {
+        return heatTarget;
+    }
+
+    public void setHeatTarget(BigDecimal heatTarget) {
+        this.heatTarget = heatTarget;
+    }
+
+    public String getRowno() {
+        return rowno;
+    }
+
+    public void setRowno(String rowno) {
+        this.rowno = rowno == null ? null : rowno.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
+    }
+
+    public String getMemo1() {
+        return memo1;
+    }
+
+    public void setMemo1(String memo1) {
+        this.memo1 = memo1 == null ? null : memo1.trim();
+    }
+
+    public String getMemo2() {
+        return memo2;
+    }
+
+    public void setMemo2(String memo2) {
+        this.memo2 = memo2 == null ? null : memo2.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser == null ? null : updateUser.trim();
+    }
+}

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.monitor.dao.WeatherDataDao">
+
+	<select id="get" resultType="cn.plou.web.heatManage.monitor.domain.WeatherDataDO">
+		select `rowno`,`city`,`read_time`,`temperature`,`weather`,`spead`,`light`,`humidity`,`notes`,`create_date`,`create_user`,`update_date`,`update_user` from weather_data where rowno = #{value}
+	</select>
+
+	<select id="list" resultType="cn.plou.web.heatManage.monitor.domain.WeatherDataDO">
+		select `rowno`,`city`,`read_time`,`temperature`,`weather`,`spead`,`light`,`humidity`,`notes`,`create_date`,`create_user`,`update_date`,`update_user` from weather_data
+        <where>  
+        		  read_time between #{beginTime} and #{endTime} 
+		  		  <if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
+		  		  <if test="city != null and city != ''"> and city = #{city} </if>
+		  		  <if test="temperature != null and temperature != ''"> and temperature = #{temperature} </if>
+		  		  <if test="weather != null and weather != ''"> and weather = #{weather} </if>
+		  		  <if test="spead != null and spead != ''"> and spead = #{spead} </if>
+		  		  <if test="light != null and light != ''"> and light = #{light} </if>
+		  		  <if test="humidity != null and humidity != ''"> and humidity = #{humidity} </if>
+		  		  <if test="notes != null and notes != ''"> and notes = #{notes} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		  <if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by rowno desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from weather_data
+		 <where>  
+		  		  <if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
+		  		  <if test="city != null and city != ''"> and city = #{city} </if>
+		  		  <if test="readTime != null and readTime != ''"> and read_time = #{readTime} </if>
+		  		  <if test="temperature != null and temperature != ''"> and temperature = #{temperature} </if>
+		  		  <if test="weather != null and weather != ''"> and weather = #{weather} </if>
+		  		  <if test="spead != null and spead != ''"> and spead = #{spead} </if>
+		  		  <if test="light != null and light != ''"> and light = #{light} </if>
+		  		  <if test="humidity != null and humidity != ''"> and humidity = #{humidity} </if>
+		  		  <if test="notes != null and notes != ''"> and notes = #{notes} </if>
+		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+		  		  <if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+		  		  <if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+		  		  <if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="cn.plou.web.heatManage.monitor.domain.WeatherDataDO">
+		insert into weather_data
+		(
+			`rowno`, 
+			`city`, 
+			`read_time`, 
+			`temperature`, 
+			`weather`, 
+			`spead`, 
+			`light`, 
+			`humidity`, 
+			`notes`, 
+			`create_date`, 
+			`create_user`, 
+			`update_date`, 
+			`update_user`
+		)
+		values
+		(
+			#{rowno}, 
+			#{city}, 
+			#{readTime}, 
+			#{temperature}, 
+			#{weather}, 
+			#{spead}, 
+			#{light}, 
+			#{humidity}, 
+			#{notes}, 
+			#{createDate}, 
+			#{createUser}, 
+			#{updateDate}, 
+			#{updateUser}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="cn.plou.web.heatManage.monitor.domain.WeatherDataDO">
+		update weather_data 
+		<set>
+			<if test="city != null">`city` = #{city}, </if>
+			<if test="readTime != null">`read_time` = #{readTime}, </if>
+			<if test="temperature != null">`temperature` = #{temperature}, </if>
+			<if test="weather != null">`weather` = #{weather}, </if>
+			<if test="spead != null">`spead` = #{spead}, </if>
+			<if test="light != null">`light` = #{light}, </if>
+			<if test="humidity != null">`humidity` = #{humidity}, </if>
+			<if test="notes != null">`notes` = #{notes}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createUser != null">`create_user` = #{createUser}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="updateUser != null">`update_user` = #{updateUser}</if>
+		</set>
+		where rowno = #{rowno}
+	</update>
+	
+	<delete id="remove">
+		delete from weather_data where rowno = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from weather_data where rowno in 
+		<foreach item="rowno" collection="array" open="(" separator="," close=")">
+			#{rowno}
+		</foreach>
+	</delete>
+
+</mapper>

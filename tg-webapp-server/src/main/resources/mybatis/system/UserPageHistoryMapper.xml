@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.userPageHistory.dao.UserPageHistoryMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="intime" jdbcType="TIMESTAMP" property="intime" />
+    <result column="col" jdbcType="VARCHAR" property="col" />
+    <result column="act" jdbcType="VARCHAR" property="act" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, user_code, username, intime, col, act
+  </sql>
+  <!--<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+    <!--select -->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from user_page_history-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</select>-->
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.String">-->
+    <!--delete from user_page_history-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</delete>-->
+  <!--<insert id="insert" parameterType="cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory">-->
+    <!--insert into user_page_history (id, user_code, username, -->
+      <!--intime, col, act)-->
+    <!--values (#{id,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, -->
+      <!--#{intime,jdbcType=TIMESTAMP}, #{col,jdbcType=VARCHAR}, #{act,jdbcType=VARCHAR})-->
+  <!--</insert>-->
+  <insert id="insertUserPageHistory" parameterType="cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory">
+    insert into user_page_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="intime != null">
+        intime,
+      </if>
+      <if test="col != null">
+        col,
+      </if>
+      <if test="act != null">
+        act,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null">
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="intime != null">
+        #{intime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="col != null">
+        #{col,jdbcType=VARCHAR},
+      </if>
+      <if test="act != null">
+        #{act,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectAllIds" resultType="java.lang.String">
+    select
+    primary_id
+    from user_page_history
+  </select>
+
+  <select id="selectAllUserPageHistory" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_page_history
+    where 1 = 1
+    <if test="pageName!= null">
+      and col=#{pageName}
+    </if>
+    <if test="userPageHistoryVo != null">
+      <if test="userPageHistoryVo.userCode != null">
+        and user_code = #{userPageHistoryVo.userCode}
+      </if>
+      <if test="userPageHistoryVo.username != null">
+        and username LIKE concat('%',#{userPageHistoryVo.username},'%')
+      </if>
+      <if test="userPageHistoryVo.startTime != null">
+        and intime >= #{userPageHistoryVo.startTime}
+      </if>
+      <if test="userPageHistoryVo.endTime != null">
+        and #{userPageHistoryVo.endTime} >= intime
+      </if>
+      <if test="userPageHistoryVo.col != null">
+        and col = #{userPageHistoryVo.col}
+      </if>
+      <if test="userPageHistoryVo.act != null">
+        and act = #{userPageHistoryVo.act}
+      </if>
+    </if>
+    <if test="userCodes!=null">
+      <if test="userCodes.size()!=0">
+        and user_code in
+        <foreach collection="userCodes" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="sortby == null">
+      order by intime
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <!--<if test="page != null">-->
+      <!--<if test="pageSize != null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <!--<update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory">-->
+    <!--update user_page_history-->
+    <!--<set>-->
+      <!--<if test="userCode != null">-->
+        <!--user_code = #{userCode,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="username != null">-->
+        <!--username = #{username,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="intime != null">-->
+        <!--intime = #{intime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      <!--<if test="col != null">-->
+        <!--col = #{col,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="act != null">-->
+        <!--act = #{act,jdbcType=VARCHAR},-->
+      <!--</if>-->
+    <!--</set>-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+  <!--<update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory">-->
+    <!--update user_page_history-->
+    <!--set user_code = #{userCode,jdbcType=VARCHAR},-->
+      <!--username = #{username,jdbcType=VARCHAR},-->
+      <!--intime = #{intime,jdbcType=TIMESTAMP},-->
+      <!--col = #{col,jdbcType=VARCHAR},-->
+      <!--act = #{act,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+</mapper>

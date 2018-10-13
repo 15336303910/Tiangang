@@ -1,0 +1,177 @@
+package cn.plou.web.system.baseMessage.system.service.impl;
+
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.idgenerater.service.IDGenerater;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.station.dao.StationMapper;
+import cn.plou.web.system.baseMessage.station.entity.Station;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.baseMessage.system.dao.SystemMapper;
+import cn.plou.web.system.baseMessage.system.entity.System;
+import cn.plou.web.system.baseMessage.system.service.SystemService;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemListInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemVo;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static cn.plou.web.common.utils.Tools.getMaxId;
+
+@Component
+public class SystemServiceImpl implements SystemService {
+    @Autowired
+    private SystemMapper systemMapper;
+    @Autowired
+    private StationMapper stationMapper;
+    @Autowired
+    private CompanyService companyService;
+    @Autowired
+    private StationService stationService;
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+    @Autowired
+    private IDGenerater idGenerater;
+    /*@Override
+    public List<SystemInfo> getAllSystem(Integer page,Integer pageSize,String order, String sortby, String companyId, String stationId, SystemVo systemVo) {
+        List<String> stationIds = new ArrayList<>();
+        Integer start = null;
+        if(page!=null){
+            start = (page-1)*pageSize;
+        }
+        if(stationId!=null){
+            stationIds.add(stationId);
+        }else{
+            stationIds.addAll(stationService.getStationIdList(companyId, stationId));
+        }
+
+        *//*if(companyId!=null){
+            for(Station station:stationMapper.selectStationByCompanyId(companyId)){
+                stationIds.add(station.getStationId());
+            }
+        }else if(stationId!=null){
+            stationIds.add(stationId);
+        }else{
+            for(Station station:stationMapper.selectStationByCompanyId(Constant.companyId)){
+                stationIds.add(station.getStationId());
+            }
+        }*//*
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("getAllSystem");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return systemMapper.selectAllSystem(start,pageSize,order,sortby,stationIds,systemVo);
+    }*/
+    @Override
+    public SystemListInfo getAllSystem(Integer page, Integer pageSize, String order, String sortby, String companyId, String stationId, SystemVo systemVo) {
+        List<String> companyIds = new ArrayList<>();
+        Integer start = null;
+        if(page!=null){
+            start = (page-1)*pageSize;
+        }
+        SystemListInfo systemListInfo = new SystemListInfo();
+        companyIds.addAll(companyService.getCompanyIdsByCompanyId(companyId));
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("getAllSystem");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        systemListInfo.setSystemInfoList(systemMapper.selectAllSystem(start,pageSize,order,sortby,companyIds,stationId,systemVo));
+        systemListInfo.setCount(systemMapper.selectSystemListCount(companyIds,stationId,systemVo));
+        return systemListInfo;
+    }
+
+    @Override
+    public System getSystemById(String systemId) {
+        return systemMapper.selectByPrimaryKey(systemId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteSystemBatch(List<String> systemIds) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("deleteSystemBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return systemMapper.deletSystemeBatchByIds(systemIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addSystem(System system) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("addSystem");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return systemMapper.insertSelective(system);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifySystemBatch(SystemVo systemVo) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("modifySystemBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return systemMapper.updateBatch(systemVo);
+    }
+
+    @Override
+    public String getNewSystemId() {
+    	return idGenerater.generateSystemId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifySystem(System system) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("system");
+        userPageHistory.setAct("modifySystem");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return systemMapper.updateByPrimaryKeySelective(system);
+    }
+
+    @Override
+    public List<String> getAllSystemIds() {
+        return systemMapper.selectAllSyetemIds();
+    }
+
+		@Override
+		public List<SystemInfo> getSystemByIds(List<String> systemIdAndName) {
+			return systemMapper.getSystemByIds(systemIdAndName);
+		}
+
+		@Override
+		public Integer getMaxSystemId() {
+			Integer index = 0;
+			String id = systemMapper.getMaxSystemId();
+			if (id != null && !id.isEmpty()) {
+				index = Integer.valueOf(id);
+			}
+			return index;
+		}
+
+		@Override
+		public Map<String, SystemInfo> getSystemByIdAndToMap(Company company, Map<String, Map<String, SystemInfo>> mapSystem) {
+			Map<String, SystemInfo> map = mapSystem.get(company.getCompanyId());
+			if(map == null){
+				map = new HashMap<String, SystemInfo>();
+				List<String> companyIds = new ArrayList<>();
+				companyIds.add(company.getCompanyId());
+				List<SystemInfo> list = systemMapper.selectAllSystem(0,10000,null,null,companyIds,null,null);
+				for(SystemInfo info:list){
+					map.put(info.getSystemName(), info);
+				}
+				mapSystem.put(company.getCompanyId(), map);
+			}
+			return map;
+		}
+}

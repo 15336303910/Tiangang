@@ -1,0 +1,523 @@
+package cn.plou.web.system.meterMessage.meter.vo;
+
+import io.swagger.annotations.ApiModelProperty;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+public class MeterVo {
+
+    private List<String> meterIds;
+
+    private String rowno;
+    @ApiModelProperty(required = true)
+    private String consumerId;
+
+    private String address1st;
+
+    @ApiModelProperty(required = true)
+    private String address2nd;
+
+    @ApiModelProperty(required = true)
+    private String protocol;
+
+    private String mbusId;
+
+    private String mbusPro;
+
+    private String mbusReadmodelId;
+
+    private String repeaterId;
+
+    @ApiModelProperty(required = true)
+    private String meterType;
+
+    private String simCard;
+
+    private String runningState;
+
+    private String installAddress;
+
+    private Date meterErrorTime;
+
+    private String meterPosition;
+
+    private String superMeterId;
+
+    private String valveMeterId;
+
+    private String mainMeterId;
+
+    private Date useStartDate;
+
+    private Date nextCheckTime;
+
+    private BigDecimal installHeight;
+
+    private String longitude;
+
+    private String latitude;
+
+    @ApiModelProperty(required = true)
+    private String companyId;
+
+    @ApiModelProperty(required = true)
+    private String positionKey;
+
+    private String address;
+
+    private String notes;
+
+    private BigDecimal basecode;
+
+    private String meterSubtype;
+
+    private String steel;
+
+    private String waterAddress;
+
+    private String meterState;
+
+    private String factory;
+
+    private String diameter;
+
+    private BigDecimal precisiona;
+
+    private String softVer;
+
+    private String hardVer;
+
+    private BigDecimal commonFlow;
+
+    private BigDecimal minimumFlow;
+
+    private BigDecimal temperatureDiffer;
+
+    private BigDecimal temperatureRange;
+
+    private String baudRate;
+
+    private String maxBound;
+
+    private BigDecimal limtspeed;
+
+    private Integer ctrlflag;
+
+    private Integer isvalid;
+
+    public List<String> getMeterIds() {
+        return meterIds;
+    }
+
+    public void setMeterIds(List<String> meterIds) {
+        this.meterIds = meterIds;
+    }
+
+    public String getRowno() {
+        return rowno;
+    }
+
+    public void setRowno(String rowno) {
+        this.rowno = rowno;
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public String getAddress1st() {
+        return address1st;
+    }
+
+    public void setAddress1st(String address1st) {
+        this.address1st = address1st;
+    }
+
+    public String getAddress2nd() {
+        return address2nd;
+    }
+
+    public void setAddress2nd(String address2nd) {
+        this.address2nd = address2nd;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getMbusId() {
+        return mbusId;
+    }
+
+    public void setMbusId(String mbusId) {
+        this.mbusId = mbusId;
+    }
+
+    public String getMbusPro() {
+        return mbusPro;
+    }
+
+    public void setMbusPro(String mbusPro) {
+        this.mbusPro = mbusPro;
+    }
+
+    public String getMbusReadmodelId() {
+        return mbusReadmodelId;
+    }
+
+    public void setMbusReadmodelId(String mbusReadmodelId) {
+        this.mbusReadmodelId = mbusReadmodelId;
+    }
+
+    public String getRepeaterId() {
+        return repeaterId;
+    }
+
+    public void setRepeaterId(String repeaterId) {
+        this.repeaterId = repeaterId;
+    }
+
+    public String getMeterType() {
+        return meterType;
+    }
+
+    public void setMeterType(String meterType) {
+        this.meterType = meterType;
+    }
+
+    public String getSimCard() {
+        return simCard;
+    }
+
+    public void setSimCard(String simCard) {
+        this.simCard = simCard;
+    }
+
+    public String getRunningState() {
+        return runningState;
+    }
+
+    public void setRunningState(String runningState) {
+        this.runningState = runningState;
+    }
+
+    public String getInstallAddress() {
+        return installAddress;
+    }
+
+    public void setInstallAddress(String installAddress) {
+        this.installAddress = installAddress;
+    }
+
+    public Date getMeterErrorTime() {
+        return meterErrorTime;
+    }
+
+    public void setMeterErrorTime(Date meterErrorTime) {
+        this.meterErrorTime = meterErrorTime;
+    }
+
+    public String getMeterPosition() {
+        return meterPosition;
+    }
+
+    public void setMeterPosition(String meterPosition) {
+        this.meterPosition = meterPosition;
+    }
+
+    public String getSuperMeterId() {
+        return superMeterId;
+    }
+
+    public void setSuperMeterId(String superMeterId) {
+        this.superMeterId = superMeterId;
+    }
+
+    public String getValveMeterId() {
+        return valveMeterId;
+    }
+
+    public void setValveMeterId(String valveMeterId) {
+        this.valveMeterId = valveMeterId;
+    }
+
+    public String getMainMeterId() {
+        return mainMeterId;
+    }
+
+    public void setMainMeterId(String mainMeterId) {
+        this.mainMeterId = mainMeterId;
+    }
+
+    public Date getUseStartDate() {
+        return useStartDate;
+    }
+
+    public void setUseStartDate(Date useStartDate) {
+        this.useStartDate = useStartDate;
+    }
+
+    public Date getNextCheckTime() {
+        return nextCheckTime;
+    }
+
+    public void setNextCheckTime(Date nextCheckTime) {
+        this.nextCheckTime = nextCheckTime;
+    }
+
+    public BigDecimal getInstallHeight() {
+        return installHeight;
+    }
+
+    public void setInstallHeight(BigDecimal installHeight) {
+        this.installHeight = installHeight;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getPositionKey() {
+        return positionKey;
+    }
+
+    public void setPositionKey(String positionKey) {
+        this.positionKey = positionKey;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public BigDecimal getBasecode() {
+        return basecode;
+    }
+
+    public void setBasecode(BigDecimal basecode) {
+        this.basecode = basecode;
+    }
+
+    public String getMeterSubtype() {
+        return meterSubtype;
+    }
+
+    public void setMeterSubtype(String meterSubtype) {
+        this.meterSubtype = meterSubtype;
+    }
+
+    public String getSteel() {
+        return steel;
+    }
+
+    public void setSteel(String steel) {
+        this.steel = steel;
+    }
+
+    public String getWaterAddress() {
+        return waterAddress;
+    }
+
+    public void setWaterAddress(String waterAddress) {
+        this.waterAddress = waterAddress;
+    }
+
+    public String getMeterState() {
+        return meterState;
+    }
+
+    public void setMeterState(String meterState) {
+        this.meterState = meterState;
+    }
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+
+    public String getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(String diameter) {
+        this.diameter = diameter;
+    }
+
+    public BigDecimal getPrecisiona() {
+        return precisiona;
+    }
+
+    public void setPrecisiona(BigDecimal precisiona) {
+        this.precisiona = precisiona;
+    }
+
+    public String getSoftVer() {
+        return softVer;
+    }
+
+    public void setSoftVer(String softVer) {
+        this.softVer = softVer;
+    }
+
+    public String getHardVer() {
+        return hardVer;
+    }
+
+    public void setHardVer(String hardVer) {
+        this.hardVer = hardVer;
+    }
+
+    public BigDecimal getCommonFlow() {
+        return commonFlow;
+    }
+
+    public void setCommonFlow(BigDecimal commonFlow) {
+        this.commonFlow = commonFlow;
+    }
+
+    public BigDecimal getMinimumFlow() {
+        return minimumFlow;
+    }
+
+    public void setMinimumFlow(BigDecimal minimumFlow) {
+        this.minimumFlow = minimumFlow;
+    }
+
+    public BigDecimal getTemperatureDiffer() {
+        return temperatureDiffer;
+    }
+
+    public void setTemperatureDiffer(BigDecimal temperatureDiffer) {
+        this.temperatureDiffer = temperatureDiffer;
+    }
+
+    public BigDecimal getTemperatureRange() {
+        return temperatureRange;
+    }
+
+    public void setTemperatureRange(BigDecimal temperatureRange) {
+        this.temperatureRange = temperatureRange;
+    }
+
+    public String getBaudRate() {
+        return baudRate;
+    }
+
+    public void setBaudRate(String baudRate) {
+        this.baudRate = baudRate;
+    }
+
+    public String getMaxBound() {
+        return maxBound;
+    }
+
+    public void setMaxBound(String maxBound) {
+        this.maxBound = maxBound;
+    }
+
+    public BigDecimal getLimtspeed() {
+        return limtspeed;
+    }
+
+    public void setLimtspeed(BigDecimal limtspeed) {
+        this.limtspeed = limtspeed;
+    }
+
+    public Integer getCtrlflag() {
+        return ctrlflag;
+    }
+
+    public void setCtrlflag(Integer ctrlflag) {
+        this.ctrlflag = ctrlflag;
+    }
+
+    public Integer getIsvalid() {
+        return isvalid;
+    }
+
+    public void setIsvalid(Integer isvalid) {
+        this.isvalid = isvalid;
+    }
+    
+    
+  	private Boolean batchCheckbox = false;
+  	private String batchModifyId;
+  	private String batchModifyType;
+    private List<String> communitys;
+    
+    public List<String> getCommunitys() {
+      return communitys;
+   }
+
+	  public void setCommunitys(List<String> communitys) {
+	      this.communitys = communitys;
+	  }
+	  
+    public String getBatchModifyId() {
+      return batchModifyId;
+   }
+
+	  public void setBatchModifyId(String batchModifyId) {
+	      this.batchModifyId = batchModifyId;
+	  }
+	  
+    public String getBatchModifyType() {
+      return batchModifyType;
+   }
+
+	  public void setBatchModifyType(String batchModifyType) {
+	      this.batchModifyType = batchModifyType;
+	  }
+	  
+    public Boolean getBatchCheckbox() {
+      return batchCheckbox;
+   }
+
+	  public void setBatchCheckbox(Boolean batchCheckbox) {
+	      this.batchCheckbox = batchCheckbox;
+	  }
+}

@@ -1,0 +1,134 @@
+package cn.plou.web.charge.chargeconfig.vo;
+
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class HeatInfoVO {
+
+    private String primaryId;
+    private String consumerId;
+    private String address;
+    private String name;
+    private String annual;
+
+    //采暖面积
+    private BigDecimal payArea;
+    //热费单价类型
+    private String areaPriceType;
+    private String areaPriceTypeName;
+    //用户类型
+    private String heatUserType;
+    private String heatUserTypeName;
+
+    //热费单价
+    private BigDecimal prePrice;
+    //用户状态
+    private String contryStat;
+
+    //用户状态
+    private String contryStatName;
+    //采暖户型
+    private String houseType;
+
+    private String houseTypeName;
+
+    private String waterType;
+    //用户性质
+    private String waterTypeName;
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId == null ? null : primaryId.trim();
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId == null ? null : consumerId.trim();
+    }
+
+    public String getAnnual() {
+        return annual;
+    }
+
+    public void setAnnual(String annual) {
+        this.annual = annual == null ? null : annual.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+
+
+    public BigDecimal getPayArea() {
+        return payArea;
+    }
+    public void setPayArea(BigDecimal payArea) {this.payArea=payArea;}
+
+    public BigDecimal getPrePrice() {
+        return prePrice;
+    }
+    public void setPrePrice(BigDecimal prePrice) {this.prePrice=prePrice;}
+
+    public String getAreaPriceType() {
+        return areaPriceType;
+    }
+    public void setAreaPriceType(String areaPriceType) {this.areaPriceType=areaPriceType;}
+    public String getAreaPriceTypeName() {
+        return areaPriceTypeName;
+    }
+    public void setAreaPriceTypeName(String areaPriceTypeName) {this.areaPriceTypeName=areaPriceTypeName;}
+
+    public String getHeatUserType(){return heatUserType;}
+    public void getHeatUserType(String heatUserType) {this.heatUserType=heatUserType;}
+    public String getHeatUserTypeName() {
+        return heatUserTypeName;
+    }
+    public void setHeatUserTypeName(String heatUserTypeName) {this.heatUserTypeName=heatUserTypeName;}
+
+    public String getContryStat() {
+        return contryStat;
+    }
+    public void setContryStat(String contryStat) {this.contryStat=contryStat;}
+
+    public String getContryStatName() {
+        return contryStatName;
+    }
+    public void setContryStatName(String contryStatName) {this.contryStatName=contryStatName;}
+
+    public String getHouseType() {
+        return houseType;
+    }
+    public void setHouseType(String houseType) {this.houseType=houseType;}
+    public String getHouseTypeName() {
+        return houseTypeName;
+    }
+    public void setHouseTypeName(String houseTypeName) {this.houseTypeName=houseTypeName;}
+
+    public String getWaterType() {
+        return waterType;
+    }
+    public void setWaterType(String waterType) {this.waterType=waterType;}
+    public String getWaterTypeName() {
+        return waterTypeName;
+    }
+    public void setWaterTypeName(String waterTypeName) {this.waterTypeName=waterTypeName;}
+
+}

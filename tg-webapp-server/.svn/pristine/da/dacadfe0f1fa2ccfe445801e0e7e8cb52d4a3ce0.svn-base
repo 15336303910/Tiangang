@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.sewageStation.dao.SewageStationMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.sewageStation.entity.SewageStation">
+        <id column="sewage_station_id" jdbcType="VARCHAR" property="sewageStationId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="sewage_station_name" jdbcType="VARCHAR" property="sewageStationName"/>
+        <result column="sewage_station_size" jdbcType="VARCHAR" property="sewageStationSize"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="plan_poll_dis" jdbcType="DECIMAL" property="planPollDis"/>
+        <result column="actual_poll_dis" jdbcType="DECIMAL" property="actualPollDis"/>
+        <result column="design_poll_dis" jdbcType="DECIMAL" property="designPollDis"/>
+        <result column="longitude" jdbcType="VARCHAR" property="longitude"/>
+        <result column="latitude" jdbcType="VARCHAR" property="latitude"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="index" jdbcType="INTEGER" property="index"/>
+    </resultMap>
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.baseMessage.sewageStation.vo.SewageStationInfo">
+        <id column="sewage_station_id" jdbcType="VARCHAR" property="sewageStationId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="sewage_station_name" jdbcType="VARCHAR" property="sewageStationName"/>
+        <result column="sewage_station_size" jdbcType="VARCHAR" property="sewageStationSize"/>
+        <result column="sewage_station_size_name" jdbcType="VARCHAR" property="sewageStationSizeName"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="plan_poll_dis" jdbcType="DECIMAL" property="planPollDis"/>
+        <result column="actual_poll_dis" jdbcType="DECIMAL" property="actualPollDis"/>
+        <result column="design_poll_dis" jdbcType="DECIMAL" property="designPollDis"/>
+        <result column="longitude" jdbcType="VARCHAR" property="longitude"/>
+        <result column="latitude" jdbcType="VARCHAR" property="latitude"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="index" jdbcType="INTEGER" property="index"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    sewage_station_id, company_id, sewage_station_name, sewage_station_size, address, 
+    tel, plan_poll_dis, actual_poll_dis, design_poll_dis, longitude, latitude, notes, 
+    memo1, memo2, create_date, create_user, update_date, update_user,`index`
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sewage_station_info
+        where sewage_station_id = #{sewageStationId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllSewageStation" parameterType="map" resultMap="BaseInfoMap">
+        select
+        s.sewage_station_id sewage_station_id, s.company_id company_id, s.sewage_station_name sewage_station_name,
+        s.sewage_station_size sewage_station_size,
+        (select t.type_name type_name from type_mst t where t.type_kbn="sewage_station_size" and
+        t.type_id=s.sewage_station_size) sewage_station_size_name,
+        s.address address, c.company_name company_name,
+        s.tel tel, s.plan_poll_dis plan_poll_dis, s.actual_poll_dis actual_poll_dis, s.design_poll_dis design_poll_dis,
+        s.longitude longitude, s.latitude latitude,
+        s.notes notes,
+        s.memo1 memo1, s.memo2 memo2, s.create_date create_date, s.create_user create_user, s.update_date update_date,
+        s.update_user update_user,s.`index` `index`
+        from sewage_station_info s
+        left join company_info c on s.company_id=c.company_id
+        where 1=1
+        <if test="companyIds!=null">
+            <if test="companyIds.size()>0">
+                and s.company_id in
+                <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+        <if test="sewageStationVo!=null">
+            <if test="sewageStationVo.sewageStationName!=null">
+                and s.sewage_station_name like concat('%',#{sewageStationVo.sewageStationName},'%')
+            </if>
+            <if test="sewageStationVo.companyId!=null">
+                and s.company_id=#{sewageStationVo.companyId}
+            </if>
+            <if test="sewageStationVo.sewageStationSize!=null">
+                and s.sewage_station_size=#{sewageStationVo.sewageStationSize}
+            </if>
+        </if>
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+
+        <if test="order!=null">
+            ${order}
+        </if>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from sewage_station_info
+    where sewage_station_id = #{sewageStationId,jdbcType=VARCHAR}
+  </delete>
+
+    <delete id="deleteSewageStationBatchByIds" parameterType="java.util.List">
+        delete from sewage_station_info
+        where sewage_station_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert" parameterType="cn.plou.web.system.baseMessage.sewageStation.entity.SewageStation">
+    insert into sewage_station_info (sewage_station_id, company_id, sewage_station_name, 
+      sewage_station_size, address, tel, 
+      plan_poll_dis, actual_poll_dis, design_poll_dis, 
+      longitude, latitude, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user, 
+      index)
+    values (#{sewageStationId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{sewageStationName,jdbcType=VARCHAR}, 
+      #{sewageStationSize,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
+      #{planPollDis,jdbcType=DECIMAL}, #{actualPollDis,jdbcType=DECIMAL}, #{designPollDis,jdbcType=DECIMAL}, 
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{index,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.sewageStation.entity.SewageStation">
+        insert into sewage_station_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sewageStationId != null">
+                sewage_station_id,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="sewageStationName != null">
+                sewage_station_name,
+            </if>
+            <if test="sewageStationSize != null">
+                sewage_station_size,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="tel != null">
+                tel,
+            </if>
+            <if test="planPollDis != null">
+                plan_poll_dis,
+            </if>
+            <if test="actualPollDis != null">
+                actual_poll_dis,
+            </if>
+            <if test="designPollDis != null">
+                design_poll_dis,
+            </if>
+            <if test="longitude != null">
+                longitude,
+            </if>
+            <if test="latitude != null">
+                latitude,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="memo1 != null">
+                memo1,
+            </if>
+            <if test="memo2 != null">
+                memo2,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="index != null">
+                `index`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sewageStationId != null">
+                #{sewageStationId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationName != null">
+                #{sewageStationName,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationSize != null">
+                #{sewageStationSize,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="planPollDis != null">
+                #{planPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="actualPollDis != null">
+                #{actualPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="designPollDis != null">
+                #{designPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="longitude != null">
+                #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="memo1 != null">
+                #{memo1,jdbcType=VARCHAR},
+            </if>
+            <if test="memo2 != null">
+                #{memo2,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="index != null">
+                #{index,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="cn.plou.web.system.baseMessage.sewageStation.entity.SewageStation">
+        update sewage_station_info
+        <set>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationName != null">
+                sewage_station_name = #{sewageStationName,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationSize != null">
+                sewage_station_size = #{sewageStationSize,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="planPollDis != null">
+                plan_poll_dis = #{planPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="actualPollDis != null">
+                actual_poll_dis = #{actualPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="designPollDis != null">
+                design_poll_dis = #{designPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="memo1 != null">
+                memo1 = #{memo1,jdbcType=VARCHAR},
+            </if>
+            <if test="memo2 != null">
+                memo2 = #{memo2,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="index != null">
+                index = #{index,jdbcType=INTEGER},
+            </if>
+        </set>
+        where sewage_station_id = #{sewageStationId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.sewageStation.entity.SewageStation">
+    update sewage_station_info
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      sewage_station_name = #{sewageStationName,jdbcType=VARCHAR},
+      sewage_station_size = #{sewageStationSize,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      plan_poll_dis = #{planPollDis,jdbcType=DECIMAL},
+      actual_poll_dis = #{actualPollDis,jdbcType=DECIMAL},
+      design_poll_dis = #{designPollDis,jdbcType=DECIMAL},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      index = #{index,jdbcType=INTEGER}
+    where sewage_station_id = #{sewageStationId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateSewageStationBatch" parameterType="cn.plou.web.system.baseMessage.sewageStation.vo.SewageStationVo">
+        update sewage_station_info
+        <set>
+            <if test="companyId != null">
+                company_id=#{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationName != null">
+                sewage_station_name = #{sewageStationName,jdbcType=VARCHAR},
+            </if>
+            <if test="sewageStationSize != null">
+                sewage_station_size = #{sewageStationSize,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="planPollDis != null">
+                plan_poll_dis = #{planPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="actualPollDis != null">
+                actual_poll_dis = #{actualPollDis,jdbcType=DECIMAL},
+            </if>
+            <if test="designPollDis != null">
+                design_poll_dis = #{designPollDis,jdbcType=DECIMAL},
+            </if>
+
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where sewage_station_id in
+        <foreach collection="sewageStationIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+</mapper>

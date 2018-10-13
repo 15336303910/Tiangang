@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.heatingmanage.dao.ContractHeatInfoMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfo">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="contract_code" jdbcType="VARCHAR" property="contractCode"/>
+        <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+        <result column="a_name" jdbcType="VARCHAR" property="aName"/>
+        <result column="b_name" jdbcType="VARCHAR" property="bName"/>
+        <result column="scope" jdbcType="VARCHAR" property="scope"/>
+        <result column="area" jdbcType="DECIMAL" property="area"/>
+        <result column="unit_price" jdbcType="DECIMAL" property="unitPrice"/>
+        <result column="total" jdbcType="DECIMAL" property="total"/>
+        <result column="price_adj" jdbcType="DECIMAL" property="priceAdj"/>
+        <result column="account_all" jdbcType="DECIMAL" property="accountAll"/>
+        <result column="arrears_cost" jdbcType="DECIMAL" property="arrearsCost"/>
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName"/>
+        <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone"/>
+        <result column="file_path" jdbcType="VARCHAR" property="filePath"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="sign_date" jdbcType="TIMESTAMP" property="signDate"/>
+        <result column="memo1" jdbcType="VARCHAR" property="memo1"/>
+        <result column="memo2" jdbcType="VARCHAR" property="memo2"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="approve_serial" jdbcType="VARCHAR" property="approveSerial"/>
+    </resultMap>
+
+    <resultMap id="NetInPayMap" type="cn.plou.web.charge.heatingmanage.vo.NetInPayVO">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="contract_code" jdbcType="VARCHAR" property="contractCode"/>
+        <result column="contract_name" jdbcType="VARCHAR" property="contractName"/>
+        <result column="a_name" jdbcType="VARCHAR" property="aName"/>
+        <result column="b_name" jdbcType="VARCHAR" property="bName"/>
+        <result column="total" jdbcType="DECIMAL" property="total"/>
+        <result column="price_adj" jdbcType="DECIMAL" property="priceAdj"/>
+        <result column="account_all" jdbcType="DECIMAL" property="accountAll"/>
+        <result column="arrears_cost" jdbcType="DECIMAL" property="arrearsCost"/>
+        <collection column="contract_code" property="payHistory" ofType="cn.plou.web.charge.heatingmanage.vo.PayHistoryVO">
+            <id column="primary_id_m" jdbcType="VARCHAR" property="primaryId"/>
+            <result column="account_time" jdbcType="TIMESTAMP" property="accountTime"/>
+            <result column="account_cost" jdbcType="DECIMAL" property="accountCost"/>
+            <result column="pay_type" jdbcType="VARCHAR" property="payType"/>
+            <result column="type_name" jdbcType="VARCHAR" property="payTypeName"/>
+            <result column="billno" jdbcType="VARCHAR" property="billno"/>
+            <result column="receiptno_m" jdbcType="VARCHAR" property="receiptno"/>
+            <result column="isbill" jdbcType="VARCHAR" property="isbill"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        primary_id, company_id, contract_code, contract_name, a_name, b_name, scope, area,
+        unit_price, total, price_adj, account_all, arrears_cost,
+        contact_name, contact_phone, file_path, notes, sign_date, memo1, memo2, create_date,
+        create_user, update_date, update_user, approve_serial
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from contract_heat_info
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from contract_heat_info
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfo">
+        insert into contract_heat_info (primary_id, company_id, contract_code,
+                                        contract_name, a_name, b_name,
+                                        scope, area, unit_price,
+                                        total, price_adj, account_all,
+                                        arrears_cost, contact_name, contact_phone,
+                                        file_path, notes, sign_date,
+                                        memo1, memo2, create_date,
+                                        create_user, update_date, update_user,
+                                        approve_serial)
+        values (#{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR},
+                                               #{contractName,jdbcType=VARCHAR}, #{aName,jdbcType=VARCHAR}, #{bName,jdbcType=VARCHAR},
+                                               #{scope,jdbcType=VARCHAR}, #{area,jdbcType=DECIMAL}, #{unitPrice,jdbcType=DECIMAL},
+                                               #{total,jdbcType=DECIMAL}, #{priceAdj,jdbcType=DECIMAL}, #{accountAll,jdbcType=DECIMAL},
+                                                                                                        #{arrearsCost,jdbcType=DECIMAL}, #{contactName,jdbcType=VARCHAR}, #{contactPhone,jdbcType=VARCHAR},
+                                                                                                        #{filePath,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{signDate,jdbcType=TIMESTAMP},
+                                                                                                        #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+                #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR},
+                #{approveSerial,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.heatingmanage.domain.ContractHeatInfo">
+        update contract_heat_info
+        set company_id     = #{companyId,jdbcType=VARCHAR},
+            contract_code  = #{contractCode,jdbcType=VARCHAR},
+            contract_name  = #{contractName,jdbcType=VARCHAR},
+            a_name         = #{aName,jdbcType=VARCHAR},
+            b_name         = #{bName,jdbcType=VARCHAR},
+            scope          = #{scope,jdbcType=VARCHAR},
+            area           = #{area,jdbcType=DECIMAL},
+            unit_price     = #{unitPrice,jdbcType=DECIMAL},
+            total          = #{total,jdbcType=DECIMAL},
+            price_adj      = #{priceAdj,jdbcType=DECIMAL},
+            account_all    = #{accountAll,jdbcType=DECIMAL},
+            arrears_cost   = #{arrearsCost,jdbcType=DECIMAL},
+            contact_name   = #{contactName,jdbcType=VARCHAR},
+            contact_phone  = #{contactPhone,jdbcType=VARCHAR},
+            file_path      = #{filePath,jdbcType=VARCHAR},
+            notes          = #{notes,jdbcType=VARCHAR},
+            sign_date      = #{signDate,jdbcType=TIMESTAMP},
+            memo1          = #{memo1,jdbcType=VARCHAR},
+            memo2          = #{memo2,jdbcType=VARCHAR},
+            create_date    = #{createDate,jdbcType=TIMESTAMP},
+            create_user    = #{createUser,jdbcType=VARCHAR},
+            update_date    = #{updateDate,jdbcType=TIMESTAMP},
+            update_user    = #{updateUser,jdbcType=VARCHAR},
+            approve_serial = #{approveSerial,jdbcType=VARCHAR}
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getNetInPay" parameterType="java.lang.String" resultMap="NetInPayMap">
+        SELECT
+            c.primary_id,
+            c.contract_code,
+            c.contract_name,
+            c.a_name,
+            c.b_name,
+            c.total,
+            c.price_adj,
+            c.account_all,
+            c.arrears_cost,
+            m.primary_id as primary_id_m,
+            m.account_time,
+            m.account_cost,
+            m.pay_type,
+            t1.type_name,
+            m.billno,
+            m.receiptno  as receiptno_m,
+            m.isbill
+        FROM
+            contract_heat_info c
+            LEFT JOIN contract_heat_money_detail m ON m.contract_code = c.contract_code
+            left join type_mst t1 on t1.id = m.pay_type
+        where c.primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getListBySearch" parameterType="cn.plou.web.charge.heatingmanage.dto.NetInManageSearchDTO" resultType="cn.plou.web.charge.heatingmanage.vo.ContractHeatListVO">
+        (select * from
+        (SELECT
+        c.primary_id,
+        c.company_id,
+        c.contract_code,
+        c.contract_name,
+        c.a_name,
+        c.b_name,
+        c.scope,
+        c.area,
+        t.area as areaNew,
+        c.unit_price,
+        t.unit_price as unitPriceNew,
+        c.total,
+        c.price_adj,
+        t.price_adj as priceAdjNew,
+        c.account_all,
+        c.arrears_cost,
+        c.contact_name,
+        c.contact_phone,
+        c.file_path,
+        c.notes,
+        c.sign_date,
+        c.memo1,
+        c.approve_serial,
+        t.approve_res,
+        t1.type_name as approveResName,
+        t.approve_name,
+        t.approve_date,
+        t.approve_type
+        FROM
+        contract_heat_info c
+        left join contract_heat_info_tmp t on t.approve_serial = c.approve_serial
+        left join type_mst t1 on t1.id = t.approve_res
+        where
+        c.company_id = #{companyId,jdbcType=VARCHAR}
+        and c.approve_serial is not null and t.approve_res is null
+        <if test="contractCode != null and contractCode != ''">and c.contract_code = #{contractCode,jdbcType=VARCHAR}</if>
+        <if test="aName != null and aName != ''">and c.a_name = #{aName,jdbcType=VARCHAR}</if>
+        <if test="signDateStart != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{signDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="signDateEnd != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{signDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test='arrearsFlag == "1"'>and c.arrears_cost &gt; 0</if>
+        <if test='priceAdjFlag == "1"'>and c.price_adj &lt;&gt; 0</if>
+        <if test='approveFlag == "1"'>and (t.approve_res is null and t.approve_serial is not null)</if>
+        order by t.create_date) a1)
+        union
+        (select * from
+        (SELECT
+        c.primary_id,
+        c.company_id,
+        c.contract_code,
+        c.contract_name,
+        c.a_name,
+        c.b_name,
+        c.scope,
+        c.area,
+        t.area as areaNew,
+        c.unit_price,
+        t.unit_price as unitPriceNew,
+        c.total,
+        c.price_adj,
+        t.price_adj as priceAdjNew,
+        c.account_all,
+        c.arrears_cost,
+        c.contact_name,
+        c.contact_phone,
+        c.file_path,
+        c.notes,
+        c.sign_date,
+        c.memo1,
+        c.approve_serial,
+        t.approve_res,
+        t1.type_name as approveResName,
+        t.approve_name,
+        t.approve_date,
+        t.approve_type
+        FROM
+        contract_heat_info c
+        left join contract_heat_info_tmp t on t.approve_serial = c.approve_serial
+        left join type_mst t1 on t1.id = t.approve_res
+        where
+        c.company_id = #{companyId,jdbcType=VARCHAR}
+        and (c.approve_serial is null or (c.approve_serial is not null and t.approve_res is not null))
+        <if test="contractCode != null and contractCode != ''">and c.contract_code = #{contractCode,jdbcType=VARCHAR}</if>
+        <if test="aName != null and aName != ''">and c.a_name = #{aName,jdbcType=VARCHAR}</if>
+        <if test="signDateStart != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{signDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="signDateEnd != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{signDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test='arrearsFlag == "1"'>and c.arrears_cost &gt; 0</if>
+        <if test='priceAdjFlag == "1"'>and c.price_adj &lt;&gt; 0</if>
+        <if test='approveFlag == "1"'>and (t.approve_res is null and t.approve_serial is not null)</if>
+        order by t.create_date) a2)
+        <if test="start != null and pageSize != null">
+            limit ${start},${pageSize}
+        </if>
+    </select>
+
+    <select id="getListCountBySearch" parameterType="cn.plou.web.charge.heatingmanage.dto.NetInManageSearchDTO" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+        contract_heat_info c
+        left join contract_heat_info_tmp t on t.approve_serial = c.approve_serial
+        where
+        c.company_id = #{companyId,jdbcType=VARCHAR}
+        <if test="contractCode != null and contractCode != ''">and c.contract_code = #{contractCode,jdbcType=VARCHAR}</if>
+        <if test="aName != null and aName != ''">and c.a_name = #{aName,jdbcType=VARCHAR}</if>
+        <if test="signDateStart != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{signDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="signDateEnd != null">and DATE_FORMAT(c.sign_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{signDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test='arrearsFlag == "1"'>and c.arrears_cost &gt; 0</if>
+        <if test='priceAdjFlag == "1"'>and c.price_adj &lt;&gt; 0</if>
+        <if test='approveFlag == "1"'>and (t.approve_res is null and t.approve_serial is not null)</if>
+    </select>
+
+    <select id="countByContractCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+            contract_heat_info
+        where
+            contract_code = #{contractCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

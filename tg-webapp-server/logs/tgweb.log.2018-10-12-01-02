@@ -1,0 +1,35 @@
+2018-10-12 01:02:00 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-12 01:02:00 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004} connected
+2018-10-12 01:02:00 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004} pool-connect
+2018-10-12 01:02:00 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004} setAutoCommit false
+2018-10-12 01:02:00 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009} created. 
+SELECT count(0) FROM (SELECT user_year_heat.company_id, user_year_heat.consumer_id, user_year_heat.annual, a.total AS jinETotal, b.total AS oldLateFee, price_define.overdue_begin_time, price_define.overdue_rate FROM user_year_heat LEFT JOIN (SELECT user_year_receivable_detail.consumer_id, annual, sum(user_year_receivable_detail.total) AS total FROM user_year_receivable_detail WHERE user_year_receivable_detail.charging_item NOT IN ('charging_item_1', 'charging_item_2', 'charging_item_7') GROUP BY user_year_receivable_detail.consumer_id, annual) a ON a.consumer_id = user_year_heat.consumer_id AND a.annual = user_year_heat.annual LEFT JOIN (SELECT user_year_receivable_detail.consumer_id, annual, sum(user_year_receivable_detail.total) AS total FROM user_year_receivable_detail WHERE user_year_receivable_detail.charging_item = 'charging_item_7' GROUP BY user_year_receivable_detail.consumer_id, annual) b ON b.consumer_id = user_year_heat.consumer_id AND b.annual = user_year_heat.annual LEFT JOIN price_define ON user_year_heat.area_price_type = price_define.primary_id WHERE overdue_begin_time > ? AND user_year_heat.annual = price_define.annual AND price_define.yeat_flag = 1 AND user_year_heat.heating_status = 'heating_status_1' AND user_year_heat.margin_now < 0) AS t1
+2018-10-12 01:02:00 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009} Parameters : [2018-10-12 01:02:00]
+2018-10-12 01:02:00 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009} Types : [VARCHAR]
+2018-10-12 01:02:25 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-12 01:02:34 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009} executed. 33240.86095 millis. 
+SELECT count(0) FROM (SELECT user_year_heat.company_id, user_year_heat.consumer_id, user_year_heat.annual, a.total AS jinETotal, b.total AS oldLateFee, price_define.overdue_begin_time, price_define.overdue_rate FROM user_year_heat LEFT JOIN (SELECT user_year_receivable_detail.consumer_id, annual, sum(user_year_receivable_detail.total) AS total FROM user_year_receivable_detail WHERE user_year_receivable_detail.charging_item NOT IN ('charging_item_1', 'charging_item_2', 'charging_item_7') GROUP BY user_year_receivable_detail.consumer_id, annual) a ON a.consumer_id = user_year_heat.consumer_id AND a.annual = user_year_heat.annual LEFT JOIN (SELECT user_year_receivable_detail.consumer_id, annual, sum(user_year_receivable_detail.total) AS total FROM user_year_receivable_detail WHERE user_year_receivable_detail.charging_item = 'charging_item_7' GROUP BY user_year_receivable_detail.consumer_id, annual) b ON b.consumer_id = user_year_heat.consumer_id AND b.annual = user_year_heat.annual LEFT JOIN price_define ON user_year_heat.area_price_type = price_define.primary_id WHERE overdue_begin_time > ? AND user_year_heat.annual = price_define.annual AND price_define.yeat_flag = 1 AND user_year_heat.heating_status = 'heating_status_1' AND user_year_heat.margin_now < 0) AS t1
+2018-10-12 01:02:34 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009, rs-50008} open
+2018-10-12 01:02:34 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009, rs-50008} Header: [COUNT0]
+2018-10-12 01:02:34 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009, rs-50008} Result: [259278]
+2018-10-12 01:02:34 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009, rs-50008} closed
+2018-10-12 01:02:34 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20009} closed
+2018-10-12 01:02:34 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20010} created. 
+select company_id,consumer_id,annual,overdue_begin_time,overdue_rate,(oldLateFee+jinETotal*overdue_rate/100) as late_fee from
+    (
+    select user_year_heat.company_id ,user_year_heat.consumer_id ,user_year_heat.annual ,
+    a.total as jinETotal,
+    b.total  as oldLateFee,
+    price_define.overdue_begin_time,
+    price_define.overdue_rate
+    from user_year_heat
+    left join (select user_year_receivable_detail.consumer_id,annual,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where   user_year_receivable_detail.charging_item not in('charging_item_1','charging_item_2','charging_item_7') GROUP BY user_year_receivable_detail.consumer_id,annual) a
+    on a.consumer_id = user_year_heat.consumer_id  and a.annual = user_year_heat.annual
+    left join (select user_year_receivable_detail.consumer_id,annual,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where   user_year_receivable_detail.charging_item = 'charging_item_7' GROUP BY user_year_receivable_detail.consumer_id,annual) b
+    on b.consumer_id = user_year_heat.consumer_id  and b.annual = user_year_heat.annual
+    LEFT JOIN price_define on user_year_heat.area_price_type = price_define.primary_id
+    where overdue_begin_time > ? and user_year_heat.annual= price_define.annual   and price_define.yeat_flag = 1 and user_year_heat.heating_status = 'heating_status_1' and user_year_heat.margin_now < 0
+    ) as t1 LIMIT ? 
+2018-10-12 01:02:34 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20010} Parameters : [2018-10-12 01:02:00, 200]
+2018-10-12 01:02:34 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10004, pstmt-20010} Types : [VARCHAR, INTEGER]
+2018-10-12 01:02:51 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

@@ -1,0 +1,727 @@
+package cn.plou.web.charge.chargeconfig.service.impl;
+
+import cn.plou.web.charge.chargeconfig.dao.*;
+import cn.plou.web.charge.chargeconfig.dto.*;
+import cn.plou.web.charge.chargeconfig.entity.BankReconciliationsDetail;
+import cn.plou.web.charge.chargeconfig.entity.BankReconciliationsHead;
+import cn.plou.web.charge.chargeconfig.entity.ReconciliationsHistory;
+import cn.plou.web.charge.chargeconfig.service.ChargeAccountService;
+import cn.plou.web.charge.chargeconfig.util.ExcelReaderUtil;
+import cn.plou.web.charge.chargeconfig.vo.*;
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.utils.IDWorker;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.common.utils.a1.DateUtil;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.xssf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.ServletRequest;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * @ClassName: ChargeAccountServiceImpl
+ * @Description: 收费对账
+ * @Author: youbc
+ * @Date 2018-08-31 15:08
+ */
+@Service
+public class ChargeAccountServiceImpl implements ChargeAccountService {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserYearAccountDetailMapper userYearAccountDetailMapper;
+
+    @Autowired
+    private ReconciliationsHistoryMapper reconciliationsHistoryMapper;
+
+    @Autowired
+    private PriceDefineMapper priceDefineMapper;
+
+    @Autowired
+    private BankInterfaceInfoMapper bankInterfaceInfoMapper;
+
+    @Autowired
+    private BankReconciliationsHeadMapper bankReconciliationsHeadMapper;
+
+    @Autowired
+    private BankReconciliationsDetailMapper bankReconciliationsDetailMapper;
+
+    @Value("${bank-file-path}")
+    private String bankFilePath;
+
+    private static final String PAY_CHANNEL_1 = "pay_channel_1"; // 缴费通道-大厅收费
+    private static final String PAY_CHANNEL_2 = "pay_channel_2"; // 缴费通道-移动支付
+    private static final String PAY_CHANNEL_3 = "pay_channel_3"; // 缴费通道-银行代收
+
+    private static final String CHARGE_EQUAL = "bank_charge_1"; // 银行对账标志-正常
+    private static final String BANK_ONLY = "bank_charge_2"; // 银行对账标志-收费系统无
+    private static final String CHARGE_NOT_EQUAL = "bank_charge_3"; // 银行对账标志-金额不匹配
+
+    private static final String RECONCILIATIONS_STATUS_1 = "reconciliations_status_1"; // 对账状态-不平
+    private static final String RECONCILIATIONS_STATUS_2 = "reconciliations_status_2"; // 对账状态-平
+
+    /**
+     * @Description: 每日对账明细
+     * @Param: [chargeAccountSearchDTO]
+     * @Return: java.util.List<cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO>
+     * @Author: youbc
+     * @Date: 2018/9/4 10上午15
+     */
+    @Override
+    public List<CheckAccountListVO> list(ChargeAccountSearchDTO chargeAccountSearchDTO) {
+        List<CheckAccountListVO> list = userYearAccountDetailMapper.getListBySearch(chargeAccountSearchDTO);
+        return listHandler(list);
+    }
+
+    @Override
+    public Integer listCount(ChargeAccountSearchDTO chargeAccountSearchDTO) {
+        return userYearAccountDetailMapper.getListCountBySearch(chargeAccountSearchDTO);
+    }
+
+    /**
+     * @Description: 将列表中为 null 的金额处理为 0
+     * @Param: [list]
+     * @Return: java.util.List<cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO>
+     * @Author: youbc
+     * @Date: 2018/9/25 8上午46
+     */
+    private List<CheckAccountListVO> listHandler(List<CheckAccountListVO> list) {
+        for (CheckAccountListVO listVO : list) {
+            BigDecimal payMoneyTmp = listVO.getAccountCost() == null ? BigDecimal.ZERO : listVO.getAccountCost();
+            listVO.setAccountCost(payMoneyTmp);
+            BigDecimal pointMoneyTmp = listVO.getAccountPointCost() == null ? BigDecimal.ZERO : listVO.getAccountPointCost();
+            listVO.setAccountPointCost(pointMoneyTmp);
+            BigDecimal moneyTrueTmp = payMoneyTmp.subtract(pointMoneyTmp);
+            listVO.setAccountCostTrue(moneyTrueTmp);
+        }
+        return list;
+    }
+
+    /**
+     * @Description: 每日对账明细（换热站）
+     * @Param: [chargeAccountSearchDTO, ids]
+     * @Return: java.util.List<cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO>
+     * @Author: youbc
+     * @Date: 2018/9/21 14下午33
+     */
+    @Override
+    public List<CheckAccountListVO> listOfStation(ChargeAccountSearchDTO chargeAccountSearchDTO, List<String> ids) {
+        List<CheckAccountListVO> list = userYearAccountDetailMapper.getListBySearchOfStation(chargeAccountSearchDTO, ids);
+        return listHandler(list);
+    }
+
+    @Override
+    public Integer listCountOfStation(ChargeAccountSearchDTO chargeAccountSearchDTO, List<String> ids) {
+        return userYearAccountDetailMapper.getListCountBySearchOfStation(chargeAccountSearchDTO, ids);
+    }
+
+    @Override
+    public String exportList(ServletRequest request, List<CheckAccountListVO> list) {
+        String path1 = IDWorker.uuid() + "-accountDetail.xlsx";
+        // 第一步，创建一个webbook，对应一个Excel文件
+        XSSFWorkbook wb = new XSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        XSSFSheet sheet = wb.createSheet("Sheet1");
+        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+        XSSFRow row = sheet.createRow(0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中
+        XSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+
+        XSSFCell cell = row.createCell(0);
+        cell.setCellValue("缴费日期");
+        cell.setCellStyle(style);
+        cell = row.createCell(1);
+        cell.setCellValue("地址名称");
+        cell.setCellStyle(style);
+        cell = row.createCell(2);
+        cell.setCellValue("客户名称");
+        cell.setCellStyle(style);
+        cell = row.createCell(3);
+        cell.setCellValue("采暖年度");
+        cell.setCellStyle(style);
+        cell = row.createCell(4);
+        cell.setCellValue("缴费金额");
+        cell.setCellStyle(style);
+        cell = row.createCell(5);
+        cell.setCellValue("扣点金额");
+        cell.setCellStyle(style);
+        cell = row.createCell(6);
+        cell.setCellValue("实际到账");
+        cell.setCellStyle(style);
+        cell = row.createCell(7);
+        cell.setCellValue("缴费方式");
+        cell.setCellStyle(style);
+        cell = row.createCell(8);
+        cell.setCellValue("缴费通道");
+        cell.setCellStyle(style);
+        cell = row.createCell(9);
+        cell.setCellValue("对账状态"); // 是否对账
+        cell.setCellStyle(style);
+        cell = row.createCell(10);
+        cell.setCellValue("备注");
+        cell.setCellStyle(style);
+
+
+        // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
+        for (int i = 0; i < list.size(); i++) {
+            row = sheet.createRow(i + 1);
+            CheckAccountListVO vo = list.get(i);
+            if (vo.getAccountTime() != null) {
+                row.createCell(0).setCellValue(DateUtil.toDateTimeString(vo.getAccountTime()));
+            }
+            if (vo.getHouseAddress() != null) {
+                row.createCell(1).setCellValue(vo.getHouseAddress());
+            }
+            if (vo.getHouseName() != null) {
+                row.createCell(2).setCellValue(vo.getHouseName());
+            }
+            if (vo.getAnnual() != null) {
+                row.createCell(3).setCellValue(vo.getAnnual());
+            }
+            if (vo.getAccountCost() != null) {
+                row.createCell(4).setCellValue(vo.getAccountCost().toString());
+            }
+            if (vo.getAccountPointCost() != null) {
+                row.createCell(5).setCellValue(vo.getAccountPointCost().toString());
+            }
+            if (vo.getAccountCostTrue() != null) {
+                row.createCell(6).setCellValue(vo.getAccountCostTrue().toString());
+            }
+            if (vo.getAccountTypeName() != null) {
+                row.createCell(7).setCellValue(vo.getAccountTypeName());
+            }
+            if (vo.getAccountChannelName() != null) {
+                row.createCell(8).setCellValue(vo.getAccountChannelName());
+            }
+            if (vo.getIsreconciliationsName() != null) {
+                row.createCell(9).setCellValue(vo.getIsreconciliationsName());
+            }
+            if (vo.getNotes() != null) {
+                row.createCell(10).setCellValue(vo.getNotes());
+            }
+        }
+
+        //第六步,输出Excel文件
+        OutputStream output;
+        String path = request.getServletContext().getRealPath("/");
+        try {
+            output = new FileOutputStream(path + path1);
+            wb.write(output);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path1;
+    }
+
+    /**
+     * @Description: 对账历史
+     * @Param: [accountHistoryDTO]
+     * @Return: java.util.List<cn.plou.web.charge.chargeconfig.vo.AccountHistoryListVO>
+     * @Author: youbc
+     * @Date: 2018/9/4 10上午15
+     */
+    @Override
+    public List<AccountHistoryListVO> historyList(AccountHistoryDTO accountHistoryDTO) {
+        List<AccountHistoryListVO> list = reconciliationsHistoryMapper.getListBySearch(accountHistoryDTO);
+        for (AccountHistoryListVO listVO : list) {
+            BigDecimal payMoneyTmp = listVO.getPayMoney() == null ? BigDecimal.ZERO : listVO.getPayMoney();
+            listVO.setPayMoney(payMoneyTmp);
+            BigDecimal pointMoneyTmp = listVO.getPointMoney() == null ? BigDecimal.ZERO : listVO.getPointMoney();
+            listVO.setPointMoney(pointMoneyTmp);
+            BigDecimal moneyTrueTmp = payMoneyTmp.subtract(pointMoneyTmp);
+            listVO.setAccountCostTrue(moneyTrueTmp);
+        }
+        return list;
+    }
+
+    @Override
+    public Integer historyListCount(AccountHistoryDTO accountHistoryDTO) {
+        return reconciliationsHistoryMapper.getListCountBySearch(accountHistoryDTO);
+    }
+
+    /**
+     * @Description: 对账收费弹框
+     * @Param: [chargeAccountDTO]
+     * @Return: cn.plou.web.charge.chargeconfig.vo.ChargeAccountVO
+     * @Author: youbc
+     * @Date: 2018/9/4 10上午15
+     */
+    @Override
+    public ChargeAccountVO getChargeAccount(ChargeAccountDTO chargeAccountDTO) {
+        List<ChargeAccountDetailListVO> list = userYearAccountDetailMapper.getChargeAccount(chargeAccountDTO);
+        List<ChargeAccountDetailListVO> hallList = new ArrayList<>();
+        List<ChargeAccountDetailListVO> mobileList = new ArrayList<>();
+        List<ChargeAccountDetailListVO> bankList = new ArrayList<>();
+        BigDecimal hallPayMoney = BigDecimal.ZERO;
+        BigDecimal mobilePayMoney = BigDecimal.ZERO;
+        BigDecimal bankPayMoney = BigDecimal.ZERO;
+        BigDecimal hallPointMoney = BigDecimal.ZERO;
+        BigDecimal mobilePointMoney = BigDecimal.ZERO;
+        BigDecimal bankPointMoney = BigDecimal.ZERO;
+        BigDecimal hallTotalMoney = BigDecimal.ZERO;
+        BigDecimal mobileTotalMoney = BigDecimal.ZERO;
+        BigDecimal bankTotalMoney = BigDecimal.ZERO;
+        int hallNum = 0;
+        int mobileNum = 0;
+        int bankNum = 0;
+        for (ChargeAccountDetailListVO listVO : list) {
+            String accountChannel = listVO.getAccountChannel();
+            BigDecimal payMoneyTmp = listVO.getPayMoney() == null ? BigDecimal.ZERO : listVO.getPayMoney();
+            listVO.setPayMoney(payMoneyTmp);
+            BigDecimal pointMoneyTmp = listVO.getPointMoney() == null ? BigDecimal.ZERO : listVO.getPointMoney();
+            listVO.setPointMoney(pointMoneyTmp);
+            BigDecimal moneyTrueTmp = payMoneyTmp.subtract(pointMoneyTmp);
+            listVO.setMoneyTrue(moneyTrueTmp);
+            int numTmp = listVO.getNum() == null ? 0 : listVO.getNum();
+            listVO.setNum(numTmp);
+
+            if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_1, accountChannel)) {
+                hallList.add(listVO);
+                hallPayMoney = hallPayMoney.add(payMoneyTmp);
+                hallPointMoney = hallPointMoney.add(pointMoneyTmp);
+                hallTotalMoney = hallTotalMoney.add(moneyTrueTmp);
+                hallNum += numTmp;
+            } else if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_2, accountChannel)) {
+                mobileList.add(listVO);
+                mobilePayMoney = mobilePayMoney.add(payMoneyTmp);
+                mobilePointMoney = mobilePointMoney.add(pointMoneyTmp);
+                mobileTotalMoney = mobileTotalMoney.add(moneyTrueTmp);
+                mobileNum += numTmp;
+            } else if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_3, accountChannel)) {
+                bankList.add(listVO);
+                bankPayMoney = bankPayMoney.add(payMoneyTmp);
+                bankPointMoney = bankPointMoney.add(pointMoneyTmp);
+                bankTotalMoney = bankTotalMoney.add(moneyTrueTmp);
+                bankNum += numTmp;
+            }
+        }
+        ChargeAccountDetailVO hallDetailVO = makeChargeAccountDetailVO(hallList, hallPayMoney, hallPointMoney, hallTotalMoney, hallNum, chargeAccountDTO, PAY_CHANNEL_1);
+        ChargeAccountDetailVO mobileDetailVO = makeChargeAccountDetailVO(mobileList, mobilePayMoney, mobilePointMoney, mobileTotalMoney, mobileNum, chargeAccountDTO, PAY_CHANNEL_2);
+        ChargeAccountDetailVO bankDetailVO = makeChargeAccountDetailVO(bankList, bankPayMoney, bankPointMoney, bankTotalMoney, bankNum, chargeAccountDTO, PAY_CHANNEL_3);
+
+        ChargeAccountVO chargeAccountVO = new ChargeAccountVO();
+        chargeAccountVO.setCompanyId(chargeAccountDTO.getCompanyId());
+        chargeAccountVO.setAccountTime(chargeAccountDTO.getAccountTime());
+        chargeAccountVO.setTotalNum(hallNum + mobileNum + bankNum);
+        chargeAccountVO.setTotalMoney(hallTotalMoney.add(mobileTotalMoney).add(bankTotalMoney));
+        chargeAccountVO.setHallDetail(hallDetailVO);
+        chargeAccountVO.setMobileDetail(mobileDetailVO);
+        chargeAccountVO.setBankDetail(bankDetailVO);
+
+        return chargeAccountVO;
+    }
+
+    /**
+     * @Description: 对账收费确认
+     * @Param: [saveChargeAccountDTO, chargeAccountVO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/4 15下午37
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void save(SaveChargeAccountDTO saveChargeAccountDTO, ChargeAccountVO chargeAccountVO) {
+        List<SaveChargeAccountListDTO> list = saveChargeAccountDTO.getList();
+        if (list == null) {
+            logger.error("请填写对账情况！list == null");
+            throw new BusinessException("请填写对账情况！");
+        }
+        for (SaveChargeAccountListDTO dto : list) {
+            String reconciliationsStatus = dto.getReconciliationsStatus();
+            String accountExplain = dto.getAccountExplain();
+            if ((StringUtils.isNotEmpty(reconciliationsStatus) && StringUtils.isEmpty(accountExplain)) || (StringUtils.isNotEmpty(accountExplain) && StringUtils.isEmpty(reconciliationsStatus))) {
+                ChargeAccountDTO chargeAccountDTO = new ChargeAccountDTO();
+                chargeAccountDTO.setCompanyId(saveChargeAccountDTO.getCompanyId());
+                chargeAccountDTO.setAccountTime(saveChargeAccountDTO.getAccountTime());
+                chargeAccountDTO.setPayChannel(dto.getAccountChannel());
+                ReconciliationsHistory detail = reconciliationsHistoryMapper.getDetail(chargeAccountDTO);
+                if (detail == null) {
+                    createReconciliationsHistory(dto, saveChargeAccountDTO, chargeAccountVO);
+                } else {
+                    updateReconciliationsHistory(dto, detail, chargeAccountVO);
+                }
+            } else if (StringUtils.isNotEmpty(reconciliationsStatus) && StringUtils.isNotEmpty(accountExplain)) {
+                logger.error("不能同时勾选【我已确认金额无误】和填写【对账不平说明】");
+                throw new BusinessException("不能同时勾选【我已确认金额无误】和填写【对账不平说明】");
+            }
+        }
+    }
+
+    /**
+     * @Description: 银行对账
+     * @Param: [bankChargeDTO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/11 15下午48
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Map<String, String>> bankCharge(BankChargeDTO bankChargeDTO, String fileName) {
+        String path = bankFilePath + fileName;
+        BankChargeExcelDTO dtoAll = ExcelReaderUtil.ReadExcel(path);
+        if (dtoAll == null || dtoAll.getList() == null || dtoAll.getList().size() == 0) {
+            logger.error("未读取到数据！");
+            throw new BusinessException("未读取到数据！");
+        }
+
+        List<Map<String, String>> result = new ArrayList<>();
+
+        List<BankChargeExcelDTO> dtos = splitDto(dtoAll);
+        for (BankChargeExcelDTO dto : dtos) {
+            if (dto != null && dto.getList() != null && dto.getList().size() > 0) {
+                // 保存
+                BankReconciliationsHead head = addHead(dto, bankChargeDTO);
+                addDetail(dto, head, result);
+
+                String companyId = head.getCompanyId();
+                String annual = head.getAnnual();
+                String bankId = head.getBankId();
+                String platformCode = head.getPlatformCode();
+                DoChargeDTO doChargeDTO = new DoChargeDTO();
+                doChargeDTO.setReconciliationsDate(bankChargeDTO.getReconciliationsDate());
+                doChargeDTO.setCompanyId(companyId);
+                doChargeDTO.setAnnual(annual);
+                doChargeDTO.setBankId(bankId);
+                doChargeDTO.setPlatformCode(platformCode);
+
+                // 检查
+                int bankOnly = bankOnly(doChargeDTO); // 银行有，系统无
+                int chargeNotEqual = chargeNotEqual(doChargeDTO); // 账不平
+                chargeEqual(doChargeDTO); // 正常
+                if (bankOnly + chargeNotEqual > 0) {
+                    head.setReconciliationsFlag(RECONCILIATIONS_STATUS_1);
+                } else {
+                    head.setReconciliationsFlag(RECONCILIATIONS_STATUS_2);
+                }
+                int update = bankReconciliationsHeadMapper.updateByPrimaryKey(head);
+                if (update != 1) {
+                    logger.error("银行对账汇总表对账标志更新失败，update = " + update);
+                    throw new BusinessException("对账状态更新失败！");
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @Description: 按公司拆分
+     * @Param: [dto]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/14 11上午08
+     */
+    private List<BankChargeExcelDTO> splitDto(BankChargeExcelDTO dtoAll) {
+        Map<String, BankChargeExcelDTO> m = new HashMap<>();
+        List<BankChargeListDTO> listAll = dtoAll.getList();
+        for (BankChargeListDTO listDTO : listAll) {
+            String companyId = listDTO.getConsumerId().substring(0, 5);
+            BankChargeExcelDTO savedExcelDTO = m.get(companyId);
+            if (savedExcelDTO == null) {
+                BankChargeExcelDTO excelDTO = new BankChargeExcelDTO();
+                excelDTO.setTransactionTotal(1);
+                excelDTO.setTransactionMoney(listDTO.getPayMoney());
+                excelDTO.setTransactionDate(dtoAll.getTransactionDate());
+                List<BankChargeListDTO> newList = Lists.newArrayList();
+                newList.add(listDTO);
+                excelDTO.setList(newList);
+                m.put(companyId, excelDTO);
+            } else {
+                savedExcelDTO.setTransactionTotal(savedExcelDTO.getTransactionTotal() + 1);
+                savedExcelDTO.setTransactionMoney(savedExcelDTO.getTransactionMoney().add(listDTO.getPayMoney()));
+                List<BankChargeListDTO> savedList = savedExcelDTO.getList();
+                savedList.add(listDTO);
+                savedExcelDTO.setList(savedList);
+                m.put(companyId, savedExcelDTO);
+            }
+        }
+        return new ArrayList<>(m.values());
+    }
+
+    /**
+     * @Description: 更新银行对账标志
+     * @Param: [list, flag]
+     * @Return: int
+     * @Author: youbc
+     * @Date: 2018/9/12 14下午52
+     */
+    private int updateReconciliationsFlag(List<BankReconciliationsDetail> list, String flag) {
+        int size = list.size();
+        if (size > 0) {
+            int update = bankReconciliationsDetailMapper.updateReconciliationsFlag(list, flag);
+            if (update != size) {
+                logger.error("银行对账明细表对账标志更新失败，update = " + update + "，list.size = " + size);
+                throw new BusinessException("对账状态更新失败！");
+            }
+        }
+        return size;
+    }
+
+    /**
+     * @Description: 银行对账-正常
+     * @Param: [doChargeDTO]
+     * @Return: int
+     * @Author: youbc
+     * @Date: 2018/9/12 14下午52
+     */
+    private int chargeEqual(DoChargeDTO doChargeDTO) {
+        List<BankReconciliationsDetail> list = bankReconciliationsDetailMapper.getChargeEqual(doChargeDTO);
+        return updateReconciliationsFlag(list, CHARGE_EQUAL);
+    }
+
+    /**
+     * @Description: 银行对账-金额不匹配
+     * @Param: [doChargeDTO]
+     * @Return: int
+     * @Author: youbc
+     * @Date: 2018/9/12 14下午52
+     */
+    private int chargeNotEqual(DoChargeDTO doChargeDTO) {
+        List<BankReconciliationsDetail> list = bankReconciliationsDetailMapper.getChargeNotEqual(doChargeDTO);
+        return updateReconciliationsFlag(list, CHARGE_NOT_EQUAL);
+    }
+
+    /**
+     * @Description: 银行对账-收费系统无
+     * @Param: [doChargeDTO]
+     * @Return: int
+     * @Author: youbc
+     * @Date: 2018/9/12 14下午53
+     */
+    private int bankOnly(DoChargeDTO doChargeDTO) {
+        List<BankReconciliationsDetail> list = bankReconciliationsDetailMapper.getBankOnly(doChargeDTO);
+        return updateReconciliationsFlag(list, BANK_ONLY);
+    }
+
+    /**
+     * @Description: 保存到银行对账明细表
+     * @Param: [dto, bankChargeDTO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/11 16下午46
+     */
+    private void addDetail(BankChargeExcelDTO dto, BankReconciliationsHead head, List<Map<String, String>> result) {
+        List<BankReconciliationsDetail> saveList = new ArrayList<>();
+        Date date = new Date();
+        String bankId = head.getBankId();
+        List<BankChargeListDTO> list = dto.getList();
+        for (BankChargeListDTO listDTO : list) {
+            BankReconciliationsDetail detail = new BankReconciliationsDetail();
+            detail.setPrimaryId(IDWorker.uuid());
+            String companyId = head.getCompanyId();
+            detail.setCompanyId(companyId);
+            String annual = head.getAnnual();
+            detail.setAnnual(annual);
+            detail.setBankId(bankId);
+            detail.setPlatformCode(head.getPlatformCode());
+            String consumerId = listDTO.getConsumerId();
+            detail.setConsumerId(consumerId);
+            detail.setThirdPartyFlowCode(listDTO.getThirdPartyFlowCode());
+            detail.setPayDate(listDTO.getPayDate());
+            detail.setPayMoney(listDTO.getPayMoney());
+            detail.setOperatorCode(listDTO.getOperatorCode());
+            detail.setOperatorArea(listDTO.getOperatorArea());
+            detail.setPayMode(listDTO.getPayMode());
+            detail.setPushTel(listDTO.getPushTel());
+            detail.setPushMail(listDTO.getPushMail());
+            detail.setCreateDate(date);
+            detail.setCreateUser(bankId);
+            detail.setUpdateDate(date);
+            detail.setUpdateUser(bankId);
+            saveList.add(detail);
+
+            Map<String, String> map = new HashMap<>();
+            map.put("companyId", companyId);
+            map.put("annual", annual);
+            map.put("consumerId", consumerId);
+            result.add(map);
+        }
+        int insertBatch = bankReconciliationsDetailMapper.insertBatch(saveList);
+        int size = list.size();
+        if (insertBatch != size) {
+            logger.error("银行对账明细表保存失败，insertBatch = " + insertBatch + "，list.size = " + size);
+            throw new BusinessException("银行对账明细保存失败！");
+        }
+    }
+
+    /**
+     * @Description: 保存到银行对账汇总表
+     * @Param: [dto, bankChargeDTO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/11 16下午44
+     */
+    private BankReconciliationsHead addHead(BankChargeExcelDTO dto, BankChargeDTO bankChargeDTO) {
+        List<BankChargeListDTO> list = dto.getList();
+        BankChargeListDTO listDTO = list.get(0);
+        String consumerId = listDTO.getConsumerId();
+        String companyId = consumerId.substring(0, 5);
+        String annual = priceDefineMapper.findCurrentHeatAnnual(companyId);
+        if (annual == null) {
+            logger.error("当前供暖季获取失败！");
+            throw new BusinessException("当前供暖季获取失败！");
+        }
+        String bankId = bankChargeDTO.getBankId();
+        String platformCode = bankChargeDTO.getPlatformCode();
+        BankReconciliationsHead ifCharge = bankReconciliationsHeadMapper.findIfCharge(companyId, annual, bankId, platformCode);
+        if (ifCharge != null) {
+            logger.error("当日已对账，无需重复对账！");
+            throw new BusinessException("当日已对账，无需重复对账！");
+        }
+
+        Date date = new Date();
+        BankReconciliationsHead head = new BankReconciliationsHead();
+        head.setPrimaryId(IDWorker.uuid());
+        head.setCompanyId(companyId);
+        head.setAnnual(annual);
+        head.setBankId(bankId);
+        head.setPlatformCode(platformCode);
+        head.setTransactionTotal(dto.getTransactionTotal());
+        head.setTransactionMoney(dto.getTransactionMoney());
+        head.setTransactionDate(dto.getTransactionDate());
+        head.setCreateDate(date);
+        head.setCreateUser(bankId);
+        head.setUpdateDate(date);
+        head.setUpdateUser(bankId);
+
+        int insert = bankReconciliationsHeadMapper.insert(head);
+        if (insert != 1) {
+            logger.error("银行对账汇总表保存失败，insert = " + insert);
+            throw new BusinessException("银行对账记录保存失败！");
+        }
+        return head;
+    }
+
+    /**
+     * @Description: 生成收款通道详细信息
+     * @Param: [accountChannel, detail, chargeAccountVO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/20 17下午04
+     */
+    private ChargeAccountDetailVO makeDetail(String accountChannel, ChargeAccountVO chargeAccountVO) {
+        ChargeAccountDetailVO detail;
+        if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_1, accountChannel)) {
+            detail = chargeAccountVO.getHallDetail();
+        } else if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_2, accountChannel)) {
+            detail = chargeAccountVO.getMobileDetail();
+        } else if (StringUtils.equalsIgnoreCase(PAY_CHANNEL_3, accountChannel)) {
+            detail = chargeAccountVO.getBankDetail();
+        } else {
+            logger.error("缴费通道不正确！accountChannel：" + accountChannel);
+            throw new BusinessException("缴费通道不正确！");
+        }
+        return detail;
+    }
+
+    /**
+     * @Description: 更新收费对账历史
+     * @Param: [dto, detailDb, chargeAccountVO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/4 16下午43
+     */
+    private void updateReconciliationsHistory(SaveChargeAccountListDTO dto, ReconciliationsHistory detailDb, ChargeAccountVO chargeAccountVO) {
+        String accountChannel = dto.getAccountChannel();
+        ChargeAccountDetailVO detail = makeDetail(accountChannel, chargeAccountVO);
+
+        String userId = UserUtils.getUserId();
+        Date date = new Date();
+        String accountExplain = dto.getAccountExplain();
+
+        detailDb.setReconciliationsUser(userId);
+        detailDb.setReconciliationsStatus(StringUtils.isEmpty(accountExplain) ? dto.getReconciliationsStatus() : RECONCILIATIONS_STATUS_1);
+        detailDb.setPayMoney(detail.getPayMoney());
+        detailDb.setPointMoney(detail.getPointMoney());
+        detailDb.setAccountExplain(dto.getAccountExplain());
+        detailDb.setNotes(dto.getNotes());
+        detailDb.setUpdateDate(date);
+        detailDb.setUpdateUser(userId);
+
+        int update = reconciliationsHistoryMapper.updateByPrimaryKey(detailDb);
+        if (update != 1) {
+            logger.error("收费对账保存失败，update = " + update);
+            throw new BusinessException("收费对账保存失败！");
+        }
+    }
+
+    /**
+     * @Description: 新增收费对账历史
+     * @Param: [dto, saveChargeAccountDTO, chargeAccountVO]
+     * @Return: void
+     * @Author: youbc
+     * @Date: 2018/9/4 16下午26
+     */
+    private void createReconciliationsHistory(SaveChargeAccountListDTO dto, SaveChargeAccountDTO saveChargeAccountDTO, ChargeAccountVO chargeAccountVO) {
+        String companyId = saveChargeAccountDTO.getCompanyId();
+        String annual = priceDefineMapper.findCurrentHeatAnnual(companyId);
+        if (annual == null) {
+            logger.error("当前供暖季获取失败！");
+            throw new BusinessException("当前供暖季获取失败！");
+        }
+
+        String accountChannel = dto.getAccountChannel();
+        ChargeAccountDetailVO detail = makeDetail(accountChannel, chargeAccountVO);
+
+        String userId = UserUtils.getUserId();
+        Date date = new Date();
+        String accountExplain = dto.getAccountExplain();
+
+        ReconciliationsHistory reconciliationsHistory = new ReconciliationsHistory();
+        reconciliationsHistory.setPrimaryId(IDWorker.uuid());
+        reconciliationsHistory.setCompanyId(companyId);
+        reconciliationsHistory.setReconciliationsDate(saveChargeAccountDTO.getAccountTime());
+        reconciliationsHistory.setReconciliationsUser(userId);
+        reconciliationsHistory.setReconciliationsStatus(StringUtils.isEmpty(accountExplain) ? dto.getReconciliationsStatus() : RECONCILIATIONS_STATUS_1);
+        reconciliationsHistory.setAnnual(annual);
+        reconciliationsHistory.setAccountChannel(accountChannel);
+        reconciliationsHistory.setPayMoney(detail.getPayMoney());
+        reconciliationsHistory.setPointMoney(detail.getPointMoney());
+        reconciliationsHistory.setAccountExplain(accountExplain);
+        reconciliationsHistory.setNotes(dto.getNotes());
+        reconciliationsHistory.setCreateDate(date);
+        reconciliationsHistory.setCreateUser(userId);
+        reconciliationsHistory.setUpdateDate(date);
+        reconciliationsHistory.setUpdateUser(userId);
+
+        int insert = reconciliationsHistoryMapper.insert(reconciliationsHistory);
+        if (insert != 1) {
+            logger.error("收费对账保存失败，insert = " + insert);
+            throw new BusinessException("收费对账保存失败！");
+        }
+
+        userYearAccountDetailMapper.updateIsreconciliations(saveChargeAccountDTO);
+    }
+
+    private ChargeAccountDetailVO makeChargeAccountDetailVO(List<ChargeAccountDetailListVO> list, BigDecimal payMoney, BigDecimal pointMoney, BigDecimal totalMoney, int num, ChargeAccountDTO chargeAccountDTO, String payChannel) {
+        chargeAccountDTO.setPayChannel(payChannel);
+        ReconciliationsHistory detail = reconciliationsHistoryMapper.getDetail(chargeAccountDTO);
+        ChargeAccountDetailVO detailVO = new ChargeAccountDetailVO();
+        if (detail != null) {
+            detailVO.setReconciliationsStatus(detail.getReconciliationsStatus());
+            detailVO.setAccountExplain(detail.getAccountExplain());
+            detailVO.setNotes(detail.getNotes());
+        }
+        detailVO.setPayMoney(payMoney);
+        detailVO.setPointMoney(pointMoney);
+        detailVO.setTotalMoney(totalMoney);
+        detailVO.setNum(num);
+        detailVO.setList(list);
+        return detailVO;
+    }
+}

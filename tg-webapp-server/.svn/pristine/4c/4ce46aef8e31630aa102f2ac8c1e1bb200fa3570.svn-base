@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.organizationMessage.department.dao.DepartmentMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.organizationMessage.department.entity.Department">
+    <id column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="super_department_id" jdbcType="VARCHAR" property="superDepartmentId" />
+    <result column="department_charge" jdbcType="VARCHAR" property="departmentCharge" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.organizationMessage.department.vo.DepartmentInfo">
+    <id column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="departmentName" jdbcType="VARCHAR" property="departmentName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="superDepartmentId" jdbcType="VARCHAR" property="superDepartmentId" />
+    <result column="superDepartmentName" jdbcType="VARCHAR" property="superDepartmentName" />
+    <result column="departmentCharge" jdbcType="VARCHAR" property="departmentCharge" />
+    <result column="chargePerson" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <resultMap id="DepartmentStaffMap" type="cn.plou.web.charge.heatingmanage.vo.HeatingServeDepartmentVO">
+    <id column="department_id" property="id"/>
+    <result column="department_name" property="label"/>
+    <collection column="department_id" property="options" ofType="cn.plou.web.charge.heatingmanage.vo.HeatingServeStaffVO" >
+      <id column="staff_id" property="id"/>
+      <result column="staff_name" property="name"/>
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    department_id, department_name, company_id, super_department_id, department_charge, 
+    charge_person, notes, memo1, memo2, create_date, create_user, update_date, update_user
+  </sql>
+  <sql id="Useful_List">
+    department_id, department_name, company_id, super_department_id, department_charge,
+    charge_person, notes
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Useful_List" />
+    from department_info
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectDownInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    department_id,department_name
+    from department_info
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllDepIds" resultType="java.lang.String">
+    select
+    department_id
+    from department_info
+  </select>
+
+  <select id="selectAll" parameterType="map" resultMap="InfoMap">
+    select
+    d.department_id, d.department_name departmentName, d.company_id,c.company_name companyName,
+    d.super_department_id superDepartmentId,d.department_charge departmentCharge,
+    d.charge_person chargePerson, d.notes
+    from department_info d
+    left JOIN company_info c ON d.company_id=c.company_id
+    where d.department_id is not null
+    <if test="companyIds!=null">
+      <if test="companyIds.size() != 0">
+        and d.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="departmentVo != null">
+      <if test="departmentVo.departmentName != null">
+        and d.department_name LIKE concat('%',#{departmentVo.departmentName},'%')
+      </if>
+      <if test="departmentVo.companyId != null">
+        and d.company_id = #{departmentVo.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.superDepartmentId != null">
+        and d.super_department_id = #{departmentVo.superDepartmentId,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.departmentCharge != null">
+        and d.department_charge LIKE concat('%',#{departmentVo.departmentCharge,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="departmentVo.chargePerson != null">
+        and d.charge_person LIKE concat('%',#{departmentVo.chargePerson,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="departmentVo.notes != null">
+        and d.notes LIKE concat('%',#{departmentVo.notes,jdbcType=VARCHAR},'%')
+      </if>
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectDepartmentCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from department_info d
+    where d.department_id is not null
+    <if test="companyIds!=null">
+      <if test="companyIds.size() != 0">
+        and d.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="departmentVo != null">
+      <if test="departmentVo.departmentName != null">
+        and d.department_name LIKE concat('%',#{departmentVo.departmentName},'%')
+      </if>
+      <if test="departmentVo.companyId != null">
+        and d.company_id = #{departmentVo.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.superDepartmentId != null">
+        and d.super_department_id = #{departmentVo.superDepartmentId,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.departmentCharge != null">
+        and d.department_charge = #{departmentVo.departmentCharge,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.chargePerson != null">
+        and d.charge_person = #{departmentVo.chargePerson,jdbcType=VARCHAR}
+      </if>
+      <if test="departmentVo.notes != null">
+        and d.notes = #{departmentVo.notes,jdbcType=VARCHAR}
+      </if>
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from department_info
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from department_info
+    where department_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.organizationMessage.department.entity.Department">
+    insert into department_info (department_id, department_name, company_id, 
+      super_department_id, department_charge, charge_person, 
+      notes, memo1, memo2, 
+      create_date, create_user, update_date, 
+      update_user)
+    values (#{departmentId,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{superDepartmentId,jdbcType=VARCHAR}, #{departmentCharge,jdbcType=VARCHAR}, #{chargePerson,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.organizationMessage.department.entity.Department">
+    insert into department_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="departmentName != null">
+        department_name,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="superDepartmentId != null">
+        super_department_id,
+      </if>
+      <if test="departmentCharge != null">
+        department_charge,
+      </if>
+      <if test="chargePerson != null">
+        charge_person,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null">
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="superDepartmentId != null">
+        #{superDepartmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentCharge != null">
+        #{departmentCharge,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.organizationMessage.department.entity.Department">
+    update department_info
+    <set>
+      <if test="departmentName != null">
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="superDepartmentId != null">
+        super_department_id = #{superDepartmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentCharge != null">
+        department_charge = #{departmentCharge,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.organizationMessage.department.entity.Department">
+    update department_info
+    set department_name = #{departmentName,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      super_department_id = #{superDepartmentId,jdbcType=VARCHAR},
+      department_charge = #{departmentCharge,jdbcType=VARCHAR},
+      charge_person = #{chargePerson,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatch" parameterType="cn.plou.web.system.organizationMessage.department.vo.DepartmentVo">
+    update department_info
+    <set>
+      <if test="departmentName != null">
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="superDepartmentId != null">
+        super_department_id = #{superDepartmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentCharge != null">
+        department_charge = #{departmentCharge,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where department_id in
+    <foreach collection="departmentIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <select id="selectDepartmentStaff" parameterType="java.lang.String" resultMap="DepartmentStaffMap">
+    SELECT
+        s.staff_id,
+        s.staff_name,
+        d.department_id,
+        d.department_name
+    FROM
+        staff_info s
+    LEFT JOIN department_info d ON d.department_id = s.department_id
+    where d.company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+</mapper>

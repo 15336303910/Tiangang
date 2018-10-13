@@ -1,0 +1,17 @@
+package cn.plou.web.balance.dataAnalysis.dao;
+
+import cn.plou.web.balance.dataAnalysis.entity.BalanceValveData;
+
+public interface BalanceValveDataMapper {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(BalanceValveData record);
+
+    int insertSelective(BalanceValveData record);
+
+    BalanceValveData selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(BalanceValveData record);
+
+    int updateByPrimaryKey(BalanceValveData record);
+}

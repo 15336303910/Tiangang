@@ -1,0 +1,46 @@
+{
+  "from": 0,
+  "size": 10000,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "match_phrase": {
+                  "sourceid": {
+                    "query": "{{systemId}}"
+                  }
+                }
+              },
+              {
+                "range": {
+                  "time": {
+                    "from": "{{from}}",
+                    "to": "{{to}}",
+                    "include_lower": false,
+                    "include_upper": false
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "_source": {
+    "includes": [
+      "val",
+      "time"
+    ]
+  },
+  "sort": [
+    {
+      "time": {
+        "order": "asc"
+      }
+    }
+  ]
+}

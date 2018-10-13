@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#########################################
+# content: 转移银行对接文件(20min执行)
+# author: 王基伟
+# date: 2018年9月21日17:22:19
+# eg: 
+#########################################
+
+. `dirname $0`/cp_file.sh
+SH_HOME=`dirname $0`/..
+SH_HOME=`pwd`
+
+DEST_URL=192.168.1.250
+DEST_DIR=/data/bank
+LOCAL_DIR=/data/bank
+LOCAL_DIR_BACK=/data/bank/backup
+ALL_FILES=""
+WAITING_MV_FILES=""
+
+NOW_SECOND=`date +%s`
+for f in ${LOCAL_DIR}/*
+do  
+    temp_file=`basename $f`
+	file_last_modify_time=`stat -c %Y $LOCAL_DIR/$temp_file`
+	# 取15分钟前的文件
+    if [ $[ $NOW_SECOND - $file_last_modify_time ] -gt 900 ];then 
+		echo "file name is "$temp_file
+		`scp $temp_file root@192.168.1.250:/data/bank/`
+		############### waiting ######################
+	fi 
+done
+

@@ -1,0 +1,24 @@
+#!/usr/bin/expect
+#########################################
+# content: 转移文件
+# author: 王基伟
+# date: 2018年9月21日18:32:19
+# eg: us/root/cp_file.sh xxxx.xlms (先yum install -y expect)
+#########################################
+
+set password TG@admin%2018
+set waiting_file [lindex $argv 0]
+spawn scp -P 22 $waiting_file root@192.168.1.250:/data/bank/
+ expect {
+ "(yes/no)?"
+  {
+    send "yes\n"
+    expect "*assword:" { send "$password\n"}
+  }
+ "*assword:"
+  {
+    send "$password\n"
+  }
+}
+expect "100%"
+expect eof

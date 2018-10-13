@@ -1,0 +1,30 @@
+package cn.plou.web.system.permission.userPageHistory.dao;
+
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.vo.UserPageHistoryVo;
+import org.apache.catalina.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface UserPageHistoryMapper {
+//    int deleteByPrimaryKey(String id);
+
+//    int insert(UserPageHistory record);
+
+    int insertUserPageHistory(UserPageHistory userPageHistory);
+
+    List<String> selectAllIds();
+
+    List<UserPageHistory> selectAllUserPageHistory(@Param("companyId") String companyId, @Param("pageName")String pageName,
+                                                   @Param("userPageHistoryVo") UserPageHistoryVo userPageHistoryVo,
+                                                  @Param("order") String order,@Param("sortby") String sortby,
+                                                   @Param("page")Integer page,@Param("pageSize")Integer pageSize,
+                                                   @Param("userCodes")List<String> userCodes);
+
+//    UserPageHistory selectByPrimaryKey(String id);
+
+//    int updateByPrimaryKeySelective(UserPageHistory record);
+
+//    int updateByPrimaryKey(UserPageHistory record);
+}

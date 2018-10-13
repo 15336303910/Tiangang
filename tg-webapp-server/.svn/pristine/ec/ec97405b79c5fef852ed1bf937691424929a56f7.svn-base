@@ -1,0 +1,42 @@
+package cn.plou.web.charge.heatingmanage.vo;
+
+import java.util.List;
+
+/**
+ * @ClassName: HeatingServeDepartmentVO
+ * @Description: 供热服务执行人、回访人下拉框（部门）
+ * @Author: youbc
+ * @Date 2018-08-16 09:54
+ */
+public class HeatingServeDepartmentVO {
+
+    private String id;
+
+    private String label;
+
+    private List<HeatingServeStaffVO> options;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<HeatingServeStaffVO> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<HeatingServeStaffVO> options) {
+        this.options = options;
+    }
+}

@@ -1,0 +1,25 @@
+package cn.plou.web.system.permission.userLoginHistory.dao;
+
+import cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory;
+import cn.plou.web.system.permission.userLoginHistory.vo.UserLoginHistoryVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface UserLoginHistoryMapper {
+//    int deleteByPrimaryKey(String id);
+//
+//    int insert(UserLoginHistory record);
+
+    int insertUserLoginHistory(UserLoginHistory userLoginHistory);
+
+//    UserLoginHistory selectByPrimaryKey(String id);
+//
+//    int updateByPrimaryKeySelective(UserLoginHistory record);
+//
+//    int updateByPrimaryKey(UserLoginHistory record);
+    List<String> selectAllIds();
+
+    List<UserLoginHistory> selectAllUserLoginHistory(@Param("userLoginHistoryVo")UserLoginHistoryVo userLoginHistoryVo, @Param("order")String order,
+                                                     @Param("sortby")String sortby,@Param("page")Integer page,@Param("pageSize")Integer pageSize);
+}

@@ -1,0 +1,180 @@
+package cn.plou.web.system.meterMessage.mbusReadmodel.vo;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class MbusReadmodelVo {
+
+    private List<String> mbusReadmodelIds;
+
+    private String mbusId;
+
+    private String mbusReadmodelCode;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date installTime;
+
+    private String factory;
+
+    private String equipmentNo;
+
+    private String position;
+
+    private String companyId;
+
+    private String notes;
+
+    private String isvirtual;
+
+    private String channelstate;
+    private Date updateDate;
+
+    private String updateUser;
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+
+    public List<String> getMbusReadmodelIds() {
+        return mbusReadmodelIds;
+    }
+
+    public void setMbusReadmodelIds(List<String> mbusReadmodelIds) {
+        this.mbusReadmodelIds = mbusReadmodelIds;
+    }
+
+    public String getMbusId() {
+        return mbusId;
+    }
+
+    public void setMbusId(String mbusId) {
+        this.mbusId = mbusId;
+    }
+
+    public String getMbusReadmodelCode() {
+        return mbusReadmodelCode;
+    }
+
+    public void setMbusReadmodelCode(String mbusReadmodelCode) {
+        this.mbusReadmodelCode = mbusReadmodelCode;
+    }
+
+    public Date getInstallTime() {
+        return installTime;
+    }
+
+    public void setInstallTime(Date installTime) {
+        this.installTime = installTime;
+    }
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+
+    public String getEquipmentNo() {
+        return equipmentNo;
+    }
+
+    public void setEquipmentNo(String equipmentNo) {
+        this.equipmentNo = equipmentNo;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getIsvirtual() {
+        return isvirtual;
+    }
+
+    public void setIsvirtual(String isvirtual) {
+        this.isvirtual = isvirtual;
+    }
+
+    public String getChannelstate() {
+        return channelstate;
+    }
+
+    public void setChannelstate(String channelstate) {
+        this.channelstate = channelstate;
+    }
+    
+    private Boolean batchCheckbox = false;
+  	private String batchModifyId;
+  	private String batchModifyType;
+    private List<String> communitys;
+    
+    public List<String> getCommunitys() {
+      return communitys;
+   }
+
+	  public void setCommunitys(List<String> communitys) {
+	      this.communitys = communitys;
+	  }
+	  
+    public String getBatchModifyId() {
+      return batchModifyId;
+   }
+
+	  public void setBatchModifyId(String batchModifyId) {
+	      this.batchModifyId = batchModifyId;
+	  }
+	  
+    public String getBatchModifyType() {
+      return batchModifyType;
+   }
+
+	  public void setBatchModifyType(String batchModifyType) {
+	      this.batchModifyType = batchModifyType;
+	  }
+	  
+    public Boolean getBatchCheckbox() {
+      return batchCheckbox;
+   }
+
+	  public void setBatchCheckbox(Boolean batchCheckbox) {
+	      this.batchCheckbox = batchCheckbox;
+	  }
+}

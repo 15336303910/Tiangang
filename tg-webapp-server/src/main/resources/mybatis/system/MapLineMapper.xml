@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.mapLine.dao.MapLineMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.mapLine.entity.MapLine">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="meter_type" jdbcType="VARCHAR" property="meterType" />
+    <result column="line_name" jdbcType="VARCHAR" property="lineName" />
+    <result column="points" jdbcType="VARCHAR" property="points" />
+    <result column="line_type" jdbcType="VARCHAR" property="lineType" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="opacity" jdbcType="VARCHAR" property="opacity" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.commonMessage.mapLine.vo.MapLineInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="companyId" jdbcType="VARCHAR" property="companyId" />
+    <result column="meterType" jdbcType="VARCHAR" property="meterType" />
+    <result column="meterTypeName" jdbcType="VARCHAR" property="meterTypeName" />
+    <result column="lineName" jdbcType="VARCHAR" property="lineName" />
+    <result column="points" jdbcType="VARCHAR" property="points" />
+    <result column="line_type" jdbcType="VARCHAR" property="lineType" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="opacity" jdbcType="VARCHAR" property="opacity" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="stationId" jdbcType="VARCHAR" property="stationId" />
+    <result column="commuityId" jdbcType="VARCHAR" property="commuityId" />
+    <result column="companyName" jdbcType="VARCHAR"  property="companyName" />
+    <result column="typeName" jdbcType="VARCHAR"  property="typeName" />
+    <result column="colorName" jdbcType="VARCHAR"  property="colorName" />
+    <result column="weightName" jdbcType="VARCHAR"  property="weightName" />
+    <result column="commuityName" jdbcType="VARCHAR"  property="commuityName" />
+    <result column="stationName" jdbcType="VARCHAR"  property="stationName" />
+    <result column="lineTypeName" jdbcType="VARCHAR"  property="lineTypeName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, company_id, meter_type, line_name, points, line_type, weight, color, opacity,
+    notes, station_id, commuity_id
+  </sql>
+
+
+
+  <!--<insert id="insert" parameterType="cn.plou.web.system.permission.mapLine.entity.mapLine">-->
+    <!--insert into map_line (id, company_id, meter_type, -->
+      <!--line_name, points, line_type, -->
+      <!--weight, color, opacity, -->
+      <!--notes, station_id, area_id-->
+      <!--)-->
+    <!--values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{meterType,jdbcType=VARCHAR}, -->
+      <!--#{lineName,jdbcType=VARCHAR}, #{points,jdbcType=VARCHAR}, #{lineType,jdbcType=VARCHAR}, -->
+      <!--#{weight,jdbcType=INTEGER}, #{color,jdbcType=VARCHAR}, #{opacity,jdbcType=VARCHAR}, -->
+      <!--#{notes,jdbcType=VARCHAR}, #{stationId,jdbcType=VARCHAR}, #{areaId,jdbcType=VARCHAR}-->
+      <!--)-->
+  <!--</insert>-->
+
+
+  <!--添加地图线信息-->
+  <insert id="insertMapLine" parameterType="cn.plou.web.system.commonMessage.mapLine.entity.MapLine">
+    insert into map_line
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="meterType != null">
+        meter_type,
+      </if>
+      <if test="lineName != null">
+        line_name,
+      </if>
+      <if test="points != null">
+        points,
+      </if>
+      <if test="lineType != null">
+        line_type,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="opacity != null">
+        opacity,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="stationId != null">
+        station_id,
+      </if>
+      <if test="commuityId != null">
+        commuity_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="lineName != null">
+        #{lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="points != null">
+        #{points,jdbcType=VARCHAR},
+      </if>
+      <if test="lineType != null">
+        #{lineType,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="opacity != null">
+        #{opacity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <!--批量删除地图线信息-->
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from map_line
+    where id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+    #{item,jdbcType=VARCHAR}
+  </foreach>
+  </delete>
+
+  <!--批量修改地图线信息-->
+  <update id="updateMapLineBatch" parameterType="cn.plou.web.system.commonMessage.mapLine.vo.MapLineVo">
+    update map_line
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="lineName != null">
+        line_name = #{lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="points != null">
+        points = #{points,jdbcType=VARCHAR},
+      </if>
+      <if test="lineType != null">
+        line_type = #{lineType,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="opacity != null">
+        opacity = #{opacity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        commuity_id = #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id in
+    <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+
+  <update id="updateMapLine" parameterType="cn.plou.web.system.commonMessage.mapLine.entity.MapLine">
+    update map_line
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="lineName != null">
+        line_name = #{lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="points != null">
+        points = #{points,jdbcType=VARCHAR},
+      </if>
+      <if test="lineType != null">
+        line_type = #{lineType,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="opacity != null">
+        opacity = #{opacity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        commuity_id = #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--根据ID查地图点信息-->
+  <select id="selectMapLineById" parameterType="java.lang.String" resultMap="BaseInfoMap">
+    select
+    <include refid="Base_Column_List" />
+    from map_line
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+    select
+    id
+    from map_line
+  </select>
+
+  <!--查全部-->
+  <select id="selectAllMapLine" parameterType="map" resultMap="BaseInfoMap">
+    select
+    m.id, m.company_id companyId, m.meter_type meterType, m.line_name lineName, m.points, m.line_type line_type, m.weight, m.color, m.opacity,
+    m.notes, m.station_id stationId, m.commuity_id commuityId ,c.company_name companyName
+    from map_line m
+    LEFT JOIN company_info c
+    ON m.company_id = c.company_id
+    where
+    1 = 1
+    <if test="companyId != null">
+    and m.company_id = #{companyId}
+    </if>
+    <if test="commuityId != null">
+      and m.commuity_id = #{commuityId}
+    </if>
+    <if test="stationId != null">
+      and m.station_id = #{stationId}
+    </if>
+    <if test="mapLineVo!=null">
+    <if test="mapLineVo.meterType != null">
+      and m.meter_type = #{mapLineVo.meterType}
+    </if>
+    <if test="mapLineVo.lineName != null">
+      and m.line_name LIKE concat('%',#{mapLineVo.lineName},'%')
+    </if>
+    <if test="mapLineVo.points != null">
+      and m.points = #{mapLineVo.points}
+    </if>
+    <if test="mapLineVo.lineType != null">
+      and m.line_type = #{mapLineVo.lineType}
+    </if>
+    <if test="mapLineVo.weight != null">
+      and m.weight = #{mapLineVo.weight}
+    </if>
+    <if test="mapLineVo.color != null">
+      and m.color = #{mapLineVo.color}
+    </if>
+    <if test="mapLineVo.opacity != null">
+      and m.opacity = #{mapLineVo.opacity}
+    </if>
+    <if test="mapLineVo.notes != null">
+      and m.notes = #{mapLineVo.notes}
+    </if>
+    <if test="mapLineVo.stationId != null">
+      and m.station_id = #{mapLineVo.stationId}
+    </if>
+    <if test="mapLineVo.commuityId != null">
+      and m.commuity_id = #{mapLineVo.commuityId}
+    </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="page!=null">
+      <if test="pageSize!=null">
+        limit ${page},${pageSize}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectMapLineCount" parameterType="map" resultType="java.lang.Integer">
+    select
+    count(*)
+    from map_line m
+    where
+    1 = 1
+    <if test="companyId != null">
+      and m.company_id = #{companyId}
+    </if>
+    <if test="commuityId != null">
+      and m.commuity_id = #{commuityId}
+    </if>
+    <if test="stationId != null">
+      and m.station_id = #{stationId}
+    </if>
+    <if test="mapLineVo!=null">
+      <if test="mapLineVo.meterType != null">
+        and m.meter_type = #{mapLineVo.meterType}
+      </if>
+      <if test="mapLineVo.lineName != null">
+        and m.line_name LIKE concat('%',#{mapLineVo.lineName},'%')
+      </if>
+      <if test="mapLineVo.points != null">
+        and m.points = #{mapLineVo.points}
+      </if>
+      <if test="mapLineVo.lineType != null">
+        and m.line_type = #{mapLineVo.lineType}
+      </if>
+      <if test="mapLineVo.weight != null">
+        and m.weight = #{mapLineVo.weight}
+      </if>
+      <if test="mapLineVo.color != null">
+        and m.color = #{mapLineVo.color}
+      </if>
+      <if test="mapLineVo.opacity != null">
+        and m.opacity = #{mapLineVo.opacity}
+      </if>
+      <if test="mapLineVo.notes != null">
+        and m.notes = #{mapLineVo.notes}
+      </if>
+      <if test="mapLineVo.stationId != null">
+        and m.station_id = #{mapLineVo.stationId}
+      </if>
+      <if test="mapLineVo.commuityId != null">
+        and m.commuity_id = #{mapLineVo.commuityId}
+      </if>
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: tg-webapp-server
+Implementation-Version: 2.0.1.RELEASE
+Built-By: wuzidong
+Implementation-Vendor-Id: cn.plou.web
+Build-Jdk: 1.8.0_181
+Implementation-URL: http://maven.apache.org
+Created-By: Maven Integration for Eclipse
+

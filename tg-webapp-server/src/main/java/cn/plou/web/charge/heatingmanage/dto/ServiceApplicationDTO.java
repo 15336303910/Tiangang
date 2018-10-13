@@ -1,0 +1,54 @@
+package cn.plou.web.charge.heatingmanage.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
+/**
+ * @ClassName: ServiceApplicationDTO
+ * @Description: 供热服务-服务申请
+ * @Author: youbc
+ * @Date 2018-08-16 10:45
+ */
+@Data
+public class ServiceApplicationDTO {
+
+    private String primaryId; // 主键：用户ＩＤ＋申请时间
+
+    @NotEmpty(message = "请选择用户")
+    private String consumerId; // 用户ＩＤ
+
+    @NotEmpty(message = "请选择业务类型")
+    private String businessType; // 业务类型
+
+    @NotEmpty(message = "请填写申请人")
+    @Length(max = 20, message = "申请人不能超过 20 字")
+    private String apprPerson; // 申请人
+
+    @NotEmpty(message = "请填写申请人电话")
+    @Length(max = 32, message = "申请人电话不能超过 32 字")
+    private String apprTelephone; // 申请人电话
+
+    @NotEmpty(message = "请选择任务类型")
+    private String taskType; // 任务类型
+
+    @NotEmpty(message = "请选择紧急程度")
+    private String emerge; // 紧急程度
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "请填写用户预约时间")
+    private Date appointTime; // 用户预约时间
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotEmpty(message = "请填写处理时限")
+    private String overtime; // 处理时限
+
+    @Length(max = 200, message = "任务内容不能超过 200 字")
+    @NotEmpty(message = "请填写任务内容")
+    private String taskContect; // 任务内容
+
+}

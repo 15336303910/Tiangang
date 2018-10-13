@@ -1,0 +1,152 @@
+package cn.plou.web.system.organizationMessage.staff.service.impl;
+
+import cn.plou.web.common.utils.CamelCaseUtil;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.company.service.impl.CompanyServiceImpl;
+import cn.plou.web.system.organizationMessage.department.dao.DepartmentMapper;
+import cn.plou.web.system.organizationMessage.department.entity.Department;
+import cn.plou.web.system.organizationMessage.staff.dao.StaffMapper;
+import cn.plou.web.system.organizationMessage.staff.entity.Staff;
+import cn.plou.web.system.organizationMessage.staff.service.StaffService;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffInfo;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffVo;
+import cn.plou.web.system.organizationMessage.staff.vo.StructureInfo;
+import cn.plou.web.system.permission.rlUserRole.service.RlUserRoleService;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class StaffServiceImpl implements StaffService {
+
+    @Autowired
+    private StaffMapper staffMapper;
+
+    @Autowired
+    private CompanyServiceImpl companyServiceImpl;
+
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
+
+    @Autowired
+    private RlUserRoleService rlUserRoleService;
+    @Override
+    public Staff selectByPrimaryKey(String primaryId) {
+        Staff staff = staffMapper.selectByPrimaryKey(primaryId);
+        return staff;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addStaff(Staff staff) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("staff");
+        userPageHistory.setAct("addStaff");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        staff.setCreateUser(UserUtils.getUserId());
+        staff.setCreateDate(new Date());
+        return staffMapper.insertStaff(staff);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBatchByIds(List<String> staffId) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("staff");
+        userPageHistory.setAct("deleteBatchByIds");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return staffMapper.deleteBatchByIds(staffId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyStaffBatch(StaffVo staffVo) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("staff");
+        userPageHistory.setAct("modifyStaffBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        staffVo.setUpdateUser(UserUtils.getUserId());
+        staffVo.setUpdateDate(new Date());
+        return staffMapper.updateStaffBatch(staffVo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyStaffById(Staff staff) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("staff");
+        userPageHistory.setAct("modifyStaffById");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        staff.setUpdateUser(UserUtils.getUserId());
+        staff.setUpdateDate(new Date());
+        return staffMapper.updateStaffById(staff);
+    }
+
+    @Override
+    public String getNewId() {
+        if(staffMapper.selectAllIds().size()==0){
+            return "1";
+        }
+        return getMaxIdNoSize(staffMapper.selectAllIds());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public PageInfo<StaffInfo> getAllStaff(String companyId, StaffVo staffVo, String order, String sortby, Integer page, Integer pageSize) {
+        List<String> companyIds = new ArrayList<String>();
+        if(companyId != null){
+            companyIds = companyServiceImpl.getCompanyIdsByPid(companyId);
+        }
+//        sortby = CamelCaseUtil.toUnderscoreCase(sortby);
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("staff");
+        userPageHistory.setAct("getAllStaff");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        PageHelper.startPage(page,pageSize);
+        List<StaffInfo> staffInfoList = staffMapper.selectAllStaff(companyIds, staffVo, order, sortby, page, pageSize);
+        PageInfo<StaffInfo> pageInfo=new PageInfo<>(staffInfoList);
+        return pageInfo;
+    }
+
+    @Override
+    public List<Staff> getStaffDownInfoByDepartment(String departmentId) {
+        return staffMapper.selectStaffByDepartmentId(departmentId);
+    }
+
+    @Override
+    public List<Staff> getStaffDownInfoByStaffId(String staffId) {
+        String departmentId = staffMapper.selectByPrimaryKey(staffId).getDepartmentId();
+        return staffMapper.selectStaffByDepartmentId(departmentId);
+    }
+
+    @Override
+    public StructureInfo getStructureById(String staffId) {
+        StructureInfo structureInfo = new StructureInfo();
+        Staff staff = staffMapper.selectByPrimaryKey(staffId);
+        Department department = departmentMapper.selectByPrimaryKey(staff.getDepartmentId());
+        Company company = companyServiceImpl.get(department.getCompanyId());
+        structureInfo.setDepartmentId(department.getDepartmentId());
+        structureInfo.setDepartmentName(department.getDepartmentName());
+        structureInfo.setStaffList(staffMapper.selectStaffByDepartmentId(staff.getDepartmentId()));
+        structureInfo.setCompanyId(company.getCompanyId());
+        structureInfo.setCompanyName(company.getCompanyName());
+        structureInfo.setDepartmentList(departmentMapper.selectDownInfo(company.getCompanyId()));
+        structureInfo.setCompanyList(companyServiceImpl.getDownInfo(rlUserRoleService.getRoleByUserId(UserUtils.getUserId())));
+        return structureInfo;
+    }
+}

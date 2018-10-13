@@ -1,0 +1,55 @@
+{
+  "from": 0,
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "stationId": {{stationId}}
+              }
+            },
+            {
+              "range": {
+                "timestamp": {
+                  "from": {{timestamp_from}},
+                  "to": {{timestamp_to}},
+                  "include_lower": {{include_lower}},
+                  "include_upper": {{include_upper}}
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "aggregations": {
+    "group_by_meterid": {
+      "terms": {
+        "field": "meterid",
+        "size": 20000,
+        "min_doc_count": 1,
+        "order": [
+          {
+            "_term": "asc"
+          }
+        ]
+      },
+      "aggregations": {
+        "maxF": {
+          "max": {
+            "field": "flee"
+          }
+        },
+        "minF": {
+          "min": {
+            "field": "flee"
+          }
+        }
+      }
+    }
+  }
+}

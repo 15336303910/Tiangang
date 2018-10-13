@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.rlMenuRole.dao.RlMenuRoleMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRole">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <id column="page_name" jdbcType="VARCHAR" property="pageName" />
+    <id column="isshow" jdbcType="VARCHAR" property="isshow"/>
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.permission.rlMenuRole.vo.RlMenuRoleInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <id column="page_name" jdbcType="VARCHAR" property="pageName" />
+    <id column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <id column="isshow" jdbcType="VARCHAR" property="isshow"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, role_id, page_name,isshow
+  </sql>
+
+  <insert id="insertRlMenuRole" parameterType="cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRole">
+    insert into rl_menu_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="pageName != null">
+        page_name,
+      </if>
+      <if test="isshow != null">
+        isshow,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="isshow != null">
+        #{isshow,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteRlMenuRoleByRoleId" parameterType="java.lang.String">
+  delete from rl_menu_role
+  where  role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+
+  <!--<delete id="deleteChirldrenMenuByPMenu" parameterType="java.lang.String">
+        delete from role_define
+        where role_id = #{roleId,jdbcType=VARCHAR}
+     </delete>-->
+
+  <insert id="insertRlMenuRoleBatch" parameterType="java.util.List">
+  insert into rl_menu_role (id, role_id, page_name, isshow)
+  values
+  <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.id,jdbcType=VARCHAR}, #{item.roleId,jdbcType=VARCHAR}, #{item.pageName,jdbcType=VARCHAR},#{item.isshow,jdbcType=VARCHAR})
+  </foreach>
+  </insert>
+
+  <select id="selectMaxId" resultType="java.lang.Integer">
+    select max(CONVERT(id,SIGNED)) from rl_menu_role
+  </select>
+
+  <insert id="insertNewRlMenuRoleBatch" parameterType="cn.plou.web.system.permission.rlMenuRole.vo.RlMenuRoleVo">
+    insert into rl_menu_role (id,role_id,page_name,isshow)
+    values (#{id},#{roleId},#{pageName},#{isshow})
+    where page_name not in (select page_name from rl_menu_role where role_id = #{roleId})
+  </insert>
+
+  <delete id="deleteCMenuNotInPMenu" parameterType="java.util.List">
+    delete from rl_menu_role
+    where 1=1
+    <if test="pageNames!=null">
+      <if test="pageNames.size()!=0">
+        and page_name in
+        <foreach collection="pageNames" item="pageNames" index="index" open="(" separator="," close=")">
+          #{pageNames}
+        </foreach>
+      </if>
+    </if>
+    <if test="roleIds!=null">
+      <if test="roleIds.size()!=0">
+        and role_id in
+        <foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+          #{roleId}
+        </foreach>
+      </if>
+    </if>
+  </delete>
+
+  <select id="selectCMenuNotInPMenu" parameterType="java.lang.String" resultType="java.lang.String">
+    select page_name  from rl_menu_role
+    where role_id like concat (#{roleId},'%') and role_id != #{roleId}
+    and (page_name in ((select page_name from rl_menu_role where role_id like concat (#{roleId},'%')) not in (select page_name from rl_menu_role where role_id = #{roleId})))
+  </select>
+  <!--<update id="updateRlMenuRoleBatch" parameterType="cn.plou.web.system.permission.rlMenuRole.vo.RlMenuRoleVo">-->
+    <!--update rl_menu_role-->
+    <!--<set>-->
+      <!--<if test="isshow != null">-->
+        <!--isshow = #{isshow,jdbcType=VARCHAR},-->
+      <!--</if>-->
+    <!--</set>-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+    <!--and role_id = #{roleId,jdbcType=VARCHAR}-->
+    <!--and page_name = #{pageName,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+    select
+    id
+    from rl_menu_role
+    limit 0,10000
+  </select>
+
+  <select id="selectAllMenuByRoleId" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    rm.page_name
+    from rl_menu_role rm
+    left join role_define rd
+    on rm.role_id = rd.role_id
+    where rm.role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+
+  <!--按roleId查权限-->
+  <select id="selectRlMenuRoleByRoleId" parameterType="map" resultMap="BaseInfoMap">
+    select
+    rm.id, rm.role_id, rm.page_name, rd.role_name
+    from rl_menu_role rm
+    left join role_define rd
+    on rm.role_id = rd.role_id
+    where rm.role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+
+<!--<select id="selectAllRlMenuRole" parameterType="map" resultMap="BaseResultMap">-->
+  <!--select-->
+  <!--rl.id, rl.role_id, rl.page_name, rl.isshow,r.role_name-->
+  <!--from rl_menu_role rl-->
+  <!--left join role_define r-->
+  <!--ON rl.role_id = r.role_id-->
+  <!--where-->
+  <!--1 = 1-->
+  <!--<if test="rlMenuRoleVo != null">-->
+  <!--<if test="rlMenuRoleVo.roleId != null">-->
+    <!--and rl.role_id = #{rlMenuRoleVo.roleId}-->
+  <!--</if>-->
+  <!--<if test="rlMenuRoleVo.pageName != null">-->
+    <!--and rl.page_name LIKE concat('%',#{rlMenuRoleVo.pageName},'%')-->
+  <!--</if>-->
+  <!--<if test="rlMenuRoleVo.isshow != null">-->
+    <!--and rl.isshow = #{rlMenuRoleVo.isshow}-->
+  <!--</if>-->
+  <!--</if>-->
+  <!--<if test="sortby != null">-->
+    <!--order by ${sortby}-->
+  <!--</if>-->
+  <!--<if test="order != null">-->
+    <!--${order}-->
+  <!--</if>-->
+<!--</select>-->
+
+
+  <!--<update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRole">-->
+    <!--update rl_menu_role-->
+    <!--set isshow = #{isshow,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+      <!--and role_id = #{roleId,jdbcType=VARCHAR}-->
+      <!--and page_name = #{pageName,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+  <!--<insert id="insert" parameterType="cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRole">-->
+  <!--insert into rl_menu_role (id, role_id, page_name, -->
+  <!--isshow)-->
+  <!--values (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{pageName,jdbcType=VARCHAR}, -->
+  <!--#{isshow,jdbcType=VARCHAR})-->
+  <!--</insert>-->
+
+</mapper>

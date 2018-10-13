@@ -1,0 +1,14 @@
+package cn.plou.web.balance.distribution.service;
+import cn.plou.web.balance.distribution.entity.BuildRunningData;
+import cn.plou.web.balance.distribution.vo.BalanceValveDataNowInfo;
+import cn.plou.web.system.baseMessage.build.vo.BuildInfo;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface DistributionService {
+    List<BuildInfo> getBuildListByStationId(String stationId);
+    BalanceValveDataNowInfo getDataNowInfoByBuildId(String buildId);
+    BuildRunningData getBuildRunningDataByBuildId(String buildId);
+}

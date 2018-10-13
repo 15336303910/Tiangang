@@ -1,0 +1,70 @@
+package cn.plou.web.charge.chargeconfig.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
+import java.util.List;
+import cn.plou.web.charge.chargeconfig.entity.PriceDefine;
+
+@Mapper
+public interface PriceDefineMapper {
+    int insert(@Param("priceDefine") PriceDefine priceDefine);
+
+    /**
+     * 将热价存入缓存表
+     * @param priceDefine
+     * @return
+     */
+    int insertToTemp(@Param("priceDefine") PriceDefine priceDefine);
+
+    int insertSelective(@Param("priceDefine") PriceDefine priceDefine);
+
+    int updateByPrimaryKey(PriceDefine record);
+
+    int update(@Param("priceDefine") PriceDefine priceDefine);
+    int updateTemp(@Param("priceDefine") PriceDefine priceDefine);
+
+    int deleteByPrimaryId(@Param("primaryId")String primaryId);
+    int deleteByPrimaryIdFromTemp(@Param("primaryId")String primaryId);
+
+    List<PriceDefine> findBycompanyId(@Param("companyId")String companyId);
+
+    List<PriceDefine> findBycompanyIdFromTemp(@Param("companyId")String companyId,@Param("approveRes")String approveRes);
+
+    PriceDefine selectByPrimaryKey(String primaryId);
+
+    PriceDefine selectByAnnualAndConsumerId(@Param("annual")String annual,@Param("consumerId")String consumerId);
+
+    PriceDefine selectByAnnualAndCompanyId(@Param("annual")String annual,@Param("companyId")String companyId);
+
+    List<PriceDefine> selectByAnnualAndCompanyIds(@Param("annual")String annual,@Param("companyIds")List<String> companyIds);
+
+
+
+    /**
+     * @param primaryId
+     * @return
+     * 将热价从缓存表中取出
+     */
+    PriceDefine selectByPrimaryKeyFromTemp(@Param("primaryId") String primaryId);
+
+    String findCurrentHeatAnnual(@Param("companyId")  String  companyId);
+
+    /**
+     * @param annual
+     * @param companyId
+     * @return
+     */
+    int  changeOtherToNotCurrent(@Param("annual")String annual,@Param("companyId")  String  companyId);
+
+    PriceDefine   getTodayLastFlowId(@Param("companyId")  String  companyId);
+
+
+
+    PriceDefine     findTempData(@Param("approveSerial")String approveSerial);
+    PriceDefine     findOriginData(@Param("approveSerial")String approveSerial);
+    int updateTmpValueByPrimaryKey(@Param("prePriceTmp")BigDecimal prePriceTmp, @Param("areaPriceTmp")BigDecimal areaPriceTmp, @Param("heatPriceTmp")BigDecimal heatPriceTmp, @Param("exchangerPriceTmp")BigDecimal exchangerPriceTmp, @Param("primaryId")String  primaryId);
+
+
+}

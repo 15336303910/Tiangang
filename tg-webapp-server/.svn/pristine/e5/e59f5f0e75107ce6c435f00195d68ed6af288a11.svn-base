@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.mbusTest.dao.MbusTestMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.mbusTest.entity.MbusTest">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mbus_code" jdbcType="VARCHAR" property="mbusCode" />
+    <result column="send_data" jdbcType="VARCHAR" property="sendData" />
+    <result column="rec_data" jdbcType="VARCHAR" property="recData" />
+    <result column="send_date" jdbcType="VARCHAR" property="sendDate" />
+    <result column="rec_date" jdbcType="VARCHAR" property="recDate" />
+    <result column="rec_flag" jdbcType="VARCHAR" property="recFlag" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.meterMessage.mbusTest.vo.MbusTestInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mbusCode" jdbcType="VARCHAR" property="mbusCode" />
+    <result column="consumerId" jdbcType="VARCHAR" property="consumerId"/>
+    <result column="mbusPosition" jdbcType="VARCHAR" property="mbusPosition"/>
+    <result column="sendData" jdbcType="VARCHAR" property="sendData" />
+    <result column="recData" jdbcType="VARCHAR" property="recData" />
+    <result column="sendDate" jdbcType="VARCHAR" property="sendDate" />
+    <result column="recDate" jdbcType="VARCHAR" property="recDate" />
+    <result column="recFlag" jdbcType="VARCHAR" property="recFlag" />
+    <result column="recFlagName" jdbcType="VARCHAR" property="recFlagName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, mbus_code, send_data, rec_data, send_date, rec_date, rec_flag, company_id
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mbus_test
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from mbus_test
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllIds" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    id
+    from mbus_test
+  </select>
+
+  <select id="selectAllMbusTest" parameterType="map" resultMap="InfoMap">
+    select
+    m.id, m.mbus_code mbusCode, m.send_data sendData, m.rec_data recData, m.send_date sendDate,
+    m.rec_date recDate, m.rec_flag recFlag, m.company_id,c.company_name companyName,
+    mbus.consumer_id consumerId,mbus.mbus_position mbusPosition
+    from mbus_test m
+    JOIN company_info c ON m.company_id=c.company_id
+    JOIN mbus_info mbus ON m.mbus_code=mbus.mbus_code
+    <if test="mbusCodes.size()!=0">
+      where m.mbus_code in
+      <foreach collection="mbusCodes" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      <if test="mbusTestVo!=null">
+        <if test="mbusTestVo.sendData != null">
+          and m.send_data = #{mbusTestVo.sendData,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recData != null">
+          and m.rec_data = #{mbusTestVo.recData,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.sendDate != null">
+          and m.send_date = #{mbusTestVo.sendDate,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recDate != null">
+          and m.rec_date = #{mbusTestVo.recDate,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recFlag != null">
+          and m.rec_flag = #{mbusTestVo.recFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.companyId != null">
+          and m.company_id = #{mbusTestVo.companyId,jdbcType=VARCHAR}
+        </if>
+      </if>
+      <if test="sortby!=null">
+        order by ${sortby}
+      </if>
+      <if test="order!=null">
+        ${order}
+      </if>
+      <if test="start!=null and pageSize!=null">
+        limit ${start},${pageSize}
+      </if>
+    </if>
+   <if test="mbusCodes.size()==0">
+     where 1=0
+   </if>
+   </select>
+
+  <select id="selectMbusTestCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from mbus_test m
+    <if test="mbusCodes.size()!=0">
+      where m.mbus_code in
+      <foreach collection="mbusCodes" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      <if test="mbusTestVo!=null">
+        <if test="mbusTestVo.sendData != null">
+          and m.send_data = #{mbusTestVo.sendData,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recData != null">
+          and m.rec_data = #{mbusTestVo.recData,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.sendDate != null">
+          and m.send_date = #{mbusTestVo.sendDate,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recDate != null">
+          and m.rec_date = #{mbusTestVo.recDate,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.recFlag != null">
+          and m.rec_flag = #{mbusTestVo.recFlag,jdbcType=VARCHAR}
+        </if>
+        <if test="mbusTestVo.companyId != null">
+          and m.company_id = #{mbusTestVo.companyId,jdbcType=VARCHAR}
+        </if>
+      </if>
+    </if>
+    <if test="mbusCodes.size()==0">
+      where 1=0
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mbus_test
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.mbusTest.entity.MbusTest">
+    insert into mbus_test (id, mbus_code, send_data, 
+      rec_data, send_date, rec_date, 
+      rec_flag, company_id
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mbusCode,jdbcType=VARCHAR}, #{sendData,jdbcType=VARCHAR}, 
+      #{recData,jdbcType=VARCHAR}, #{sendDate,jdbcType=VARCHAR}, #{recDate,jdbcType=VARCHAR}, 
+      #{recFlag,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.mbusTest.entity.MbusTest">
+    insert into mbus_test
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mbusCode != null">
+        mbus_code,
+      </if>
+      <if test="sendData != null">
+        send_data,
+      </if>
+      <if test="recData != null">
+        rec_data,
+      </if>
+      <if test="sendDate != null">
+        send_date,
+      </if>
+      <if test="recDate != null">
+        rec_date,
+      </if>
+      <if test="recFlag != null">
+        rec_flag,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusCode != null">
+        #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sendData != null">
+        #{sendData,jdbcType=VARCHAR},
+      </if>
+      <if test="recData != null">
+        #{recData,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null">
+        #{sendDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recDate != null">
+        #{recDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recFlag != null">
+        #{recFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.mbusTest.entity.MbusTest">
+    update mbus_test
+    <set>
+      <if test="mbusCode != null">
+        mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sendData != null">
+        send_data = #{sendData,jdbcType=VARCHAR},
+      </if>
+      <if test="recData != null">
+        rec_data = #{recData,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null">
+        send_date = #{sendDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recDate != null">
+        rec_date = #{recDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recFlag != null">
+        rec_flag = #{recFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.mbusTest.entity.MbusTest">
+    update mbus_test
+    set mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      send_data = #{sendData,jdbcType=VARCHAR},
+      rec_data = #{recData,jdbcType=VARCHAR},
+      send_date = #{sendDate,jdbcType=VARCHAR},
+      rec_date = #{recDate,jdbcType=VARCHAR},
+      rec_flag = #{recFlag,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatch" parameterType="cn.plou.web.system.meterMessage.mbusTest.vo.MbusTestVo">
+    update mbus_test
+    <set>
+      <if test="mbusCode != null">
+        mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sendData != null">
+        send_data = #{sendData,jdbcType=VARCHAR},
+      </if>
+      <if test="recData != null">
+        rec_data = #{recData,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null">
+        send_date = #{sendDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recDate != null">
+        rec_date = #{recDate,jdbcType=VARCHAR},
+      </if>
+      <if test="recFlag != null">
+        rec_flag = #{recFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id in
+    <foreach collection="ids" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+</mapper>

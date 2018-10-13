@@ -1,0 +1,353 @@
+package cn.plou.web.charge.chargeconfig.service.impl;
+
+import cn.plou.web.charge.chargeconfig.dao.SmsInfoMapper;
+import cn.plou.web.charge.chargeconfig.dao.UserYearHeatMapper;
+import cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO;
+import cn.plou.web.charge.chargeconfig.dto.InfoObject;
+import cn.plou.web.charge.chargeconfig.entity.SmsInfo;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.service.SmsInfoService;
+import cn.plou.web.charge.chargeconfig.service.UserYearHeatService;
+import cn.plou.web.charge.chargeconfig.vo.ChargeHouseDataVO;
+import cn.plou.web.charge.chargeconfig.vo.ChargeSumVO;
+import cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee;
+import cn.plou.web.common.config.common.BasePageEntity;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+
+/**
+ * 2018/8/15 15:38
+ */
+
+
+@Service
+@Transactional(rollbackFor = Exception.class)
+public class UserYearHeatServiceImpl implements UserYearHeatService {
+
+
+    @Resource
+    private UserYearHeatMapper userYearHeatMapper;
+
+    @Override
+    public int deleteByPrimaryKey(String primaryId) {
+        return userYearHeatMapper.deleteByPrimaryKey(primaryId);
+    }
+
+    @Override
+    public int insert(UserYearHeat record) {
+        return userYearHeatMapper.insert(record);
+    }
+
+    @Override
+    public int insertSelective(UserYearHeat record) {
+        return userYearHeatMapper.insertSelective(record);
+    }
+
+    @Override
+    public void insertByBatch(List<UserYearHeat> userYearHeats) {
+        userYearHeatMapper.insertByBatch(userYearHeats);
+    }
+
+
+    @Override
+    public UserYearHeat selectByPrimaryKey(String primaryId) {
+        return userYearHeatMapper.selectByPrimaryKey(primaryId);
+    }
+
+
+    @Override
+    public int updateByPrimaryKeySelective(UserYearHeat record) {
+        return userYearHeatMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public int updateByPrimaryKey(UserYearHeat record) {
+        return userYearHeatMapper.updateByPrimaryKey(record);
+    }
+
+
+    @Override
+    public List<UserYearHeat> findAllUserYearHeats() {
+        return userYearHeatMapper.findAllUserYearHeats();
+    }
+
+    @Override
+    public UserYearHeat findLastUserYearHeats() {
+        return userYearHeatMapper.findLastUserYearHeats();
+    }
+
+    @Override
+    public List<UserYearHeat> findAllUserYearHeatsByAnnual(String annual) {
+        return userYearHeatMapper.findAllUserYearHeatsByAnnual(annual);
+    }
+
+    @Override
+    public UserYearHeat findByUserAndAnnual(String consumerId, String annual) {
+        return userYearHeatMapper.findByUserAndAnnual(consumerId, annual);
+    }
+
+    @Override
+    public PageInfo<UserYearHeat> findByUser(String consumerId, String annual, String order, String sortby, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<UserYearHeat> userYearReceivableDetailsByConsumerId = userYearHeatMapper.findByUser(consumerId, annual, order, sortby, page, pageSize);
+        PageInfo<UserYearHeat> pageInfo = new PageInfo<>(userYearReceivableDetailsByConsumerId);
+        return pageInfo;
+
+    }
+
+
+    @Override
+    public PageInfo<UserYearHeat> findByUserForOldAnnual(String consumerId, String annual, String order, String sortby, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<UserYearHeat> userYearReceivableDetailsByConsumerId = userYearHeatMapper.findByUserForOldAnnual(consumerId, annual, order, sortby, page, pageSize);
+        PageInfo<UserYearHeat> pageInfo = new PageInfo<>(userYearReceivableDetailsByConsumerId);
+        return pageInfo;
+
+    }
+
+
+
+    @Override
+    public int deleteByConsumerIds(String consumerIds, String commuityIds, String annual) {
+        List<String> consumerIdlst = new ArrayList<>();
+        List<String> commuityIdlst = new ArrayList<>();
+        if(consumerIds == null ){
+            consumerIdlst =  null;
+        }else{
+            String[] split = consumerIds.split(",");
+            for (String s : split) {
+                consumerIdlst.add(s);
+            }
+        }
+
+        if(commuityIds == null ){
+            commuityIdlst =  null;
+        }else{
+            String[] split = commuityIds.split(",");
+            for (String s : split) {
+                commuityIdlst.add(s);
+            }
+        }
+        return userYearHeatMapper.deleteByConsumerIds(consumerIdlst, commuityIdlst, annual);
+    }
+
+
+    @Override
+    public int deleteByConsumerId(String consumerId, String communityId, String annual) {
+        return userYearHeatMapper.deleteByConsumerId(consumerId, communityId, annual);
+    }
+
+
+    @Override
+    public BigDecimal getOldYearOwe(String consumerId, String annual) {
+        return userYearHeatMapper.getOldYearOwe(consumerId, annual);
+    }
+
+    @Override
+    public PageInfo<UserYearHeatLateFee> calcLateFee(String annual, String dateNow, String order, String sortby, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<UserYearHeatLateFee> userYearHeatLateFees = userYearHeatMapper.calcLateFee(annual, dateNow, order, sortby, page, pageSize);
+        PageInfo<UserYearHeatLateFee> pageInfo = new PageInfo<>(userYearHeatLateFees);
+        return pageInfo;
+
+    }
+
+    @Override
+    public List<ClearTaskDTO> getStatisticalData(String id) {
+        return userYearHeatMapper.getStatisticalData(id);
+    }
+
+
+    @Override
+    public InfoObject handleListData(List<ClearTaskDTO> clearTaskDTOS, String annual) {
+        BigDecimal totalSumReceivable = new BigDecimal("0");//总应收金额
+        BigDecimal totalSumAccount = new BigDecimal("0");//总实收金额
+        BigDecimal totalArrearage = new BigDecimal("0");//总欠费金额
+        BigDecimal chargeRate = new BigDecimal("0");//收费率
+        InfoObject infoObject = new InfoObject();
+        for (ClearTaskDTO clearTaskDTO : clearTaskDTOS) {
+            if (clearTaskDTO.getSumReceivable() != null) {
+                totalSumReceivable = totalSumReceivable.add(clearTaskDTO.getSumReceivable());//应收金额
+            }
+            if (clearTaskDTO.getSumAccount() != null) {
+                totalSumAccount = totalSumAccount.add(clearTaskDTO.getSumAccount());//实收金额
+            }
+        }
+        if (totalSumReceivable.doubleValue() == 0) {
+            chargeRate = new BigDecimal("0.0");
+        } else {
+            chargeRate = totalSumAccount.divide(totalSumReceivable, 2, RoundingMode.FLOOR);
+        }
+
+        totalArrearage = totalSumReceivable.subtract(totalSumAccount);
+        infoObject.setTotalArrearage(totalArrearage);
+        infoObject.setChargeRate(chargeRate);
+        return infoObject;
+    }
+
+    @Override
+    public List<UserYearHeat> findAllUserYearHeatsByConsumerIds(List<String> consumerIds) {
+        return userYearHeatMapper.findAllUserYearHeatsByConsumerIds(consumerIds);
+    }
+
+
+    public PageInfo<UserYearHeat> findFeeLessByBuildingNo(String buildingNo,BasePageEntity basePageEntity) {
+        PageHelper.startPage(basePageEntity.getPage(),basePageEntity.getPageSize());
+        List<UserYearHeat> list =  userYearHeatMapper.findFeeLessByBuildingNo(buildingNo,basePageEntity);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public Integer getCountByAnnual(String companyId,String annual) {
+        return userYearHeatMapper.getCountByAnnual(companyId,annual);
+    }
+
+
+    @Override
+    public  PageInfo<ChargeSumVO>  getChargeSumByAnnual(String companyId,String annual, String order, String sortby, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<ChargeSumVO> chargeHouseDataVOs = null;
+        chargeHouseDataVOs = userYearHeatMapper.getChargeSumByAnnual(companyId,annual, order, sortby, page, pageSize);
+        PageInfo<ChargeSumVO> pageInfo = new PageInfo<>(chargeHouseDataVOs);
+        return pageInfo;
+    }
+
+
+
+    @Override
+    public  PageInfo<ChargeHouseDataVO>  getChargeHouseDataList(String stationIds,String commuityIds,String hasGenerated,String annual, String order, String sortby, Integer page, Integer pageSize) {
+            PageHelper.startPage(page, pageSize);
+            List<String> stationIdlst = new ArrayList<>();
+            List<String> commuityIdlst = new ArrayList<>();
+            if(stationIds == null || stationIds.equals("")){
+                stationIdlst =  null;
+            }else{
+                String[] split = stationIds.split(",");
+                for (String s : split) {
+                    stationIdlst.add(s);
+                }
+            }
+            if(commuityIds == null || commuityIds.equals("") ){
+                commuityIdlst =  null;
+            }else{
+                String[] split = commuityIds.split(",");
+                for (String s : split) {
+                    commuityIdlst.add(s);
+                }
+            }
+
+            List<ChargeHouseDataVO> chargeHouseDataVOs = null;
+            if(hasGenerated == null || hasGenerated.equals("")){
+
+                chargeHouseDataVOs = userYearHeatMapper.getChargeHouseDataAllList(stationIdlst,commuityIdlst,hasGenerated,annual, order, sortby, page, pageSize);
+            }
+            else{
+                chargeHouseDataVOs = userYearHeatMapper.getChargeHouseDataList(stationIdlst,commuityIdlst,hasGenerated,annual, order, sortby, page, pageSize);
+            }
+            PageInfo<ChargeHouseDataVO> pageInfo = new PageInfo<>(chargeHouseDataVOs);
+            return pageInfo;
+        }
+
+
+    @Override
+    public  Integer  selectCountByChargeType(String companyId,String chargeType) {
+        return userYearHeatMapper.selectCountByChargeType(companyId,chargeType);
+    }
+
+    @Override
+    public int deleteByCompanyId(String companyId, String annual) {
+        return userYearHeatMapper.deleteByCompanyId(companyId, annual);
+    }
+
+
+//    @Override
+//    public int insertForGenerated(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGenerated(companyId, annual ,lastannual ,createUser);
+//    }
+
+
+    @Override
+    public int insertForGenerated1(String companyId, String annual,String lastannual, String createUser) {
+        return userYearHeatMapper.insertForGenerated1(companyId, annual ,lastannual ,createUser);
+    }
+
+    @Override
+    public int insertForGenerated2(String companyId, String annual,String lastannual, String createUser) {
+        return userYearHeatMapper.insertForGenerated2(companyId, annual ,lastannual ,createUser);
+    }
+
+    @Override
+    public int insertForGenerated3(String companyId, String annual,String lastannual, String createUser) {
+        return userYearHeatMapper.insertForGenerated3(companyId, annual ,lastannual ,createUser);
+    }
+
+
+
+//    @Override
+//    public int insertForGeneratedHeatingStatus1(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+//    @Override
+//    public int insertForGeneratedHeatingStatusNull(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedHeatingStatusNull(companyId, annual ,lastannual ,createUser);
+//    }
+//    @Override
+//    public int insertForGeneratedNotHeatingStatus1(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedNotHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+//
+//
+//    @Override
+//    public int insertForGeneratedHeatingStatus1_1(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedNotHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+//
+//    @Override
+//    public int insertForGeneratedHeatingStatus1_2(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedNotHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+//
+//    @Override
+//    public int insertForGeneratedHeatingStatus1_3(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedNotHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+//
+//    @Override
+//    public int insertForGeneratedHeatingStatus1_4(String companyId, String annual,String lastannual, String createUser) {
+//        return userYearHeatMapper.insertForGeneratedNotHeatingStatus1(companyId, annual ,lastannual ,createUser);
+//    }
+
+
+//    @Override
+//    public int updateForGenerated0(String companyId, String annual) {
+//        return userYearHeatMapper.updateForGenerated0(companyId, annual);
+//    }
+//    @Override
+//    public int updateForGenerated1(String companyId, String annual) {
+//        return userYearHeatMapper.updateForGenerated1(companyId, annual);
+//    }
+
+
+    @Override
+    public int updateForGenerated2(String companyId, String annual) {
+        return userYearHeatMapper.updateForGenerated2(companyId, annual);
+    }
+    @Override
+    public int updateForGenerated3(String companyId, String annual, Date startTime) {
+        return userYearHeatMapper.updateForGenerated3(companyId, annual,startTime);
+    }
+    @Override
+    public int updateForGenerated4(String companyId, String annual, Date endTime) {
+        return userYearHeatMapper.updateForGenerated4(companyId, annual,endTime);
+    }
+
+}

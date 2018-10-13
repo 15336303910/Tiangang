@@ -1,0 +1,486 @@
+package cn.plou.web.balance.dataAnalysis.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class BalanceValveData {
+    private String primaryId;
+
+    private String rowno;
+
+    private String meterId;
+
+    private String consumerId;
+
+    private String controlMode;
+
+    private BigDecimal openness;
+
+    private BigDecimal inPressure;
+
+    private BigDecimal outPressure;
+
+    private BigDecimal pressureDiff;
+
+    private BigDecimal setPressureDiff;
+
+    private BigDecimal pressureDiffThreshold;
+
+    private BigDecimal inTemperature;
+
+    private BigDecimal outTemperature;
+
+    private BigDecimal setTemperature;
+
+    private BigDecimal temperatureThreshold;
+
+    private BigDecimal sampleFlowSpeed;
+
+    private BigDecimal unitFlowSpeed;
+
+    private BigDecimal upperLimitFlow;
+
+    private BigDecimal maxFlowThreshold;
+
+    private Date sysReadTime;
+
+    private String companyId;
+
+    private String notes;
+
+    private String memo1;
+
+    private String memo2;
+
+    private Date createDate;
+
+    private String createUser;
+
+    private Date updateDate;
+
+    private String updateUser;
+
+    private BigDecimal envTime;
+
+    private BigDecimal openSet;
+
+    private BigDecimal openLevel;
+
+    private String baseOpen;
+
+    private BigDecimal lowTemp;
+
+    private BigDecimal comInterval;
+
+    private String exchangeTemp;
+
+    private String exchangePress;
+
+    private String exchangeFrame;
+
+    private String locks;
+
+    private String timeParam;
+
+    private String tempParam;
+
+    private String timeOpenParam;
+
+    private String timeTempParam;
+
+    private String timeTempCureParam;
+
+    private String pressAdj;
+
+    private BigDecimal cal;
+
+    private BigDecimal openTime;
+
+    private Date currentTimes;
+
+    private Date readTime;
+
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId == null ? null : primaryId.trim();
+    }
+
+    public String getRowno() {
+        return rowno;
+    }
+
+    public void setRowno(String rowno) {
+        this.rowno = rowno == null ? null : rowno.trim();
+    }
+
+    public String getMeterId() {
+        return meterId;
+    }
+
+    public void setMeterId(String meterId) {
+        this.meterId = meterId == null ? null : meterId.trim();
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId == null ? null : consumerId.trim();
+    }
+
+    public String getControlMode() {
+        return controlMode;
+    }
+
+    public void setControlMode(String controlMode) {
+        this.controlMode = controlMode == null ? null : controlMode.trim();
+    }
+
+    public BigDecimal getOpenness() {
+        return openness;
+    }
+
+    public void setOpenness(BigDecimal openness) {
+        this.openness = openness;
+    }
+
+    public BigDecimal getInPressure() {
+        return inPressure;
+    }
+
+    public void setInPressure(BigDecimal inPressure) {
+        this.inPressure = inPressure;
+    }
+
+    public BigDecimal getOutPressure() {
+        return outPressure;
+    }
+
+    public void setOutPressure(BigDecimal outPressure) {
+        this.outPressure = outPressure;
+    }
+
+    public BigDecimal getPressureDiff() {
+        return pressureDiff;
+    }
+
+    public void setPressureDiff(BigDecimal pressureDiff) {
+        this.pressureDiff = pressureDiff;
+    }
+
+    public BigDecimal getSetPressureDiff() {
+        return setPressureDiff;
+    }
+
+    public void setSetPressureDiff(BigDecimal setPressureDiff) {
+        this.setPressureDiff = setPressureDiff;
+    }
+
+    public BigDecimal getPressureDiffThreshold() {
+        return pressureDiffThreshold;
+    }
+
+    public void setPressureDiffThreshold(BigDecimal pressureDiffThreshold) {
+        this.pressureDiffThreshold = pressureDiffThreshold;
+    }
+
+    public BigDecimal getInTemperature() {
+        return inTemperature;
+    }
+
+    public void setInTemperature(BigDecimal inTemperature) {
+        this.inTemperature = inTemperature;
+    }
+
+    public BigDecimal getOutTemperature() {
+        return outTemperature;
+    }
+
+    public void setOutTemperature(BigDecimal outTemperature) {
+        this.outTemperature = outTemperature;
+    }
+
+    public BigDecimal getSetTemperature() {
+        return setTemperature;
+    }
+
+    public void setSetTemperature(BigDecimal setTemperature) {
+        this.setTemperature = setTemperature;
+    }
+
+    public BigDecimal getTemperatureThreshold() {
+        return temperatureThreshold;
+    }
+
+    public void setTemperatureThreshold(BigDecimal temperatureThreshold) {
+        this.temperatureThreshold = temperatureThreshold;
+    }
+
+    public BigDecimal getSampleFlowSpeed() {
+        return sampleFlowSpeed;
+    }
+
+    public void setSampleFlowSpeed(BigDecimal sampleFlowSpeed) {
+        this.sampleFlowSpeed = sampleFlowSpeed;
+    }
+
+    public BigDecimal getUnitFlowSpeed() {
+        return unitFlowSpeed;
+    }
+
+    public void setUnitFlowSpeed(BigDecimal unitFlowSpeed) {
+        this.unitFlowSpeed = unitFlowSpeed;
+    }
+
+    public BigDecimal getUpperLimitFlow() {
+        return upperLimitFlow;
+    }
+
+    public void setUpperLimitFlow(BigDecimal upperLimitFlow) {
+        this.upperLimitFlow = upperLimitFlow;
+    }
+
+    public BigDecimal getMaxFlowThreshold() {
+        return maxFlowThreshold;
+    }
+
+    public void setMaxFlowThreshold(BigDecimal maxFlowThreshold) {
+        this.maxFlowThreshold = maxFlowThreshold;
+    }
+
+    public Date getSysReadTime() {
+        return sysReadTime;
+    }
+
+    public void setSysReadTime(Date sysReadTime) {
+        this.sysReadTime = sysReadTime;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId == null ? null : companyId.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
+    }
+
+    public String getMemo1() {
+        return memo1;
+    }
+
+    public void setMemo1(String memo1) {
+        this.memo1 = memo1 == null ? null : memo1.trim();
+    }
+
+    public String getMemo2() {
+        return memo2;
+    }
+
+    public void setMemo2(String memo2) {
+        this.memo2 = memo2 == null ? null : memo2.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser == null ? null : updateUser.trim();
+    }
+
+    public BigDecimal getEnvTime() {
+        return envTime;
+    }
+
+    public void setEnvTime(BigDecimal envTime) {
+        this.envTime = envTime;
+    }
+
+    public BigDecimal getOpenSet() {
+        return openSet;
+    }
+
+    public void setOpenSet(BigDecimal openSet) {
+        this.openSet = openSet;
+    }
+
+    public BigDecimal getOpenLevel() {
+        return openLevel;
+    }
+
+    public void setOpenLevel(BigDecimal openLevel) {
+        this.openLevel = openLevel;
+    }
+
+    public String getBaseOpen() {
+        return baseOpen;
+    }
+
+    public void setBaseOpen(String baseOpen) {
+        this.baseOpen = baseOpen == null ? null : baseOpen.trim();
+    }
+
+    public BigDecimal getLowTemp() {
+        return lowTemp;
+    }
+
+    public void setLowTemp(BigDecimal lowTemp) {
+        this.lowTemp = lowTemp;
+    }
+
+    public BigDecimal getComInterval() {
+        return comInterval;
+    }
+
+    public void setComInterval(BigDecimal comInterval) {
+        this.comInterval = comInterval;
+    }
+
+    public String getExchangeTemp() {
+        return exchangeTemp;
+    }
+
+    public void setExchangeTemp(String exchangeTemp) {
+        this.exchangeTemp = exchangeTemp == null ? null : exchangeTemp.trim();
+    }
+
+    public String getExchangePress() {
+        return exchangePress;
+    }
+
+    public void setExchangePress(String exchangePress) {
+        this.exchangePress = exchangePress == null ? null : exchangePress.trim();
+    }
+
+    public String getExchangeFrame() {
+        return exchangeFrame;
+    }
+
+    public void setExchangeFrame(String exchangeFrame) {
+        this.exchangeFrame = exchangeFrame == null ? null : exchangeFrame.trim();
+    }
+
+    public String getLocks() {
+        return locks;
+    }
+
+    public void setLocks(String locks) {
+        this.locks = locks == null ? null : locks.trim();
+    }
+
+    public String getTimeParam() {
+        return timeParam;
+    }
+
+    public void setTimeParam(String timeParam) {
+        this.timeParam = timeParam == null ? null : timeParam.trim();
+    }
+
+    public String getTempParam() {
+        return tempParam;
+    }
+
+    public void setTempParam(String tempParam) {
+        this.tempParam = tempParam == null ? null : tempParam.trim();
+    }
+
+    public String getTimeOpenParam() {
+        return timeOpenParam;
+    }
+
+    public void setTimeOpenParam(String timeOpenParam) {
+        this.timeOpenParam = timeOpenParam == null ? null : timeOpenParam.trim();
+    }
+
+    public String getTimeTempParam() {
+        return timeTempParam;
+    }
+
+    public void setTimeTempParam(String timeTempParam) {
+        this.timeTempParam = timeTempParam == null ? null : timeTempParam.trim();
+    }
+
+    public String getTimeTempCureParam() {
+        return timeTempCureParam;
+    }
+
+    public void setTimeTempCureParam(String timeTempCureParam) {
+        this.timeTempCureParam = timeTempCureParam == null ? null : timeTempCureParam.trim();
+    }
+
+    public String getPressAdj() {
+        return pressAdj;
+    }
+
+    public void setPressAdj(String pressAdj) {
+        this.pressAdj = pressAdj == null ? null : pressAdj.trim();
+    }
+
+    public BigDecimal getCal() {
+        return cal;
+    }
+
+    public void setCal(BigDecimal cal) {
+        this.cal = cal;
+    }
+
+    public BigDecimal getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(BigDecimal openTime) {
+        this.openTime = openTime;
+    }
+
+    public Date getCurrentTimes() {
+        return currentTimes;
+    }
+
+    public void setCurrentTimes(Date currentTimes) {
+        this.currentTimes = currentTimes;
+    }
+
+    public Date getReadTime() {
+        return readTime;
+    }
+
+    public void setReadTime(Date readTime) {
+        this.readTime = readTime;
+    }
+}

@@ -1,0 +1,9 @@
+package cn.plou.web.balance.regulate.service;
+
+import cn.plou.web.balance.distribution.vo.BalanceValveDataNowVo;
+import org.springframework.stereotype.Service;
+
+@Service
+public interface DeviationService {
+    BalanceValveDataNowVo getDeviationsByBalanceValve(String meterId);
+}

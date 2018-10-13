@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.chargeconfig.dao.BankInterfaceHistoryMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="annual" jdbcType="VARCHAR" property="annual" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="bank_id" jdbcType="VARCHAR" property="bankId" />
+    <result column="business_code" jdbcType="VARCHAR" property="businessCode" />
+    <result column="request_data" jdbcType="VARCHAR" property="requestData" />
+    <result column="request_data_date" jdbcType="TIMESTAMP" property="requestDataDate" />
+    <result column="return_data" jdbcType="VARCHAR" property="returnData" />
+    <result column="return_data_date" jdbcType="TIMESTAMP" property="returnDataDate" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, company_id, annual, consumer_id, bank_id, business_code, request_data, 
+    request_data_date, return_data, return_data_date, notes, memo1, memo2, create_date, 
+    create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bank_interface_history
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bank_interface_history
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    insert into bank_interface_history (primary_id, company_id, annual, 
+      consumer_id, bank_id, business_code, 
+      request_data, request_data_date, return_data, 
+      return_data_date, notes, memo1, 
+      memo2, create_date, create_user, 
+      update_date, update_user)
+    values (#{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{annual,jdbcType=VARCHAR}, 
+      #{consumerId,jdbcType=VARCHAR}, #{bankId,jdbcType=VARCHAR}, #{businessCode,jdbcType=VARCHAR}, 
+      #{requestData,jdbcType=VARCHAR}, #{requestDataDate,jdbcType=TIMESTAMP}, #{returnData,jdbcType=VARCHAR}, 
+      #{returnDataDate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, 
+      #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    insert into bank_interface_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="annual != null">
+        annual,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="bankId != null">
+        bank_id,
+      </if>
+      <if test="businessCode != null">
+        business_code,
+      </if>
+      <if test="requestData != null">
+        request_data,
+      </if>
+      <if test="requestDataDate != null">
+        request_data_date,
+      </if>
+      <if test="returnData != null">
+        return_data,
+      </if>
+      <if test="returnDataDate != null">
+        return_data_date,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankId != null">
+        #{bankId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null">
+        #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="requestData != null">
+        #{requestData,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDataDate != null">
+        #{requestDataDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnData != null">
+        #{returnData,jdbcType=VARCHAR},
+      </if>
+      <if test="returnDataDate != null">
+        #{returnDataDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    update bank_interface_history
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        annual = #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankId != null">
+        bank_id = #{bankId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessCode != null">
+        business_code = #{businessCode,jdbcType=VARCHAR},
+      </if>
+      <if test="requestData != null">
+        request_data = #{requestData,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDataDate != null">
+        request_data_date = #{requestDataDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnData != null">
+        return_data = #{returnData,jdbcType=VARCHAR},
+      </if>
+      <if test="returnDataDate != null">
+        return_data_date = #{returnDataDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    update bank_interface_history
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      annual = #{annual,jdbcType=VARCHAR},
+      consumer_id = #{consumerId,jdbcType=VARCHAR},
+      bank_id = #{bankId,jdbcType=VARCHAR},
+      business_code = #{businessCode,jdbcType=VARCHAR},
+      request_data = #{requestData,jdbcType=VARCHAR},
+      request_data_date = #{requestDataDate,jdbcType=TIMESTAMP},
+      return_data = #{returnData,jdbcType=VARCHAR},
+      return_data_date = #{returnDataDate,jdbcType=TIMESTAMP},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findLastBankInterfaceHistory" resultType="cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory">
+    select
+    <include refid="Base_Column_List" />
+    from bank_interface_history  order by primary_id desc limit 1
+  </select>
+
+  <select id="getListBySearch" parameterType="cn.plou.web.charge.chargeconfig.dto.BankDockingSearchDTO" resultType="cn.plou.web.charge.chargeconfig.vo.BankDockingListVO">
+    select
+    primary_id,
+    h.company_id,
+    c.company_name,
+    annual,
+    h.consumer_id,
+    hi.address,
+    bank_id,
+    t1.type_name as bankName,
+    business_code,
+    t2.type_name as businessName,
+    request_data,
+    request_data_date, return_data, return_data_date, h.notes, h.memo1, h.memo2, h.create_date,
+    h.create_user, h.update_date, h.update_user
+    from bank_interface_history h
+    left join company_info c on c.company_id = h.company_id
+    left join houses_info hi on hi.consumer_id = h.consumer_id
+    left join type_mst t1 on t1.id = h.bank_id
+    left join type_mst t2 on t2.type_id = h.business_code and t2.type_kbn = 'bank_request'
+    where
+    h.company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="requestDataDateStart != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{requestDataDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+    <if test="requestDataDateEnd != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{requestDataDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+    <if test="bankId != null and bankId != ''">and h.bank_id = #{bankId,jdbcType=VARCHAR}</if>
+    <if test="businessCode != null and businessCode != ''">and h.business_code = #{businessCode,jdbcType=VARCHAR}</if>
+    <if test="content != null and content != ''">and CONCAT(h.request_data,h.return_data) like CONCAT('%',#{content,jdbcType=VARCHAR},'%')</if>
+    <if test="sortby != null and sortby != ''">
+      order by h.${sortby}
+    </if>
+    <if test="order != null and order != ''">
+      ${order}
+    </if>
+    <if test="start != null and pageSize != null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="getListCountBySearch" parameterType="cn.plou.web.charge.chargeconfig.dto.BankDockingSearchDTO" resultType="java.lang.Integer">
+    select count(*)
+    from bank_interface_history h
+    where
+    h.company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="requestDataDateStart != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{requestDataDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+    <if test="requestDataDateEnd != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{requestDataDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+    <if test="bankId != null and bankId != ''">and h.bank_id = #{bankId,jdbcType=VARCHAR}</if>
+    <if test="businessCode != null and businessCode != ''">and h.business_code = #{businessCode,jdbcType=VARCHAR}</if>
+    <if test="content != null and content != ''">and CONCAT(h.request_data,h.return_data) like CONCAT('%',#{content,jdbcType=VARCHAR},'%')</if>
+  </select>
+
+  <select id="getListBySearchOfStation" resultType="cn.plou.web.charge.chargeconfig.vo.BankDockingListVO">
+    select
+    primary_id,
+    h.company_id,
+    c.company_name,
+    annual,
+    h.consumer_id,
+    hi.address,
+    bank_id,
+    t1.type_name as bankName,
+    business_code,
+    t2.type_name as businessName,
+    request_data,
+    request_data_date, return_data, return_data_date, h.notes, h.memo1, h.memo2, h.create_date,
+    h.create_user, h.update_date, h.update_user
+    from bank_interface_history h
+    left join company_info c on c.company_id = h.company_id
+    left join houses_info hi on hi.consumer_id = h.consumer_id
+    left join type_mst t1 on t1.id = h.bank_id
+    left join type_mst t2 on t2.type_id = h.business_code and t2.type_kbn = 'bank_request'
+    <where>
+      <foreach collection="list" item="id" open="and (" separator="or" close=")">
+        h.consumer_id like concat(#{id}, '%')
+      </foreach>
+      <if test="dto.requestDataDateStart != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.requestDataDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+      <if test="dto.requestDataDateEnd != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.requestDataDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+      <if test="dto.bankId != null and dto.bankId != ''">and h.bank_id = #{dto.bankId,jdbcType=VARCHAR}</if>
+      <if test="dto.businessCode != null and dto.businessCode != ''">and h.business_code = #{dto.businessCode,jdbcType=VARCHAR}</if>
+      <if test="dto.content != null and dto.content != ''">and CONCAT(h.request_data,h.return_data) like CONCAT('%',#{dto.content,jdbcType=VARCHAR},'%')</if>
+    </where>
+    <if test="dto.sortby != null and dto.sortby != ''">
+      order by h.${dto.sortby}
+    </if>
+    <if test="dto.order != null and dto.order != ''">
+      ${dto.order}
+    </if>
+    <if test="dto.start != null and dto.pageSize != null">
+      limit ${dto.start},${dto.pageSize}
+    </if>
+  </select>
+
+  <select id="getListCountBySearchOfStation" resultType="java.lang.Integer">
+    select count(*)
+    from bank_interface_history h
+    <where>
+      <foreach collection="list" item="id" open="and (" separator="or" close=")">
+        h.consumer_id like concat(#{id}, '%')
+      </foreach>
+      <if test="dto.requestDataDateStart != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.requestDataDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+      <if test="dto.requestDataDateEnd != null">and DATE_FORMAT(h.request_data_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.requestDataDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+      <if test="dto.bankId != null and dto.bankId != ''">and h.bank_id = #{dto.bankId,jdbcType=VARCHAR}</if>
+      <if test="dto.businessCode != null and dto.businessCode != ''">and h.business_code = #{dto.businessCode,jdbcType=VARCHAR}</if>
+      <if test="dto.content != null and dto.content != ''">and CONCAT(h.request_data,h.return_data) like CONCAT('%',#{dto.content,jdbcType=VARCHAR},'%')</if>
+    </where>
+  </select>
+</mapper>

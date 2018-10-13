@@ -1,0 +1,42 @@
+package cn.plou.web.balance.distribution.service.impl;
+
+import cn.plou.web.balance.distribution.dao.BalanceValveDataNowMapper;
+import cn.plou.web.balance.distribution.dao.BuildRunningDataMapper;
+import cn.plou.web.balance.distribution.entity.BuildRunningData;
+import cn.plou.web.balance.distribution.service.DistributionService;
+import cn.plou.web.balance.distribution.vo.BalanceValveDataNowInfo;
+import cn.plou.web.system.baseMessage.build.dao.BuildMapper;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.vo.BuildInfo;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class DistrubitionServiceImpl implements DistributionService {
+    @Autowired
+    private CommuityService commuityService;
+    @Autowired
+    private BuildMapper buildMapper;
+    @Autowired
+    private BalanceValveDataNowMapper balanceValveDataNowMapper;
+    @Autowired
+    private BuildRunningDataMapper buildRunningDataMapper;
+    @Override
+    public List<BuildInfo> getBuildListByStationId(String stationId) {
+        List<String> commuityIds = commuityService.getCommuityIdsList(null,stationId,null);
+        return buildMapper.selectAllBuild(null, null, commuityIds, null,null,null,null,null);
+    }
+
+    @Override
+    public BalanceValveDataNowInfo getDataNowInfoByBuildId(String buildId) {
+        return null;
+    }
+
+    @Override
+    public BuildRunningData getBuildRunningDataByBuildId(String buildId) {
+        return buildRunningDataMapper.selectByPrimaryKey(buildId);
+    }
+}

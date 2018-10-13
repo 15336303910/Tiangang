@@ -1,0 +1,80 @@
+package cn.plou.web.system.baseMessage.unit.dao;
+
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.baseMessage.unit.entity.UnitKey;
+import cn.plou.web.system.baseMessage.unit.vo.UnitInfo;
+import cn.plou.web.system.baseMessage.unit.vo.UnitUnique;
+import cn.plou.web.system.baseMessage.unit.vo.UnitVo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@Mapper
+public interface UnitMapper {
+    int deleteByPrimaryKey(UnitKey key);
+
+    int deleteBatchByIds(List<String> unitIds);
+
+    int insert(Unit record);
+
+    int insertSelective(Unit record);
+
+    Unit selectByPrimaryKey(String unitId);
+
+    int updateByPrimaryKeySelective(Unit record);
+
+    int updateByPrimaryKey(Unit record);
+
+    int updateBatch(UnitVo unitVo);
+
+    List<Unit> selectUnitTree(String buildingNo);
+
+    List<UnitInfo> selectAllUnitNoParam(@Param("order") String order,
+                                        @Param("sortby") String sortby,
+                                        @Param("unitVo") UnitVo unitVo);
+
+    List<UnitInfo> selectAllUnit(@Param("start")Integer start,
+                                 @Param("pageSize")Integer pageSize,
+                                 @Param("order") String order,
+                                 @Param("sortby") String sortby,
+                                 @Param("buildingIds") List<String> buildingyIds,
+                                 @Param("unitVo") UnitVo unitVo);
+
+    List<String> selectAllUnitIds(String building);
+    Integer selectUnitListCount(@Param("buildingIds") List<String> buildingyIds,
+                                @Param("unitVo") UnitVo unitVo);
+    Unit selectUnitByName(@Param("buildingId")String buildingId,@Param("unitName")String unitName);
+    List<UnitUnique> selectAllUnitUnique();
+
+		int updateBatchAll(UnitVo unitVo);
+
+		int updateBatchAllStation(UnitVo unitVo);
+
+		String getMaxUnitId(String buildId);
+
+		void addBatch(List<Unit> list);
+
+		List<Unit> getAllUnitByCommuity(String commuity);
+
+		List<UnitInfo> selectAllUnit2(@Param("start") Integer start, 
+													@Param("pageSize") Integer pageSize, 
+													@Param("order") String order, 
+													@Param("sortby") String sortby, 
+													@Param("companyIds") List<String> companyIds,
+													@Param("stationIds") List<String> stationIds, 
+													@Param("commuityIds") List<String> commuityIds, 
+													@Param("buildingId") String buildingId, 
+													@Param("unitId") String unitId, 
+													@Param("unitVo") UnitVo unitVo);
+
+		Integer selectUnitListCount2(
+				@Param("companyIds")List<String> companyIds, 
+				@Param("stationIds")List<String> stationIds, 
+				@Param("commuityIds")List<String> commuityIds, 
+				@Param("buildingId")String buildingId,
+				@Param("unitId") String unitId, 
+				@Param("unitVo") UnitVo unitVo);
+
+		void modifyUnitName(@Param("buildingAddress") String buildingAddress, @Param("nkey") String nkey, @Param("buildingNo") String buildingNo);
+}

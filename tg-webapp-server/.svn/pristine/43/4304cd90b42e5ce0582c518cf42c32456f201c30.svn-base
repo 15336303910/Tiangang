@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.userDataHistory.dao.UserDataHistoryMapper">
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.permission.userDataHistory.vo.UserDataHistoryInfo">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="consumer_id" jdbcType="VARCHAR" property="consumerId"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="page" jdbcType="VARCHAR" property="page"/>
+        <result column="m_name" jdbcType="VARCHAR" property="pageName"/>
+        <result column="control_date" jdbcType="TIMESTAMP" property="controlDate"/>
+        <result column="info" jdbcType="VARCHAR" property="info"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    primary_id, consumer_id, user_id, user_name, page, control_date, info, notes
+  </sql>
+
+    <insert id="insertUserDataHistory" parameterType="cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory">
+        insert into user_data_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                primary_id,
+            </if>
+            <if test="consumerId != null">
+                consumer_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="page != null">
+                page,
+            </if>
+            <if test="controlDate != null">
+                control_date,
+            </if>
+            <if test="info != null">
+                info,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                #{primaryId,jdbcType=BIGINT},
+            </if>
+            <if test="consumerId != null">
+                #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="page != null">
+                #{page,jdbcType=VARCHAR},
+            </if>
+            <if test="controlDate != null">
+                #{controlDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="info != null">
+                #{info,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectAllIds" resultType="String">
+    select id from user_data_history
+  </select>
+
+    <select id="selectAllUserDataHistory" parameterType="map" resultMap="BaseInfoMap">
+        select
+        u.primary_id, u.consumer_id, u.user_id, u.user_name, u.page, u.control_date, u.info, u.notes,m.m_name
+        from user_data_history u
+        left join menu_define m on u.page=m.page_name
+        where 1 = 1
+        <if test="pageName!= null">
+            and u.page=#{pageName}
+        </if>
+        <if test="userDataHistoryVo != null">
+            <if test="userDataHistoryVo.consumerId != null">
+                and u.consumer_id = #{userDataHistoryVo.consumerId}
+            </if>
+            <if test="userDataHistoryVo.userName != null">
+                and u.user_name LIKE concat('%',#{userDataHistoryVo.userName},'%')
+            </if>
+            <if test="userDataHistoryVo.userId != null">
+                and u.user_id = #{userDataHistoryVo.userId}
+            </if>
+            <if test="userDataHistoryVo.page != null">
+                and u.page = #{userDataHistoryVo.page}
+            </if>
+            <if test="userDataHistoryVo.startTime != null">
+                and u.control_date >= #{userDataHistoryVo.startTime}
+            </if>
+            <if test="userDataHistoryVo.endTime != null">
+                and #{userDataHistoryVo.endTime} >= u.control_date
+            </if>
+            <if test="userDataHistoryVo.notes != null">
+                and u.notes = #{userDataHistoryVo.notes}
+            </if>
+        </if>
+        <if test="sortby != null">
+            order by ${sortby}
+        </if>
+        <if test="sortby == null">
+            order by control_date
+        </if>
+        <if test="order != null">
+            ${order}
+        </if>
+        <if test="order == null">
+            desc
+        </if>
+        <!--<if test="page!=null">-->
+            <!--<if test="pageSize!=null">-->
+                <!--limit ${page},${pageSize}-->
+            <!--</if>-->
+        <!--</if>-->
+    </select>
+
+    <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">-->
+    <!--delete from user_data_history-->
+    <!--where id = #{id,jdbcType=BIGINT}-->
+    <!--</delete>-->
+
+    <!--<insert id="insert" parameterType="cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory">-->
+    <!--insert into user_data_history (id, consumer_id, user_id, -->
+    <!--user_name, page, control_date, -->
+    <!--info, notes)-->
+    <!--values (#{id,jdbcType=BIGINT}, #{consumerId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, -->
+    <!--#{userName,jdbcType=VARCHAR}, #{page,jdbcType=VARCHAR}, #{controlDate,jdbcType=TIMESTAMP}, -->
+    <!--#{info,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR})-->
+    <!--</insert>-->
+
+
+    <!--<update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory">-->
+    <!--update user_data_history-->
+    <!--<set>-->
+    <!--<if test="consumerId != null">-->
+    <!--consumer_id = #{consumerId,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--<if test="userId != null">-->
+    <!--user_id = #{userId,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--<if test="userName != null">-->
+    <!--user_name = #{userName,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--<if test="page != null">-->
+    <!--page = #{page,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--<if test="controlDate != null">-->
+    <!--control_date = #{controlDate,jdbcType=TIMESTAMP},-->
+    <!--</if>-->
+    <!--<if test="info != null">-->
+    <!--info = #{info,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--<if test="notes != null">-->
+    <!--notes = #{notes,jdbcType=VARCHAR},-->
+    <!--</if>-->
+    <!--</set>-->
+    <!--where id = #{id,jdbcType=BIGINT}-->
+    <!--</update>-->
+
+    <!--<update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory">-->
+    <!--update user_data_history-->
+    <!--set consumer_id = #{consumerId,jdbcType=VARCHAR},-->
+    <!--user_id = #{userId,jdbcType=VARCHAR},-->
+    <!--user_name = #{userName,jdbcType=VARCHAR},-->
+    <!--page = #{page,jdbcType=VARCHAR},-->
+    <!--control_date = #{controlDate,jdbcType=TIMESTAMP},-->
+    <!--info = #{info,jdbcType=VARCHAR},-->
+    <!--notes = #{notes,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=BIGINT}-->
+    <!--</update>-->
+</mapper>

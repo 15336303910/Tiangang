@@ -1,0 +1,122 @@
+package cn.plou.web.system.baseMessage.build.controller;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.importDataBatch.ImportResult;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.common.utils.SerializeUtil;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.service.BuildService;
+import cn.plou.web.system.baseMessage.build.vo.BuildInfo;
+import cn.plou.web.system.baseMessage.build.vo.BuildSelectInfo;
+import cn.plou.web.system.baseMessage.build.vo.BuildVo;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import redis.clients.jedis.Jedis;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.servlet.ServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@EnableSwagger2
+@RequestMapping("${systemPath}/build")
+@Api(description = "建筑物信息")
+public class BuildController  {
+    @Autowired
+    BuildService buildService;
+
+    @ApiOperation(value = "根据id获取建筑物信息")
+    @GetMapping("/getBuildById")
+    @RequiresPermissions("10704")
+    public Root getBuildById(@RequestParam String buildingNo){
+        Root root = new Root();
+        root.setData(buildService.getBuildById(buildingNo));
+        return root;
+
+    }
+
+    @ApiOperation(value = "增加一条建筑物信息")
+    @PostMapping("/addBuild")
+    @RequiresPermissions("10701")
+    public Boolean addBuild(@RequestBody BuildInfo buildInfo) {
+            return buildService.addBuild(buildInfo) == 1;
+    }
+
+    @ApiOperation(value = "根据查询条件获取全部建筑物信息")
+    @PostMapping ("/getAllBuild")
+    @RequiresPermissions("10704")
+    public Root getAllBuild(@RequestBody BuildSelectInfo buildSelectInfo){
+        Root root = new Root();
+//        PageHelper.startPage(buildSelectInfo.getPage(),buildSelectInfo.getPageSize());
+        PageInfo<BuildInfo> pageInfo = buildService.getAllBuild(buildSelectInfo.getCompanyId(),buildSelectInfo.getStationId(),buildSelectInfo.getCommuityId(),
+                buildSelectInfo.getSearchCondition(),buildSelectInfo.getOrder(),buildSelectInfo.getSortby(),buildSelectInfo.getPage(),buildSelectInfo.getPageSize());
+        root.setData(pageInfo.getList());
+        root.setCond(Cond.getCond(buildSelectInfo.getPage(),buildSelectInfo.getPageSize(),(int)pageInfo.getTotal(),buildSelectInfo.getOrder(),buildSelectInfo.getSortby()));
+        return root;
+    }
+
+    @ApiOperation(value = "批量修改建筑物信息")
+    @PutMapping("/modifyBuildBatch")
+    @RequiresPermissions("10703")
+    public Boolean modifyBuildBatch(@RequestBody BuildVo buildVo){
+        return buildService.modifyBuildBatch(buildVo)==buildVo.getBuildingNos().size();
+    }
+
+    @ApiOperation(value = "修改建筑物信息")
+    @PutMapping("/modifyBuild")
+    @RequiresPermissions("10703")
+    public Boolean modifyBuildBatch(@RequestBody Build build){
+        return buildService.modifyBuild(build)==1;
+    }
+
+    @ApiOperation(value = "批量删除建筑物信息")
+    @DeleteMapping("/deleteBuildBatchByIds")
+    @RequiresPermissions("10702")
+    public Boolean deleteBuildBatchByIds(@RequestBody List<String> buildingNos){
+
+        return buildService.deleteBuildBatchByIds(buildingNos)==buildingNos.size();
+    }
+
+    @ApiOperation(value = "下拉框")
+    @GetMapping("/getBuildDownInfo")
+    public Root getBuildTree(@RequestParam String commuityId){
+        Root root = new Root();
+        root.setData(buildService.getBuildTree(commuityId));
+        return root;
+    }
+
+    @ApiOperation(value = "批量导入")
+    @RequestMapping(value="/importExcel",method=RequestMethod.POST)
+    public ImportResult importExcel(@RequestParam("file") MultipartFile File, ServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        ImportResult importResult = new ImportResult();  
+        try { 	
+            importResult = buildService.importExcel(File,request);
+        } catch (Exception e) {
+        	if(e instanceof BusinessException){
+        		throw e;
+        	}
+            modelAndView.addObject("msg", e.getMessage());
+            return importResult;
+        }
+        modelAndView.addObject("msg", "数据导入成功");
+        return importResult;
+    }
+
+
+    @RequestMapping(value="/exportExcel",method = RequestMethod.POST)
+    public Root exportExcel(@RequestBody BuildSelectInfo buildSelectInfo,ServletRequest request) {
+        Root root=new Root();
+        root.setData(buildService.exportExcel(buildSelectInfo,request));
+        return root;
+    }
+}

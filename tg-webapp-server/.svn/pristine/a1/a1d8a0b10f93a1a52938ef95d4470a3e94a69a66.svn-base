@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.rlRoleData.dao.RlRoleDataMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.rlRoleData.entity.RlRoleData">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="column_value" jdbcType="VARCHAR" property="columnValue" />
+    <result column="column_type" jdbcType="VARCHAR" property="columnType" />
+    <result column="control_type" jdbcType="VARCHAR" property="controlType" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, role_id, column_value, column_type, control_type
+  </sql>
+
+
+  <insert id="insertRlRoleData" parameterType="cn.plou.web.system.permission.rlRoleData.entity.RlRoleData">
+    insert into rl_role_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="columnValue != null">
+        column_value,
+      </if>
+      <if test="columnType != null">
+        column_type,
+      </if>
+      <if test="controlType != null">
+        control_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null">
+        #{columnValue,jdbcType=VARCHAR},
+      </if>
+      <if test="columnType != null">
+        #{columnType,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        #{controlType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateRlRoleDataBatch" parameterType="cn.plou.web.system.permission.rlRoleData.vo.RlRoleDataVo">
+    update rl_role_data
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="columnValue != null">
+        column_value = #{columnValue,jdbcType=VARCHAR},
+      </if>
+      <if test="columnType != null">
+        column_type = #{columnType,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        control_type = #{controlType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id in
+    <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <select id="selectRlRoleDataByRoleId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rl_role_data
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllRlRoleData" resultType="java.lang.String">
+    select column_value
+    from rl_role_data
+  </select>
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+    select
+    id
+    from rl_role_data
+  </select>
+
+  <select id="selectRlRoleDataByUserId"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    rrd.id, rrd.role_id, rrd.column_value, rrd.column_type, rrd.control_type
+    from rl_role_data rrd
+    JOIN rl_user_role rur
+    ON rrd.role_id = rur.role_id
+    where rur.userid = #{userId}
+  </select>
+
+  <!--<select id="selectAllRlRoleData" parameterType="map" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from rl_role_data-->
+    <!--where-->
+    <!--1 = 1-->
+    <!--<if test="rlRoleDataVo.roleId != null">-->
+      <!--and role_id = #{rlRoleDataVo.roleId}-->
+    <!--</if>-->
+    <!--<if test="rlRoleDataVo.columnValue != null">-->
+      <!--and column_value = #{rlRoleDataVo.columnValue}-->
+    <!--</if>-->
+    <!--<if test="rlRoleDataVo.columnType != null">-->
+      <!--and column_type = #{rlRoleDataVo.columnType}-->
+    <!--</if>-->
+    <!--<if test="rlRoleDataVo.controlType != null">-->
+      <!--and control_type = #{rlRoleDataVo.controlType}-->
+    <!--</if>-->
+    <!--<if test="sortby != null">-->
+      <!--order by ${sortby}-->
+    <!--</if>-->
+    <!--<if test="order != null">-->
+      <!--${order}-->
+    <!--</if>-->
+  <!--</select>-->
+
+  <!--<insert id="insert" parameterType="cn.plou.web.system.permission.rlRoleData.entity.RlRoleData">-->
+  <!--insert into rl_role_data (id, role_id, column_value, -->
+  <!--column_type, control_type)-->
+  <!--values (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{columnValue,jdbcType=VARCHAR}, -->
+  <!--#{columnType,jdbcType=VARCHAR}, #{controlType,jdbcType=VARCHAR})-->
+  <!--</insert>-->
+
+
+  <delete id="deleteRlRoleData" parameterType="java.lang.String">
+  delete from rl_role_data
+  where role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteRlRoleDataByColumn" parameterType="java.lang.String">
+    delete from rl_role_data
+    where column_value = #{columnValue}
+  </delete>
+
+
+  <!--<update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.rlRoleData.entity.RlRoleData">-->
+    <!--update rl_role_data-->
+    <!--set role_id = #{roleId,jdbcType=VARCHAR},-->
+      <!--column_value = #{columnValue,jdbcType=VARCHAR},-->
+      <!--column_type = #{columnType,jdbcType=VARCHAR},-->
+      <!--control_type = #{controlType,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+</mapper>

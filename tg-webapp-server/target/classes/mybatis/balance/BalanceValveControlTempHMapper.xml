@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.balance.regulate.dao.BalanceValveControlTempHMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.balance.regulate.entity.BalanceValveControlTempH">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="read_time" jdbcType="VARCHAR" property="readTime" />
+    <result column="control_flag" jdbcType="VARCHAR" property="controlFlag" />
+    <result column="control_type" jdbcType="VARCHAR" property="controlType" />
+    <result column="dtu_state_flag" jdbcType="VARCHAR" property="dtuStateFlag" />
+    <result column="read_over_flag" jdbcType="VARCHAR" property="readOverFlag" />
+    <result column="more_flag" jdbcType="VARCHAR" property="moreFlag" />
+    <result column="more_time" jdbcType="VARCHAR" property="moreTime" />
+    <result column="node_select" jdbcType="VARCHAR" property="nodeSelect" />
+    <result column="id_select" jdbcType="VARCHAR" property="idSelect" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="para1" jdbcType="VARCHAR" property="para1" />
+    <result column="para2" jdbcType="VARCHAR" property="para2" />
+    <result column="para3" jdbcType="VARCHAR" property="para3" />
+    <result column="para4" jdbcType="VARCHAR" property="para4" />
+    <result column="para5" jdbcType="VARCHAR" property="para5" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, read_time, control_flag, control_type, dtu_state_flag, read_over_flag, 
+    more_flag, more_time, node_select, id_select, user_name, para1, para2, para3, para4, 
+    para5, company_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from balance_valve_control_temp_h
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from balance_valve_control_temp_h
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.balance.regulate.entity.BalanceValveControlTempH">
+    insert into balance_valve_control_temp_h (primary_id, read_time, control_flag, 
+      control_type, dtu_state_flag, read_over_flag, 
+      more_flag, more_time, node_select, 
+      id_select, user_name, para1, 
+      para2, para3, para4, 
+      para5, company_id)
+    values (#{primaryId,jdbcType=VARCHAR}, #{readTime,jdbcType=VARCHAR}, #{controlFlag,jdbcType=VARCHAR}, 
+      #{controlType,jdbcType=VARCHAR}, #{dtuStateFlag,jdbcType=VARCHAR}, #{readOverFlag,jdbcType=VARCHAR}, 
+      #{moreFlag,jdbcType=VARCHAR}, #{moreTime,jdbcType=VARCHAR}, #{nodeSelect,jdbcType=VARCHAR}, 
+      #{idSelect,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{para1,jdbcType=VARCHAR}, 
+      #{para2,jdbcType=VARCHAR}, #{para3,jdbcType=VARCHAR}, #{para4,jdbcType=VARCHAR}, 
+      #{para5,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.balance.regulate.entity.BalanceValveControlTempH">
+    insert into balance_valve_control_temp_h
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+      <if test="controlFlag != null">
+        control_flag,
+      </if>
+      <if test="controlType != null">
+        control_type,
+      </if>
+      <if test="dtuStateFlag != null">
+        dtu_state_flag,
+      </if>
+      <if test="readOverFlag != null">
+        read_over_flag,
+      </if>
+      <if test="moreFlag != null">
+        more_flag,
+      </if>
+      <if test="moreTime != null">
+        more_time,
+      </if>
+      <if test="nodeSelect != null">
+        node_select,
+      </if>
+      <if test="idSelect != null">
+        id_select,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="para1 != null">
+        para1,
+      </if>
+      <if test="para2 != null">
+        para2,
+      </if>
+      <if test="para3 != null">
+        para3,
+      </if>
+      <if test="para4 != null">
+        para4,
+      </if>
+      <if test="para5 != null">
+        para5,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=VARCHAR},
+      </if>
+      <if test="controlFlag != null">
+        #{controlFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        #{controlType,jdbcType=VARCHAR},
+      </if>
+      <if test="dtuStateFlag != null">
+        #{dtuStateFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="readOverFlag != null">
+        #{readOverFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="moreFlag != null">
+        #{moreFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="moreTime != null">
+        #{moreTime,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeSelect != null">
+        #{nodeSelect,jdbcType=VARCHAR},
+      </if>
+      <if test="idSelect != null">
+        #{idSelect,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="para1 != null">
+        #{para1,jdbcType=VARCHAR},
+      </if>
+      <if test="para2 != null">
+        #{para2,jdbcType=VARCHAR},
+      </if>
+      <if test="para3 != null">
+        #{para3,jdbcType=VARCHAR},
+      </if>
+      <if test="para4 != null">
+        #{para4,jdbcType=VARCHAR},
+      </if>
+      <if test="para5 != null">
+        #{para5,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.balance.regulate.entity.BalanceValveControlTempH">
+    update balance_valve_control_temp_h
+    <set>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=VARCHAR},
+      </if>
+      <if test="controlFlag != null">
+        control_flag = #{controlFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        control_type = #{controlType,jdbcType=VARCHAR},
+      </if>
+      <if test="dtuStateFlag != null">
+        dtu_state_flag = #{dtuStateFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="readOverFlag != null">
+        read_over_flag = #{readOverFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="moreFlag != null">
+        more_flag = #{moreFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="moreTime != null">
+        more_time = #{moreTime,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeSelect != null">
+        node_select = #{nodeSelect,jdbcType=VARCHAR},
+      </if>
+      <if test="idSelect != null">
+        id_select = #{idSelect,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="para1 != null">
+        para1 = #{para1,jdbcType=VARCHAR},
+      </if>
+      <if test="para2 != null">
+        para2 = #{para2,jdbcType=VARCHAR},
+      </if>
+      <if test="para3 != null">
+        para3 = #{para3,jdbcType=VARCHAR},
+      </if>
+      <if test="para4 != null">
+        para4 = #{para4,jdbcType=VARCHAR},
+      </if>
+      <if test="para5 != null">
+        para5 = #{para5,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.balance.regulate.entity.BalanceValveControlTempH">
+    update balance_valve_control_temp_h
+    set read_time = #{readTime,jdbcType=VARCHAR},
+      control_flag = #{controlFlag,jdbcType=VARCHAR},
+      control_type = #{controlType,jdbcType=VARCHAR},
+      dtu_state_flag = #{dtuStateFlag,jdbcType=VARCHAR},
+      read_over_flag = #{readOverFlag,jdbcType=VARCHAR},
+      more_flag = #{moreFlag,jdbcType=VARCHAR},
+      more_time = #{moreTime,jdbcType=VARCHAR},
+      node_select = #{nodeSelect,jdbcType=VARCHAR},
+      id_select = #{idSelect,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      para1 = #{para1,jdbcType=VARCHAR},
+      para2 = #{para2,jdbcType=VARCHAR},
+      para3 = #{para3,jdbcType=VARCHAR},
+      para4 = #{para4,jdbcType=VARCHAR},
+      para5 = #{para5,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

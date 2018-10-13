@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.chargeconfig.dao.UserYearAccountDetailMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="third_consumer_id" jdbcType="VARCHAR" property="thirdConsumerId"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="consumer_id" jdbcType="VARCHAR" property="consumerId"/>
+        <result column="annual" jdbcType="VARCHAR" property="annual"/>
+        <result column="account_cost" jdbcType="DECIMAL" property="accountCost"/>
+        <result column="account_point_cost" jdbcType="DECIMAL" property="accountPointCost"/>
+        <result column="account_time" jdbcType="TIMESTAMP" property="accountTime"/>
+        <result column="account_type" jdbcType="VARCHAR" property="accountType"/>
+        <result column="account_channel" jdbcType="VARCHAR" property="accountChannel"/>
+        <result column="isbill" jdbcType="VARCHAR" property="isbill"/>
+        <result column="billno" jdbcType="VARCHAR" property="billno"/>
+        <result column="bank_name" jdbcType="VARCHAR" property="bankName"/>
+        <result column="bank_dept" jdbcType="VARCHAR" property="bankDept"/>
+        <result column="teller" jdbcType="VARCHAR" property="teller"/>
+        <result column="account_user" jdbcType="VARCHAR" property="accountUser"/>
+        <result column="isreconciliations" jdbcType="VARCHAR" property="isreconciliations"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="receiptno" property="receiptno"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        primary_id, third_consumer_id, company_id, consumer_id, annual, account_cost, account_point_cost,
+        account_time, account_type, account_channel, isbill, billno, bank_name, bank_dept,
+        teller, account_user, isreconciliations, notes, create_date, create_user,
+        update_date, update_user, receiptno
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_year_account_detail
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="findByThirdConsumerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_year_account_detail
+        where third_consumer_id = #{thirdConsumerId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from user_year_account_detail
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        insert into user_year_account_detail (primary_id, third_consumer_id, company_id,
+                                              consumer_id, annual, account_cost,
+                                              account_point_cost, account_time, account_type,
+                                              account_channel, isbill, billno,
+                                              bank_name, bank_dept, teller,
+                                              account_user, isreconciliations,
+                                              notes, create_date, create_user,
+                                              update_date, update_user, receiptno)
+        values (#{primaryId,jdbcType=VARCHAR}, #{thirdConsumerId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
+                                               #{consumerId,jdbcType=VARCHAR}, #{annual,jdbcType=VARCHAR}, #{accountCost,jdbcType=DECIMAL},
+                                               #{accountPointCost,jdbcType=DECIMAL}, #{accountTime,jdbcType=TIMESTAMP}, #{accountType,jdbcType=VARCHAR},
+                                               #{accountChannel,jdbcType=VARCHAR}, #{isbill,jdbcType=VARCHAR}, #{billno,jdbcType=VARCHAR},
+                                                                                                               #{bankName,jdbcType=VARCHAR}, #{bankDept,jdbcType=VARCHAR}, #{teller,jdbcType=VARCHAR},
+                                                                                                               #{accountUser,jdbcType=VARCHAR}, #{isreconciliations,jdbcType=VARCHAR},
+                                                                                                               #{notes,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
+                                                                                                               #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{receiptno,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        insert into user_year_account_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                primary_id,
+            </if>
+            <if test="thirdConsumerId != null">
+                third_consumer_id,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="consumerId != null">
+                consumer_id,
+            </if>
+            <if test="annual != null">
+                annual,
+            </if>
+            <if test="accountCost != null">
+                account_cost,
+            </if>
+            <if test="accountPointCost != null">
+                account_point_cost,
+            </if>
+            <if test="accountTime != null">
+                account_time,
+            </if>
+            <if test="accountType != null">
+                account_type,
+            </if>
+            <if test="accountChannel != null">
+                account_channel,
+            </if>
+            <if test="isbill != null">
+                isbill,
+            </if>
+            <if test="billno != null">
+                billno,
+            </if>
+            <if test="bankName != null">
+                bank_name,
+            </if>
+            <if test="bankDept != null">
+                bank_dept,
+            </if>
+            <if test="teller != null">
+                teller,
+            </if>
+            <if test="accountUser != null">
+                account_user,
+            </if>
+            <if test="isreconciliations != null">
+                isreconciliations,
+            </if>
+
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+
+            <if test="receiptno != null">
+                receiptno,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="primaryId != null">
+                #{primaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="thirdConsumerId != null">
+                #{thirdConsumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="consumerId != null">
+                #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="annual != null">
+                #{annual,jdbcType=VARCHAR},
+            </if>
+            <if test="accountCost != null">
+                #{accountCost,jdbcType=DECIMAL},
+            </if>
+            <if test="accountPointCost != null">
+                #{accountPointCost,jdbcType=DECIMAL},
+            </if>
+            <if test="accountTime != null">
+                #{accountTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="accountType != null">
+                #{accountType,jdbcType=VARCHAR},
+            </if>
+            <if test="accountChannel != null">
+                #{accountChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="isbill != null">
+                #{isbill,jdbcType=VARCHAR},
+            </if>
+            <if test="billno != null">
+                #{billno,jdbcType=VARCHAR},
+            </if>
+            <if test="bankName != null">
+                #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDept != null">
+                #{bankDept,jdbcType=VARCHAR},
+            </if>
+            <if test="teller != null">
+                #{teller,jdbcType=VARCHAR},
+            </if>
+            <if test="accountUser != null">
+                #{accountUser,jdbcType=VARCHAR},
+            </if>
+            <if test="isreconciliations != null">
+                #{isreconciliations,jdbcType=VARCHAR},
+            </if>
+
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="receiptno != null">
+                #{receiptno,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        update user_year_account_detail
+        <set>
+            <if test="thirdConsumerId != null">
+                third_consumer_id = #{thirdConsumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="annual != null">
+                annual = #{annual,jdbcType=VARCHAR},
+            </if>
+            <if test="accountCost != null">
+                account_cost = #{accountCost,jdbcType=DECIMAL},
+            </if>
+            <if test="accountPointCost != null">
+                account_point_cost = #{accountPointCost,jdbcType=DECIMAL},
+            </if>
+            <if test="accountTime != null">
+                account_time = #{accountTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="accountType != null">
+                account_type = #{accountType,jdbcType=VARCHAR},
+            </if>
+            <if test="accountChannel != null">
+                account_channel = #{accountChannel,jdbcType=VARCHAR},
+            </if>
+            <if test="isbill != null">
+                isbill = #{isbill,jdbcType=VARCHAR},
+            </if>
+            <if test="billno != null">
+                billno = #{billno,jdbcType=VARCHAR},
+            </if>
+            <if test="bankName != null">
+                bank_name = #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankDept != null">
+                bank_dept = #{bankDept,jdbcType=VARCHAR},
+            </if>
+            <if test="teller != null">
+                teller = #{teller,jdbcType=VARCHAR},
+            </if>
+            <if test="accountUser != null">
+                account_user = #{accountUser,jdbcType=VARCHAR},
+            </if>
+            <if test="isreconciliations != null">
+                isreconciliations = #{isreconciliations,jdbcType=VARCHAR},
+            </if>
+
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+
+            <if test="receiptno != null">
+                receiptno = #{receiptno,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        update user_year_account_detail
+        set third_consumer_id  = #{thirdConsumerId,jdbcType=VARCHAR},
+            company_id         = #{companyId,jdbcType=VARCHAR},
+            consumer_id        = #{consumerId,jdbcType=VARCHAR},
+            annual             = #{annual,jdbcType=VARCHAR},
+            account_cost       = #{accountCost,jdbcType=DECIMAL},
+            account_point_cost = #{accountPointCost,jdbcType=DECIMAL},
+            account_time       = #{accountTime,jdbcType=TIMESTAMP},
+            account_type       = #{accountType,jdbcType=VARCHAR},
+            account_channel    = #{accountChannel,jdbcType=VARCHAR},
+            isbill             = #{isbill,jdbcType=VARCHAR},
+            billno             = #{billno,jdbcType=VARCHAR},
+            bank_name          = #{bankName,jdbcType=VARCHAR},
+            bank_dept          = #{bankDept,jdbcType=VARCHAR},
+            teller             = #{teller,jdbcType=VARCHAR},
+            account_user       = #{accountUser,jdbcType=VARCHAR},
+            isreconciliations  = #{isreconciliations,jdbcType=VARCHAR},
+            notes              = #{notes,jdbcType=VARCHAR},
+            create_date        = #{createDate,jdbcType=TIMESTAMP},
+            create_user        = #{createUser,jdbcType=VARCHAR},
+            update_date        = #{updateDate,jdbcType=TIMESTAMP},
+            update_user        = #{updateUser,jdbcType=VARCHAR},
+            receiptno          = #{receiptno,jdbcType=VARCHAR}
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="getTotalByConsumerId" resultType="java.math.BigDecimal">
+        select sum(account_cost)
+        from user_year_account_detail
+        where consumer_id = #{consumerId,jdbcType=VARCHAR} and annual = #{annual,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findByUserAndAnnual" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
+        select
+        d.primary_id, d.third_consumer_id, d.company_id, d.consumer_id, d.annual, d.account_cost, d.account_point_cost,
+        d.account_time, t1.type_name as account_type,t2.type_name as account_channel, d.isbill, d.billno, d.bank_name, d.bank_dept,
+        d.teller, d.account_user, d.isreconciliations, d.notes, d.create_date, u1.username as create_user,
+        d.update_date, u2.username as update_user,d.receiptno
+        from user_year_account_detail as d
+        left join type_mst as t1 on d.account_type = t1.id
+        left join type_mst as t2 on d.account_channel = t2.id
+        left join user_login as u1 on d.create_user = u1.user_code
+        left join user_login as u2 on d.update_user = u2.user_code
+        where 1=1
+        <if test="consumerId !=null  and consumerId != '' ">
+            and d.consumer_id = #{consumerId}
+        </if>
+        <if test="annual !=null  and annual != '' ">
+            and d.annual = #{annual}
+        </if>
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+        <if test="order!=null">
+            ${order}
+        </if>
+    </select>
+
+    <select id="getListBySearch" parameterType="cn.plou.web.charge.chargeconfig.dto.ChargeAccountSearchDTO" resultType="cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO">
+        SELECT
+        d.primary_id,
+        d.third_consumer_id,
+        d.company_id,
+        d.consumer_id,
+        d.annual,
+        d.account_cost,
+        d.account_point_cost,
+        d.account_time,
+        d.account_type,
+        d.receiptno,
+        t1.type_name as accountTypeName,
+        d.account_channel,
+        t2.type_name as accountChannelName,
+        d.teller,
+        d.account_user,
+        d.isreconciliations,
+        t3.type_name as isreconciliationsName,
+        d.notes,
+        h.name as houseName,
+        h.address as houseAddress
+        FROM
+        user_year_account_detail d
+        left join type_mst t1 on t1.id = d.account_type
+        left join type_mst t2 on t2.id = d.account_channel
+        left join type_mst t3 on t3.id = d.isreconciliations
+        left join houses_info h on h.consumer_id = d.consumer_id
+        where
+        d.consumer_id like concat(#{companyId}, '%')
+        <if test="accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="isreconciliations != null and isreconciliations != ''">and d.isreconciliations = #{isreconciliations,jdbcType=VARCHAR}</if>
+        <if test="accountType != null and accountType != ''">and d.account_type = #{accountType,jdbcType=VARCHAR}</if>
+        <if test="accountChannel != null and accountChannel != ''">and d.account_channel = #{accountChannel,jdbcType=VARCHAR}</if>
+        <if test="sortby != null and sortby != ''">
+            order by d.${sortby}
+        </if>
+        <if test="order != null and order != ''">
+            ${order}
+        </if>
+        <if test="start != null and pageSize != null">
+            limit ${start},${pageSize}
+        </if>
+    </select>
+
+    <select id="getListCountBySearch" parameterType="cn.plou.web.charge.chargeconfig.dto.ChargeAccountSearchDTO" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+        user_year_account_detail d
+        where
+        d.consumer_id like concat(#{companyId}, '%')
+        <if test="accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="isreconciliations != null and isreconciliations != ''">and d.isreconciliations = #{isreconciliations,jdbcType=VARCHAR}</if>
+        <if test="accountType != null and accountType != ''">and d.account_type = #{accountType,jdbcType=VARCHAR}</if>
+        <if test="accountChannel != null and accountChannel != ''">and d.account_channel = #{accountChannel,jdbcType=VARCHAR}</if>
+    </select>
+
+    <select id="getListBySearchOfStation" resultType="cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO">
+        SELECT
+        d.primary_id,
+        d.third_consumer_id,
+        d.company_id,
+        d.consumer_id,
+        d.annual,
+        d.account_cost,
+        d.account_point_cost,
+        d.account_time,
+        d.account_type,
+        d.receiptno,
+        t1.type_name as accountTypeName,
+        d.account_channel,
+        t2.type_name as accountChannelName,
+        d.teller,
+        d.account_user,
+        d.isreconciliations,
+        t3.type_name as isreconciliationsName,
+        d.notes,
+        h.name as houseName,
+        h.address as houseAddress
+        FROM
+        user_year_account_detail d
+        left join type_mst t1 on t1.id = d.account_type
+        left join type_mst t2 on t2.id = d.account_channel
+        left join type_mst t3 on t3.id = d.isreconciliations
+        left join houses_info h on h.consumer_id = d.consumer_id
+        where 1 = 1
+        <foreach collection="list" item="id" open="and (" separator="or" close=")">
+            d.consumer_id like concat(#{id}, '%')
+        </foreach>
+        <if test="dto.accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dto.accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dto.isreconciliations != null and dto.isreconciliations != ''">and d.isreconciliations = #{dto.isreconciliations,jdbcType=VARCHAR}</if>
+        <if test="dto.accountType != null and dto.accountType != ''">and d.account_type = #{dto.accountType,jdbcType=VARCHAR}</if>
+        <if test="dto.accountChannel != null and dto.accountChannel != ''">and d.account_channel = #{dto.accountChannel,jdbcType=VARCHAR}</if>
+        <if test="dto.sortby != null and dto.sortby != ''">
+            order by d.${dto.sortby}
+        </if>
+        <if test="dto.order != null and dto.order != ''">
+            ${dto.order}
+        </if>
+        <if test="dto.start != null and dto.pageSize != null">
+            limit ${dto.start},${dto.pageSize}
+        </if>
+    </select>
+
+    <select id="getListCountBySearchOfStation" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+        user_year_account_detail d
+        where 1 = 1
+        <foreach collection="list" item="id" open="and (" separator="or" close=")">
+            d.consumer_id like concat(#{id}, '%')
+        </foreach>
+        <if test="dto.accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dto.accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dto.isreconciliations != null and dto.isreconciliations != ''">and d.isreconciliations = #{dto.isreconciliations,jdbcType=VARCHAR}</if>
+        <if test="dto.accountType != null and dto.accountType != ''">and d.account_type = #{dto.accountType,jdbcType=VARCHAR}</if>
+        <if test="dto.accountChannel != null and dto.accountChannel != ''">and d.account_channel = #{dto.accountChannel,jdbcType=VARCHAR}</if>
+    </select>
+
+    <select id="getChargeAccount" parameterType="cn.plou.web.charge.chargeconfig.dto.ChargeAccountDTO" resultType="cn.plou.web.charge.chargeconfig.vo.ChargeAccountDetailListVO">
+        SELECT
+            account_channel,
+            t1.type_name                                as accountChannelName,
+            account_type,
+            t2.type_name                                as accountTypeName,
+            count(account_cost)                         as num,
+            sum(account_cost)                           as payMoney,
+            sum(account_point_cost)                     as pointMoney,
+            sum(account_cost) - sum(account_point_cost) as moneyTrue
+        FROM
+            user_year_account_detail d
+            left join type_mst t1 on t1.id = d.account_channel
+            left join type_mst t2 on t2.id = d.account_type
+        where d.company_id = #{companyId,jdbcType=VARCHAR}
+              and DATE_FORMAT(d.account_time, '%Y-%m-%d') = DATE_FORMAT(#{accountTime,jdbcType=TIMESTAMP}, '%Y-%m-%d')
+              and d.annual = #{annual,jdbcType=VARCHAR}
+        GROUP BY
+            account_type,
+            account_channel
+        ORDER BY
+            account_channel,
+            account_type
+    </select>
+
+    <update id="updateIsreconciliations" parameterType="cn.plou.web.charge.chargeconfig.dto.SaveChargeAccountDTO">
+        update user_year_account_detail
+        set isreconciliations = 'is_reconciliations_2'
+        where company_id = #{companyId,jdbcType=VARCHAR}
+              and annual = #{annual,jdbcType=VARCHAR}
+              and DATE_FORMAT(account_time, '%Y-%m-%d') = DATE_FORMAT(#{accountTime,jdbcType=TIMESTAMP}, '%Y-%m-%d')
+    </update>
+</mapper>

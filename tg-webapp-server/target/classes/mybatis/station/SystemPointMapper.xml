@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.systemPoint.dao.SystemPointMapper" >
+  <resultMap id="BaseResultMap" type="cn.plou.web.station.systemPoint.entity.SystemPoint" >
+    <id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+    <result column="pointid" property="pointid" jdbcType="VARCHAR" />
+    <result column="sourceid" property="sourceid" jdbcType="VARCHAR" />
+    <result column="showdevtype" property="showdevtype" jdbcType="VARCHAR" />
+    <result column="tablename" property="tablename" jdbcType="VARCHAR" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="kind" property="kind" jdbcType="VARCHAR" />
+    <result column="warnkind" property="warnkind" jdbcType="INTEGER" />
+    <result column="lwarn" property="lwarn" jdbcType="DECIMAL" />
+    <result column="llwarn" property="llwarn" jdbcType="DECIMAL" />
+    <result column="hwarn" property="hwarn" jdbcType="DECIMAL" />
+    <result column="hhwarn" property="hhwarn" jdbcType="DECIMAL" />
+    <result column="swarn" property="swarn" jdbcType="DECIMAL" />
+    <result column="warndes" property="warndes" jdbcType="VARCHAR" />
+    <result column="iswarn" property="iswarn" jdbcType="INTEGER" />
+    <result column="valided" property="valided" jdbcType="INTEGER" />
+    <result column="point_name" property="pointName" jdbcType="VARCHAR" />
+    <result column="showlevel" property="showlevel" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    primary_id, pointid, sourceid, showdevtype, tablename, unit, kind, warnkind, lwarn, 
+    llwarn, hwarn, hhwarn, swarn, warndes, iswarn, valided, point_name,showlevel
+  </sql>
+  
+  	<select id="findPointsBySystemId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from system_point
+		where sourceid = #{systemId,jdbcType=VARCHAR}
+		<if test="valided != null">
+			and valided=#{valided}
+		</if>
+	</select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from system_point
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from system_point
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.station.systemPoint.entity.SystemPoint" >
+    insert into system_point (primary_id, pointid, sourceid, 
+      showdevtype, tablename, unit, 
+      kind, warnkind, lwarn, 
+      llwarn, hwarn, hhwarn, 
+      swarn, warndes, iswarn, 
+      valided, point_name,showlevel)
+    values (#{primaryId,jdbcType=VARCHAR}, #{pointid,jdbcType=VARCHAR}, #{sourceid,jdbcType=VARCHAR}, 
+      #{showdevtype,jdbcType=VARCHAR}, #{tablename,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{kind,jdbcType=VARCHAR}, #{warnkind,jdbcType=INTEGER}, #{lwarn,jdbcType=DECIMAL}, 
+      #{llwarn,jdbcType=DECIMAL}, #{hwarn,jdbcType=DECIMAL}, #{hhwarn,jdbcType=DECIMAL}, 
+      #{swarn,jdbcType=DECIMAL}, #{warndes,jdbcType=VARCHAR}, #{iswarn,jdbcType=INTEGER}, 
+      #{valided,jdbcType=INTEGER}, #{pointName,jdbcType=VARCHAR}, #{showlevel,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.station.systemPoint.entity.SystemPoint" >
+    insert into system_point
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        primary_id,
+      </if>
+      <if test="pointid != null" >
+        pointid,
+      </if>
+      <if test="sourceid != null" >
+        sourceid,
+      </if>
+      <if test="showdevtype != null" >
+        showdevtype,
+      </if>
+      <if test="tablename != null" >
+        tablename,
+      </if>
+      <if test="unit != null" >
+        unit,
+      </if>
+      <if test="kind != null" >
+        kind,
+      </if>
+      <if test="warnkind != null" >
+        warnkind,
+      </if>
+      <if test="lwarn != null" >
+        lwarn,
+      </if>
+      <if test="llwarn != null" >
+        llwarn,
+      </if>
+      <if test="hwarn != null" >
+        hwarn,
+      </if>
+      <if test="hhwarn != null" >
+        hhwarn,
+      </if>
+      <if test="swarn != null" >
+        swarn,
+      </if>
+      <if test="warndes != null" >
+        warndes,
+      </if>
+      <if test="iswarn != null" >
+        iswarn,
+      </if>
+      <if test="valided != null" >
+        valided,
+      </if>
+      <if test="pointName != null" >
+        point_name,
+      </if>
+       <if test="showlevel != null" >
+        showlevel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="pointid != null" >
+        #{pointid,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null" >
+        #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="showdevtype != null" >
+        #{showdevtype,jdbcType=VARCHAR},
+      </if>
+      <if test="tablename != null" >
+        #{tablename,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="kind != null" >
+        #{kind,jdbcType=VARCHAR},
+      </if>
+      <if test="warnkind != null" >
+        #{warnkind,jdbcType=INTEGER},
+      </if>
+      <if test="lwarn != null" >
+        #{lwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="llwarn != null" >
+        #{llwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="hwarn != null" >
+        #{hwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="hhwarn != null" >
+        #{hhwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="swarn != null" >
+        #{swarn,jdbcType=DECIMAL},
+      </if>
+      <if test="warndes != null" >
+        #{warndes,jdbcType=VARCHAR},
+      </if>
+      <if test="iswarn != null" >
+        #{iswarn,jdbcType=INTEGER},
+      </if>
+      <if test="valided != null" >
+        #{valided,jdbcType=INTEGER},
+      </if>
+      <if test="pointName != null" >
+        #{pointName,jdbcType=VARCHAR},
+      </if>
+      <if test="showlevel != null" >
+        #{showlevel,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.systemPoint.entity.SystemPoint" >
+    update system_point
+    <set >
+      <if test="pointid != null" >
+        pointid = #{pointid,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceid != null" >
+        sourceid = #{sourceid,jdbcType=VARCHAR},
+      </if>
+      <if test="showdevtype != null" >
+        showdevtype = #{showdevtype,jdbcType=VARCHAR},
+      </if>
+      <if test="tablename != null" >
+        tablename = #{tablename,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        unit = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="kind != null" >
+        kind = #{kind,jdbcType=VARCHAR},
+      </if>
+      <if test="warnkind != null" >
+        warnkind = #{warnkind,jdbcType=INTEGER},
+      </if>
+      <if test="lwarn != null" >
+        lwarn = #{lwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="llwarn != null" >
+        llwarn = #{llwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="hwarn != null" >
+        hwarn = #{hwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="hhwarn != null" >
+        hhwarn = #{hhwarn,jdbcType=DECIMAL},
+      </if>
+      <if test="swarn != null" >
+        swarn = #{swarn,jdbcType=DECIMAL},
+      </if>
+      <if test="warndes != null" >
+        warndes = #{warndes,jdbcType=VARCHAR},
+      </if>
+      <if test="iswarn != null" >
+        iswarn = #{iswarn,jdbcType=INTEGER},
+      </if>
+      <if test="valided != null" >
+        valided = #{valided,jdbcType=INTEGER},
+      </if>
+      <if test="pointName != null" >
+        point_name = #{pointName,jdbcType=VARCHAR},
+      </if>
+       <if test="showlevel != null" >
+        showlevel = #{showlevel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.station.systemPoint.entity.SystemPoint" >
+    update system_point
+    set pointid = #{pointid,jdbcType=VARCHAR},
+      sourceid = #{sourceid,jdbcType=VARCHAR},
+      showdevtype = #{showdevtype,jdbcType=VARCHAR},
+      tablename = #{tablename,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
+      kind = #{kind,jdbcType=VARCHAR},
+      warnkind = #{warnkind,jdbcType=INTEGER},
+      lwarn = #{lwarn,jdbcType=DECIMAL},
+      llwarn = #{llwarn,jdbcType=DECIMAL},
+      hwarn = #{hwarn,jdbcType=DECIMAL},
+      hhwarn = #{hhwarn,jdbcType=DECIMAL},
+      swarn = #{swarn,jdbcType=DECIMAL},
+      warndes = #{warndes,jdbcType=VARCHAR},
+      iswarn = #{iswarn,jdbcType=INTEGER},
+      valided = #{valided,jdbcType=INTEGER},
+      point_name = #{pointName,jdbcType=VARCHAR}
+      showlevel = #{showlevel,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

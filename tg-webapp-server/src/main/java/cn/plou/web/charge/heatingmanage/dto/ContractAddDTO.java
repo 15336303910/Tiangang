@@ -1,0 +1,180 @@
+package cn.plou.web.charge.heatingmanage.dto;
+
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @Description: 入网管理-新增合同
+ * @Param:
+ * @Return:
+ * @Author: youbc
+ * @Date: 2018/8/27 9上午29
+ */
+public class ContractAddDTO {
+
+    private String primaryId; // 合同记录号 uuid
+
+    @NotEmpty(message = "请选择公司")
+    @Length(min = 5, max = 5, message = "只能按公司入网")
+    private String companyId; // 公司ｉｄ
+
+    @NotEmpty(message = "请填写合同编号")
+    private String contractCode; // 合同编号
+
+    @NotEmpty(message = "请填写合同名称")
+    private String contractName; // 合同名称
+
+    @NotEmpty(message = "请填写甲方名称")
+    private String aName; // 甲方名称
+
+    @NotEmpty(message = "请填写乙方名称")
+    private String bName; // 乙方名称
+
+    @Length(max = 200, message = "入网范围不能超过 200 字")
+    private String scope; // 入网范围
+
+    @NotNull(message = "请填写入网面积")
+    private BigDecimal area; // 入网面积
+
+    @NotNull(message = "请填写入网单价")
+    private BigDecimal unitPrice; // 入网单价
+
+    private BigDecimal priceAdj; // 费用调整：正数，增加；负数，减免
+
+    @Length(max = 20, message = "联系人不能超过 20 字")
+    private String contactName; // 联系人
+
+    @Length(max = 11, message = "联系电话不能超过 11 字")
+    private String contactPhone; // 联系电话
+
+    private String filePath; // 文件名
+
+    @Length(max = 200, message = "备注不能超过 200 字")
+    private String notes; // 备注
+
+    private Date signDate; // 签订日期
+
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getContractCode() {
+        return contractCode;
+    }
+
+    public void setContractCode(String contractCode) {
+        this.contractCode = contractCode;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+    public String getaName() {
+        return aName;
+    }
+
+    public void setaName(String aName) {
+        this.aName = aName;
+    }
+
+    public String getbName() {
+        return bName;
+    }
+
+    public void setbName(String bName) {
+        this.bName = bName;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public BigDecimal getArea() {
+        return area;
+    }
+
+    public void setArea(BigDecimal area) {
+        this.area = area;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public BigDecimal getPriceAdj() {
+        return priceAdj;
+    }
+
+    public void setPriceAdj(BigDecimal priceAdj) {
+        this.priceAdj = priceAdj;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Date getSignDate() {
+        return signDate;
+    }
+
+    public void setSignDate(Date signDate) {
+        this.signDate = signDate;
+    }
+}

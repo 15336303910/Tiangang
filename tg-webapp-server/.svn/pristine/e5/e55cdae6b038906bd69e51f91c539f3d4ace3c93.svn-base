@@ -1,0 +1,34 @@
+package cn.plou.web.charge.chargeconfig.service;
+
+import cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import com.github.pagehelper.PageInfo;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface UserYearAccountDetailService {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(UserYearAccountDetail record);
+
+    int insertSelective(UserYearAccountDetail record);
+
+    UserYearAccountDetail selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(UserYearAccountDetail record);
+
+    int updateByPrimaryKey(UserYearAccountDetail record);
+
+    BigDecimal getTotalByConsumerId(String consumerId, String annual);
+
+    PageInfo<UserYearAccountDetail> findByUserAndAnnual(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+    List<UserYearAccountDetail> findByThirdConsumerId(String thirdConsumerId);
+
+
+    //PageInfo<UserYearAccountDetail> chargeHistory(String consumerId,String annual, String order, String sortby, Integer page, Integer pageSize);
+
+
+}

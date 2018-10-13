@@ -1,0 +1,105 @@
+package cn.plou.web.system.permission.userDataHistory.service.impl;
+
+import cn.plou.web.common.utils.CamelCaseUtil;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.build.dao.BuildMapper;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.commuity.dao.CommuityMapper;
+import cn.plou.web.system.baseMessage.house.dao.HouseMapper;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.unit.dao.UnitMapper;
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.permission.userDataHistory.dao.UserDataHistoryMapper;
+import cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory;
+import cn.plou.web.system.permission.userDataHistory.service.UserDataHistoryService;
+import cn.plou.web.system.permission.userDataHistory.vo.UserDataHistoryInfo;
+import cn.plou.web.system.permission.userDataHistory.vo.UserDataHistoryVo;
+import cn.plou.web.system.permission.userLogin.dao.UserLoginMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.UUID;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class UserDataHistoryServiceImpl implements UserDataHistoryService {
+
+    @Autowired
+    private UserDataHistoryMapper userDataHistoryMapper;
+
+    @Autowired
+    private HouseMapper houseMapper;
+
+    @Autowired
+    private CommuityMapper commuityMapper;
+
+    @Autowired
+    private BuildMapper buildMapper;
+
+    @Autowired
+    private UnitMapper unitMapper;
+
+    @Autowired
+    private UserLoginMapper userLoginMapper;
+
+
+    @Override
+    public int addUserDataHistory(UserDataHistory userDataHistory) {
+        userDataHistory.setUserId(UserUtils.getUserId());
+        userDataHistory.setUserName(userLoginMapper.selectByPrimaryKey(UserUtils.getUserId()).getUsername());
+        userDataHistory.setControlDate(Tools.timeStrToDate(Tools.curTime(null), "yyyy-MM-dd HH:mm:ss"));
+        userDataHistory.setPrimaryId(UserUtils.getUserId()+"-"+UUID.randomUUID().toString().replace("-",""));
+        return userDataHistoryMapper.insertUserDataHistory(userDataHistory);
+    }
+
+    @Override
+    public PageInfo<UserDataHistoryInfo> getAllUserDataHistory(UserDataHistoryVo userDataHistoryVo, String pageName, String order, String sortby, Integer page, Integer pageSize) {
+//        if(page!=null) {
+//            page = (page - 1) * pageSize;
+//        }
+        sortby = CamelCaseUtil.toUnderscoreCase(sortby);
+        PageHelper.startPage(page,pageSize);
+        List<UserDataHistoryInfo> userDataHistoryInfoList = userDataHistoryMapper.selectAllUserDataHistory(userDataHistoryVo,pageName, order, sortby,page,pageSize);
+        PageInfo<UserDataHistoryInfo> pageInfo=new PageInfo<>(userDataHistoryInfoList);
+        if(userDataHistoryInfoList.size()>0) {
+            for (UserDataHistoryInfo userDataHistoryInfo : pageInfo.getList()) {
+                String cosumerId = userDataHistoryInfo.getConsumerId();
+                if (cosumerId.length() >= 10) {
+                    if(commuityMapper.selectById(cosumerId.substring(0, 10))!=null) {
+                        userDataHistoryInfo.setCommuityName(commuityMapper.selectById(cosumerId.substring(0, 10)).getCommuityName());
+                    }
+                }
+                if (cosumerId.length() >= 13) {
+                    if(buildMapper.selectByPrimaryKey(cosumerId.substring(0, 13))!=null) {
+                        userDataHistoryInfo.setBuildingName(buildMapper.selectByPrimaryKey(cosumerId.substring(0, 13)).getBuildingName());
+                    }
+                }
+                if (cosumerId.length() >= 15) {
+                    if(unitMapper.selectByPrimaryKey(cosumerId.substring(0, 15))!=null) {
+                        userDataHistoryInfo.setUnitName(unitMapper.selectByPrimaryKey(cosumerId.substring(0, 15)).getUnitName());
+                    }
+                }
+                if (cosumerId.length() == 19) {
+                    if(houseMapper.selectByPrimaryKey(cosumerId)!=null) {
+                        userDataHistoryInfo.setRoomName(houseMapper.selectByPrimaryKey(cosumerId).getRoomName());
+                    }
+                }
+            }
+        }
+        return pageInfo;
+    }
+
+    @Override
+    public String getNewId() {
+        if (userDataHistoryMapper.selectAllIds().size() == 0) {
+            return "1";
+        } else {
+            return getMaxIdNoSize(userDataHistoryMapper.selectAllIds());
+        }
+    }
+}

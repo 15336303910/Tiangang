@@ -1,0 +1,430 @@
+package cn.plou.web.charge.chargeconfig.controller;
+
+import cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceInfoService;
+import cn.plou.web.charge.chargeconfig.service.UserYearAccountDetailService;
+import cn.plou.web.charge.chargeconfig.service.UserYearHeatService;
+import cn.plou.web.charge.chargeconfig.service.UserYearReceivableDetailService;
+import cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee;
+import cn.plou.web.charge.chargeconfig.vo.UserYearReceivableDetailInfo;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.util.Assert;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @author panziqiang
+ * 2018/8/17 14:27
+ */
+
+@RequestMapping("/thirdpartyplatform/request")
+@RestController
+@Api(description = "第三方平台的请求：查询热费、入账请求、冲正请求、对账请求(主要是为了避开)")
+public class ThirdPartyPlatformController {
+
+    @Resource
+    private BankInterfaceInfoService bankInterfaceInfoService;
+    @Resource
+    private UserYearReceivableDetailService userYearReceivableDetailService;
+    @Resource
+    private UserYearAccountDetailService userYearAccountDetailService;
+
+    @Resource
+    private UserYearHeatService userYearHeatService;
+
+    @Resource
+    private HouseService houseService;
+
+
+
+    @ApiOperation(value = "获取 暖费收取 预收热费信息")
+    @RequestMapping("/getPreReceiveHeatInfo")
+    public Root getPreReceiveHeatInfo(@RequestParam String consumerId, @RequestParam String annual ) {
+
+        Root root = new Root();
+        Integer page = 1;
+        Integer pageSize = Integer.MAX_VALUE;
+
+        //这里最好是从数据库里取一次，而不是这样取四次
+        PageInfo<UserYearReceivableDetailInfo> userYearReceivableDetailsByConsumerId = userYearReceivableDetailService.getUserYearReceivableDetailsByConsumerId(consumerId,null,annual, null, null, page, pageSize);
+        if(userYearReceivableDetailsByConsumerId.getTotal() == 0){
+            root.setCode(500);
+            root.setMsg("用户年度采暖费用明细表没有记录");
+            return root;
+        }
+
+        House houseById = houseService.getHouseById(consumerId);
+        String chargeType = houseById.getChargeType();//供热收费类型
+
+        UserYearHeat byUserAndAnnual = userYearHeatService.findByUserAndAnnual(consumerId, annual);
+        if(byUserAndAnnual == null){
+            root.setCode(500);
+            root.setMsg("用户年度采暖信息表没有记录");
+            return root;
+        }
+
+        if(byUserAndAnnual.getSumAccount() == null){
+            byUserAndAnnual.setSumAccount(BigDecimal.ZERO);
+        }
+        if(byUserAndAnnual.getSumReceivable() == null){
+            byUserAndAnnual.setSumReceivable(BigDecimal.ZERO);
+        }
+
+
+
+        BigDecimal oldYearOweTotal = userYearHeatService.getOldYearOwe(consumerId, annual);//获取往年欠费
+
+        if(oldYearOweTotal == null){
+            oldYearOweTotal = BigDecimal.ZERO;
+        }
+
+        List<UserYearReceivableDetailInfo> list = userYearReceivableDetailsByConsumerId.getList();
+        BigDecimal total =  BigDecimal.ZERO;//预收合计
+        BigDecimal areaTotal =  BigDecimal.ZERO;//面积收费
+        BigDecimal heatTotal =  BigDecimal.ZERO;//热量收费
+        BigDecimal otherTotal =  BigDecimal.ZERO;//其他费用
+        BigDecimal needTotal =  byUserAndAnnual.getSumReceivable().subtract(byUserAndAnnual.getSumAccount()); //应缴金额
+        for (UserYearReceivableDetailInfo userYearReceivableDetail : list) {
+            if(userYearReceivableDetail.getChargingItem() != null && userYearReceivableDetail.getChargingItem().equals("charging_item_1")){
+                //面积费用
+                areaTotal = userYearReceivableDetail.getTotal();
+            }
+            if(userYearReceivableDetail.getChargingItem() != null && userYearReceivableDetail.getChargingItem().equals("charging_item_2")){
+                //热量费用
+                heatTotal = userYearReceivableDetail.getTotal();
+            }
+            total.add(userYearReceivableDetail.getTotal());
+        }
+
+        otherTotal=total.subtract(areaTotal.add(heatTotal));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",total);
+        map.put("otherTotal",otherTotal);
+        map.put("oldYearOweTotal",oldYearOweTotal);
+        map.put("needTotal",needTotal);
+
+        if(chargeType.equals("charge_type_1")){
+            //面积收费
+            map.put("areaTotal",areaTotal);
+        }
+        else if(chargeType.equals("charge_type_2")){
+            //二部制收费
+
+            map.put("areaTotal",areaTotal);
+            map.put("heatTotal",heatTotal);
+        }
+        else if(chargeType.equals("charge_type_3")){
+            //热计量收费
+
+            map.put("heatTotal",heatTotal);
+        }
+
+
+        root.setCode(0);
+        root.setData(map);
+        return root;
+
+    }
+
+
+    @ApiOperation(value = "获取 日常收费 本季暖费信息")
+    @RequestMapping("/getThisAnnualHeatFeeInfo")
+    public Root getThisAnnualHeatFeeInfo(@RequestParam String consumerId, @RequestParam String annual ) {
+
+        Root root = new Root();
+
+        UserYearHeat byUserAndAnnual = userYearHeatService.findByUserAndAnnual(consumerId, annual);
+        if(byUserAndAnnual == null){
+            root.setCode(500);
+            root.setMsg("用户年度采暖信息表没有记录");
+            return root;
+        }
+        BigDecimal oldYearOweTotal =  BigDecimal.ZERO;//往年欠费
+        oldYearOweTotal = userYearHeatService.getOldYearOwe(consumerId, annual);//获取往年欠费
+        if(oldYearOweTotal == null){
+            oldYearOweTotal = BigDecimal.ZERO;
+        }
+
+        Map<String,Object> map = getUserHeatFeeMapInfo(byUserAndAnnual,oldYearOweTotal);
+
+        root.setCode(0);
+        root.setData(map);
+        return root;
+
+    }
+
+    private Map<String,Object> getUserHeatFeeMapInfo(UserYearHeat userYearHeat,BigDecimal oldYearOweTotal){
+        if(userYearHeat.getSumAccount() == null){
+            userYearHeat.setSumAccount(BigDecimal.ZERO);
+        }
+        if(userYearHeat.getSumReceivable() == null){
+            userYearHeat.setSumReceivable(BigDecimal.ZERO);
+        }
+
+        BigDecimal receivableTotal =  BigDecimal.ZERO;//费用合计
+        BigDecimal accountTotal =  BigDecimal.ZERO;//缴费合计
+        BigDecimal needTotal =  BigDecimal.ZERO;//应缴金额
+        BigDecimal balanceTotal =  BigDecimal.ZERO;//账户余额，这个应该是应缴金额的相反数。如果应缴金额为负数，那么应缴金额应该为0，而账户余额这时候应该是正数
+
+        receivableTotal =  userYearHeat.getSumReceivable();//费用合计
+        accountTotal =  userYearHeat.getSumAccount();//缴费合计
+        String annual = userYearHeat.getAnnual();
+
+        //应缴金额
+        //费用合计 大于 缴费合计
+        if(receivableTotal.compareTo(accountTotal) == 1 ){
+            needTotal = receivableTotal.subtract(accountTotal);
+        }
+        else{
+            needTotal = BigDecimal.ZERO;
+        }
+
+        balanceTotal = accountTotal.subtract(receivableTotal);//账户余额
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("receivableTotal",receivableTotal);//费用合计
+        map.put("accountTotal",accountTotal);//缴费合计
+        map.put("oldYearOweTotal",oldYearOweTotal);//往年欠费
+        map.put("needTotal",needTotal);//应缴金额——这个可以作为当年欠费（往年收费界面中的“陈欠合计”）
+        map.put("balanceTotal",balanceTotal);//账户余额
+        map.put("annual",annual);
+
+        return map;
+    }
+
+    @ApiOperation(value = "获取 日常收费 往年暖费陈欠信息")
+    @RequestMapping("/getAllAnnualHeatFeeInfo")
+    public Root getAllAnnualHeatFeeInfo(@RequestParam String consumerId,@RequestParam Integer page,@RequestParam Integer pageSize) {
+
+        Root root = new Root();
+        if(page == null){
+            page = 1;
+        }
+        if(pageSize == null){
+            pageSize = 10;
+        }
+
+        BigDecimal oldYearOweTotal = userYearHeatService.getOldYearOwe(consumerId, null);
+        if(oldYearOweTotal == null){
+            oldYearOweTotal = BigDecimal.ZERO;
+        }
+
+        PageInfo<UserYearHeat> userYearHeats = userYearHeatService.findByUser(consumerId,null, "desc", "annual", page, pageSize);
+
+        //Map<String,Object> mapGlobal = new HashMap<>();
+        TreeMap<String, Object> mapGlobal=new TreeMap<String, Object>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
+        List<Map<String,Object>> lst = new ArrayList<>();
+        for (UserYearHeat userYearHeat : userYearHeats.getList()) {
+            Map<String,Object> map = getUserHeatFeeMapInfo(userYearHeat,null);
+            lst.add(map);
+        }
+        mapGlobal.put("detail",lst);
+        mapGlobal.put("OweTotal",oldYearOweTotal);
+//        mapGlobal.put("pages",userYearHeats.getPages());
+        root.setCode(0);
+        root.setData(mapGlobal);
+        root.setCond(getCond(page,pageSize,(int)userYearHeats.getTotal(),
+                null,"annual"));
+        return root;
+
+    }
+
+
+
+
+    private Boolean updateUserYearHeat(String consumerId, String annual){
+        BigDecimal totalByConsumerId = userYearAccountDetailService.getTotalByConsumerId(consumerId,annual);
+        UserYearHeat byUserAndAnnual = userYearHeatService.findByUserAndAnnual(consumerId, annual);
+        byUserAndAnnual.setSumAccount(totalByConsumerId);
+        byUserAndAnnual.setMarginNow(byUserAndAnnual.getSumReceivable().subtract(totalByConsumerId));
+        userYearHeatService.updateByPrimaryKey(byUserAndAnnual);
+        return true;
+    }
+
+
+    //这个表其实不涉及删除和修改，但是我还是把删除接口加上了。
+
+    @ApiOperation(value = "删除 暖费收取 预收暖费")
+    @RequestMapping("/deleteUserYearReceivableDetail")
+    @Transactional
+    public Root deleteUserYearReceivableDetail(@RequestParam String primaryId) {
+
+        //此处需要考虑，是否需要判断这条记录是否有其他业务使用过。
+
+        Root root = new Root();
+
+        UserYearAccountDetail userYearAccountDetail = userYearAccountDetailService.selectByPrimaryKey(primaryId);
+        if(userYearAccountDetail == null){
+            root.setCode(500);
+            root.setMsg("预收暖费记录不存在："+primaryId+"，请传入正常值");
+            return root;
+        }
+        int i1 = userYearReceivableDetailService.deleteByPrimaryKey(primaryId);
+        if(i1 != 1){
+            root.setCode(500);
+            root.setMsg("删除预收暖费数据记录："+primaryId+"，失败");
+            return root;
+        }
+
+        updateUserYearHeat(userYearAccountDetail.getConsumerId(),userYearAccountDetail.getAnnual());//触发器
+
+        root.setCode(0);
+        root.setMsg("删除预收暖费数据记录："+primaryId+"，成功");
+        return root;
+    }
+
+
+    //滞纳金计算公式：
+    //从user_year_heat表（用户粘度采暖信息表）中取，因为这里全是入网用户
+    //每个用户对应的热费单价类型，然后找到“热费单价类型表”price_define，然后用“用户年度采暖费用明细表”user_year_receivable_detail中，费用项目charging_item中的“金额”
+    // （金额指的是除了面积费用、热量费用、滞纳金剩下的那些）,去在“热费单价类型表”price_define中滞纳金缴纳时间段内，乘以“热费单价类型表”price_define中的滞纳金率。每天计算一个滞纳金。
+    //比如说，金额为100，滞纳金率为5%，那么每天会产生5元钱的滞纳金，每天五元钱。
+    //所以这个要扫描所有的用户表，计算所有的情况，会比较消耗系统资源。
+
+    @ApiOperation(value = "计算滞纳金，供任务调度")
+    @RequestMapping("/calcLateFee")
+    @Transactional
+    public Root calcLateFee(@RequestParam String annual ) {
+
+        Root root = new Root();
+        Integer page = 1;
+        Integer pageSize = 200;
+
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(currentTime);
+
+
+        PageInfo<UserYearHeatLateFee> userYearHeatLatesFeeForTotal = userYearHeatService.calcLateFee(annual, dateString, null, null, page, pageSize);
+        PageInfo<UserYearHeatLateFee> userYearHeatsLateFee = null;
+
+        int pages = userYearHeatLatesFeeForTotal.getPages();
+        for(int i = 0;i<pages;i++){
+
+            currentTime = new Date();
+
+            page=page+i;
+            userYearHeatsLateFee = userYearHeatService.calcLateFee(annual, dateString, null, null, page, pageSize);
+            List<UserYearHeatLateFee> list = userYearHeatsLateFee.getList();
+            //开始批量修改
+            List<UserYearReceivableDetail> userYearReceivableDetails = new ArrayList<>();
+            for (UserYearHeatLateFee userYearHeatLateFee : list) {
+                UserYearReceivableDetail userYearReceivableDetail = new UserYearReceivableDetail();
+                //String annual = userYearHeatLateFee.getAnnual();
+                String consumerId = userYearHeatLateFee.getConsumerId();
+                String companyId = userYearHeatLateFee.getCompanyId();
+                String lateFee = userYearHeatLateFee.getLateFee();
+
+                userYearReceivableDetail.setCompanyId(companyId);
+                userYearReceivableDetail.setConsumerId(consumerId);
+                userYearReceivableDetail.setAnnual(annual);
+                userYearReceivableDetail.setChargingItem("charging_item_7");
+                userYearReceivableDetail.setSum(BigDecimal.ZERO);
+                userYearReceivableDetail.setUnitPrice(BigDecimal.ZERO);
+                userYearReceivableDetail.setDiscount(BigDecimal.ONE);
+                userYearReceivableDetail.setTotal(new BigDecimal(lateFee));
+                userYearReceivableDetail.setCreateDate(currentTime);
+                userYearReceivableDetail.setCreateUser(UserUtils.getUserId());
+                userYearReceivableDetail.setUpdateDate(currentTime);
+                userYearReceivableDetail.setUpdateUser(UserUtils.getUserId());
+
+                userYearReceivableDetails.add(userYearReceivableDetail);
+
+
+            }
+            
+            userYearReceivableDetailService.batchUpdate(userYearReceivableDetails);
+
+        }
+
+        root.setCode(0);
+        root.setData("生成滞纳金数据成功");
+        return root;
+
+    }
+
+
+
+
+
+
+    @ApiOperation(value = "作废缴费记录")
+    @RequestMapping("/cancelUserYearAccountDetail")
+    @Transactional
+    public Root cancelUserYearAccountDetail(@RequestParam String primaryId,@RequestParam String notes) {
+
+        Root root = new Root();
+
+        UserYearAccountDetail userYearAccountDetail = userYearAccountDetailService.selectByPrimaryKey(primaryId);
+        if(userYearAccountDetail == null){
+            root.setCode(500);
+            root.setMsg("预收暖费记录不存在："+primaryId+"，请传入正常值");
+            return root;
+        }
+        userYearAccountDetail.setThirdConsumerId(null);
+
+        userYearAccountDetail.setAccountPointCost(null);//扣点，还未完善，先设置为null
+
+        userYearAccountDetail.setNotes("缴费作废,id："+primaryId+" 金额"+userYearAccountDetail.getAccountCost()+" 作废原因："+notes);
+
+        userYearAccountDetail.setAccountCost( BigDecimal.ZERO.subtract(userYearAccountDetail.getAccountCost()));
+
+        //创建人
+        userYearAccountDetail.setCreateUser(UserUtils.getUserId());
+        //创建时间
+        userYearAccountDetail.setCreateDate(new Date());
+
+        userYearAccountDetail.setAccountTime(new Date());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        Date now=new Date();
+        String strDate = sdf.format(now);
+        String PrimaryId = userYearAccountDetail.getConsumerId()+strDate;
+        userYearAccountDetail.setPrimaryId(PrimaryId);
+        //增加
+        if(userYearAccountDetailService.insertSelective(userYearAccountDetail)==1){
+
+            updateUserYearHeat(userYearAccountDetail.getConsumerId(),userYearAccountDetail.getAnnual());//触发器
+
+            root.setCode(0);
+            root.setMsg("添加成功");
+            return root;
+        }
+        else{
+
+            root.setCode(500);
+            root.setMsg("添加失败");
+            return root;
+        }
+
+
+    }
+
+}

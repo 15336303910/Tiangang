@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.weather.dao.WeatherNowMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    <id column="city" jdbcType="VARCHAR" property="city" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+    <result column="temperature" jdbcType="DECIMAL" property="temperature" />
+    <result column="weather" jdbcType="VARCHAR" property="weather" />
+    <result column="spead" jdbcType="VARCHAR" property="spead" />
+    <result column="light" jdbcType="VARCHAR" property="light" />
+    <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    <id column="city" jdbcType="VARCHAR" property="city" />
+    <result column="z_c_city" jdbcType="VARCHAR" property="cityName" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+    <result column="temperature" jdbcType="DECIMAL" property="temperature" />
+    <result column="weather" jdbcType="VARCHAR" property="weather" />
+    <result column="spead" jdbcType="VARCHAR" property="spead" />
+    <result column="light" jdbcType="VARCHAR" property="light" />
+    <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    city, read_time, temperature, weather, spead, light, humidity, notes, create_date, 
+    create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from weather_data_now
+    where city = #{city,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectWeatherNow" parameterType="map" resultMap="InfoMap">
+    select
+     w.city, w.read_time, w.temperature, w.weather, w.spead, w.light, w.humidity, w.notes,c.z_c_city
+    from w.weather_data_now w
+    JOIN zone_city_info c ON w.city=c.z_c_cityid
+    where c.z_c_city like concat ('%',#{city},'%')
+    and  DATE_FORMAT(w.read_time,'%Y-%m-%d')=curdate()
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from weather_data_now
+    where city = #{city,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    insert into weather_data_now (city, read_time, temperature, 
+      weather, spead, light, 
+      humidity, notes, create_date, 
+      create_user, update_date, update_user
+      )
+    values (#{city,jdbcType=VARCHAR}, #{readTime,jdbcType=TIMESTAMP}, #{temperature,jdbcType=DECIMAL}, 
+      #{weather,jdbcType=TIMESTAMP}, #{spead,jdbcType=VARCHAR}, #{light,jdbcType=VARCHAR}, 
+      #{humidity,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    insert into weather_data_now
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="city != null">
+        city,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="weather != null">
+        weather,
+      </if>
+      <if test="spead != null">
+        spead,
+      </if>
+      <if test="light != null">
+        light,
+      </if>
+      <if test="humidity != null">
+        humidity,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=DECIMAL},
+      </if>
+      <if test="weather != null">
+        #{weather,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spead != null">
+        #{spead,jdbcType=VARCHAR},
+      </if>
+      <if test="light != null">
+        #{light,jdbcType=VARCHAR},
+      </if>
+      <if test="humidity != null">
+        #{humidity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    update weather_data_now
+    <set>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=DECIMAL},
+      </if>
+      <if test="weather != null">
+        weather = #{weather,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spead != null">
+        spead = #{spead,jdbcType=VARCHAR},
+      </if>
+      <if test="light != null">
+        light = #{light,jdbcType=VARCHAR},
+      </if>
+      <if test="humidity != null">
+        humidity = #{humidity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where city = #{city,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherNow">
+    update weather_data_now
+    set read_time = #{readTime,jdbcType=TIMESTAMP},
+      temperature = #{temperature,jdbcType=DECIMAL},
+      weather = #{weather,jdbcType=TIMESTAMP},
+      spead = #{spead,jdbcType=VARCHAR},
+      light = #{light,jdbcType=VARCHAR},
+      humidity = #{humidity,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where city = #{city,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,3580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.dataAnalysis.dao.HouseRunningDataAnalysisTotalDao">
+
+
+	<select id="getHouseTotalData"
+			resultType="cn.plou.web.heatManage.dataAnalysis.domain.HouseRunningDataAnalysisTotalGatherDO">
+		select * from (
+		select
+		concat('&lt;',#{range0_1})  as paramTitle ,
+		(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+		<if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1}   and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as consumerCount,
+		(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as heatingIndex,
+		(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as flowingIndex,
+		(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as inTemperature,
+		(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as outTemperature,
+		(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as roomTemperatureRead,
+		(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as roomTemperatureDifference,
+		(select AVG(heating_area) as '供暖面积' from user_running_data_total where <if test="standard == 'temperature'"> room_temperature_read </if>
+		<if test="standard == 'heating'"> heating_index </if>
+		<if test="standard == 'flowing'"> flowing_index </if>
+		&lt; #{range0_1} and system_read_time  between #{startTime} and #{endTime}
+		<choose>
+			<when test="type=='company'">
+				<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+			</when>
+			<when test="type=='station'">
+				<if test="consumerId != null and consumerId != ''">
+					and substr(consumer_id,1,10) in (
+					select commuity_id
+					from
+					commuity_info where station_id = #{consumerId}
+					)
+				</if>
+			</when>
+			<when test="type=='commuity'">
+				<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>) as heatingArea
+		from user_running_data_total limit 1 ) as t0
+
+		<if test="range1_0 != null and range1_0 != '' and (range1_1 == null or range1_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range1_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range1_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t1
+		</if>
+		<if test="range1_0 != null and range1_0 != '' and range1_1 != null and range1_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range1_0},' - ',#{range1_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range1_0} and #{range1_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t1
+		</if>
+
+		<if test="range2_0 != null and range2_0 != '' and (range2_1 == null or range2_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range2_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range2_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t2
+		</if>
+		<if test="range2_0 != null and range2_0 != '' and range2_1 != null and range2_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range2_0},' - ',#{range2_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range2_0} and #{range2_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t2
+		</if>
+
+		<if test="range3_0 != null and range3_0 != '' and (range3_1 == null or range3_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range3_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range3_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t3
+		</if>
+		<if test="range3_0 != null and range3_0 != '' and range3_1 != null and range3_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range3_0},' - ',#{range3_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range3_0} and #{range3_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t3
+		</if>
+
+		<if test="range4_0 != null and range4_0 != '' and (range4_1 == null or range4_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range4_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range4_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t4
+		</if>
+		<if test="range4_0 != null and range4_0 != '' and range4_1 != null and range4_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range4_0},' - ',#{range4_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range4_0} and #{range4_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t4
+		</if>
+
+		<if test="range5_0 != null and range5_0 != '' and (range5_1 == null or range5_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range5_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range5_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t5
+		</if>
+		<if test="range5_0 != null and range5_0 != '' and range5_1 != null and range5_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range5_0},' - ',#{range5_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range5_0} and #{range5_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t5
+		</if>
+
+		<if test="range6_0 != null and range6_0 != '' and (range6_1 == null or range6_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range6_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range6_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t6
+		</if>
+		<if test="range6_0 != null and range6_0 != '' and range6_1 != null and range6_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range6_0},' - ',#{range6_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range6_0} and #{range6_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t6
+		</if>
+
+		<if test="range7_0 != null and range7_0 != '' and (range7_1 == null or range7_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range7_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range7_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t7
+		</if>
+		<if test="range7_0 != null and range7_0 != '' and range7_1 != null and range7_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range7_0},' - ',#{range7_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range7_0} and #{range7_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t7
+		</if>
+
+		<if test="range8_0 != null and range8_0 != '' and (range8_1 == null or range8_1 == '')">
+			union  all
+			select * from (select
+			concat('&gt;',#{range8_0}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			>=#{range8_0}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t8
+		</if>
+		<if test="range8_0 != null and range8_0 != '' and range8_1 != null and range8_1 != ''">
+			union  all
+			select * from (select
+			concat(#{range8_0},' - ',#{range8_1}) as paramTitle ,
+			(select COUNT(consumer_id) as '用户数量' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as consumerCount,
+			(select AVG(heating_index) as '实际耗热指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingIndex,
+			(select AVG(flowing_index) as '实际流量指标' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as flowingIndex,
+			(select AVG(in_temperature) as '平均进水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as inTemperature,
+			(select AVG(out_temperature) as '平均回水温度' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as outTemperature,
+			(select AVG(room_temperature_read) as '平均室温' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureRead,
+			(select (MAX(room_temperature_read)-MIN(room_temperature_read)) as '平均温差' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as roomTemperatureDifference,
+			(select AVG(heating_area) as '供暖面积' from user_running_data_total where
+			<if test="standard == 'temperature'"> room_temperature_read </if>
+			<if test="standard == 'heating'"> heating_index </if>
+			<if test="standard == 'flowing'"> flowing_index </if>
+			between #{range8_0} and #{range8_1}  and system_read_time  between #{startTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>) as heatingArea
+			from user_running_data_total limit 1 ) as t8
+		</if>
+
+	</select>
+
+	<select id="getHeatingStartAndEndTime"
+			resultType="cn.plou.web.heatManage.dataAnalysis.domain.HeatingStartAndEndTimeDO">
+		select start_time,end_time from heating_time where company_id = #{companyId} and year = #{year} limit 1
+	</select>
+
+
+	<select id="getHouseTotalDataAnalysisStatisticsIndex"  resultType="cn.plou.web.heatManage.dataAnalysis.domain.HouseTotalDataAnalysisStatisticsIndexDO">
+		select t1.*,
+		heat_target as heatTarge from (
+		select
+		AVG(heat) as heat,
+		consumer_id as consumer_id,
+		system_read_time as systemReadTime,
+		company_id as company_id,
+		address,
+		AVG(heating_area) as heatingArea,
+		AVG(flow_speed/address) as avgFlowing,
+		AVG(outdoor_temperature) as avgOutdoorTemperature,
+		AVG(room_temperature_read) as avgRoomTemperature,
+		AVG(heating_index) as heatingIndex,
+		AVG(adj_heating_index) as adjHeatingIndex,
+		AVG(flowing_index) as flowingIndex ,
+		AVG(in_temperature) as avgInTemperature,
+		AVG(out_temperature) as avgOutTemperature,
+		(MAX(room_temperature_read)-MIN(room_temperature_read)) as avgRoomTemperatureDifference
+		from user_running_data_total
+		group by consumer_id,address
+		) as t1
+		LEFT JOIN user_year_heat on t1.company_id = user_year_heat.consumer_id
+		where 1=1
+		<if test="type=='company'">
+			<if test="consumerId != null and consumerId != ''"> and t1.company_id = #{consumerId} </if>
+		</if>
+		<if test="type=='station'">
+			<if test="consumerId != null and consumerId != ''">
+				 and substr(t1.consumer_id,1,10) in (
+				select commuity_id
+				from
+				commuity_info where station_id = #{consumerId}
+				)
+			</if>
+		</if>
+		<if test="type=='commuity'">
+			<if test="consumerId != null and consumerId != ''"> and substr(t1.consumer_id,1,10) = #{consumerId} </if>
+		</if>
+		<if test="startTime != null  and startTime != ''">
+			 and systemReadTime > #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			 and systemReadTime &lt; #{endTime}
+		</if>
+
+		<if test="heatMin != null">
+			 and heat > #{heatMin}
+		</if>
+		<if test="heatMax != null">
+			 and heat &lt; #{heatMax}
+		</if>
+
+		<if test="heatingAreaMin != null">
+			 and heatingArea > #{heatingAreaMin}
+		</if>
+		<if test="heatingAreaMax != null">
+			 and heatingArea &lt; #{heatingAreaMax}
+		</if>
+
+		<if test="avgFlowingMin != null">
+			 and avgFlowing > #{avgFlowingMin}
+		</if>
+		<if test="avgFlowingMax != null">
+			 and avgFlowing &lt; #{avgFlowingMax}
+		</if>
+
+		<if test="avgOutdoorTemperatureMin != null">
+			 and avgOutdoorTemperature > #{avgOutdoorTemperatureMin}
+		</if>
+		<if test="avgOutdoorTemperatureMax != null">
+			 and avgOutdoorTemperature &lt; #{avgOutdoorTemperatureMax}
+		</if>
+
+		<if test="avgRoomTemperatureMin != null">
+			 and avgRoomTemperature > #{avgRoomTemperatureMin}
+		</if>
+		<if test="avgRoomTemperatureMax != null">
+			 and avgRoomTemperature &lt; #{avgRoomTemperatureMax}
+		</if>
+
+		<if test="heatingIndexMin != null">
+			 and heatingIndex > #{heatingIndexMin}
+		</if>
+		<if test="heatingIndexMax != null">
+			 and heatingIndex &lt; #{heatingIndexMax}
+		</if>
+
+		<if test="adjHeatingIndexMin != null">
+			 and adjHeatingIndex > #{adjHeatingIndexMin}
+		</if>
+		<if test="adjHeatingIndexMax != null">
+			 and adjHeatingIndex &lt; #{adjHeatingIndexMax}
+		</if>
+		<if test="heatTargeMin != null">
+			 and heat_target > #{heatTargeMin}
+		</if>
+		<if test="heatTargetMax != null">
+			 and heat_target &lt; #{heatTargetMax}
+		</if>
+		<if test="flowingIndexMin != null">
+			 and flowingIndex > #{flowingIndexMin}
+		</if>
+		<if test="flowingIndexMax != null">
+			 and flowingIndex &lt; #{flowingIndexMax}
+		</if>
+
+		<if test="avgInTemperatureMin != null">
+			 and avgInTemperature > #{avgInTemperatureMin}
+		</if>
+		<if test="avgInTemperatureMax != null">
+			 and avgInTemperature &lt; #{avgInTemperatureMax}
+		</if>
+
+		<if test="avgOutTemperatureMin != null">
+			 and avgOutTemperature > #{avgOutTemperatureMin}
+		</if>
+		<if test="avgOutTemperatureMax != null">
+			 and avgOutTemperature &lt; #{avgOutTemperatureMax}
+		</if>
+
+		<if test="avgRoomTemperatureDifferenceMin != null">
+			 and avgRoomTemperatureDifference > #{avgRoomTemperatureDifferenceMin}
+		</if>
+		<if test="avgRoomTemperatureDifferenceMax != null">
+			 and avgRoomTemperatureDifference &lt; #{avgRoomTemperatureDifferenceMax}
+		</if>
+
+		<if test="sortby != null">
+			 order by ${sortby}
+		</if>
+<!--		<if test="page!=null and pageSize!=null">
+			 limit ${page},${pageSize}
+		</if>-->
+	</select>
+
+	<select id="getHouseTotalDataAnalysisHotDistribute"  resultType="cn.plou.web.heatManage.dataAnalysis.domain.HouseTotalDataAnalysisHotDistributeDO">
+		select dataRead,b2.building_no,
+		b2.longitude,
+		b2.latitude
+		from
+		(SELECT
+		build_info.building_no,
+		<if test="standard == 'temperature'">
+			 avg(room_temperature_read) as dataRead
+		</if>
+		<if test="standard == 'heating'">
+			avg(heating_index) as dataRead
+		</if>
+		<if test="standard == 'flowing'">
+			avg(flowing_index) as dataRead
+		</if>
+		<if test="standard == 'devError' or standard == 'communicError'">
+			t2.dataRead
+		</if>
+		FROM
+		user_running_data_total
+		LEFT JOIN build_info on build_info.building_no = substr(user_running_data_total.consumer_id,1,13)
+		<if test="standard == 'devError' or standard == 'communicError'">
+		LEFT JOIN ( SELECT  substr(meter_id, 3, 13) as build_no, COUNT(running_state) AS dataRead
+		FROM  heat_meter_data WHERE
+		<if test="standard == 'devError'">
+			 running_state != '0'
+		</if>
+		<if test="standard == 'communicError'">
+				 running_state = 'ERR'
+		</if>
+			) as t2 on t2.build_no = build_info.building_no
+		</if>
+		where 1=1
+		<if test="type=='company'">
+			<if test="consumerId != null and consumerId != ''"> and user_running_data_total.company_id = #{consumerId} </if>
+		</if>
+		<if test="type=='station'">
+			<if test="consumerId != null and consumerId != ''">
+				and substr(user_running_data_total.consumer_id,1,10) in (
+				select commuity_id
+				from
+				commuity_info where station_id = #{consumerId}
+				)
+			</if>
+		</if>
+		<if test="type=='commuity'">
+			<if test="consumerId != null and consumerId != ''"> and substr(user_running_data_total.consumer_id,1,10) = #{consumerId} </if>
+		</if>
+
+
+
+		<if test="startTime != null  and startTime != ''">
+			and system_read_time > #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			and system_read_time &lt; #{endTime}
+		</if>
+		 group by build_info.building_no ) as t1
+		 left join build_info b2 on t1.building_no = b2.building_no
+	</select>
+</mapper>

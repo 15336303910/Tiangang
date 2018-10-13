@@ -1,0 +1,80 @@
+package cn.plou.web.system.permission.rlMenuRole.service.impl;
+
+//import cn.plou.web.system.permission.roleData.dao.RoleMapper;
+import cn.plou.web.system.permission.rlMenuRole.dao.RlMenuRoleMapper;
+import cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRole;
+import cn.plou.web.system.permission.rlMenuRole.entity.RlMenuRoleKey;
+import cn.plou.web.system.permission.rlMenuRole.service.RlMenuRoleService;
+import cn.plou.web.system.permission.rlMenuRole.vo.RlMenuRoleInfo;
+import cn.plou.web.system.permission.rlMenuRole.vo.RlMenuRoleVo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class RlMenuRoleServiceImpl implements RlMenuRoleService {
+
+    @Autowired
+    private RlMenuRoleMapper rlMenuRoleMapper;
+
+//    @Autowired
+//    private RoleMapper roleMapper;
+
+    //添加用户功能权限
+//    @Override
+//    public int addRlMenuRole(RlMenuRole rlMenuRole){
+//        return rlMenuRoleMapper.insertRlMenuRole(rlMenuRole);
+//    }
+
+//    @Override
+//    public int modifyRlMenuRole(RlMenuRole rlMenuRole) {
+//        return rlMenuRoleMapper.updateRlMenuRole(rlMenuRole);
+//    }
+
+    //批量修改用户功能权限（先删后增）
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyRlMenuRoleBatch(RlMenuRoleVo rlMenuRoleVo){
+        rlMenuRoleMapper.deleteRlMenuRoleByRoleId(rlMenuRoleVo.getRoleId());
+        List<String> pageNames = rlMenuRoleVo.getPageNames();
+        int count=0;
+        for(String pageName:pageNames) {
+            RlMenuRole rlMenuRole = new RlMenuRole();
+            rlMenuRole.setId(getNewId());
+            rlMenuRole.setRoleId(rlMenuRoleVo.getRoleId());
+            rlMenuRole.setPageName(pageName);
+            rlMenuRole.setIsshow("true");
+            rlMenuRoleMapper.insertRlMenuRole(rlMenuRole);
+            count++;
+        }
+        return count;
+    }
+
+    @Override
+    public String getNewId() {
+        if (rlMenuRoleMapper.selectAllIds().size() == 0){
+            return "1";
+        }else {
+            return getMaxIdNoSize(rlMenuRoleMapper.selectAllIds());
+        }
+    }
+
+    //按roleId查权限
+    @Override
+    public List<RlMenuRole> getRlMenuRoleByRoleId(String roleId) {
+        return rlMenuRoleMapper.selectRlMenuRoleByRoleId(roleId);
+    }
+
+//    //查全部
+//    @Override
+//    public List<RlMenuRole> getAllRlMenuRole(){
+//        return rlMenuRoleMapper.selectAllRlMenuRole();
+//    }
+
+}

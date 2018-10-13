@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.rlUserRole.dao.RlUserRoleMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.rlUserRole.entity.RlUserRole">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, role_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rl_user_role
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllRlUserRole"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rl_user_role
+  </select>
+
+  <select id="selectRoleByUserId" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    rur.role_id
+    from rl_user_role rur
+    left join role_define r on r.role_id=rur.role_id
+    where rur.userid = #{userid,jdbcType=VARCHAR}
+    and r.role_state="true"
+  </select>
+
+
+  <select id="selectRlUserRoleByRoleId" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rl_user_role
+    where role_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from rl_user_role
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByUserId" parameterType="java.util.List">
+    delete from rl_user_role
+    where userid in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <delete id="deleteByRoleId" parameterType="java.util.List">
+    delete from rl_user_role
+    where role_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.permission.rlUserRole.entity.RlUserRole">
+    insert into rl_user_role (id, userid, role_id
+      )
+    values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.permission.rlUserRole.entity.RlUserRole">
+    insert into rl_user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.rlUserRole.entity.RlUserRole">
+    update rl_user_role
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.rlUserRole.entity.RlUserRole">
+    update rl_user_role
+    set userid = #{userid,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.mapPoint.dao.MapPointMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.mapPoint.entity.MapPoint">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="meter_type" jdbcType="VARCHAR" property="meterType" />
+    <result column="point_value" jdbcType="VARCHAR" property="pointValue" />
+    <result column="point_name" jdbcType="VARCHAR" property="pointName" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="point_type" jdbcType="VARCHAR" property="pointType" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.commonMessage.mapPoint.vo.MapPointInfo">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="meter_type" jdbcType="VARCHAR" property="meterType" />
+    <result column="meterTypeName" jdbcType="VARCHAR" property="meterTypeName" />
+    <result column="point_value" jdbcType="VARCHAR" property="pointValue" />
+    <result column="point_name" jdbcType="VARCHAR" property="pointName" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="point_type" jdbcType="VARCHAR" property="pointType" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+    <result column="commuity_name" jdbcType="VARCHAR" property="commuityName" />
+    <result column="station_name" jdbcType="VARCHAR"  property="stationName" />
+    <result column="company_name" jdbcType="VARCHAR"  property="companyName" />
+    <result column="colorName" jdbcType="VARCHAR"  property="colorName" />
+    <result column="mapPointType" jdbcType="VARCHAR"  property="mapPointType" />
+</resultMap>
+
+  <sql id="Base_Column_List">
+    id, meter_type, point_value, point_name, color, point_type, notes, company_id, station_id,
+    commuity_id
+  </sql>
+
+  <!--添加地图点信息-->
+  <insert id="insertMapPoint" parameterType="cn.plou.web.system.commonMessage.mapPoint.entity.MapPoint">
+    insert into map_point
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="meterType != null">
+        meter_type,
+      </if>
+      <if test="pointValue != null">
+        point_value,
+      </if>
+      <if test="pointName != null">
+        point_name,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="pointType != null">
+        point_type,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="stationId != null">
+        station_id,
+      </if>
+      <if test="commuityId != null">
+        commuity_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="meterType != null">
+        #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="pointValue != null">
+        #{pointValue,jdbcType=VARCHAR},
+      </if>
+      <if test="pointName != null">
+        #{pointName,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="pointType != null">
+        #{pointType,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <!--批量删除地图点信息-->
+  <delete id="delBatchByIds" parameterType="java.util.List">
+    delete from map_point
+    where id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
+
+  <update id="updateMapPoint" parameterType="cn.plou.web.system.commonMessage.mapPoint.entity.MapPoint">
+    update map_point
+    <set>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="pointValue != null">
+        point_value = #{pointValue,jdbcType=VARCHAR},
+      </if>
+      <if test="pointName != null">
+        point_name = #{pointName,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="pointType != null">
+        point_type = #{pointType,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        commuity_id = #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--批量修改地图点信息-->
+  <update id="updateMapPointBatch" parameterType="cn.plou.web.system.commonMessage.mapPoint.vo.MapPointVo">
+    update map_point
+    <set>
+      <if test="meterType != null">
+        meter_type = #{meterType,jdbcType=VARCHAR},
+      </if>
+      <if test="pointValue != null">
+        point_value = #{pointValue,jdbcType=VARCHAR},
+      </if>
+      <if test="pointName != null">
+        point_name = #{pointName,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="pointType != null">
+        point_type = #{pointType,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null">
+        commuity_id = #{commuityId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id in
+    <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+
+  <!--根据ID查地图点信息-->
+  <select id="selectMapPointById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from map_point
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+    select
+    id
+    from map_point
+  </select>
+
+  <!--查全部-->
+  <select id="selectAllMapPoint" parameterType="map" resultMap="BaseInfoMap">
+    select
+    m.id, m.meter_type, m.point_value, m.point_name, m.color, m.point_type, m.notes,
+    m.company_id, m.station_id,m.commuity_id
+    from map_point m
+    where
+    1 = 1
+    <if test="mapPointVo != null">
+      <if test="mapPointVo.meterType != null">
+        and m.meter_type =#{mapPointVo.meterType}
+      </if>
+      <if test="mapPointVo.pointValue != null">
+        and m.point_value = #{mapPointVo.pointValue}
+      </if>
+      <if test="mapPointVo.pointName != null">
+        and m.point_name LIKE concat('%',#{mapPointVo.pointName},'%')
+      </if>
+      <if test="mapPointVo.color != null">
+        and m.color = #{mapPointVo.color}
+      </if>
+      <if test="mapPointVo.pointType != null">
+        and m.point_type = #{mapPointVo.pointType}
+      </if>
+      <if test="mapPointVo.notes != null">
+        and m.notes = #{mapPointVo.notes}
+      </if>
+    </if>
+    <if test="companyIds.size() != 0">
+      and m.company_id in
+      <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="stationId != null">
+      and m.station_id = #{stationId}
+    </if>
+    <if test="commuityId != null">
+      and m.commuity_id = #{commuityId}
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="page!=null">
+      <if test="pageSize!=null">
+        limit ${page},${pageSize}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectMapPointCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from map_point m
+    where
+    1 = 1
+    <if test="mapPointVo != null">
+      <if test="mapPointVo.meterType != null">
+        and m.meter_type =#{mapPointVo.meterType}
+      </if>
+      <if test="mapPointVo.pointValue != null">
+        and m.point_value = #{mapPointVo.pointValue}
+      </if>
+      <if test="mapPointVo.pointName != null">
+        and m.point_name LIKE concat('%',#{mapPointVo.pointName},'%')
+      </if>
+      <if test="mapPointVo.color != null">
+        and m.color = #{mapPointVo.color}
+      </if>
+      <if test="mapPointVo.pointType != null">
+        and m.point_type = #{mapPointVo.pointType}
+      </if>
+      <if test="mapPointVo.notes != null">
+        and m.notes = #{mapPointVo.notes}
+      </if>
+    </if>
+    <if test="companyIds!=null">
+      <if test="companyIds.size() != 0">
+        and m.company_id in
+        <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and m.station_id = #{stationId}
+    </if>
+    <if test="commuityId != null">
+      and m.commuity_id = #{commuityId}
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,16 @@
+package cn.plou.web.system.permission.menu.service;
+
+import cn.plou.web.system.permission.menu.entity.Menu;
+import cn.plou.web.system.permission.menu.vo.MenuInfo;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public interface MenuService {
+    public Menu getMenuById(String menuId);
+    public List<MenuInfo> getAllMenuByRoleId(String userId);
+    public List<Menu> getAllMenu();
+    public int modifyMenu(Menu menu);
+    public List<String> listPerms(String userId);
+}

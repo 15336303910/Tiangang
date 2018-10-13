@@ -1,0 +1,4 @@
+package cn.plou.web.balance.dataAnalysis.vo;
+
+public class BalanceValveDataSelectInfo {
+}

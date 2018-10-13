@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.menu.dao.MenuMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.menu.entity.Menu">
+    <id column="m_id" jdbcType="VARCHAR" property="mId" />
+    <result column="f_m_id" jdbcType="VARCHAR" property="fMId" />
+    <result column="m_name" jdbcType="VARCHAR" property="mName" />
+    <result column="m_url" jdbcType="VARCHAR" property="mUrl" />
+    <result column="page_name" jdbcType="VARCHAR" property="pageName" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="pagesort" jdbcType="INTEGER" property="pagesort" />
+    <result column="ismenu" jdbcType="INTEGER" property="ismenu" />
+    <result column="perms" jdbcType="VARCHAR" property="perms" />
+  </resultMap>
+
+  <resultMap id="ResultInfo" type="cn.plou.web.system.permission.menu.vo.MenuInfo">
+    <result column="f_m_id" jdbcType="VARCHAR" property="fMId" />
+    <result column="m_id" jdbcType="VARCHAR" property="mId"/>
+    <result column="m_name" jdbcType="VARCHAR" property="title" />
+    <result column="page_name" jdbcType="VARCHAR" property="key"/>
+    <result column="f_page_name" jdbcType="VARCHAR" property="superKey" />
+    <result column="pagesort" jdbcType="INTEGER" property="sort" />
+    <result column="ismenu" jdbcType="INTEGER" property="type" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    m_id, f_m_id, m_name, m_url, page_name, icon, pagesort, ismenu ,perms
+  </sql>
+
+  <sql id="Useful_List">
+    m_id, f_m_id, m_name, m_url, page_name, pagesort, ismenu
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from menu_define
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllMenuByRoleId" parameterType="java.lang.String" resultMap="ResultInfo">
+    select
+    md.m_id,md.f_m_id, md.m_name, md.m_url, md.page_name, md.pagesort, md.ismenu,m.page_name f_page_name
+    from menu_define md
+    join rl_menu_role rmr on
+    md.page_name = rmr.page_name
+    left join menu_define m on m.m_id=md.f_m_id
+    where rmr.role_id = #{roleId} and rmr.isshow = 'true'
+  </select>
+
+  <select id="selectFmenuByMenu" resultMap="ResultInfo">
+    select
+    md.m_id,md.f_m_id, md.m_name, md.m_url, md.page_name, md.pagesort, md.ismenu,m.page_name f_page_name
+    from menu_define md
+    left join menu_define m on m.m_id=md.f_m_id
+    where
+    md.m_id in (select f_m_id from menu_define where m_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    ) limit 0,10000
+  </select>
+
+  <select id="selectAllMenuRoleIdIs1" resultMap="ResultInfo">
+    select
+    md.m_id,md.f_m_id, md.m_name, md.m_url, md.page_name, md.pagesort, md.ismenu,m.page_name f_page_name
+    from menu_define md
+     left join menu_define m on m.m_id=md.f_m_id
+    limit 0,10000
+  </select>
+
+  <select id="selectAllMenu"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from menu_define
+    limit 0,10000
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from menu_define
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.permission.menu.entity.Menu">
+    insert into menu_define (m_id, f_m_id, m_name, 
+      m_url, page_name, icon, 
+      pagesort, ismenu, perms
+      )
+    values (#{mId,jdbcType=VARCHAR}, #{fMId,jdbcType=VARCHAR}, #{mName,jdbcType=VARCHAR}, 
+      #{mUrl,jdbcType=VARCHAR}, #{pageName,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, 
+      #{pagesort,jdbcType=INTEGER}, #{ismenu,jdbcType=INTEGER}, #{perms,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.permission.menu.entity.Menu">
+    insert into menu_define
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mId != null">
+        m_id,
+      </if>
+      <if test="fMId != null">
+        f_m_id,
+      </if>
+      <if test="mName != null">
+        m_name,
+      </if>
+      <if test="mUrl != null">
+        m_url,
+      </if>
+      <if test="pageName != null">
+        page_name,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="pagesort != null">
+        pagesort,
+      </if>
+      <if test="ismenu != null">
+        ismenu,
+      </if>
+      <if test="perms != null">
+        perms,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mId != null">
+        #{mId,jdbcType=VARCHAR},
+      </if>
+      <if test="fMId != null">
+        #{fMId,jdbcType=VARCHAR},
+      </if>
+      <if test="mName != null">
+        #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mUrl != null">
+        #{mUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="pagesort != null">
+        #{pagesort,jdbcType=INTEGER},
+      </if>
+      <if test="ismenu != null">
+        #{ismenu,jdbcType=INTEGER},
+      </if>
+      <if test="perms != null">
+        #{perms,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.menu.entity.Menu">
+    update menu_define
+    <set>
+      <if test="fMId != null">
+        f_m_id = #{fMId,jdbcType=VARCHAR},
+      </if>
+      <if test="mName != null">
+        m_name = #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mUrl != null">
+        m_url = #{mUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pageName != null">
+        page_name = #{pageName,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="pagesort != null">
+        pagesort = #{pagesort,jdbcType=INTEGER},
+      </if>
+      <if test="ismenu != null">
+        ismenu = #{ismenu,jdbcType=INTEGER},
+      </if>
+      <if test="perms != null">
+        perms = #{perms,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.menu.entity.Menu">
+    update menu_define
+    set f_m_id = #{fMId,jdbcType=VARCHAR},
+      m_name = #{mName,jdbcType=VARCHAR},
+      m_url = #{mUrl,jdbcType=VARCHAR},
+      page_name = #{pageName,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      pagesort = #{pagesort,jdbcType=INTEGER},
+      ismenu = #{ismenu,jdbcType=INTEGER},
+      perms = #{perms,jdbcType=VARCHAR}
+    where m_id = #{mId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,543 @@
+package cn.plou.web.charge.heatingmanage.vo;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @ClassName: HeatingServeVO
+ * @Description: 供热服务弹框
+ * @Author: youbc
+ * @Date 2018-08-16 09:54
+ */
+public class HeatingServeListVO {
+
+    private String primaryId; // 主键：用户ＩＤ＋申请时间
+
+    private String consumerId; // 用户ＩＤ
+
+    private String flowId; // 任务流水号：流程管理应尽可能和收费的审批使用一个模式
+
+    private String address; // 地址
+
+    private String annual; // 采暖年度
+
+    private String apprPerson; // 申请人
+
+    private Date apprTime; // 申请时间
+
+    private String taskType; // 任务类型：申请供暖、申请停暖
+
+    private String taskTypeName;
+
+    private String taskContect; // 任务内容
+
+    private String emerge; // 紧急程度
+
+    private String emergeName; // 紧急程度
+
+    private String overtime; // 处理时限
+
+    private String endState; // 完成情况
+
+    private String endStateName; // 完成情况
+
+    private String handler; // 受理人
+
+    private String handlerName; // 受理人
+
+    private String payState; // 缴费状态
+
+    private String payStateName; // 缴费状态
+
+    private String executePerson; // 执行人
+
+    private String executePersonName; // 执行人
+
+    private Date executeTime; // 执行日期
+
+    private String feedbackContect; // 反馈内容
+
+    private String houseView; // 用户意见
+
+    private String houseSign; // 用户签名
+
+    private String visitPerson; // 回访人
+
+    private String visitPersonName; // 回访人
+
+    private Date visitTime; // 回访时间
+
+    private String visitContect; // 回访内容
+
+    private String satisfy; // 满意程度
+
+    private String satisfyName; // 满意程度
+
+    private String notes; // 备注：情况说明
+
+    private Date createDate; // 创建时间
+
+    private String createUser; // 创建者
+
+    private String createUserName; // 创建者
+
+    private Date updateDate; // 更新时间
+
+    private String updateUser; // 更新者
+
+    private String updateUserName; // 更新者
+
+    private String costType; // 费用类型：工程费、材料费、手续费等
+
+    private String costTypeName; // 费用类型：工程费、材料费、手续费等
+
+    private BigDecimal nums; // 数量
+
+    private BigDecimal singleCost; // 单价
+
+    private BigDecimal totalCost; // 总额
+
+    private BigDecimal actCost; // 实收金额
+
+    private String billno; // 发票号
+
+    private String printFlag; // 打印标志
+
+    private String printFlagName; // 打印标志
+
+    private String payChannel; // 缴费方式：现金、刷卡、微信、支付宝等
+
+    private String payChannelName; // 缴费方式：现金、刷卡、微信、支付宝等
+
+    private String diameter; // 用户管径：取自用户信息表
+
+    private String controlType; // 控制方式：取自用户信息表
+
+    private String controlTypeName; // 控制方式：取自用户信息表
+
+    private Date appointTime; // 用户预约时间
+
+    public String getTaskTypeName() {
+        return taskTypeName;
+    }
+
+    public void setTaskTypeName(String taskTypeName) {
+        this.taskTypeName = taskTypeName;
+    }
+
+    public String getEmergeName() {
+        return emergeName;
+    }
+
+    public void setEmergeName(String emergeName) {
+        this.emergeName = emergeName;
+    }
+
+    public String getEndStateName() {
+        return endStateName;
+    }
+
+    public void setEndStateName(String endStateName) {
+        this.endStateName = endStateName;
+    }
+
+    public String getHandler() {
+        return handler;
+    }
+
+    public void setHandler(String handler) {
+        this.handler = handler;
+    }
+
+    public String getHandlerName() {
+        return handlerName;
+    }
+
+    public void setHandlerName(String handlerName) {
+        this.handlerName = handlerName;
+    }
+
+    public String getPayState() {
+        return payState;
+    }
+
+    public void setPayState(String payState) {
+        this.payState = payState;
+    }
+
+    public String getPayStateName() {
+        return payStateName;
+    }
+
+    public void setPayStateName(String payStateName) {
+        this.payStateName = payStateName;
+    }
+
+    public String getExecutePerson() {
+        return executePerson;
+    }
+
+    public void setExecutePerson(String executePerson) {
+        this.executePerson = executePerson;
+    }
+
+    public String getExecutePersonName() {
+        return executePersonName;
+    }
+
+    public void setExecutePersonName(String executePersonName) {
+        this.executePersonName = executePersonName;
+    }
+
+    public Date getExecuteTime() {
+        return executeTime;
+    }
+
+    public void setExecuteTime(Date executeTime) {
+        this.executeTime = executeTime;
+    }
+
+    public String getFeedbackContect() {
+        return feedbackContect;
+    }
+
+    public void setFeedbackContect(String feedbackContect) {
+        this.feedbackContect = feedbackContect;
+    }
+
+    public String getHouseView() {
+        return houseView;
+    }
+
+    public void setHouseView(String houseView) {
+        this.houseView = houseView;
+    }
+
+    public String getHouseSign() {
+        return houseSign;
+    }
+
+    public void setHouseSign(String houseSign) {
+        this.houseSign = houseSign;
+    }
+
+    public String getVisitPerson() {
+        return visitPerson;
+    }
+
+    public void setVisitPerson(String visitPerson) {
+        this.visitPerson = visitPerson;
+    }
+
+    public String getVisitPersonName() {
+        return visitPersonName;
+    }
+
+    public void setVisitPersonName(String visitPersonName) {
+        this.visitPersonName = visitPersonName;
+    }
+
+    public Date getVisitTime() {
+        return visitTime;
+    }
+
+    public void setVisitTime(Date visitTime) {
+        this.visitTime = visitTime;
+    }
+
+    public String getVisitContect() {
+        return visitContect;
+    }
+
+    public void setVisitContect(String visitContect) {
+        this.visitContect = visitContect;
+    }
+
+    public String getSatisfy() {
+        return satisfy;
+    }
+
+    public void setSatisfy(String satisfy) {
+        this.satisfy = satisfy;
+    }
+
+    public String getSatisfyName() {
+        return satisfyName;
+    }
+
+    public void setSatisfyName(String satisfyName) {
+        this.satisfyName = satisfyName;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+
+    public String getUpdateUserName() {
+        return updateUserName;
+    }
+
+    public void setUpdateUserName(String updateUserName) {
+        this.updateUserName = updateUserName;
+    }
+
+    public String getCostType() {
+        return costType;
+    }
+
+    public void setCostType(String costType) {
+        this.costType = costType;
+    }
+
+    public String getCostTypeName() {
+        return costTypeName;
+    }
+
+    public void setCostTypeName(String costTypeName) {
+        this.costTypeName = costTypeName;
+    }
+
+    public BigDecimal getNums() {
+        return nums;
+    }
+
+    public void setNums(BigDecimal nums) {
+        this.nums = nums;
+    }
+
+    public BigDecimal getSingleCost() {
+        return singleCost;
+    }
+
+    public void setSingleCost(BigDecimal singleCost) {
+        this.singleCost = singleCost;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public BigDecimal getActCost() {
+        return actCost;
+    }
+
+    public void setActCost(BigDecimal actCost) {
+        this.actCost = actCost;
+    }
+
+    public String getBillno() {
+        return billno;
+    }
+
+    public void setBillno(String billno) {
+        this.billno = billno;
+    }
+
+    public String getPrintFlag() {
+        return printFlag;
+    }
+
+    public void setPrintFlag(String printFlag) {
+        this.printFlag = printFlag;
+    }
+
+    public String getPrintFlagName() {
+        return printFlagName;
+    }
+
+    public void setPrintFlagName(String printFlagName) {
+        this.printFlagName = printFlagName;
+    }
+
+    public String getPayChannel() {
+        return payChannel;
+    }
+
+    public void setPayChannel(String payChannel) {
+        this.payChannel = payChannel;
+    }
+
+    public String getPayChannelName() {
+        return payChannelName;
+    }
+
+    public void setPayChannelName(String payChannelName) {
+        this.payChannelName = payChannelName;
+    }
+
+    public String getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(String diameter) {
+        this.diameter = diameter;
+    }
+
+    public String getControlType() {
+        return controlType;
+    }
+
+    public void setControlType(String controlType) {
+        this.controlType = controlType;
+    }
+
+    public String getControlTypeName() {
+        return controlTypeName;
+    }
+
+    public void setControlTypeName(String controlTypeName) {
+        this.controlTypeName = controlTypeName;
+    }
+
+    public Date getAppointTime() {
+        return appointTime;
+    }
+
+    public void setAppointTime(Date appointTime) {
+        this.appointTime = appointTime;
+    }
+
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId;
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public String getFlowId() {
+        return flowId;
+    }
+
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAnnual() {
+        return annual;
+    }
+
+    public void setAnnual(String annual) {
+        this.annual = annual;
+    }
+
+    public String getApprPerson() {
+        return apprPerson;
+    }
+
+    public void setApprPerson(String apprPerson) {
+        this.apprPerson = apprPerson;
+    }
+
+    public Date getApprTime() {
+        return apprTime;
+    }
+
+    public void setApprTime(Date apprTime) {
+        this.apprTime = apprTime;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getTaskContect() {
+        return taskContect;
+    }
+
+    public void setTaskContect(String taskContect) {
+        this.taskContect = taskContect;
+    }
+
+    public String getEmerge() {
+        return emerge;
+    }
+
+    public void setEmerge(String emerge) {
+        this.emerge = emerge;
+    }
+
+    public String getOvertime() {
+        return overtime;
+    }
+
+    public void setOvertime(String overtime) {
+        this.overtime = overtime;
+    }
+
+    public String getEndState() {
+        return endState;
+    }
+
+    public void setEndState(String endState) {
+        this.endState = endState;
+    }
+}

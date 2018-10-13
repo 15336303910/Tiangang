@@ -1,0 +1,101 @@
+package cn.plou.web.system.permission.rlRoleData.service.impl;
+
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.permission.rlRoleData.dao.RlRoleDataMapper;
+import cn.plou.web.system.permission.rlRoleData.entity.RlRoleData;
+import cn.plou.web.system.permission.rlRoleData.service.RlRoleDataService;
+import cn.plou.web.system.permission.rlRoleData.vo.RlRoleDataVo;
+import cn.plou.web.system.permission.rlRoleData.vo.RoleData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.plou.web.common.utils.Tools.getMaxIdNoSize;
+
+@Component
+public class RlRoleDataServiceImpl implements RlRoleDataService {
+
+    @Autowired
+    private RlRoleDataMapper rlRoleDataMapper;
+
+//    @Autowired
+//    private RoleMapper roleMapper;
+
+//    @Override
+//    public int addRlRoleData(RlRoleData rlRoleData){
+//        return rlRoleDataMapper.insertRlRoleData(rlRoleData);
+//    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyRlRoleDataBatch(RlRoleDataVo rlRoleDataVo){
+        rlRoleDataMapper.deleteRlRoleData(rlRoleDataVo.getRoleId());
+        int count=0;
+        List<RoleData> roleDataList = rlRoleDataVo.getRoleDataList();
+        for(RoleData roleData:roleDataList){
+            RlRoleData rlMenuData = new RlRoleData();
+            rlMenuData.setColumnValue(roleData.getColumnValue());
+            rlMenuData.setControlType(roleData.getControlType());
+            List<String> ids = rlRoleDataMapper.selectAllIds();
+            if(ids.size()==0){
+                rlMenuData.setId("1");
+            }else{
+                rlMenuData.setId(Tools.getMaxIdNoSize(ids));
+            }
+            rlMenuData.setRoleId(rlRoleDataVo.getRoleId());
+            rlMenuData.setColumnType(rlRoleDataVo.getColumnType());
+            rlRoleDataMapper.insertRlRoleData(rlMenuData);
+            count++;
+            }
+        return count;
+    }
+
+//    @Override
+//    public List<RlRoleDataInfo> getAllRlRoleData(RlRoleDataVo rlRoleDataVo, String order , String sortby){
+//        List<RlRoleData> rlRoleDataList = rlRoleDataMapper.selectAllRlRoleData(rlRoleDataVo,order,sortby);
+//        List<RlRoleDataInfo> rlRoleDataInfoList = new ArrayList<RlRoleDataInfo>();
+//        for (RlRoleData rlRoleData : rlRoleDataList){
+//            RlRoleDataInfo rlRoleDataInfo = new RlRoleDataInfo();
+//            BeanUtils.copyProperties(rlRoleData,rlRoleDataInfo);
+//           rlRoleValveInfo.getRoleName(roleMapper.get???(rlRoleData.getRoleId()).getRoleName());
+//            rlRoleValveInfo.getValveName(roleMapper.get???(rlValve.getValveId()).getValveName());
+//            rlRoleDataInfoList.add(rlRoleDataInfo);
+//        }
+//        return rlRoleDataInfoList;
+//    }
+
+    @Override
+    public List<RlRoleData> getRlRoleDataByRoleId(String roleId){
+        return rlRoleDataMapper.selectRlRoleDataByRoleId(roleId);
+    }
+
+    @Override
+    public List<String> getRlRoleData() {
+        return rlRoleDataMapper.selectAllRlRoleData();
+    }
+
+    @Override
+    public String getNewId() {
+        if(rlRoleDataMapper.selectAllIds().size() == 0){
+            return "1";
+        }else {
+            return getMaxIdNoSize(rlRoleDataMapper.selectAllIds());
+        }
+    }
+
+    @Override
+    public List<RlRoleData> getRlRoleData(String userId) {
+        //return rlRoleDataMapper.selectRlRoleDataByUserId(UserUtils.getUserId());
+        return rlRoleDataMapper.selectRlRoleDataByUserId(UserUtils.getUserId());
+    }
+
+    @Override
+    public int deleteRlRoleDataByColumn(String columnValue) {
+        return rlRoleDataMapper.deleteRlRoleDataByColumn(columnValue);
+    }
+
+}

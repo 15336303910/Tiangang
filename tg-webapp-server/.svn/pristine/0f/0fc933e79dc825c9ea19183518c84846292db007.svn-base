@@ -1,0 +1,52 @@
+package cn.plou.web.system.meterMessage.mbus.service;
+
+import cn.plou.web.common.importDataBatch.ImportResult;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusInfo;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusListInfo;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusSelectInfo;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusVo;
+import cn.plou.web.system.meterMessage.meter.entity.Meter;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletRequest;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public interface MbusService {
+    int addMbus(Mbus mbus);
+    int deleteMbusBatchByIds(List<String> mbusIds);
+    int modifyDelMbusBatchById(List<String> mbusIds);
+    Mbus getMbusById(String mbusId);
+    MbusListInfo getAllMbus(Integer page,
+                            Integer pageSize,
+                            String companyId,
+                            String stationId,
+                            String commuityId,
+                            String buildingId,
+                            String unitId,
+                            String houseId,
+                            String order,
+                            String sortby,
+                            MbusVo mbusVo);
+    int modifyBatch(MbusVo mbusVo);
+    int modifyMbus(Mbus mbus);
+    //List<MbusInfo> getAllMbusByCompany(String companyId);
+    List<Mbus> geDownInfoByConsumerId(String consumerId);
+    List<String> getAllIds();
+    String getNewId();
+    List<String> getAllCodes();
+    List<String> getAllMbusCodesByConsumerIds(String consumer);
+    ImportResult importExcel(MultipartFile multipartFile, ServletRequest request);
+    int addBatch(List<Mbus> mbuses);
+    String getMbusByConsumer(String companyName,String commmuityName,String buildingName,String unitName,String houseName);
+    String exportExcel(ServletRequest request,MbusSelectInfo mbusSelectInfo);
+		void updateDownProt(Map<String, String> map);
+	  Map<String, String> parseDownProtByMeter(java.util.List<Meter> meters);
+	  List<String> getMbusIdsByRoleId();
+		void modifyMbusAddressbyConsumer(String commuityId, String changedAdress, String orgAddress);
+		void modifyMbusAddress(String consumerId, String address);
+}

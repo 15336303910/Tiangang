@@ -1,0 +1,104 @@
+package cn.plou.web.system.baseMessage.system.controller;
+
+import cn.plou.web.common.config.common.BaseController;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.baseMessage.system.entity.System;
+import cn.plou.web.system.baseMessage.system.service.SystemService;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemListInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemSelectInfo;
+import cn.plou.web.system.baseMessage.system.vo.SystemVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+import static cn.plou.web.common.utils.PageInfo.getPageInfo;
+
+@RestController
+@EnableSwagger2
+@RequestMapping("${systemPath}/system")
+@Api(description = "分系统管理")
+public class SystemController  {
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private StationService stationService;
+    @ApiOperation("根据条件获取全部分系统信息")
+    @PostMapping("getAllSystem")
+    @RequiresPermissions("10404")
+    public Root getAllSystem(@RequestBody SystemSelectInfo systemSelectInfo){
+        Root root = new Root();
+        //PageHelper.startPage(systemSelectInfo.getPage(),systemSelectInfo.getPageSize());
+        SystemListInfo systemListInfo = systemService.getAllSystem(systemSelectInfo.getPage(),systemSelectInfo.getPageSize(),systemSelectInfo.getOrder(),systemSelectInfo.getSortby(),systemSelectInfo.getCompanyId(),systemSelectInfo.getStationId(),systemSelectInfo.getSearchCondition());
+        //PageInfo pageInfo = new PageInfo(systemList);
+        //root.setCond(getCond(pageInfo.getPageNum(),pageInfo.getPageSize(),(int)pageInfo.getTotal(),systemSelectInfo.getOrder(),systemSelectInfo.getSortby()));
+        root.setCond(getCond(systemSelectInfo.getPage(),systemSelectInfo.getPageSize(),systemListInfo.getCount(),systemSelectInfo.getOrder(),systemSelectInfo.getSortby()));
+        root.setData(systemListInfo.getSystemInfoList());
+        return root;
+    }
+    @ApiOperation("根据id获取对应分系统信息")
+    @GetMapping("/getSystemById")
+    @RequiresPermissions("10404")
+    public Root getSystemById(@RequestParam String systemId){
+        Root root = new Root();
+        root.setData(systemService.getSystemById(systemId));
+        return root;
+    }
+    @ApiOperation("根据id批量删除分系统信息")
+    @DeleteMapping("/deleteBatch")
+    @RequiresPermissions("10402")
+    public Boolean dropSystemBatchByIds(@RequestBody List<String> systemIds){
+        return systemService.deleteSystemBatch(systemIds)==systemIds.size();
+    }
+    @ApiOperation("添加一个分系统信息")
+    @PostMapping("/addSystem")
+    @RequiresPermissions("10401")
+    public Boolean addSystem(@RequestBody System system){
+        system.setSystemId(systemService.getNewSystemId());
+        system.setCompanyId(stationService.getStationById(system.getStationId()).getCompanyId());
+        return systemService.addSystem(system)==1;
+    }
+    @ApiOperation("批量修改分系统信息")
+    @PutMapping("/modifySystemBatch")
+    @RequiresPermissions("10403")
+    public Boolean modifySystemBatch(@RequestBody SystemVo systemVo){
+        for(String systemId:systemVo.getSystemIds()){
+            if(systemVo.getStationId()!=null){
+                systemVo.setCompanyId(stationService.getStationById(systemVo.getStationId()).getCompanyId());
+            }
+        }
+        return systemService.modifySystemBatch(systemVo)==systemVo.getSystemIds().size();
+    }
+    @ApiOperation("修改一条分系统信息")
+    @PutMapping("/modifySystem")
+    @RequiresPermissions("10403")
+    public Boolean modifySystem(@RequestBody System system){
+        if(system.getStationId()!=null){
+            system.setCompanyId(stationService.getStationById(system.getStationId()).getCompanyId());
+        }
+        return systemService.modifySystem(system)==1;
+    }
+
+    @ApiOperation("通过站ID获取分系统下拉框")
+    @GetMapping("/getSystemDownInfo")
+    public Root getSystemDownInfo(@RequestParam String stationId){
+        Root root = new Root();
+        root.setData(systemService.getAllSystem(null,null,null,null,null,stationId,null));
+        return root;
+    }
+
+    @GetMapping("/getAllIds")
+    public List<String> getAllIds(){
+        return systemService.getAllSystemIds();
+    }
+}

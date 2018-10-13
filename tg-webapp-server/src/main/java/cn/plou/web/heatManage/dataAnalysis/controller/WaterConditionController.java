@@ -1,0 +1,84 @@
+package cn.plou.web.heatManage.dataAnalysis.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.heatManage.dataAnalysis.domain.WaterConditionDO;
+import cn.plou.web.heatManage.dataAnalysis.service.WaterConditionService;
+import cn.plou.web.heatManage.dataAnalysis.vo.ParamInterval;
+import cn.plou.web.heatManage.dataAnalysis.vo.WaterConditionVO;
+import cn.plou.web.heatManage.history.service.HistoryDataService;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.house.vo.HouseInfo;
+
+/**
+ * 水力工况
+ * 
+ * @author lvkun
+ * @Date 2018年8月20日 上午9:40:34
+ */
+@RestController
+@RequestMapping("${heatManagePath}/dataAnalysis/watercondition/")
+public class WaterConditionController {
+
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  
+  @Autowired
+  WaterConditionService waterConditionService;
+  @Autowired
+  HistoryDataService historyDataService;
+  @Autowired
+  HouseService houseService;
+  
+  @GetMapping("houselist")
+  public Object houselist(@RequestParam Map<String, Object> params) {	
+  		Map<String,HouseInfo> houses = getHouseMap(params);
+  		List<RunningDataTotalDO> data = historyDataService.esHouseTotalDataAll(params);
+  		Map<String,List<RunningDataTotalDO>> mapData = getRunningDataMapbyList(data);
+  		Root root = waterConditionService.CalHouseWaterConditionVo(params, mapData, houses);
+      return root;
+  }
+  
+  @GetMapping("buildlist")
+  public Object buildlist(@RequestParam Map<String, Object> params) {	
+  		Map<String,HouseInfo> houses = getHouseMap(params);
+  		List<RunningDataTotalDO> data = historyDataService.esHouseTotalDataAll(params);
+  		Map<String,List<RunningDataTotalDO>> mapData = getRunningDataMapbyList(data);
+  		Root root = waterConditionService.CalBuildWaterConditionVo(params, mapData, houses);
+      return root;
+  }
+  
+	private Map<String, HouseInfo> getHouseMap(Map<String, Object> params) {
+		return historyDataService.houseInfo(params,null);
+	}
+
+	private Map<String,List<RunningDataTotalDO>> getRunningDataMapbyList(List<RunningDataTotalDO> data) {
+		Map<String,List<RunningDataTotalDO>> map = new HashMap<String,List<RunningDataTotalDO>>();
+		for(RunningDataTotalDO dat:data){
+			String key = dat.getConsumerId();
+			if(map.containsKey(key)){
+				map.get(key).add(dat);
+			}else{
+				List<RunningDataTotalDO> list = new ArrayList<RunningDataTotalDO>();
+				list.add(dat);
+				map.put(key, list);
+			}
+		}
+		return map;
+	}
+}

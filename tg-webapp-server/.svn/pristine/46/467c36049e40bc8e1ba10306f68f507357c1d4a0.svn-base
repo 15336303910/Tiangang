@@ -1,0 +1,325 @@
+package cn.plou.web.charge.chargeconfig.entity;
+
+import org.springframework.data.annotation.Transient;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class UserYearAccountDetail {
+    private String primaryId;
+
+    private String thirdConsumerId;
+
+    private String companyId;
+
+    private String consumerId;
+
+    private String annual;
+
+    private BigDecimal accountCost;//实缴交费金额
+
+    private BigDecimal accountPointCost;
+
+    private Date accountTime;
+
+    private String accountType;
+
+    private String accountChannel;
+
+    private String isbill;
+
+    private String billno;
+
+    private String bankName;
+
+    private String bankDept;
+
+    private String teller;
+
+    private String accountUser;
+
+    private String isreconciliations;
+
+
+    private String notes;
+
+    private Date createDate;
+
+    private String createUser;
+
+    private Date updateDate;
+
+    private String updateUser;
+    
+    private String  receiptno;
+
+
+    public String getReceiptno() {
+        return receiptno;
+    }
+
+    public void setReceiptno(String receiptno) {
+        this.receiptno = receiptno;
+    }
+
+    /*往年欠费*/
+    private BigDecimal  oldYearOweTotal;
+
+
+    /**
+     * 是否勾选了往年欠费，
+     */
+    private boolean  isClearChecked;
+
+
+    /**
+     * 是否找零，若找零则需要处理精度
+     */
+    private boolean  wantChange;
+
+
+    /**
+     * 金额精度处理前 真实的金额
+     */
+    
+    private BigDecimal  realNeedTotal;
+
+    /**
+     * 金额精度处理后 需交金额
+     */
+
+    private BigDecimal  needTotal;
+
+
+    /**
+     * 该笔缴费在交时进行冲正时对应的费用明细id，若未进行冲正则为空
+     */
+    private String correspondingId;
+
+
+    public String getCorrespondingId() {
+        return correspondingId;
+    }
+
+    public void setCorrespondingId(String correspondingId) {
+        this.correspondingId = correspondingId;
+    }
+
+    public BigDecimal getNeedTotal() {
+        return needTotal;
+    }
+
+    public void setNeedTotal(BigDecimal needTotal) {
+        this.needTotal = needTotal;
+    }
+
+    public BigDecimal getOldYearOweTotal() {
+        return oldYearOweTotal;
+    }
+
+    public void setOldYearOweTotal(BigDecimal oldYearOweTotal) {
+        this.oldYearOweTotal = oldYearOweTotal;
+    }
+
+    public boolean isWantChange() {
+        return wantChange;
+    }
+
+    public void setWantChange(boolean wantChange) {
+        this.wantChange = wantChange;
+    }
+
+    public BigDecimal getRealNeedTotal() {
+        return realNeedTotal;
+    }
+
+    public void setRealNeedTotal(BigDecimal realNeedTotal) {
+        this.realNeedTotal = realNeedTotal;
+    }
+
+    public boolean getIsClearChecked() {
+        return isClearChecked;
+    }
+
+    public void setIsClearChecked(boolean clearChecked) {
+        isClearChecked = clearChecked;
+    }
+
+    public String getPrimaryId() {
+        return primaryId;
+    }
+
+    public void setPrimaryId(String primaryId) {
+        this.primaryId = primaryId == null ? null : primaryId.trim();
+    }
+
+    public String getThirdConsumerId() {
+        return thirdConsumerId;
+    }
+
+    public void setThirdConsumerId(String thirdConsumerId) {
+        this.thirdConsumerId = thirdConsumerId == null ? null : thirdConsumerId.trim();
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId == null ? null : companyId.trim();
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId == null ? null : consumerId.trim();
+    }
+
+    public String getAnnual() {
+        return annual;
+    }
+
+    public void setAnnual(String annual) {
+        this.annual = annual == null ? null : annual.trim();
+    }
+
+    public BigDecimal getAccountCost() {
+        return accountCost;
+    }
+
+    public void setAccountCost(BigDecimal accountCost) {
+        this.accountCost = accountCost;
+    }
+
+    public BigDecimal getAccountPointCost() {
+        return accountPointCost;
+    }
+
+    public void setAccountPointCost(BigDecimal accountPointCost) {
+        this.accountPointCost = accountPointCost;
+    }
+
+    public Date getAccountTime() {
+        return accountTime;
+    }
+
+    public void setAccountTime(Date accountTime) {
+        this.accountTime = accountTime;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType == null ? null : accountType.trim();
+    }
+
+    public String getAccountChannel() {
+        return accountChannel;
+    }
+
+    public void setAccountChannel(String accountChannel) {
+        this.accountChannel = accountChannel == null ? null : accountChannel.trim();
+    }
+
+    public String getIsbill() {
+        return isbill;
+    }
+
+    public void setIsbill(String isbill) {
+        this.isbill = isbill == null ? null : isbill.trim();
+    }
+
+    public String getBillno() {
+        return billno;
+    }
+
+    public void setBillno(String billno) {
+        this.billno = billno == null ? null : billno.trim();
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName == null ? null : bankName.trim();
+    }
+
+    public String getBankDept() {
+        return bankDept;
+    }
+
+    public void setBankDept(String bankDept) {
+        this.bankDept = bankDept == null ? null : bankDept.trim();
+    }
+
+    public String getTeller() {
+        return teller;
+    }
+
+    public void setTeller(String teller) {
+        this.teller = teller == null ? null : teller.trim();
+    }
+
+    public String getAccountUser() {
+        return accountUser;
+    }
+
+    public void setAccountUser(String accountUser) {
+        this.accountUser = accountUser == null ? null : accountUser.trim();
+    }
+
+    public String getIsreconciliations() {
+        return isreconciliations;
+    }
+
+    public void setIsreconciliations(String isreconciliations) {
+        this.isreconciliations = isreconciliations == null ? null : isreconciliations.trim();
+    }
+
+
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser == null ? null : updateUser.trim();
+    }
+}

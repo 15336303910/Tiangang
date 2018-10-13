@@ -1,0 +1,308 @@
+package cn.plou.web.heatManage.dataAnalysis.service.impl;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.heatManage.dataAnalysis.domain.WaterConditionDO;
+import cn.plou.web.heatManage.dataAnalysis.service.WaterConditionService;
+import cn.plou.web.heatManage.dataAnalysis.vo.WaterConditionVO;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.house.vo.HouseInfo;
+import cn.plou.web.system.baseMessage.system.service.SystemService;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfo;
+
+@Service
+public class WaterConditionServiceImpl implements WaterConditionService {
+
+	@Autowired
+	HouseService houseService;
+	@Autowired
+	SystemService systemService;
+	
+	@Override
+	public Root CalHouseWaterConditionVo(Map<String, Object> map, Map<String, List<RunningDataTotalDO>> mapData, Map<String, HouseInfo> houses) {
+		List<WaterConditionDO> lwaterVo = CalWaterCondition(mapData, houses);
+		Integer total = lwaterVo.size();
+		WaterConditionDO waterTotal = getWaterTotal(lwaterVo);
+		waterTotal.setAddress("总计");
+		Integer offset =Integer.parseInt(getMapValue(map, "page"));
+		Integer limit = Integer.parseInt(getMapValue(map, "pageSize"));
+		
+		List<WaterConditionDO> lwaterVolimit = lwaterVo.subList(offset, offset+limit);
+		lwaterVolimit.add(waterTotal);
+		List<WaterConditionVO> lVo = convertWaterDo2Vo(lwaterVolimit);
+		Root root = new Root();
+		setRootCond(root, map, total);
+		root.setData(JSON.toJSON(lwaterVolimit)); // 
+		return root;
+	}
+
+	private List<WaterConditionVO> convertWaterDo2Vo(List<WaterConditionDO> lwaterVolimit) {
+		List<WaterConditionVO> vos = new ArrayList<WaterConditionVO>();
+		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		List<String> systemIdAndName = new ArrayList<>();
+		for (WaterConditionDO wdo : lwaterVolimit) {
+			WaterConditionVO vo = new WaterConditionVO();
+			vo.setAddress(wdo.getAddress());
+			vo.setSystemName(wdo.getSystemId());
+			vo.setConsumerId(wdo.getConsumerId());
+			Boolean flag = false;
+			for(String name:systemIdAndName){
+				if(name.equals(wdo.getSystemId())){
+					flag = true;
+					break;
+				}
+			}
+			if(!flag){
+				systemIdAndName.add(wdo.getSystemId());
+			}
+			if (wdo.getFlow() >= 0) {
+				vo.setFlow(decimalFormat.format(wdo.getFlow()));
+				vo.setFlowDiffRatio(decimalFormat.format(wdo.getFlowDiffRatio()));
+				vo.setFlowDiscrete(decimalFormat.format(wdo.getFlowDiscrete()));
+				vo.setFlowingIndex(decimalFormat.format(wdo.getFlowingIndex()));
+				vo.setHeatingArea(decimalFormat.format(wdo.getHeatingArea()));
+				vo.setHeatingIndex(decimalFormat.format(wdo.getHeatingIndex()));
+				vo.setInTemperature(decimalFormat.format(wdo.getInTemperature()));
+				vo.setOutdoorTemperature(decimalFormat.format(wdo.getOutdoorTemperature()));
+				vo.setOutTemperature(decimalFormat.format(wdo.getOutTemperature()));
+				vo.setRoomTemperatureRead(decimalFormat.format(wdo.getRoomTemperatureRead()));
+				vo.setTmpDiff(decimalFormat.format(wdo.getTmpDiff()));
+			}
+		}
+		List<SystemInfo> sys = systemService.getSystemByIds(systemIdAndName);
+		for (WaterConditionVO vo : vos) {
+			for(SystemInfo sy:sys){
+				if(sy.getSystemId().equals(vo.getSystemName())){
+					vo.setSystemName(sy.getSystemName());
+					vo.setAddress(vo.getAddress());
+					break;
+				}
+			}		
+		}
+		return vos;
+	}
+
+	private String getUnitAddr(String address) {
+		String[] addrs = address.split(" ");
+		String addr = "";
+		for(int i = 0 ; i < addrs.length-1; i++){
+			addr = addrs[i]+ " ";
+		}
+		return addr;
+	}
+
+	@Override
+	public Root CalBuildWaterConditionVo(Map<String, Object> map, Map<String, List<RunningDataTotalDO>> mapData, Map<String, HouseInfo> houses) {
+		List<WaterConditionDO> lwaterVo = CalWaterCondition(mapData, houses);
+		Map<String, List<WaterConditionDO>> lwaterMap = new HashMap<String, List<WaterConditionDO>>();
+		for(WaterConditionDO wat: lwaterVo){
+			String unitid = getUnitidbyConsumerAndSystem(wat.getConsumerId(), wat.getSystemId());
+			if(lwaterMap.containsKey(unitid)){
+				lwaterMap.get(unitid).add(wat);
+			}else{
+				List<WaterConditionDO> list = new ArrayList<WaterConditionDO>();
+				list.add(wat);
+				lwaterMap.put(unitid, list);
+			}
+		}
+		List<WaterConditionDO> lBuildwaterVo = CalBuildWater(lwaterMap);
+		Integer total = lBuildwaterVo.size();
+		WaterConditionDO waterTotal = getWaterTotal(lBuildwaterVo);
+		waterTotal.setAddress("总计");
+		Integer offset =Integer.parseInt(getMapValue(map, "page"));
+		Integer limit = Integer.parseInt(getMapValue(map, "pageSize"));
+		
+		List<WaterConditionDO> lwaterVolimit = lBuildwaterVo.subList(offset, offset+limit);
+		lwaterVolimit.add(waterTotal);
+		List<WaterConditionVO> lVo = convertWaterDo2Vo(lwaterVolimit);
+		Root root = new Root();
+		setRootCond(root, map, total);
+		root.setData(JSON.toJSON(lVo)); // 
+		return root;
+	}
+	
+	private List<WaterConditionDO> CalBuildWater(Map<String, List<WaterConditionDO>> lwaterMap) {
+		List<WaterConditionDO> datas = new ArrayList<WaterConditionDO>();
+		for(String key:lwaterMap.keySet()){
+			List<WaterConditionDO> unitdat = lwaterMap.get(key);
+			if(unitdat == null || unitdat.size() == 0){
+				WaterConditionDO dat = new WaterConditionDO();
+				dat.setConsumerId(key);
+				continue;
+			}
+			//楼内平衡离散度=√（∑（ (流量-平均流量)/平均流量）2/n） 按每个单元为单位集合计算，平均流量为本单元所有用户的流量平均值，n为用户数量
+			//楼间平衡离散度 (改为楼宇水力失调度)= 流量/设计流量   流量是指每个单元的流量总和，设计流量是指本单元的设计流量  可用流量上限替代
+			Double totalFlow = 0d;
+			Double totalFlowDesign = 0d;
+			
+			for(WaterConditionDO housedat:unitdat){
+				totalFlow += housedat.getFlow(); 
+				totalFlowDesign += housedat.getFlowDesign();
+			}
+			WaterConditionDO dat = getWaterTotal(unitdat);
+			dat.setFlowDiffRatio((totalFlow-totalFlowDesign)/totalFlowDesign);
+			Double avgFlow = totalFlow/unitdat.size();
+			Double discrete = 0d;
+			for(WaterConditionDO housedat:unitdat){
+				discrete +=  Math.pow((housedat.getFlow() - avgFlow)/avgFlow,2); 
+			}
+			discrete = Math.sqrt(discrete/unitdat.size());
+			dat.setFlowDiscrete(discrete);
+			dat.setConsumerId(key);
+			dat.setAddress(getUnitAddr(unitdat.get(0).getAddress()));
+			datas.add(dat);
+		}
+		return datas;
+	}
+
+	private void setRootCond(Root root, Map<String, Object> map, Integer total) {
+		String page = getMapValue(map, "page");
+		String pageSize = getMapValue(map, "pageSize");
+		String order = getMapValue(map, "order");
+		String sortby = getMapValue(map, "sortby");
+
+		root.setCond(Cond.getCond(Integer.getInteger(page), Integer.getInteger(pageSize), total, (String) order, (String) sortby));
+	}
+	
+	private String getMapValue(Map<String, Object> map, String mapName) {
+		return Tools.getMapValue(map, mapName);
+	}
+	
+	private WaterConditionDO getWaterTotal(List<WaterConditionDO> lwaterVo) {
+		WaterConditionDO waterVo = new WaterConditionDO();
+
+		if (lwaterVo.size() == 0) {
+			return waterVo;
+		}
+		for (WaterConditionDO dat : lwaterVo) {
+			waterVo.setHeatingArea(waterVo.getHeatingArea() + dat.getHeatingArea());
+			waterVo.setFlow(waterVo.getFlow() + dat.getFlow());
+			waterVo.setFlowingIndex(waterVo.getFlowingIndex() + dat.getFlowingIndex());
+			waterVo.setHeatingIndex(waterVo.getHeatingIndex() + dat.getHeatingIndex());
+			waterVo.setInTemperature(waterVo.getInTemperature() + dat.getInTemperature());
+			waterVo.setOutdoorTemperature(waterVo.getOutdoorTemperature() + dat.getOutdoorTemperature());
+			waterVo.setOutTemperature(waterVo.getOutTemperature() + dat.getOutTemperature());
+			waterVo.setRoomTemperatureRead(waterVo.getRoomTemperatureRead() + dat.getRoomTemperatureRead());
+			waterVo.setTmpDiff(waterVo.getTmpDiff() + dat.getTmpDiff());
+			waterVo.setFlowDiffRatio(waterVo.getFlowDiffRatio() + dat.getFlowDiffRatio());
+			waterVo.setFlowDiscrete(waterVo.getFlowDiscrete() + dat.getFlowDiscrete());
+		}
+		int cout = lwaterVo.size();
+		waterVo.setHeatingArea(waterVo.getHeatingArea() / cout);
+		waterVo.setFlow(waterVo.getFlow() / cout);
+		waterVo.setFlowingIndex(waterVo.getFlowingIndex() / cout);
+		waterVo.setHeatingIndex(waterVo.getHeatingIndex() / cout);
+		waterVo.setInTemperature(waterVo.getInTemperature() / cout);
+		waterVo.setOutdoorTemperature(waterVo.getOutdoorTemperature() / cout);
+		waterVo.setOutTemperature(waterVo.getOutTemperature() / cout);
+		waterVo.setRoomTemperatureRead(waterVo.getRoomTemperatureRead() / cout);
+		waterVo.setTmpDiff(waterVo.getTmpDiff() / cout);
+		waterVo.setFlowDiffRatio(waterVo.getFlowDiffRatio() / cout);
+		waterVo.setFlowDiscrete(waterVo.getFlowDiscrete() / cout);
+		return waterVo;
+	}
+
+	public List<WaterConditionDO> CalWaterCondition(Map<String, List<RunningDataTotalDO>> mapData,
+			Map<String, HouseInfo> houses) {
+
+		Map<String, Double> unitFlowMap = new HashMap<String, Double>();
+		Map<String, Integer> unitFlowNumMap = new HashMap<String, Integer>();
+		List<WaterConditionDO> lwaterVo = getWaterAndUnitInfoFromData(mapData, houses, unitFlowMap, unitFlowNumMap);
+		avgUnitFlow(unitFlowMap, unitFlowNumMap);
+		setWaterDiscrete(lwaterVo, unitFlowMap);
+		return lwaterVo;
+	}
+	
+	private String getUnitidbyConsumerAndSystem(String consumerId, String systemId){
+		return consumerId.substring(0, 15) + "_"+systemId;
+	}
+	
+	private void setWaterDiscrete(List<WaterConditionDO> lwaterVo, Map<String, Double> unitFlowMap) {
+		for (WaterConditionDO waters : lwaterVo) {
+			String unitid = getUnitidbyConsumerAndSystem(waters.getConsumerId(),waters.getSystemId());
+			waters.setFlowDiscrete(waters.getFlow() / unitFlowMap.get(unitid));
+		}
+	}
+
+	private void avgUnitFlow(Map<String, Double> unitFlowMap, Map<String, Integer> unitFlowNumMap) {
+		for (String unitkey : unitFlowMap.keySet()) {
+			Double datval = unitFlowMap.get(unitkey);
+			Integer datNum = unitFlowNumMap.get(unitkey);
+			unitFlowMap.put(unitkey, datval / datNum);
+		}
+	}
+
+	private List<WaterConditionDO> getWaterAndUnitInfoFromData(Map<String, List<RunningDataTotalDO>> mapData,
+			Map<String, HouseInfo> houses, Map<String, Double> unitFlowMap, Map<String, Integer> unitFlowNumMap) {
+
+		List<WaterConditionDO> lwaterVo = new ArrayList<WaterConditionDO>();
+		for (String key : houses.keySet()) {
+			List<RunningDataTotalDO> listRun = mapData.get(key);
+			WaterConditionDO waterVo = new WaterConditionDO();
+			waterVo.setAddress(houses.get(key).getAddress());
+			waterVo.setHeatingArea(houses.get(key).getHeatingArea().doubleValue());
+			waterVo.setSystemId(houses.get(key).getSystemId());	
+			waterVo.setConsumerId(key);
+			if (listRun != null && listRun.size() > 0) {
+				String unitid = getUnitidbyConsumerAndSystem(key, waterVo.getSystemId());
+				Double ddat = 0d;
+				Integer intNum = 0;
+				if (unitFlowMap.containsKey(unitid)) {
+					ddat = unitFlowMap.get(unitid);
+					intNum = unitFlowNumMap.get(unitid);
+				} else {
+					unitFlowMap.put(unitid, ddat);
+					unitFlowNumMap.put(unitid, intNum);
+				}
+				Double maxFlow = listRun.get(0).getFlow().doubleValue();
+				Double minFlow = maxFlow;
+				for (RunningDataTotalDO dat : listRun) {
+					Double flow = dat.getFlow().doubleValue();
+					if (minFlow > flow) {
+						minFlow = flow;
+					}
+					if (maxFlow < flow) {
+						maxFlow = flow;
+					}
+					waterVo.setFlowingIndex(waterVo.getFlowingIndex() + dat.getFlowingIndex().doubleValue());
+					waterVo.setHeatingIndex(waterVo.getHeatingIndex() + dat.getHeatingIndex().doubleValue());
+					waterVo.setInTemperature(waterVo.getInTemperature() + dat.getInTemperature().doubleValue());
+					waterVo.setOutdoorTemperature(waterVo.getOutdoorTemperature() + dat.getOutdoorTemperature().doubleValue());
+					waterVo.setOutTemperature(waterVo.getOutTemperature() + dat.getOutTemperature().doubleValue());
+					waterVo.setRoomTemperatureRead(waterVo.getRoomTemperatureRead() + dat.getRoomTemperatureRead().doubleValue());
+				}
+				waterVo.setFlow(maxFlow - minFlow);
+				waterVo.setFlowingIndex(waterVo.getFlowingIndex() / listRun.size());
+				waterVo.setHeatingIndex(waterVo.getHeatingIndex() / listRun.size());
+				waterVo.setInTemperature(waterVo.getInTemperature() / listRun.size());
+				waterVo.setOutdoorTemperature(waterVo.getOutdoorTemperature() / listRun.size());
+				waterVo.setOutTemperature(waterVo.getOutTemperature() / listRun.size());
+				waterVo.setRoomTemperatureRead(waterVo.getRoomTemperatureRead() / listRun.size());
+				waterVo.setFlowDesign(listRun.get(0).getFlowUpperLimit().doubleValue());
+				waterVo.setTmpDiff(waterVo.getInTemperature() - waterVo.getOutTemperature());
+				waterVo.setFlowDiffRatio(waterVo.getFlow() / waterVo.getFlowDesign());
+				ddat += waterVo.getFlow();
+				intNum++;
+				unitFlowMap.put(unitid, ddat);
+				unitFlowNumMap.put(unitid, intNum);
+			}
+			lwaterVo.add(waterVo);
+		}
+		return lwaterVo;
+	}
+}

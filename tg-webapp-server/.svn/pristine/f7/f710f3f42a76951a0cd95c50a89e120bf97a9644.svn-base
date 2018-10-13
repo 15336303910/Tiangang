@@ -1,0 +1,88 @@
+package cn.plou.web.system.organizationMessage.staff.vo;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class StaffVo {
+
+    List<String> staffIds;
+
+    private String staffName;
+
+    private String departmentId;
+
+    private String duty;
+
+    private String tel1;
+
+    private String tel2;
+
+    private String tel3;
+    private String homeAddress;
+
+    public List<String> getStaffIds() {
+        return staffIds;
+    }
+
+    public void setStaffIds(List<String> staffIds) {
+        this.staffIds = staffIds;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    public String getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(String departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getTel1() {
+        return tel1;
+    }
+
+    public void setTel1(String tel1) {
+        this.tel1 = tel1;
+    }
+
+    public String getTel2() {
+        return tel2;
+    }
+
+    public void setTel2(String tel2) {
+        this.tel2 = tel2;
+    }
+
+    public String getTel3() {
+        return tel3;
+    }
+
+    public void setTel3(String tel3) {
+        this.tel3 = tel3;
+    }
+
+    public String getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        this.homeAddress = homeAddress;
+    }
+}

@@ -1,0 +1,51 @@
+package cn.plou.web.system.permission.menu.controller;
+
+import cn.plou.web.common.config.common.BaseController;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.permission.menu.entity.Menu;
+import cn.plou.web.system.permission.menu.service.MenuService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@RestController
+@EnableSwagger2
+@RequestMapping("${systemPath}/menu")
+@Api(description = "菜单查询")
+public class MenuController  {
+    @Autowired
+    private MenuService menuService;
+    @ApiOperation("根据角色权限获取全部菜单信息")
+    @GetMapping("getAllMenuByRoleId")
+    @RequiresPermissions("101")
+    public Root getAllMenuByRoleId(){
+        Root root = new Root();
+        String userCode= Constant.userCode;
+        root.setData(menuService.getAllMenuByRoleId(userCode));
+        return root;
+    }
+    /*@ApiOperation("根据id获取菜单信息")
+    @GetMapping("getMenuById")
+    public Menu getMenuById(String menuId){
+        return menuService.getMenuById(menuId);
+    }*/
+
+    @ApiOperation("获取全部菜单信息")
+    @GetMapping("getAllMenu")
+    public Root getAllMenu(){
+        Root root = new Root();
+        root.setData(menuService.getAllMenu());
+        return root;
+    }
+
+    @ApiOperation("修改菜单信息")
+    @PutMapping("/modifyMenu")
+    public Boolean modifyMenu(@RequestBody Menu menu){
+        return menuService.modifyMenu(menu)==1;
+    }
+}

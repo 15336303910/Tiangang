@@ -1,0 +1,96 @@
+package cn.plou.web.common.aspect;
+
+import cn.plou.web.common.annotation.VisitRecord;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.permission.userLogin.entity.UserLogin;
+import cn.plou.web.system.permission.userLogin.service.UserLoginService;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.lang.reflect.Method;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/24 17:49
+ */
+
+@Aspect
+@Component
+@Slf4j
+public class ControllerMethodHander {
+
+
+    @Resource
+    private UserLoginService userLoginService;
+
+
+    @Pointcut("execution(* cn.plou..*.*Controller.*(..))")
+    public void executeService() {
+
+    }
+
+    /**
+     * @param point
+     * @return  性能监控和为了处理@ControllerAdvice不能处理的返回值为null或者字符串的情况
+     * @throws Throwable
+     */
+    @Around("executeService()")
+    @Order(1)
+    public Object monitorPerformence(ProceedingJoinPoint point) throws Throwable {
+        long begin = System.currentTimeMillis();
+        Object result = null;
+        Object o = point.proceed();
+        if (o == null || o instanceof String) {
+            Root root = new Root();
+            root.setCode(0);
+            root.setMsg(o == null ? "暂无数据" : (String) o);
+            result = root;
+        } else {
+            result = o;
+        }
+        long end = System.currentTimeMillis();
+        double costTime = (double) (end - begin) * 0.001;
+        if (costTime > 3) {
+            log.warn("控制器：" + point.getTarget().getClass().getSimpleName() + "的方法：" + point.getSignature().getName() + "调用结束,消耗时间：" + costTime + "s,需要优化！！！！！");
+        } else {
+            log.info("控制器：" + point.getTarget().getClass().getSimpleName() + "的方法：" + point.getSignature().getName() + "调用结束,消耗时间：" + costTime + "s");
+        }
+        return result;
+    }
+
+
+    /**
+     * @param joinPoint
+     * @param visitRecord
+     * @return 接口访问记录 待用
+     * @throws Throwable
+     */
+    @Around(value = "execution(* cn.plou..*.*Controller.*(..)) && @annotation(visitRecord)")
+    @Order(2)
+    public Object VisitRecord(ProceedingJoinPoint joinPoint, VisitRecord visitRecord) throws Throwable {
+        Object o = joinPoint.proceed();
+        try {
+             /* String methodName = joinPoint.getSignature().getName();//方法名
+            Class targetClass = joinPoint.getTarget().getClass();//类名*/
+            String visitUserName = userLoginService.getUserLoginById(UserUtils.getUserId()).getUsername();
+            String operationName = visitRecord.operationName();
+            //logService.insertSysLog("记录一些操作到数据库");
+            log.info("操作人员" + visitUserName + "执行了" + operationName + "操作");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.warn("日志记录异常信息错误,当前未有用户登录或正处调试模式！");
+        }
+        return o;
+    }
+
+
+}
+

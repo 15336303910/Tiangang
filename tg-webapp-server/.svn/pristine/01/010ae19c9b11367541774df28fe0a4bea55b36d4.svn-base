@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.role.dao.RoleMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.role.entity.Role">
+        <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_state" jdbcType="VARCHAR" property="roleState"/>
+        <result column="role_desc" jdbcType="VARCHAR" property="roleDesc"/>
+    </resultMap>
+
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.permission.role.vo.RoleInfo">
+        <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_state" jdbcType="VARCHAR" property="roleState"/>
+        <result column="role_desc" jdbcType="VARCHAR" property="roleDesc"/>
+        <result column="role_state_name" jdbcType="VARCHAR" property="roleStateName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    role_id, role_name, role_state, role_desc
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from role_define
+        where role_id = #{roleId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectRoleDownInfo" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    r.role_id, r.role_name
+    from role_define r
+    LEFT JOIN rl_role_data rrd on r.role_id=rrd.role_id
+    where 1=1
+    <if test="ids.size()>0">
+        and rrd.column_value in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and rrd.column_type='A'
+    </if>
+        group by r.role_id,r.role_name
+  </select>
+
+    <select id="selectAllRole" parameterType="map" resultMap="BaseInfoMap">
+        select
+        r.role_id,r.role_name,r.role_state,r.role_desc
+        from role_define r
+        LEFT JOIN rl_role_data rrd on r.role_id=rrd.role_id
+        where 1=1
+        <if test="ids !=null">
+        <if test="ids.size()>0">
+            and rrd.column_value in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            and rrd.column_type='A'
+        </if>
+        </if>
+        <if test="roleVo!=null">
+            <if test="roleVo.roleName!=null">
+                and r.role_name like concat('%',#{roleVo.roleName},'%')
+            </if>
+            <if test="roleVo.roleState!=null">
+                and r.role_state=#{roleVo.roleState}
+            </if>
+            <if test="roleVo.roleDesc!=null">
+                and r.role_desc=#{roleVo.roleDesc}
+            </if>
+        </if>
+
+        group by r.role_id,r.role_name,r.role_state,r.role_desc
+
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+        <if test="order!=null">
+            ${order}
+        </if>
+        <!--<if test="page!=null">-->
+        <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+        <!--</if>-->
+        <!--</if>-->
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from role_define
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+
+    <delete id="deleteRoleBatchByIds" parameterType="java.util.List">
+        delete from role_define
+        where role_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert" parameterType="cn.plou.web.system.permission.role.entity.Role">
+    insert into role_define (role_id, role_name, role_state, 
+      role_desc)
+    values (#{roleId,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{roleState,jdbcType=VARCHAR},
+      #{roleDesc,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="cn.plou.web.system.permission.role.entity.Role">
+        insert into role_define
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="roleState != null">
+                role_state,
+            </if>
+            <if test="roleDesc != null">
+                role_desc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleState != null">
+                #{roleState,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                #{roleDesc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.role.entity.Role">
+        update role_define
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleState != null">
+                role_state = #{roleState,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                role_desc = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where role_id = #{roleId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.role.entity.Role">
+    update role_define
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_state = #{roleState,jdbcType=VARCHAR},
+      role_desc = #{roleDesc,jdbcType=VARCHAR}
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateRoleBatch" parameterType="cn.plou.web.system.permission.role.vo.RoleVo">
+        update role_define
+        <set>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleState != null">
+                role_state = #{roleState,jdbcType=VARCHAR},
+            </if>
+            <if test="roleDesc != null">
+                role_desc = #{roleDesc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where role_id in
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    
+     <select id="selectAllRoleOnlyStation" parameterType="map" resultMap="BaseInfoMap">
+        select
+        r.role_id,r.role_name,r.role_state,r.role_desc
+        from role_define r
+        LEFT JOIN (select role_id, company_id as column_value from rl_role_data, station_info where station_id=column_value and column_type='E' and company_id in 
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+        ) rrd on r.role_id=rrd.role_id
+        where 1=1
+        <if test="ids.size()>0">
+            and rrd.column_value in
+            <foreach collection="ids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="roleVo!=null">
+            <if test="roleVo.roleName!=null">
+                and r.role_name like concat('%',#{roleVo.roleName},'%')
+            </if>
+            <if test="roleVo.roleState!=null">
+                and r.role_state=#{roleVo.roleState}
+            </if>
+            <if test="roleVo.roleDesc!=null">
+                and r.role_desc=#{roleVo.roleDesc}
+            </if>
+        </if>
+
+        group by r.role_id,r.role_name,r.role_state,r.role_desc
+
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+        <if test="order!=null">
+            ${order}
+        </if>
+        <!--<if test="page!=null">-->
+        <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+        <!--</if>-->
+        <!--</if>-->
+    </select>
+</mapper>

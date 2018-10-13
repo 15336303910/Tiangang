@@ -1,0 +1,189 @@
+2018-10-13 09:39:19 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] ***Mybatis热加载器****: 检测到有*Mapper.xml文件被修改，需要被刷新的文件个数: 6个
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:get
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListBySearch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListCountBySearch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListBySearchOfStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListCountBySearchOfStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getTodayLast
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getTotalResultOfNormalByType
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getTotalResultOfStationByType
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getCountOfNormalByendState
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getCountOfStationByendState
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\charge\HouseYearHeatstateDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\charge\HouseYearHeatstateDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: HouseYearHeatstateDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKeySelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:find
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByprimaryId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertList
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findNum
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\charge\MoneyClearTaskMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\charge\MoneyClearTaskMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: MoneyClearTaskMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByThirdConsumerId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKeySelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getTotalByConsumerId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByUserAndAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListBySearch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListCountBySearch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListBySearchOfStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getListCountBySearchOfStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getChargeAccount
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateIsreconciliations
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:businessAnalysis
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:businessAnalysisChart
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryListByConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryListByCommuity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryListByBuilding
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryListByStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryListByCompany
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryDataByConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryDataByCommuity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryDataByBuilding
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryDataByStation
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountSummaryDataByCompany
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getAccountDetailListByAccountType
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\charge\UserYearAccountDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearAccountDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: UserYearAccountDetailMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertByBatch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKeySelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByConsumerIdSelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findAllUserYearHeats
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findLastUserYearHeats
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findAllUserYearHeatsByAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByUserAndAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByUser
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findUserYearHeatDetailInfo
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findByUserForOldAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByConsumerIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByConsumerId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getOldYearOwe
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:calcLateFee
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getStatisticalData
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findFeeLessByBuildingNo
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:findAllUserYearHeatsByConsumerIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getCountByAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getChargeSumByAnnual
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getHeatInfoByCompanyId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getChargeHouseDataList
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getChargeHouseDataAllList
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCountByChargeType
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCountNotHeating
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateHeatingStatus
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByCompanyId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByCommuityIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByStationIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatus1
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatus1_1
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatus1_2
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatus1_3
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatus1_4
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedHeatingStatusNull
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGeneratedNotHeatingStatus1
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated1
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated2
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated3
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated1ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated2ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated3ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated1ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated2ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated3ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated1ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated2ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertForGenerated3ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated2
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated3
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated4
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated2ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated3ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated4ForOneStationAllCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated2ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated3ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated4ForSelectedCommunity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated2ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated3ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateForGenerated4ForSelectedConsumer
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getchoosedYearOwe
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getStatisticalDataBycommuityIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\charge\UserYearHeatMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearHeatMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: UserYearHeatMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:InfoMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Useful_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectTreeList
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuityByName
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllCommuityIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuityIdsByStationId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuityCount
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllCommuity
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllCommuityByRoleId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuitysByCompanyId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllCommuityUnique
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectById
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteBatchByIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateBatch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKeySelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:getMaxCommuityId
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuityByConsumerIdLike
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectCommuityByStationIds
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\system\CommuityMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\system\CommuityMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: CommuityMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:BaseResultMap
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:Base_Column_List
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectByMbusCodeAndUpCommMode
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllMbusCodes
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllTimigByMbusCode
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllByDefineVo
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectIntervalsByMbusCode
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectPrimaryIdByData
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:selectAllIntervalsByMbusCodes
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:deleteTimingDefineBatch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insert
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelectiveBatch
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKeySelective
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:updateByPrimaryKey
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelectiveBatch2
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 刷新方法:insertSelectiveBatch3
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 完成！成功刷新Mapper.xml文件: mybatis\system\MeterTimingDefineMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件位置: I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterTimingDefineMapper.xml
+2018-10-13 09:39:41 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 被刷新文件名: MeterTimingDefineMapper.xml
+2018-10-13 09:39:48 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

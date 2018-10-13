@@ -1,0 +1,59 @@
+package cn.plou.web.station.alarm.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import cn.plou.web.mobile.station.query.AlarmsQuery;
+import cn.plou.web.station.alarm.entity.AlarmInfo;
+import cn.plou.web.station.alarm.vo.AlarmStatistics;
+
+public interface AlarmInfoMapper {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(AlarmInfo record);
+
+    int insertSelective(AlarmInfo record);
+
+    AlarmInfo selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(AlarmInfo record);
+
+    int updateByPrimaryKey(AlarmInfo record);
+
+    /**
+     * 所有未处理过报警
+     */
+    int findLatestAlarmCount(@Param("stationIds") List<String> stationIds,
+	    @Param("endTime") Date endTime, @Param("result") Integer result);
+
+    /**
+     * 报警类型统计
+     */
+    List<AlarmStatistics> findAlarmStatisticsGroupByType(
+	    @Param("stationIds") List<String> stationIds, @Param("start") Date start,
+	    @Param("end") Date end);
+
+    /**
+     * 已处理统计
+     */
+    Integer getCountByResult(@Param("stationIds") List<String> stationIds,
+	    @Param("result") Integer result, @Param("start") Date start, @Param("end") Date end);
+
+    /**
+     * 报警级别统计
+     */
+    List<AlarmStatistics> findAlarmStatisticsGroupByLevel(
+	    @Param("stationIds") List<String> stationIds, @Param("start") Date start,
+	    @Param("end") Date end);
+
+    /**
+     * 报警日志
+     */
+    List<AlarmInfo> findAlarms(@Param("query") AlarmsQuery query);
+
+    void updateAlarms(@Param("userId") String userId, @Param("result") Integer result,
+	    @Param("alarmIds") List<String> alarmIds);
+
+}

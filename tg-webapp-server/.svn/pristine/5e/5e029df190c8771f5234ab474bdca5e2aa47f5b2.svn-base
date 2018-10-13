@@ -1,0 +1,26 @@
+package cn.plou.web.mobile.station.controller;
+
+import cn.plou.web.common.config.common.Root;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : AppBaseController.java
+ * @Author : WangJiWei
+ * @Date : 2018年9月19日上午10:22:59
+ *
+ * @Comments :
+ * 
+ */
+public class AppBaseController {
+
+    public Root success(Object data) {
+	Root r = new Root();
+	r.setData(data);
+	return r;
+    }
+
+    public Root error() {
+	Root r = new Root();
+	return r;
+    }
+}

@@ -1,0 +1,154 @@
+package cn.plou.web.system.baseMessage.house.entity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+import cn.plou.web.common.utils.ExcelTools;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.commuity.entity.Commuity;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.station.entity.Station;
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.baseMessage.system.entity.System;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfo;
+import lombok.Data;
+
+@Data
+public class Subord {
+	String errorInfo;
+	String currentInfo;
+	String currnetId;
+  Map<String, Company> mapCompany = new HashMap<>();	//公司名，和公司
+  Map<String, Map<String, Commuity>> mapCommuity = new HashMap<>();	//公司ID，和小区名,小区的map
+  Map<String, Map<String, Build>> mapBuild = new HashMap<>();	//小区ID，和楼名,楼的map
+  Map<String, Map<String, Unit>> mapUnit = new HashMap<>();	//楼ID，和单元名,单元的map
+  Map<String, Map<String, House>> mapHouse = new HashMap<>();	//小区ID，和单元id+户名,户的map
+  Map<String, Map<String, Station>> mapStation = new HashMap<>();	//公司ID，和站名,站的map
+  Map<String, Map<String, SystemInfo>> mapSystem = new HashMap<>();	//公司ID，和系统名,系统的map
+  
+		Company company;
+		Commuity commuity;
+		Build building;
+		Unit unit;
+		House house;
+		Station station;
+		SystemInfo system;
+		public void orderErrorInfo(List<ErrorInfo> errorInfos, int i, Row row, CellStyle style) {
+			if(getErrorInfo().equals("company")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,0,"不存在的公司名称", true, row, style);   
+        return;
+    	}else if(getErrorInfo().equals("commuity")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,1,"不存在的小区名称", true, row, style);    
+    		return;
+    	}else if(getErrorInfo().equals("building")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,2,"不存在的楼名称", true, row, style);    
+    		return;
+    	}else if(getErrorInfo().equals("unit")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,3,"不存在的单元名称", true, row, style);    
+    		return;
+    	}else if(getErrorInfo().equals("house")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,4,"不存在的房屋名称", true, row, style);    
+    		return;
+    	}else if(getErrorInfo().equals("system")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,5,"不存在的系统名称", false, row, style);    
+    		return;
+    	}else if(getErrorInfo().equals("station")){
+    		ExcelTools.addErrorInfo(errorInfos, i ,5,"不存在的站名称", true, row, style);    //站和系统在模板中是一行
+    		return;
+    	}else{
+    		ExcelTools.addErrorInfo(errorInfos, i ,4,"未知的错误", true, row, style);    
+    	}
+		}
+		
+		public String orderMeterConsumerInfo(String meterPosition, List<ErrorInfo> errorInfos, int i,int j, Row row, CellStyle style) {
+			String key  = "";
+			if(meterPosition.contains("5")){
+      	if(getHouse() != null){
+      		key=getHouse().getConsumerId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(meterPosition.contains("4")){
+      	if(getUnit() != null){
+      		key=getUnit().getUnitId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(meterPosition.contains("3")){
+      	if(getBuilding() != null){
+      		key=getBuilding().getBuildingNo();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(meterPosition.contains("2")){
+      	if(getCommuity() != null){
+      		key=getCommuity().getCommuityId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(meterPosition.contains("1")){
+       	if(getStation() != null){
+      		key=getStation().getStationId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else{
+      	key=getCurrnetId();
+      }
+			return key;
+		}
+		
+		public String orderMbusConsumerInfo(String mbusPosition, List<ErrorInfo> errorInfos, int i,int j, Row row, CellStyle style) {
+			String key  = "";
+			if(mbusPosition.contains("2")){
+      	if(getCommuity() != null){
+      		key=getCommuity().getCommuityId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(mbusPosition.contains("1")){
+      	if(getStation() != null){
+      		key=getStation().getStationId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(mbusPosition.contains("4")){
+      	if(getUnit() != null){
+      		key=getUnit().getUnitId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(mbusPosition.contains("3")){
+      	if(getBuilding() != null){
+      		key=getBuilding().getBuildingNo();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else if(mbusPosition.contains("5")){
+      	if(getHouse() != null){
+      		key=getHouse().getConsumerId();
+      	}else{
+      		ExcelTools.addErrorInfo(errorInfos, i ,j,"不对应的位置层级", true, row, style);    
+      		return key;
+      	}
+      }else{
+      	key=getCurrnetId();
+      }
+			return key;
+		}
+}

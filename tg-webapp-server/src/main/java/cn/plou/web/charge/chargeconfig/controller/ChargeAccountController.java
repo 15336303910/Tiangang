@@ -1,0 +1,155 @@
+package cn.plou.web.charge.chargeconfig.controller;
+
+import cn.plou.web.charge.chargeconfig.dto.AccountHistoryDTO;
+import cn.plou.web.charge.chargeconfig.dto.ChargeAccountDTO;
+import cn.plou.web.charge.chargeconfig.dto.ChargeAccountSearchDTO;
+import cn.plou.web.charge.chargeconfig.dto.SaveChargeAccountDTO;
+import cn.plou.web.charge.chargeconfig.service.ChargeAccountService;
+import cn.plou.web.charge.chargeconfig.vo.AccountHistoryListVO;
+import cn.plou.web.charge.chargeconfig.vo.ChargeAccountVO;
+import cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.ServletRequest;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @ClassName: ChargeAccountController
+ * @Description: 收费对账
+ * @Author: youbc
+ * @Date 2018-08-31 15:04
+ */
+@RestController
+@RequestMapping("${chargePath}/charge-account")
+public class ChargeAccountController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private ChargeAccountService chargeAccountService;
+
+    @Autowired
+    private CommuityService commuityService;
+
+    /**
+     * @Description: 每日对账明细
+     * @Param: [netInManageSearchDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/31 15下午13
+     */
+    @PostMapping("list")
+    public Root list(@Valid ChargeAccountSearchDTO chargeAccountSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        List<CheckAccountListVO> list = new ArrayList<>();
+        Integer count = 0;
+        String companyId = chargeAccountSearchDTO.getCompanyId();
+        if (companyId.length() == Constant.STATION_ID_LENGTH) {
+            List<String> ids = commuityService.getCommuityIdsByStationId(companyId);
+            if (ids.size() > 0) {
+                list = chargeAccountService.listOfStation(chargeAccountSearchDTO, ids);
+                count = chargeAccountService.listCountOfStation(chargeAccountSearchDTO, ids);
+            }
+        } else {
+            list = chargeAccountService.list(chargeAccountSearchDTO);
+            count = chargeAccountService.listCount(chargeAccountSearchDTO);
+        }
+
+        Root root = new Root();
+        root.setData(list);
+        root.setCond(getCond(chargeAccountSearchDTO.getPage(), chargeAccountSearchDTO.getPageSize(), count, chargeAccountSearchDTO.getOrder(), chargeAccountSearchDTO.getSortby()));
+        return root;
+    }
+
+    /**
+     * @Description: 对账历史
+     * @Param: [accountHistoryDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/31 17下午23
+     */
+    @PostMapping("history-list")
+    public Root historyList(@Valid AccountHistoryDTO accountHistoryDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        List<AccountHistoryListVO> list = chargeAccountService.historyList(accountHistoryDTO);
+        Root root = new Root();
+        root.setData(list);
+        root.setCond(getCond(accountHistoryDTO.getPage(), accountHistoryDTO.getPageSize(), chargeAccountService.historyListCount(accountHistoryDTO), accountHistoryDTO.getOrder(), accountHistoryDTO.getSortby()));
+        return root;
+    }
+
+    /**
+     * @Description: 对账收费弹框
+     * @Param: [chargeAccountDTO, bindingResult]
+     * @Return: cn.plou.web.charge.chargeconfig.vo.ChargeAccountVO
+     * @Author: youbc
+     * @Date: 2018/9/4 10上午12
+     */
+    @PostMapping("get-charge-account")
+    public ChargeAccountVO getChargeAccount(@Valid ChargeAccountDTO chargeAccountDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        return chargeAccountService.getChargeAccount(chargeAccountDTO);
+    }
+
+    /**
+     * @Description: 对账收费确认
+     * @Param: [saveChargeAccountDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/4 15下午37
+     */
+    @PostMapping("save")
+    public Root save(@RequestBody @Valid SaveChargeAccountDTO saveChargeAccountDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        ChargeAccountDTO chargeAccountDTO = new ChargeAccountDTO();
+        chargeAccountDTO.setCompanyId(saveChargeAccountDTO.getCompanyId());
+        chargeAccountDTO.setAccountTime(saveChargeAccountDTO.getAccountTime());
+        ChargeAccountVO chargeAccountVO = chargeAccountService.getChargeAccount(chargeAccountDTO);
+        chargeAccountService.save(saveChargeAccountDTO, chargeAccountVO);
+        return new Root();
+    }
+
+    /**
+     * @Description: 每日对账明细导出 Excel
+     * @Param: [request, chargeAccountSearchDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/30 10上午50
+     */
+    @PostMapping("/export-list")
+    public Root exportList(ServletRequest request, @Valid ChargeAccountSearchDTO chargeAccountSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        chargeAccountSearchDTO.setStart(null);
+        List<CheckAccountListVO> list = new ArrayList<>();
+        String companyId = chargeAccountSearchDTO.getCompanyId();
+        if (companyId.length() == Constant.STATION_ID_LENGTH) {
+            List<String> ids = commuityService.getCommuityIdsByStationId(companyId);
+            if (ids.size() > 0) {
+                list = chargeAccountService.listOfStation(chargeAccountSearchDTO, ids);
+            }
+        } else {
+            list = chargeAccountService.list(chargeAccountSearchDTO);
+        }
+
+        Root root = new Root();
+        root.setCode(0);
+        root.setMsg("导出成功");
+        root.setData(chargeAccountService.exportList(request, list));
+        return root;
+    }
+}

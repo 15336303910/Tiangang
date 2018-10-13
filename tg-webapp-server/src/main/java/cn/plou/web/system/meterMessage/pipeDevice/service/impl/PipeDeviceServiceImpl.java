@@ -1,0 +1,564 @@
+package cn.plou.web.system.meterMessage.pipeDevice.service.impl;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+import cn.plou.web.common.importDataBatch.ImportResult;
+import cn.plou.web.common.utils.*;
+import cn.plou.web.system.baseMessage.company.service.impl.CompanyServiceImpl;
+import cn.plou.web.system.baseMessage.house.entity.Subord;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.producer.dao.ProducerMapper;
+import cn.plou.web.system.baseMessage.station.dao.StationMapper;
+import cn.plou.web.system.baseMessage.station.service.impl.StationServiceImpl;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.impl.TypeMstServiceImpl;
+import cn.plou.web.system.meterMessage.pipeDevice.dao.PipeDeviceMapper;
+import cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice;
+import cn.plou.web.system.meterMessage.pipeDevice.service.PipeDeviceService;
+import cn.plou.web.system.meterMessage.pipeDevice.vo.PipeDeviceInfo;
+import cn.plou.web.system.meterMessage.pipeDevice.vo.PipeDeviceSelectInfo;
+import cn.plou.web.system.meterMessage.pipeDevice.vo.PipeDeviceVo;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.Jedis;
+
+import javax.servlet.ServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static cn.plou.web.common.importDataBatch.CleanOnTime.cleanTempFile;
+import static cn.plou.web.common.utils.ExcelTools.getCellValue;
+
+@Component
+public class PipeDeviceServiceImpl implements PipeDeviceService {
+
+    @Autowired
+    PipeDeviceMapper pipeDeviceMapper;
+    @Autowired
+    StationMapper stationMapper;
+    @Autowired
+    StationServiceImpl stationServiceImpl;
+    @Autowired
+    ProducerMapper producerMapper;
+    @Autowired
+    CompanyServiceImpl companyServiceImpl;
+    @Autowired
+    TypeMstServiceImpl typeMstServiceImpl;
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+    @Autowired
+    private HouseService houseService;
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addPipeDevice(PipeDevice pipeDevice) {
+        List<PipeDevice> pipeDeviceList = pipeDeviceMapper.selectAll();
+        List<Integer> list = new ArrayList<Integer>();
+        if (pipeDeviceList.size() == 0) {
+            pipeDevice.setPipeDeviceId("1");
+        } else {
+            for (PipeDevice p : pipeDeviceList) {
+                list.add(Integer.valueOf(p.getPipeDeviceId()));
+            }
+            Collections.sort(list);
+            Collections.reverse(list);
+            pipeDevice.setPipeDeviceId("" + (list.get(0) + 1));
+        }
+        if (pipeDevice.getAscriptionId().length() == 5) {
+            pipeDevice.setCompanyId(producerMapper.selectByPrimaryKey(pipeDevice.getAscriptionId()).getCompanyId());
+        }
+        if (pipeDevice.getAscriptionId().length() == 6) {
+            pipeDevice.setCompanyId(stationMapper.selectByPrimaryKey(pipeDevice.getAscriptionId()).getCompanyId());
+        }
+
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipeDevice");
+        userPageHistory.setAct("addPipeDevice");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        pipeDevice.setCreateUser(UserUtils.getUserId());
+        pipeDevice.setCreateDate(new Date());
+        return pipeDeviceMapper.insertSelective(pipeDevice);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deletePipeDeviceBatchByIds(List<String> pipeDeviceIds) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipeDevice");
+        userPageHistory.setAct("deletePipeDeviceBatchByIds");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return pipeDeviceMapper.deletePipeDeviceBatchByIds(pipeDeviceIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyPipeDeviceBatch(PipeDeviceVo pipeDeviceVo) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipeDevice");
+        userPageHistory.setAct("modifyPipeDeviceBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        pipeDeviceVo.setUpdateUser(UserUtils.getUserId());
+        pipeDeviceVo.setUpdateDate(new Date());
+        return pipeDeviceMapper.updatePipeDeviceBatch(pipeDeviceVo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int modifyPipeDevice(PipeDevice pipeDevice) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipeDevice");
+        userPageHistory.setAct("modifyPipeDevice");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        pipeDevice.setUpdateUser(UserUtils.getUserId());
+        pipeDevice.setUpdateDate(new Date());
+        return pipeDeviceMapper.updateByPrimaryKeySelective(pipeDevice);
+    }
+
+    @Override
+    public PipeDevice getPipeDeviceById(String pipeDeviceId) {
+        return pipeDeviceMapper.selectByPrimaryKey(pipeDeviceId);
+    }
+
+    @Override
+    public List<PipeDevice> getPipeDeviceByAscriptionId(String id) {
+        return pipeDeviceMapper.selectPipeDeviceByAscriptionId(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public PageInfo<PipeDeviceInfo> getAllPipeDevice(String companyId, String stationId, PipeDeviceVo pipeDeviceVo, String order, String sortby, Integer page, Integer pageSize) {
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("pipeDevice");
+        userPageHistory.setAct("getAllPipeDevice");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        List<String> companyIds = new ArrayList<String>();
+        sortby = CamelCaseUtil.toUnderscoreCase(sortby);
+        if (sortby != null) {
+            if (sortby.equals("factory_name")) {
+                sortby = "factory";
+            }
+            if (sortby.equals("device_classify_name")) {
+                sortby = "device_classify";
+            }
+            if (sortby.equals("caliber")) {
+                sortby = "equipmentNo";
+            }
+        }
+//        if(page!=null){
+//            page = (page - 1) * pageSize;
+//        }
+        List<String> ids = new ArrayList<String>();
+        if (companyId == null && stationId != null) {
+            ids.add(stationId);
+        } else {
+            ids = stationServiceImpl.getStationIdList(companyId, null);
+            if (ids.size() > 0) {
+                List<String> producerIds = new ArrayList<String>();
+                for (String id : ids) {
+                    producerIds.add(stationMapper.selectByPrimaryKey(id).getProducerId());
+                    producerIds = Tools.removeDuplicate(producerIds);
+                }
+                ids.addAll(producerIds);
+            }
+        }
+        if (ids.size() > 0) {
+            if (page != null) {
+                PageHelper.startPage(page, pageSize);
+            }
+            List<PipeDeviceInfo> pipeDeviceInfoList = pipeDeviceMapper.selectAllPipeDevice(companyIds, ids, pipeDeviceVo, order, sortby, page, pageSize);
+            PageInfo<PipeDeviceInfo> pageInfo = new PageInfo<>(pipeDeviceInfoList);
+            if (pipeDeviceInfoList.size() > 0) {
+                List<TypeMst> typeMstList = typeMstServiceImpl.getAllTypeMstByRedis();
+                for (PipeDeviceInfo pipeDeviceInfo : pageInfo.getList()) {
+                    pipeDeviceInfo.setFactoryName(typeMstServiceImpl.getTypeNameById(typeMstList, pipeDeviceInfo.getFactory()));
+                    pipeDeviceInfo.setDeviceClassifyName(typeMstServiceImpl.getTypeNameById(typeMstList, pipeDeviceInfo.getDeviceClassify()));
+                    pipeDeviceInfo.setCaliber(typeMstServiceImpl.getTypeNameById(typeMstList, pipeDeviceInfo.getEquipmentNo()));
+//                    if (pipeDeviceInfo.getFactory() != null) {
+//                        if (typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getFactory()) != null) {
+//                            pipeDeviceInfo.setFactoryName(typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getFactory()).getTypeName());
+//                        }
+//                    }
+//                    if (pipeDeviceInfo.getDeviceClassify() != null) {
+//                        if (typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getDeviceClassify()) != null) {
+//                            pipeDeviceInfo.setDeviceClassifyName(typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getDeviceClassify()).getTypeName());
+//                        }
+//                    }
+//                    if (pipeDeviceInfo.getEquipmentNo() != null) {
+//                        if (typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getEquipmentNo()) != null) {
+//                            pipeDeviceInfo.setCaliber(typeMstServiceImpl.getTypeMstById(pipeDeviceInfo.getEquipmentNo()).getTypeName());
+//                        }
+//                    }
+                    if (pipeDeviceInfo.getAscriptionId().length() == 6) {
+                        pipeDeviceInfo.setAscriptionName(stationMapper.selectByPrimaryKey(pipeDeviceInfo.getAscriptionId()).getStationName());
+                    }
+                    if (pipeDeviceInfo.getAscriptionId().length() == 5) {
+                        pipeDeviceInfo.setAscriptionName(producerMapper.selectByPrimaryKey(pipeDeviceInfo.getAscriptionId()).getProducerName());
+                    }
+                }
+            }
+            return pageInfo;
+        } else {
+            return new PageInfo<>();
+        }
+    }
+
+    @Override
+    public ImportResult importExcel(MultipartFile multipartFile, ServletRequest request) {
+
+        ImportResult importResult = new ImportResult();
+        List<PipeDevice> pipeDeviceList = new ArrayList<>();
+        int successCount = 0;
+        List<ErrorInfo> errorInfos = new ArrayList<ErrorInfo>();
+        
+        ExcelTools excel = new ExcelTools();
+        Sheet sheet = excel.getFile(multipartFile, "管线设备信息");
+        //一共有多少行
+        int rows = excel.getRows();
+        CellStyle style = excel.getStyle();
+      	Workbook workbook = excel.getWorkbook();
+        int totalData = 0;        
+        Subord sub = new Subord();
+
+        for (int i = 1; i <= rows + 1; i++) {
+            //读取左上端单元格
+            Row row = sheet.getRow(i);
+            ErrorInfo errorInfo = new ErrorInfo();
+            if (row != null) {
+                if (excel.isCellVolid(row, 23, errorInfos, style)) {
+                	totalData++;
+                    PipeDevice pipeDevice = new PipeDevice();
+                    String companyName = getCellValue(row.getCell(0));
+
+                    Boolean flag = houseService.getSubord(sub, companyName, null, null, null, null, null, null);
+                    if (!flag) {
+                        sub.orderErrorInfo(errorInfos, i, row, style);
+                        continue;
+                    }
+                    pipeDevice.setCompanyId(sub.getCompany().getCompanyId());
+                    pipeDevice.setPipeDeviceName((getCellValue(row.getCell(1))));
+                    if (stationMapper.selectByName(getCellValue(row.getCell(2))) == null && producerMapper.selectByName(getCellValue(row.getCell(2))) == null) {
+                        ExcelTools.addErrorInfo(errorInfos, i ,2,"不存在的归属名", false, row, style);
+                        continue;
+                    } else {
+                        pipeDevice.setAscriptionId(getCellValue(row.getCell(2)));
+                    }
+                    pipeDevice.setFatherNo(getCellValue(row.getCell(3)));
+                    pipeDevice.setPipeDeviceNo(getCellValue(row.getCell(4)));
+                    if (getCellValue(row.getCell(5)).length() != 0) {
+                        try {
+                            pipeDevice.setHight(new BigDecimal(getCellValue(row.getCell(5))));
+                        } catch (Exception e) {
+                            ExcelTools.addErrorInfo(errorInfos, i ,5,"字符串不能转换成数字", false, row, style);
+                        }
+                    }
+                    pipeDevice.setEquipmentNo(getCellValue(row.getCell(6)));
+                    if (getCellValue(row.getCell(7)).length() != 0) {
+                        try {
+                            pipeDevice.setOutDiam(new BigDecimal(getCellValue(row.getCell(7))));
+                        } catch (Exception e) {
+                            ExcelTools.addErrorInfo(errorInfos, i ,7,"字符串不能转换成数字", false, row, style);
+                        }
+                    }
+                    if (getCellValue(row.getCell(8)).length() != 0) {
+                        try {
+                            pipeDevice.setPipeWall(new BigDecimal(getCellValue(row.getCell(8))));
+                        } catch (Exception e) {
+                        	ExcelTools.addErrorInfo(errorInfos, i ,8,"字符串不能转换成数字", false, row, style);
+                        }
+                    }
+                    pipeDevice.setTechniqueParam(getCellValue(row.getCell(9)));
+                    pipeDevice.setFactory(getCellValue(row.getCell(10)));
+                    pipeDevice.setDeviceClassify(getCellValue(row.getCell(11)));
+                    pipeDevice.setChargePerson(getCellValue(row.getCell(12)));
+                    if (getCellValue(row.getCell(13)).length() != 0) {
+                        try {
+                            pipeDevice.setLenth(new BigDecimal(getCellValue(row.getCell(13))));
+                        } catch (Exception e) {
+                        	ExcelTools.addErrorInfo(errorInfos, i ,13,"字符串不能转换成数字", false, row, style);;
+                        }
+                    }
+                    if (getCellValue(row.getCell(14)).length() != 0) {
+                        try {
+                            pipeDevice.setLengthAdjustFactor(new BigDecimal(getCellValue(row.getCell(14))));
+                        } catch (Exception e) {
+                        	ExcelTools.addErrorInfo(errorInfos, i ,14,"字符串不能转换成数字", false, row, style);
+                        }
+                    }
+                    if (getCellValue(row.getCell(15)).length() != 0) {
+                        try {
+                            pipeDevice.setStartTime(new SimpleDateFormat("yyyy-MM-dd").parse(getCellValue(row.getCell(15))));
+                        } catch (ParseException e) {
+                            ExcelTools.addErrorInfo(errorInfos, i ,15,"日期格式错误", false, row, style);
+                        }
+                    }
+                    pipeDevice.setLongitude(getCellValue(row.getCell(16)));
+                    pipeDevice.setLatitude(getCellValue(row.getCell(17)));
+                    pipeDevice.setNotes(getCellValue(row.getCell(18)));
+                    pipeDevice.setMemo1(getCellValue(row.getCell(19)));
+                    pipeDevice.setMemo2(getCellValue(row.getCell(20)));
+                    if (getCellValue(row.getCell(21)).length() != 0) {
+                        try {
+                            pipeDevice.setInDiam(new BigDecimal(getCellValue(row.getCell(21))));
+                        } catch (Exception e) {
+                            ExcelTools.addErrorInfo(errorInfos, i ,21,"字符串不能转换成数字", false, row, style);
+                        }
+                    }
+                    pipeDevice.setPipeId(getCellValue(row.getCell(22)));
+                    try {
+                        pipeDeviceList.add(pipeDevice);
+//                    addPipeDevice(pipeDevice);
+                        if (errorInfo.getPosition() == null) {
+                            successCount += 1;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                } 
+            }
+        }
+        if (errorInfos.size() > 0) {
+            String path = null;
+            String path1 = null;
+            try {
+                path = request.getServletContext().getRealPath("") + "/errorFile/";
+//            path = "C:/errorFile/";
+                File file = new File(path);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                path1 = "pipeDevice-" + UserUtils.getUserId() + "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".xlsx";
+                path += path1;
+                new File(path).createNewFile();
+                FileOutputStream out = new FileOutputStream(path);
+                workbook.write(out);
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            cleanTempFile(path, 24);
+            importResult.setErrorFilePath("/errorFile/" + path1);
+        }
+        importResult.setTotalCount(totalData);
+        importResult.setFailList(errorInfos);
+//        importResult.setSuccessCount(successCount);
+        importResult.setFailCount(totalData - successCount);
+        importResult.setId(UserUtils.getUserId() + UUID.randomUUID().toString().replace("-", "") + "pipeDevice");
+        if(importResult.getFailList().size()==0){
+        	addBatch(pipeDeviceList);
+        }
+        
+        return importResult;
+    }
+
+    @Override
+    public int addBatch(List<PipeDevice> pipeDeviceList) {
+        int count = 0;
+        Boolean b = false;
+        for (PipeDevice pipeDevice : pipeDeviceList) {
+            List<PipeDevice> pipeDevices = getPipeDeviceByAscriptionId(pipeDevice.getAscriptionId());
+            for (PipeDevice pipeDevice1 : pipeDevices) {
+                if (pipeDevice.getPipeDeviceName().equals(pipeDevice1.getPipeDeviceName())) {
+                    b = true;
+                    break;
+                }
+            }
+            if (b) {
+                modifyPipeDevice(pipeDevice);
+                count++;
+            } else {
+                addPipeDevice(pipeDevice);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public String exportExcel(PipeDeviceSelectInfo pipeDeviceSelectInfo, ServletRequest request) {
+        String path=(UUID.randomUUID().toString().replace("-", "")) + "pipeDevice.xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("管线设备信息");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        /*cell.setCellValue("公司");// 设置单元格内容
+        row.createCell(1).setCellValue("管线归属");// 设置单元格内容,重载
+        row.createCell(2).setCellValue("管线类别");
+        row.createCell(3).setCellValue("管线设备名称");
+        row.createCell(4).setCellValue("父节点编号");
+        row.createCell(5).setCellValue("本节点编号");
+        row.createCell(6).setCellValue("本节点标高");
+        row.createCell(7).setCellValue("规格");
+        row.createCell(8).setCellValue("外径");
+        row.createCell(9).setCellValue("管壁");
+        row.createCell(10).setCellValue("技术参数");
+        row.createCell(11).setCellValue("厂家");
+        row.createCell(12).setCellValue("设备归类");
+        row.createCell(13).setCellValue("负责人");
+        row.createCell(14).setCellValue("管道长度");
+        row.createCell(15).setCellValue("当量长度调整系数");
+        row.createCell(16).setCellValue("启用时间");
+        row.createCell(17).setCellValue("本节点经度");
+        row.createCell(18).setCellValue("本节点纬度");
+        row.createCell(19).setCellValue("备注");
+        row.createCell(20).setCellValue("保留1");
+        row.createCell(21).setCellValue("保留2");
+        row.createCell(22).setCellValue("内径");*/
+        cell.setCellValue("管线设备名称");// 设置单元格内容
+        row.createCell(1).setCellValue("归属");
+        row.createCell(2).setCellValue("父节点编号");
+        row.createCell(3).setCellValue("本节点编号");
+        row.createCell(4).setCellValue("本节点标高");
+        row.createCell(5).setCellValue("规格");
+        row.createCell(6).setCellValue("外径");
+        row.createCell(7).setCellValue("管壁");
+        row.createCell(8).setCellValue("厂家");
+        row.createCell(9).setCellValue("设备归类");
+        row.createCell(10).setCellValue("负责人");
+        row.createCell(11).setCellValue("管道（当量）长度（m）");
+        row.createCell(12).setCellValue("当量长度调整系数");
+        row.createCell(13).setCellValue("启用时间");
+        row.createCell(14).setCellValue("经度");
+        row.createCell(15).setCellValue("纬度");
+        row.createCell(16).setCellValue("公司名称");
+        row.createCell(17).setCellValue("备注");
+        row.createCell(18).setCellValue("内径");
+        List<PipeDeviceInfo> pipeDeviceInfoList = new ArrayList<>();
+        pipeDeviceInfoList = getAllPipeDevice(pipeDeviceSelectInfo.getCompanyId(), pipeDeviceSelectInfo.getStationId(),
+                pipeDeviceSelectInfo.getSearchCondition(), pipeDeviceSelectInfo.getOrder(), pipeDeviceSelectInfo.getSortby(), null, null).getList();
+        for (int i = 1; i <= pipeDeviceInfoList.size(); i++) {
+            row = sheet.createRow(i);// 创建行,从0开始
+            cell = row.createCell(0);// 创建行的单元格,也是从0开始
+            cell.setCellValue(pipeDeviceInfoList.get(i - 1).getPipeDeviceName() == null ? "" : pipeDeviceInfoList.get(i - 1).getPipeDeviceName());// 设置单元格内容
+            row.createCell(1).setCellValue(pipeDeviceInfoList.get(i - 1).getAscriptionName() == null ? "" : pipeDeviceInfoList.get(i - 1).getAscriptionName());
+            row.createCell(2).setCellValue(pipeDeviceInfoList.get(i - 1).getFatherNo() == null ? "" : pipeDeviceInfoList.get(i - 1).getFatherNo());
+            row.createCell(3).setCellValue(pipeDeviceInfoList.get(i - 1).getPipeDeviceNo() == null ? "" : pipeDeviceInfoList.get(i - 1).getPipeDeviceNo());
+            if (pipeDeviceInfoList.get(i - 1).getHight() == null) {
+                row.createCell(4).setCellValue("");
+            } else {
+                row.createCell(4).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getHight()));
+            }
+            row.createCell(5).setCellValue(pipeDeviceInfoList.get(i - 1).getCaliber() == null ? "" : pipeDeviceInfoList.get(i - 1).getCaliber());
+            if (pipeDeviceInfoList.get(i - 1).getOutDiam() == null) {
+                row.createCell(6).setCellValue("");
+            } else {
+                row.createCell(6).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getOutDiam()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getPipeWall() == null) {
+                row.createCell(7).setCellValue("");
+            } else {
+                row.createCell(7).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getPipeWall()));
+            }
+            row.createCell(8).setCellValue(pipeDeviceInfoList.get(i - 1).getFactoryName() == null ? "" : pipeDeviceInfoList.get(i - 1).getFactoryName());
+            row.createCell(9).setCellValue(pipeDeviceInfoList.get(i - 1).getDeviceClassifyName() == null ? "" : pipeDeviceInfoList.get(i - 1).getDeviceClassifyName());
+            row.createCell(10).setCellValue(pipeDeviceInfoList.get(i - 1).getChargePerson() == null ? "" : pipeDeviceInfoList.get(i - 1).getChargePerson());
+            if (pipeDeviceInfoList.get(i - 1).getLenth() == null) {
+                row.createCell(11).setCellValue("");
+            } else {
+                row.createCell(11).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getLenth()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getLengthAdjustFactor() == null) {
+                row.createCell(12).setCellValue("");
+            } else {
+                row.createCell(12).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getLengthAdjustFactor()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getStartTime() == null) {
+                row.createCell(13).setCellValue("");
+            } else {
+                row.createCell(13).setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(pipeDeviceInfoList.get(i - 1).getStartTime()));
+            }
+            row.createCell(14).setCellValue(pipeDeviceInfoList.get(i - 1).getLongitude() == null ? "" : pipeDeviceInfoList.get(i - 1).getLongitude());
+            row.createCell(15).setCellValue(pipeDeviceInfoList.get(i - 1).getLatitude() == null ? "" : pipeDeviceInfoList.get(i - 1).getLatitude());
+            row.createCell(16).setCellValue(pipeDeviceInfoList.get(i - 1).getCompanyName() == null ? "" : pipeDeviceInfoList.get(i - 1).getCompanyName());
+            row.createCell(17).setCellValue(pipeDeviceInfoList.get(i - 1).getNotes() == null ? "" : pipeDeviceInfoList.get(i - 1).getNotes());
+            if (pipeDeviceInfoList.get(i - 1).getInDiam() == null) {
+                row.createCell(18).setCellValue("");
+            } else {
+                row.createCell(18).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getInDiam()));
+            }
+            /*cell.setCellValue(pipeDeviceInfoList.get(i - 1).getCompanyName() == null ? "" : pipeDeviceInfoList.get(i - 1).getCompanyName());// 设置单元格内容
+            row.createCell(1).setCellValue(pipeDeviceInfoList.get(i - 1).getAscriptionName() == null ? "" : pipeDeviceInfoList.get(i - 1).getAscriptionName());// 设置单元格内容,重载
+            row.createCell(2).setCellValue(pipeDeviceInfoList.get(i - 1).getPipeTypeName() == null ? "" : pipeDeviceInfoList.get(i - 1).getPipeTypeName());
+            row.createCell(3).setCellValue(pipeDeviceInfoList.get(i - 1).getPipeDeviceName() == null ? "" : pipeDeviceInfoList.get(i - 1).getPipeDeviceName());
+            row.createCell(4).setCellValue(pipeDeviceInfoList.get(i - 1).getFatherNo() == null ? "" : pipeDeviceInfoList.get(i - 1).getFatherNo());
+            row.createCell(5).setCellValue(pipeDeviceInfoList.get(i - 1).getPipeDeviceNo() == null ? "" : pipeDeviceInfoList.get(i - 1).getPipeDeviceNo());
+            if (pipeDeviceInfoList.get(i - 1).getHight() == null) {
+                row.createCell(6).setCellValue("");
+            } else {
+                row.createCell(6).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getHight()));
+            }
+            row.createCell(7).setCellValue(pipeDeviceInfoList.get(i - 1).getEquipmentNo() == null ? "" : pipeDeviceInfoList.get(i - 1).getEquipmentNo());
+            if (pipeDeviceInfoList.get(i - 1).getOutDiam() == null) {
+                row.createCell(8).setCellValue("");
+            } else {
+                row.createCell(8).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getOutDiam()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getPipeWall() == null) {
+                row.createCell(9).setCellValue("");
+            } else {
+                row.createCell(9).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getPipeWall()));
+            }
+            row.createCell(10).setCellValue(pipeDeviceInfoList.get(i - 1).getTechniqueParam() == null ? "" : pipeDeviceInfoList.get(i - 1).getTechniqueParam());
+            row.createCell(11).setCellValue(pipeDeviceInfoList.get(i - 1).getFactoryName() == null ? "" : pipeDeviceInfoList.get(i - 1).getFactoryName());
+            row.createCell(12).setCellValue(pipeDeviceInfoList.get(i - 1).getDeviceClassifyName() == null ? "" : pipeDeviceInfoList.get(i - 1).getDeviceClassifyName());
+            row.createCell(13).setCellValue(pipeDeviceInfoList.get(i - 1).getChargePerson() == null ? "" : pipeDeviceInfoList.get(i - 1).getChargePerson());
+            if (pipeDeviceInfoList.get(i - 1).getLenth() == null) {
+                row.createCell(14).setCellValue("");
+            } else {
+                row.createCell(14).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getLenth()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getLengthAdjustFactor() == null) {
+                row.createCell(15).setCellValue("");
+            } else {
+                row.createCell(15).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getLengthAdjustFactor()));
+            }
+            if (pipeDeviceInfoList.get(i - 1).getStartTime() == null) {
+                row.createCell(16).setCellValue("");
+            } else {
+                row.createCell(16).setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(pipeDeviceInfoList.get(i - 1).getStartTime()));
+            }
+            row.createCell(17).setCellValue(pipeDeviceInfoList.get(i - 1).getLongitude() == null ? "" : pipeDeviceInfoList.get(i - 1).getLongitude());
+            row.createCell(18).setCellValue(pipeDeviceInfoList.get(i - 1).getLatitude() == null ? "" : pipeDeviceInfoList.get(i - 1).getLatitude());
+            row.createCell(19).setCellValue(pipeDeviceInfoList.get(i - 1).getNotes() == null ? "" : pipeDeviceInfoList.get(i - 1).getNotes());
+            row.createCell(20).setCellValue(pipeDeviceInfoList.get(i - 1).getMemo1() == null ? "" : pipeDeviceInfoList.get(i - 1).getMemo1());
+            row.createCell(21).setCellValue(pipeDeviceInfoList.get(i - 1).getMemo2() == null ? "" : pipeDeviceInfoList.get(i - 1).getMemo2());
+            if (pipeDeviceInfoList.get(i - 1).getInDiam() == null) {
+                row.createCell(22).setCellValue("");
+            } else {
+                row.createCell(22).setCellValue(String.valueOf(pipeDeviceInfoList.get(i - 1).getInDiam()));
+            }*/
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("OK!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return path;
+    }
+}

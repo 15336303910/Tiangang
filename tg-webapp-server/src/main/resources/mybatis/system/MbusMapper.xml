@@ -1,0 +1,1578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.mbus.dao.MbusMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    <id column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="install_time" jdbcType="TIMESTAMP" property="installTime" />
+    <result column="install_address" jdbcType="VARCHAR" property="installAddress" />
+    <result column="mbus_code" jdbcType="VARCHAR" property="mbusCode" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="mbus_position" jdbcType="VARCHAR" property="mbusPosition" />
+    <result column="running_state" jdbcType="VARCHAR" property="runningState" />
+    <result column="busy_status" jdbcType="VARCHAR" property="busyStatus" />
+    <result column="up_comm_mode" jdbcType="VARCHAR" property="upCommMode" />
+    <result column="trans_mode" jdbcType="VARCHAR" property="transMode" />
+    <result column="channl_mode" jdbcType="VARCHAR" property="channlMode" />
+    <result column="online_time" jdbcType="TIMESTAMP" property="onlineTime" />
+    <result column="offline_time" jdbcType="TIMESTAMP" property="offlineTime" />
+    <result column="down_pro" jdbcType="VARCHAR" property="downPro" />
+    <result column="mbus_pro" jdbcType="VARCHAR" property="mbusPro" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="socket" jdbcType="VARCHAR" property="socket" />
+    <result column="sim_card" jdbcType="VARCHAR" property="simCard" />
+    <result column="sim_provider" jdbcType="VARCHAR" property="simProvider" />
+    <result column="server_port" jdbcType="VARCHAR" property="serverPort" />
+    <result column="use_start_time" jdbcType="TIMESTAMP" property="useStartTime" />
+    <result column="supper_device_address" jdbcType="VARCHAR" property="supperDeviceAddress" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="is_first" jdbcType="VARCHAR" property="isFirst" />
+    <result column="card_flow" jdbcType="VARCHAR" property="cardFlow" />
+    <result column="send_interval" jdbcType="VARCHAR" property="sendInterval" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="crsq" jdbcType="VARCHAR" property="crsq" />
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.meterMessage.mbus.vo.MbusInfo">
+    <id column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="consumerName" jdbcType="VARCHAR" property="consumerName" />
+    <result column="installTime" jdbcType="TIMESTAMP" property="installTime" />
+    <result column="installAddress" jdbcType="VARCHAR" property="installAddress" />
+    <result column="mbusCode" jdbcType="VARCHAR" property="mbusCode" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="equipmentNo" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="equipmentNoName" jdbcType="VARCHAR" property="equipmentNoName" />
+    <result column="mbusPosition" jdbcType="VARCHAR" property="mbusPosition" />
+    <result column="mbusPositionName" jdbcType="VARCHAR" property="mbusPositionName" />
+    <result column="runningState" jdbcType="VARCHAR" property="runningState" />
+    <result column="runningStateName" jdbcType="VARCHAR" property="runningStateName" />
+    <result column="busyStatus" jdbcType="VARCHAR" property="busyStatus" />
+    <result column="busyStatusName" jdbcType="VARCHAR" property="busyStatusName" />
+    <result column="upCommMode" jdbcType="VARCHAR" property="upCommMode" />
+    <result column="upCommModeName" jdbcType="VARCHAR" property="upCommModeName" />
+    <result column="transMode" jdbcType="VARCHAR" property="transMode" />
+    <result column="transModeName" jdbcType="VARCHAR" property="transModeName" />
+    <result column="channlMode" jdbcType="VARCHAR" property="channlMode" />
+    <result column="channlModeName" jdbcType="VARCHAR" property="channlModeName" />
+    <result column="onlineTime" jdbcType="TIMESTAMP" property="onlineTime" />
+    <result column="offlineTime" jdbcType="TIMESTAMP" property="offlineTime" />
+    <result column="downPro" jdbcType="VARCHAR" property="downPro" />
+    <result column="downProName" jdbcType="VARCHAR" property="downProName" />
+    <result column="mbusPro" jdbcType="VARCHAR" property="mbusPro" />
+    <result column="mbusProName" jdbcType="VARCHAR" property="mbusProName" />
+    <result column="protocol" jdbcType="VARCHAR" property="protocol" />
+    <result column="protocolName" jdbcType="VARCHAR" property="protocolName" />
+    <result column="socket" jdbcType="VARCHAR" property="socket" />
+    <result column="simCard" jdbcType="VARCHAR" property="simCard" />
+    <result column="simProvider" jdbcType="VARCHAR" property="simProvider" />
+    <result column="simProviderName" jdbcType="VARCHAR" property="simProviderName" />
+    <result column="serverPort" jdbcType="VARCHAR" property="serverPort" />
+    <result column="useStartTime" jdbcType="TIMESTAMP" property="useStartTime" />
+    <result column="supperDeviceAddress" jdbcType="VARCHAR" property="supperDeviceAddress" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="isFirst" jdbcType="VARCHAR" property="isFirst" />
+    <result column="isFirstName" jdbcType="VARCHAR" property="isFirstName" />
+    <result column="cardFlow" jdbcType="VARCHAR" property="cardFlow" />
+    <result column="sendInterval" jdbcType="VARCHAR" property="sendInterval" />
+    <result column="sendIntervalName" jdbcType="VARCHAR" property="sendIntervalName" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="crsq" jdbcType="VARCHAR" property="crsq" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mbus_id, consumer_id, install_time, install_address, mbus_code, factory, equipment_no, 
+    mbus_position, running_state, busy_status, up_comm_mode, trans_mode, channl_mode, 
+    online_time, offline_time, down_pro, mbus_pro, protocol, socket, sim_card, sim_provider,
+    server_port, use_start_time, supper_device_address, longitude, latitude, company_id, 
+    address, notes, memo1, memo2, create_date, create_user, update_date,
+    update_user, is_first, card_flow, send_interval, isvalid,crsq
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mbus_info
+    where mbus_id = #{mbusId,jdbcType=VARCHAR} and isvalid = 1
+  </select>
+  <select id="selectByMbusCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from mbus_info
+    where mbus_code = #{mbusCode,jdbcType=VARCHAR} and isvalid = 1
+  </select>
+  <select id="selectAllIds" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    mbus_id
+    from mbus_info
+    limit 0,100000000
+  </select>
+
+  <select id="selectAllCodes" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    mbus_code
+    from mbus_info
+    limit 0,100000000
+  </select>
+
+  <select id="selectDownInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    mbus_code,mbus_id
+    from mbus_info
+    where consumer_id = #{consumerId,jdbcType=VARCHAR} and isvalid = 1
+  </select>
+
+  <select id="selectAllMbusByCompany"  parameterType="java.util.List" resultMap="InfoMap">
+   /* select
+    m.mbus_id,m.company_id,c.company_name companyName,m.consumer_id,m.mbus_code mbusCode,m.install_time installTime,m.factory,
+    (select type_name from type_mst where type_kbn='factory' and type_id=m.factory) factoryName,
+    m.equipment_no equipmentNo,m.mbus_position,
+    (select type_name from type_mst where type_kbn='mbus_position' and type_id=m.mbus_position) mbusPositionName,
+    m.up_comm_mode,(select type_name from type_mst where type_kbn='up_comm_mode' and type_id=m.up_comm_mode) upCommModeName,
+    m.trans_mode,(select type_name from type_mst where type_kbn='trans_mode' and type_id=m.trans_mode) transModeName,
+    m.channl_mode,(select type_name from type_mst where type_kbn='channl_mode' and type_id=m.channl_mode) channlModeName,
+    m.down_pro, (select type_name from type_mst where type_kbn='down_pro' and type_id=m.down_pro) downProName,
+    m.mbus_pro,(select type_name from type_mst where type_kbn='mbus_pro' and type_id=m.down_pro) mbusProName,
+    m.protocol,(select type_name from type_mst where type_kbn='protocol' and type_id=m.protocol) protocolName,
+    m.address,m.longitude, m.latitude,m.sim_card,m.sim_provider,m.server_port serverPort,m.supper_device_address supperDeviceAddress,
+    (select type_name from type_mst where type_kbn='sim_provider' and type_id=m.sim_provider) simProviderName,
+    m.send_interval sendInterval,m.notes,m.is_first isFirst,m.card_flow cardFlow,
+    (select type_name from type_mst where type_kbn='send_interval' and type_id=sendInterval) sendIntervalName,
+    (select type_name from type_mst where type_kbn='is_first' and type_id=isFirst) isFirstName*/
+    select
+    m.mbus_id,m.company_id,c.company_name companyName,m.consumer_id,m.mbus_code mbusCode,m.install_time installTime,m.factory,
+    m.equipment_no equipmentNo,m.mbus_position mbusPosition,m.notes,m.is_first isFirst,m.card_flow cardFlow,m.running_state_time,
+    m.up_comm_mode upCommMode,m.trans_mode transMode,m.channl_mode channlMode,m.down_pro downPro,m.mbus_pro mbusPro,
+    m.protocol,m.address,m.longitude, m.latitude,m.sim_card simCard,m.sim_provider simProvider,m.server_port serverPort,
+    m.supper_device_address supperDeviceAddress,m.send_interval sendInterval,m.socket,m.install_address installAddress,m.crsq
+    from mbus_info m
+    left JOIN company_info c ON m.company_id=c.company_id
+    where  m.isvalid = 1 and m.company_id in
+    <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+
+  <select id="selectAllMbus" parameterType="map" resultMap="InfoMap">
+    select
+    m.mbus_id,m.company_id,c.company_name companyName,m.consumer_id,m.mbus_code mbusCode,m.install_time installTime,m.factory,
+    m.equipment_no equipmentNo,m.mbus_position mbusPosition,m.notes,m.is_first isFirst,m.card_flow cardFlow,m.install_address installAddress,
+    m.up_comm_mode upCommMode,m.trans_mode transMode,m.channl_mode channlMode,m.down_pro downPro,m.mbus_pro mbusPro,
+    m.protocol,m.address,m.longitude, m.latitude,m.sim_card simCard,m.sim_provider simProvider,m.server_port serverPort,
+    m.supper_device_address supperDeviceAddress,m.send_interval sendInterval,m.running_state runningState,m.busy_status busyStatus,m.socket,m.crsq
+    from mbus_info m
+    left JOIN company_info c ON m.company_id=c.company_id
+    where  m.isvalid = 1 and m.mbus_id is not null
+    <if test="companyIds.size() != 0">
+      and m.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="commuityId!=null">
+      and m.consumer_id like(concat(#{commuityId},'%'))
+    </if>
+    <if test="buildingId!=null">
+      and m.consumer_id like(concat(#{buildingId},'%'))
+    </if>
+    <if test="unitId!=null">
+      and m.consumer_id like(concat(#{unitId},'%'))
+    </if>
+    <if test="houseId!=null">
+      and m.consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+        <if test="searchCondition.consumerId != null">
+            and m.consumer_id = #{searchCondition.consumerId,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.installTime != null">
+            and m.install_time = #{searchCondition.installTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.installAddress != null">
+            and m.install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusCode != null">
+            and  m.mbus_code = #{searchCondition.mbusCode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.factory != null">
+            and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.equipmentNo != null">
+            and m.equipment_no = #{searchCondition.equipmentNo,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusPosition != null">
+            and m.mbus_position = #{searchCondition.mbusPosition,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.runningState != null">
+            and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.busyStatus != null">
+            and m.busy_status = #{searchCondition.busyStatus,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.upCommMode != null">
+            and m.up_comm_mode = #{searchCondition.upCommMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.transMode != null">
+            and m.trans_mode = #{searchCondition.transMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.channlMode != null">
+            and m.channl_mode = #{searchCondition.channlMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.onlineTime != null">
+            and m.online_time = #{searchCondition.onlineTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.offlineTime != null">
+            and m.offline_time = #{searchCondition.offlineTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.downPro != null">
+            and m.down_pro = #{searchCondition.downPro,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusPro != null">
+            and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.protocol != null">
+            and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR},
+        </if>
+        <if test="searchCondition.socket != null">
+            and m.socket = #{searchCondition.socket,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.simCard != null">
+            and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.simProvider != null">
+            and m.sim_provider = #{searchCondition.simProvider,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.serverPort != null">
+            and m.server_port = #{searchCondition.serverPort,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.useStartTime != null">
+            and m.use_start_time = #{searchCondition.useStartTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.supperDeviceAddress != null">
+            and m.supper_device_address = #{searchCondition.supperDeviceAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.longitude != null">
+            and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.latitude != null">
+            and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.companyId != null">
+            and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.address != null">
+            and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.notes != null">
+            and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.isFirst != null">
+            and m.is_first = #{searchCondition.isFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.cardFlow != null">
+            and m.card_flow = #{searchCondition.cardFlow,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.sendInterval != null">
+            and m.send_interval = #{searchCondition.sendInterval,jdbcType=VARCHAR}
+        </if>
+    </if>
+      <if test="consumerIds!=null">
+          <if test="consumerIds.size() != 0">
+              and left(m.consumer_id,10) in
+              <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+                  #{item}
+              </foreach>
+          </if>
+      </if>
+    <if test="sortby!=null">
+        order by ${sortby}
+    </if>
+    <if test="order!=null">
+        ${order}
+    </if>
+   <!-- <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>-->
+  </select>
+
+    <select id="selectMbusListCount" parameterType="map" resultType="java.lang.Integer">
+        select count(*)
+        from mbus_info m
+        where  m.isvalid = 1 and m.mbus_id is not null
+        <if test="companyIds.size() != 0">
+            and m.company_id in
+            <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="stationId!=null">
+            and m.consumer_id=#{stationId}
+        </if>
+        <if test="commuityId!=null">
+            and m.consumer_id=#{commuityId}
+        </if>
+        <if test="buildingId!=null">
+            and m.consumer_id=#{buildingId}
+        </if>
+        <if test="unitId!=null">
+            and m.consumer_id=#{unitId}
+        </if>
+        <if test="houseId!=null">
+            and m.consumer_id=#{houseId}
+        </if>
+        <if test="searchCondition!=null">
+            <if test="searchCondition.consumerId != null">
+                and m.consumer_id = #{searchCondition.consumerId,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.installTime != null">
+                and m.install_time = #{searchCondition.installTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="searchCondition.installAddress != null">
+                and m.install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.mbusCode != null">
+                and  m.mbus_code = #{searchCondition.mbusCode,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.factory != null">
+                and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.equipmentNo != null">
+                and m.equipment_no = #{searchCondition.equipmentNo,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.mbusPosition != null">
+                and m.mbus_position = #{searchCondition.mbusPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.runningState != null">
+                and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.busyStatus != null">
+                and m.busy_status = #{searchCondition.busyStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.upCommMode != null">
+                and m.up_comm_mode = #{searchCondition.upCommMode,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.transMode != null">
+                and m.trans_mode = #{searchCondition.transMode,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.channlMode != null">
+                and m.channl_mode = #{searchCondition.channlMode,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.onlineTime != null">
+                and m.online_time = #{searchCondition.onlineTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="searchCondition.offlineTime != null">
+                and m.offline_time = #{searchCondition.offlineTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="searchCondition.downPro != null">
+                and m.down_pro = #{searchCondition.downPro,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.mbusPro != null">
+                and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.protocol != null">
+                and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR},
+            </if>
+            <if test="searchCondition.socket != null">
+                and m.socket = #{searchCondition.socket,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.simCard != null">
+                and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.simProvider != null">
+                and m.sim_provider = #{searchCondition.simProvider,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.serverPort != null">
+                and m.server_port = #{searchCondition.serverPort,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.useStartTime != null">
+                and m.use_start_time = #{searchCondition.useStartTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="searchCondition.supperDeviceAddress != null">
+                and m.supper_device_address = #{searchCondition.supperDeviceAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.longitude != null">
+                and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.latitude != null">
+                and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.companyId != null">
+                and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.address != null">
+                and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.notes != null">
+                and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.isFirst != null">
+                and m.is_first = #{searchCondition.isFirst,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.cardFlow != null">
+                and m.card_flow = #{searchCondition.cardFlow,jdbcType=VARCHAR}
+            </if>
+            <if test="searchCondition.sendInterval != null">
+                and m.send_interval = #{searchCondition.sendInterval,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="consumerIds!=null">
+            <if test="consumerIds.size() != 0">
+                and m.consumer_id in
+                <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mbus_info
+    where mbus_id = #{mbusId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteMbusBatchByIds" parameterType="java.util.List">
+    delete from mbus_info
+    where mbus_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    insert into mbus_info (mbus_id, consumer_id, install_time, 
+      install_address, mbus_code, factory, 
+      equipment_no, mbus_position, running_state, 
+      busy_status, up_comm_mode, trans_mode, 
+      channl_mode, online_time, offline_time, 
+      down_pro, mbus_pro, protocol, 
+      socket, sim_card,
+      sim_provider, server_port, use_start_time, 
+      supper_device_address, longitude, latitude, 
+      company_id, address,
+      notes, memo1, memo2, 
+      create_date, create_user, update_date, 
+      update_user, is_first, card_flow, 
+      send_interval, isvalid)
+    values (#{mbusId,jdbcType=VARCHAR}, #{consumerId,jdbcType=VARCHAR}, #{installTime,jdbcType=TIMESTAMP}, 
+      #{installAddress,jdbcType=VARCHAR}, #{mbusCode,jdbcType=VARCHAR}, #{factory,jdbcType=VARCHAR}, 
+      #{equipmentNo,jdbcType=VARCHAR}, #{mbusPosition,jdbcType=VARCHAR}, #{runningState,jdbcType=VARCHAR}, 
+      #{busyStatus,jdbcType=VARCHAR}, #{upCommMode,jdbcType=VARCHAR}, #{transMode,jdbcType=VARCHAR}, 
+      #{channlMode,jdbcType=VARCHAR}, #{onlineTime,jdbcType=TIMESTAMP}, #{offlineTime,jdbcType=TIMESTAMP}, 
+      #{downPro,jdbcType=VARCHAR}, #{mbusPro,jdbcType=VARCHAR}, #{protocol,jdbcType=VARCHAR}, 
+      #{socket,jdbcType=VARCHAR},  #{simCard,jdbcType=VARCHAR},
+      #{simProvider,jdbcType=VARCHAR}, #{serverPort,jdbcType=VARCHAR}, #{useStartTime,jdbcType=TIMESTAMP}, 
+      #{supperDeviceAddress,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{isFirst,jdbcType=VARCHAR}, #{cardFlow,jdbcType=VARCHAR}, 
+      #{sendInterval,jdbcType=INTEGER}, #{isvalid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    insert into mbus_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mbusId != null">
+        mbus_id,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="installTime != null">
+        install_time,
+      </if>
+      <if test="installAddress != null">
+        install_address,
+      </if>
+      <if test="mbusCode != null">
+        mbus_code,
+      </if>
+      <if test="factory != null">
+        factory,
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no,
+      </if>
+      <if test="mbusPosition != null">
+        mbus_position,
+      </if>
+      <if test="runningState != null">
+        running_state,
+      </if>
+      <if test="busyStatus != null">
+        busy_status,
+      </if>
+      <if test="upCommMode != null">
+        up_comm_mode,
+      </if>
+      <if test="transMode != null">
+        trans_mode,
+      </if>
+      <if test="channlMode != null">
+        channl_mode,
+      </if>
+      <if test="onlineTime != null">
+        online_time,
+      </if>
+      <if test="offlineTime != null">
+        offline_time,
+      </if>
+      <if test="downPro != null">
+        down_pro,
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro,
+      </if>
+      <if test="protocol != null">
+        protocol,
+      </if>
+      <if test="socket != null">
+        socket,
+      </if>
+      <if test="simCard != null">
+        sim_card,
+      </if>
+      <if test="simProvider != null">
+        sim_provider,
+      </if>
+      <if test="serverPort != null">
+        server_port,
+      </if>
+      <if test="useStartTime != null">
+        use_start_time,
+      </if>
+      <if test="supperDeviceAddress != null">
+        supper_device_address,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="isFirst != null">
+        is_first,
+      </if>
+      <if test="cardFlow != null">
+        card_flow,
+      </if>
+      <if test="sendInterval != null">
+        send_interval,
+      </if>
+      <if test="isvalid != null">
+        isvalid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mbusId != null">
+        #{mbusId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installAddress != null">
+        #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusCode != null">
+        #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPosition != null">
+        #{mbusPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="busyStatus != null">
+        #{busyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="upCommMode != null">
+        #{upCommMode,jdbcType=VARCHAR},
+      </if>
+      <if test="transMode != null">
+        #{transMode,jdbcType=VARCHAR},
+      </if>
+      <if test="channlMode != null">
+        #{channlMode,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null">
+        #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="offlineTime != null">
+        #{offlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downPro != null">
+        #{downPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="socket != null">
+        #{socket,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="simProvider != null">
+        #{simProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPort != null">
+        #{serverPort,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartTime != null">
+        #{useStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="supperDeviceAddress != null">
+        #{supperDeviceAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isFirst != null">
+        #{isFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cardFlow != null">
+        #{cardFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="sendInterval != null">
+        #{sendInterval,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    update mbus_info
+    <set>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="installTime != null">
+        install_time = #{installTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="installAddress != null">
+        install_address = #{installAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusCode != null">
+        mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPosition != null">
+        mbus_position = #{mbusPosition,jdbcType=VARCHAR},
+      </if>
+      <if test="runningState != null">
+        running_state = #{runningState,jdbcType=VARCHAR},
+      </if>
+      <if test="busyStatus != null">
+        busy_status = #{busyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="upCommMode != null">
+        up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+      </if>
+      <if test="transMode != null">
+        trans_mode = #{transMode,jdbcType=VARCHAR},
+      </if>
+      <if test="channlMode != null">
+        channl_mode = #{channlMode,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null">
+        online_time = #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="offlineTime != null">
+        offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downPro != null">
+        down_pro = #{downPro,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusPro != null">
+        mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="socket != null">
+        socket = #{socket,jdbcType=VARCHAR},
+      </if>
+      <if test="simCard != null">
+        sim_card = #{simCard,jdbcType=VARCHAR},
+      </if>
+      <if test="simProvider != null">
+        sim_provider = #{simProvider,jdbcType=VARCHAR},
+      </if>
+      <if test="serverPort != null">
+        server_port = #{serverPort,jdbcType=VARCHAR},
+      </if>
+      <if test="useStartTime != null">
+        use_start_time = #{useStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="supperDeviceAddress != null">
+        supper_device_address = #{supperDeviceAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isFirst != null">
+        is_first = #{isFirst,jdbcType=VARCHAR},
+      </if>
+      <if test="cardFlow != null">
+        card_flow = #{cardFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="sendInterval != null">
+        send_interval = #{sendInterval,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        isvalid = #{isvalid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mbus_id = #{mbusId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    update mbus_info
+    set consumer_id = #{consumerId,jdbcType=VARCHAR},
+      install_time = #{installTime,jdbcType=TIMESTAMP},
+      install_address = #{installAddress,jdbcType=VARCHAR},
+      mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      factory = #{factory,jdbcType=VARCHAR},
+      equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      mbus_position = #{mbusPosition,jdbcType=VARCHAR},
+      running_state = #{runningState,jdbcType=VARCHAR},
+      busy_status = #{busyStatus,jdbcType=VARCHAR},
+      up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+      trans_mode = #{transMode,jdbcType=VARCHAR},
+      channl_mode = #{channlMode,jdbcType=VARCHAR},
+      online_time = #{onlineTime,jdbcType=TIMESTAMP},
+      offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+      down_pro = #{downPro,jdbcType=VARCHAR},
+      mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+      protocol = #{protocol,jdbcType=VARCHAR},
+      socket = #{socket,jdbcType=VARCHAR},
+      sim_card = #{simCard,jdbcType=VARCHAR},
+      sim_provider = #{simProvider,jdbcType=VARCHAR},
+      server_port = #{serverPort,jdbcType=VARCHAR},
+      use_start_time = #{useStartTime,jdbcType=TIMESTAMP},
+      supper_device_address = #{supperDeviceAddress,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      is_first = #{isFirst,jdbcType=VARCHAR},
+      card_flow = #{cardFlow,jdbcType=VARCHAR},
+      send_interval = #{sendInterval,jdbcType=VARCHAR},
+      isvalid = #{isvalid,jdbcType=INTEGER}
+    where mbus_id = #{mbusId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateDelBatchByIds" parameterType="map">
+    update mbus_info
+    set
+      isvalid = 0,
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where mbus_id in
+    <foreach collection="mbusIds" item="item" open="(" separator="," close=")" >
+      #{item}
+    </foreach>
+  </update>
+
+    <update id="updateBatch" parameterType="cn.plou.web.system.meterMessage.mbus.vo.MbusVo">
+        update mbus_info
+        <set>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="installTime != null">
+                install_time = #{installTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="installAddress != null">
+                install_address = #{installAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusCode != null">
+                mbus_code = #{mbusCode,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentNo != null">
+                equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPosition != null">
+                mbus_position = #{mbusPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="runningState != null">
+                running_state = #{runningState,jdbcType=VARCHAR},
+            </if>
+            <if test="busyStatus != null">
+                busy_status = #{busyStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="upCommMode != null">
+                up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+            </if>
+            <if test="transMode != null">
+                trans_mode = #{transMode,jdbcType=VARCHAR},
+            </if>
+            <if test="channlMode != null">
+                channl_mode = #{channlMode,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineTime != null">
+                online_time = #{onlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="offlineTime != null">
+                offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="downPro != null">
+                down_pro = #{downPro,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPro != null">
+                mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+            </if>
+            <if test="protocol != null">
+                protocol = #{protocol,jdbcType=VARCHAR},
+            </if>
+            <if test="socket != null">
+                socket = #{socket,jdbcType=VARCHAR},
+            </if>
+            <if test="simCard != null">
+                sim_card = #{simCard,jdbcType=VARCHAR},
+            </if>
+            <if test="simProvider != null">
+                sim_provider = #{simProvider,jdbcType=VARCHAR},
+            </if>
+            <if test="serverPort != null">
+                server_port = #{serverPort,jdbcType=VARCHAR},
+            </if>
+            <if test="useStartTime != null">
+                use_start_time = #{useStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="supperDeviceAddress != null">
+                supper_device_address = #{supperDeviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="isFirst != null">
+                is_first = #{isFirst,jdbcType=VARCHAR},
+            </if>
+            <if test="cardFlow != null">
+                card_flow = #{cardFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="sendInterval != null">
+                send_interval = #{sendInterval,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where mbus_id in
+        <foreach collection="mbusIds" item="item" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </update>
+    
+    <update id="updateBatchAll" parameterType="cn.plou.web.system.meterMessage.mbus.vo.MbusVo">
+        update mbus_info
+        <set>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="installTime != null">
+                install_time = #{installTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="installAddress != null">
+                install_address = #{installAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusCode != null">
+                mbus_code = #{mbusCode,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentNo != null">
+                equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPosition != null">
+                mbus_position = #{mbusPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="runningState != null">
+                running_state = #{runningState,jdbcType=VARCHAR},
+            </if>
+            <if test="busyStatus != null">
+                busy_status = #{busyStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="upCommMode != null">
+                up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+            </if>
+            <if test="transMode != null">
+                trans_mode = #{transMode,jdbcType=VARCHAR},
+            </if>
+            <if test="channlMode != null">
+                channl_mode = #{channlMode,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineTime != null">
+                online_time = #{onlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="offlineTime != null">
+                offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="downPro != null">
+                down_pro = #{downPro,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPro != null">
+                mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+            </if>
+            <if test="protocol != null">
+                protocol = #{protocol,jdbcType=VARCHAR},
+            </if>
+            <if test="socket != null">
+                socket = #{socket,jdbcType=VARCHAR},
+            </if>
+            <if test="simCard != null">
+                sim_card = #{simCard,jdbcType=VARCHAR},
+            </if>
+            <if test="simProvider != null">
+                sim_provider = #{simProvider,jdbcType=VARCHAR},
+            </if>
+            <if test="serverPort != null">
+                server_port = #{serverPort,jdbcType=VARCHAR},
+            </if>
+            <if test="useStartTime != null">
+                use_start_time = #{useStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="supperDeviceAddress != null">
+                supper_device_address = #{supperDeviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="isFirst != null">
+                is_first = #{isFirst,jdbcType=VARCHAR},
+            </if>
+            <if test="cardFlow != null">
+                card_flow = #{cardFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="sendInterval != null">
+                send_interval = #{sendInterval,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+         where consumer_id like (CONCAT(#{batchModifyId,jdbcType=VARCHAR},'%'))
+    </update>
+    
+    <update id="updateBatchAllStation" parameterType="cn.plou.web.system.meterMessage.mbus.vo.MbusVo">
+        update mbus_info
+        <set>
+            <if test="consumerId != null">
+                consumer_id = #{consumerId,jdbcType=VARCHAR},
+            </if>
+            <if test="installTime != null">
+                install_time = #{installTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="installAddress != null">
+                install_address = #{installAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusCode != null">
+                mbus_code = #{mbusCode,jdbcType=VARCHAR},
+            </if>
+            <if test="factory != null">
+                factory = #{factory,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentNo != null">
+                equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPosition != null">
+                mbus_position = #{mbusPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="runningState != null">
+                running_state = #{runningState,jdbcType=VARCHAR},
+            </if>
+            <if test="busyStatus != null">
+                busy_status = #{busyStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="upCommMode != null">
+                up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+            </if>
+            <if test="transMode != null">
+                trans_mode = #{transMode,jdbcType=VARCHAR},
+            </if>
+            <if test="channlMode != null">
+                channl_mode = #{channlMode,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineTime != null">
+                online_time = #{onlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="offlineTime != null">
+                offline_time = #{offlineTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="downPro != null">
+                down_pro = #{downPro,jdbcType=VARCHAR},
+            </if>
+            <if test="mbusPro != null">
+                mbus_pro = #{mbusPro,jdbcType=VARCHAR},
+            </if>
+            <if test="protocol != null">
+                protocol = #{protocol,jdbcType=VARCHAR},
+            </if>
+            <if test="socket != null">
+                socket = #{socket,jdbcType=VARCHAR},
+            </if>
+            <if test="simCard != null">
+                sim_card = #{simCard,jdbcType=VARCHAR},
+            </if>
+            <if test="simProvider != null">
+                sim_provider = #{simProvider,jdbcType=VARCHAR},
+            </if>
+            <if test="serverPort != null">
+                server_port = #{serverPort,jdbcType=VARCHAR},
+            </if>
+            <if test="useStartTime != null">
+                use_start_time = #{useStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="supperDeviceAddress != null">
+                supper_device_address = #{supperDeviceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="isFirst != null">
+                is_first = #{isFirst,jdbcType=VARCHAR},
+            </if>
+            <if test="cardFlow != null">
+                card_flow = #{cardFlow,jdbcType=VARCHAR},
+            </if>
+            <if test="sendInterval != null">
+                send_interval = #{sendInterval,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </set>
+          where 
+		 <foreach collection="communitys" item="item" index="index"  separator="OR">
+	          `consumer_id` LIKE CONCAT(#{item},'%')
+	     </foreach>
+    </update>
+    <select id="selectByMbusCodes" parameterType="list" resultType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+    select
+    mbus_id, mbus_code, down_pro
+    from mbus_info
+    where  isvalid = 1
+    <if test="list != null">
+      and mbus_code in
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item.mbusCode}
+      </foreach>
+    </if>
+  </select>
+	  <update id = "updateDownProt1" parameterType="list">
+		  <foreach collection="list" item="item" index="index" close="" separator=";">
+		  	update mbus_info set down_pro =#{item.downPro} where mbus_code=#{item.mbusCode}
+		  	</foreach>
+	  </update>
+    <update id = "updateDownProt" parameterType="cn.plou.web.system.meterMessage.mbus.entity.Mbus">
+  		update mbus_info set down_pro =#{downPro} where mbus_code=#{mbusCode}	
+  </update>
+  
+  <select id="selectAllMbus2" parameterType="map" resultMap="InfoMap">
+    select
+    m.mbus_id,m.company_id,c.company_name companyName,m.consumer_id,m.mbus_code mbusCode,m.install_time installTime,m.factory,
+    m.equipment_no equipmentNo,m.mbus_position mbusPosition,m.notes,m.is_first isFirst,m.card_flow cardFlow,m.install_address installAddress,
+    m.up_comm_mode upCommMode,m.trans_mode transMode,m.channl_mode channlMode,m.down_pro downPro,m.mbus_pro mbusPro,
+    m.protocol,m.address,m.longitude, m.latitude,m.sim_card simCard,m.sim_provider simProvider,m.server_port serverPort,
+    m.supper_device_address supperDeviceAddress,m.send_interval sendInterval,m.running_state runningState,m.busy_status busyStatus,m.socket,m.crsq
+    from mbus_info m
+    left JOIN company_info c ON m.company_id=c.company_id
+    where  m.isvalid = 1 and m.mbus_id is not null 
+    <if test="companyIds.size() != 0">
+       and m.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+	<choose>
+		<when test="stationIds.size() != 0">
+			and ((m.mbus_position='1' and m.consumer_id in
+			<foreach collection="stationIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			)
+			<if test="commuityIds.size() != 0">
+				 or left(m.consumer_id,10) in
+				<foreach collection="commuityIds" item="item" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</when>
+		<when test="stationIds.size() == 0 and commuityIds.size() != 0">
+			and left(m.consumer_id,10) in
+			<foreach collection="commuityIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</when>
+	</choose>
+    <if test="buildingId!=null">
+      and m.consumer_id like(concat(#{buildingId},'%'))
+    </if>
+    <if test="unitId!=null">
+      and m.consumer_id like(concat(#{unitId},'%'))
+    </if>
+    <if test="houseId!=null">
+      and m.consumer_id=#{houseId}
+    </if>
+    <if test="searchCondition!=null">
+        <if test="searchCondition.consumerId != null">
+            and m.consumer_id = #{searchCondition.consumerId,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.installTime != null">
+            and m.install_time = #{searchCondition.installTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.installAddress != null">
+            and m.install_address = #{searchCondition.installAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusCode != null">
+            and  m.mbus_code = #{searchCondition.mbusCode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.factory != null">
+            and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.equipmentNo != null">
+            and m.equipment_no = #{searchCondition.equipmentNo,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusPosition != null">
+            and m.mbus_position = #{searchCondition.mbusPosition,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.runningState != null">
+            and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.busyStatus != null">
+            and m.busy_status = #{searchCondition.busyStatus,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.upCommMode != null">
+            and m.up_comm_mode = #{searchCondition.upCommMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.transMode != null">
+            and m.trans_mode = #{searchCondition.transMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.channlMode != null">
+            and m.channl_mode = #{searchCondition.channlMode,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.onlineTime != null">
+            and m.online_time = #{searchCondition.onlineTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.offlineTime != null">
+            and m.offline_time = #{searchCondition.offlineTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.downPro != null">
+            and m.down_pro = #{searchCondition.downPro,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.mbusPro != null">
+            and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.protocol != null">
+            and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR},
+        </if>
+        <if test="searchCondition.socket != null">
+            and m.socket = #{searchCondition.socket,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.simCard != null">
+            and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.simProvider != null">
+            and m.sim_provider = #{searchCondition.simProvider,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.serverPort != null">
+            and m.server_port = #{searchCondition.serverPort,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.useStartTime != null">
+            and m.use_start_time = #{searchCondition.useStartTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="searchCondition.supperDeviceAddress != null">
+            and m.supper_device_address = #{searchCondition.supperDeviceAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.longitude != null">
+            and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.latitude != null">
+            and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.companyId != null">
+            and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.address != null">
+            and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.notes != null">
+            and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.isFirst != null">
+            and m.is_first = #{searchCondition.isFirst,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.cardFlow != null">
+            and m.card_flow = #{searchCondition.cardFlow,jdbcType=VARCHAR}
+        </if>
+        <if test="searchCondition.sendInterval != null">
+            and m.send_interval = #{searchCondition.sendInterval,jdbcType=VARCHAR}
+        </if>
+    </if>
+      <if test="consumerIds!=null">
+          <if test="consumerIds.size() != 0">
+              and left(m.consumer_id,10) in
+              <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+                  #{item}
+              </foreach>
+          </if>
+      </if>
+    <if test="sortby!=null">
+        order by ${sortby}
+    </if>
+    <if test="order!=null">
+        ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+  
+  <select id="selectMbusListCount2" parameterType="map" resultType="java.lang.Integer">
+	select count(*)
+	from mbus_info m
+	where m.isvalid = 1 and m.mbus_id is not
+	null
+	<if test="companyIds.size() != 0">
+		and m.company_id in
+		<foreach collection="companyIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</if>
+	<choose>
+		<when test="stationIds.size() != 0">
+			and ((m.mbus_position='1' and m.consumer_id in
+			<foreach collection="stationIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			)
+			<if test="commuityIds.size() != 0">
+				 or left(m.consumer_id,10) in
+				<foreach collection="commuityIds" item="item" open="("
+					separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</when>
+		<when test="stationIds.size() == 0 and commuityIds.size() != 0">
+			and left(m.consumer_id,10) in
+			<foreach collection="commuityIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</when>
+	</choose>
+	<if test="buildingId!=null">
+		and m.consumer_id=#{buildingId}
+	</if>
+	<if test="unitId!=null">
+		and m.consumer_id=#{unitId}
+	</if>
+	<if test="houseId!=null">
+		and m.consumer_id=#{houseId}
+	</if>
+	<if test="searchCondition!=null">
+		<if test="searchCondition.consumerId != null">
+			and m.consumer_id = #{searchCondition.consumerId,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.installTime != null">
+			and m.install_time = #{searchCondition.installTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="searchCondition.installAddress != null">
+			and m.install_address =
+			#{searchCondition.installAddress,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.mbusCode != null">
+			and m.mbus_code = #{searchCondition.mbusCode,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.factory != null">
+			and m.factory = #{searchCondition.factory,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.equipmentNo != null">
+			and m.equipment_no = #{searchCondition.equipmentNo,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.mbusPosition != null">
+			and m.mbus_position = #{searchCondition.mbusPosition,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.runningState != null">
+			and m.running_state = #{searchCondition.runningState,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.busyStatus != null">
+			and m.busy_status = #{searchCondition.busyStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.upCommMode != null">
+			and m.up_comm_mode = #{searchCondition.upCommMode,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.transMode != null">
+			and m.trans_mode = #{searchCondition.transMode,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.channlMode != null">
+			and m.channl_mode = #{searchCondition.channlMode,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.onlineTime != null">
+			and m.online_time = #{searchCondition.onlineTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="searchCondition.offlineTime != null">
+			and m.offline_time = #{searchCondition.offlineTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="searchCondition.downPro != null">
+			and m.down_pro = #{searchCondition.downPro,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.mbusPro != null">
+			and m.mbus_pro = #{searchCondition.mbusPro,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.protocol != null">
+			and m.protocol = #{searchCondition.protocol,jdbcType=VARCHAR},
+		</if>
+		<if test="searchCondition.socket != null">
+			and m.socket = #{searchCondition.socket,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.simCard != null">
+			and m.sim_card = #{searchCondition.simCard,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.simProvider != null">
+			and m.sim_provider = #{searchCondition.simProvider,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.serverPort != null">
+			and m.server_port = #{searchCondition.serverPort,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.useStartTime != null">
+			and m.use_start_time =
+			#{searchCondition.useStartTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="searchCondition.supperDeviceAddress != null">
+			and m.supper_device_address =
+			#{searchCondition.supperDeviceAddress,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.longitude != null">
+			and m.longitude = #{searchCondition.longitude,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.latitude != null">
+			and m.latitude = #{searchCondition.latitude,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.companyId != null">
+			and m.company_id = #{searchCondition.companyId,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.address != null">
+			and m.address = #{searchCondition.address,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.notes != null">
+			and m.notes = #{searchCondition.notes,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.isFirst != null">
+			and m.is_first = #{searchCondition.isFirst,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.cardFlow != null">
+			and m.card_flow = #{searchCondition.cardFlow,jdbcType=VARCHAR}
+		</if>
+		<if test="searchCondition.sendInterval != null">
+			and m.send_interval = #{searchCondition.sendInterval,jdbcType=VARCHAR}
+		</if>
+	</if>
+	<if test="consumerIds!=null">
+		<if test="consumerIds.size() != 0">
+			and m.consumer_id in
+			<foreach collection="consumerIds" item="item" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</if>
+  </select>
+    <update id="modifyMbusAddressbyConsumer" parameterType="map">
+    	update mbus_info
+    		set address = replace(address,#{orgAddress},#{changedAddress}) where consumer_id like (concat(#{consumerId},'%'))
+  </update> 
+      <update id="modifyMbusAddress" parameterType="map">
+    	update mbus_info
+    		set address = #{address} where consumer_id = #{consumerId}
+     </update>   
+</mapper>

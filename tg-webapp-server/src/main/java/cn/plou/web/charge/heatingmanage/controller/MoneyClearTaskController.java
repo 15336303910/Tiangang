@@ -1,0 +1,227 @@
+package cn.plou.web.charge.heatingmanage.controller;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import cn.plou.web.charge.chargeconfig.entity.SmsInfo;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.service.PriceDefineService;
+import cn.plou.web.charge.chargeconfig.service.SmsInfoService;
+import cn.plou.web.charge.chargeconfig.service.UserYearHeatService;
+import cn.plou.web.charge.heatingmanage.domain.MoneyClearTask;
+import cn.plou.web.charge.heatingmanage.domain.TaskNumResult;
+import cn.plou.web.charge.heatingmanage.service.MoneyClearTaskService;
+import cn.plou.web.charge.smscenter.service.AliFishService;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import cn.plou.web.common.utils.FlowIdTool;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.common.utils.a1.DateUtil;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.permission.userLogin.service.UserLoginService;
+import com.aliyuncs.exceptions.ClientException;
+import com.github.pagehelper.PageInfo;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/23 8:41
+ */
+
+@RestController
+@RequestMapping("${chargePath}/moneyClearTask")
+public class MoneyClearTaskController {
+
+    @Resource
+    private MoneyClearTaskService moneyClearTaskService;
+    @Resource
+    private PriceDefineService priceDefineService;
+
+    @Resource
+    private SmsInfoService smsInfoService;
+    @Resource
+    private AliFishService aliFishService;
+
+    @Resource
+    private UserLoginService userLoginService;
+    @Resource
+    private HouseService houseService;
+
+    @Resource
+    private UserYearHeatService userYearHeatService;
+
+    @RequestMapping("/getTaskList")
+    public Object getList(@Valid MoneyClearTask moneyClearTask,
+                          BindingResult bindingResult,
+                          @RequestParam(value = "beginCreateDate", required = false) String beginCreateDate,
+                          @RequestParam(value = "endCreateDate", required = false) String endCreateDate,
+                          HttpServletRequest request) {
+
+        BindingResultHandler.handle(bindingResult);
+        BasePageEntity basePageEntity = new BasePageEntity();
+        basePageEntity.setPageParams(request);
+        Root root = new Root();
+        PageInfo pageInfo = moneyClearTaskService.getMoneyClearTaskList(beginCreateDate, endCreateDate, null, moneyClearTask, basePageEntity);
+        root.setData(pageInfo.getList());
+        root.setCond(getCond(basePageEntity.getPage(), basePageEntity.getPageSize(), (int) pageInfo.getTotal(),
+                basePageEntity.getSortby(), basePageEntity.getOrder()));
+
+        return root;
+
+    }
+
+
+    /**
+     * @return 生成清欠任务列表
+     */
+    @RequestMapping("/generateTasks")
+    public Boolean generateTaskList(@RequestBody List<String> consumerIdList) {
+        List<UserYearHeat> userYearHeatList = userYearHeatService.findAllUserYearHeatsByConsumerIds(consumerIdList);
+        List<MoneyClearTask> moneyClearTaskList = new ArrayList<>();
+        String userName = userLoginService.getUserLoginById(UserUtils.getUserId()).getUsername();
+        MoneyClearTask moneyClearTask = null;
+
+        for (UserYearHeat userYearHeat : userYearHeatList) {
+            moneyClearTask = new MoneyClearTask();
+
+            moneyClearTask.setPrimaryId(userYearHeat.getConsumerId() + "" + DateUtil.toDateTimeString(new Date(), "yyyyMMdd"));
+            moneyClearTask.setAnnual("");//是否是当前年度 待确认
+            moneyClearTask.setConsumerId(userYearHeat.getConsumerId());
+            moneyClearTask.setCompanyId(userYearHeat.getCompanyId());
+            moneyClearTask.setArrearsYear(userYearHeat.getAnnual());
+            moneyClearTask.setFeePayable(userYearHeat.getSumReceivable());
+            moneyClearTask.setFeeArrearage(userYearHeat.getSumReceivable().subtract(userYearHeat.getSumReceivable()));
+            moneyClearTask.setReminders("无");
+            moneyClearTask.setTaskDate(null);//暂不填
+            moneyClearTask.setExecutDept("");//暂不填
+            moneyClearTask.setExecutPerson("");//暂不填
+            moneyClearTask.setExecutContent("");//暂不填
+            moneyClearTask.setUserName(userYearHeat.getName());
+            moneyClearTask.setUserTelephone(userYearHeat.getTel());
+            moneyClearTask.setExecutPersonName("");//暂不填
+            moneyClearTask.setHeatUserId(userYearHeat.getHeatUserType());
+            moneyClearTask.setNetApp("");//暂不填
+            moneyClearTask.setNetIdentification("");//暂不填
+            moneyClearTask.setExecutRecord("");//暂不填
+            moneyClearTask.setExecutTime(null);//暂不填
+            moneyClearTask.setExecutFlag("");//暂不填
+            moneyClearTask.setRepairPerson("");//暂不填
+            moneyClearTask.setNotes("");//暂不填
+            moneyClearTask.setCreateDate(new Date());
+            moneyClearTask.setCreateUser(userName);
+            moneyClearTask.setUpdateDate(null);//暂不填
+            moneyClearTask.setUpdateUser("");//暂不填
+
+            moneyClearTaskList.add(moneyClearTask);
+        }
+
+        return moneyClearTaskService.addMoneyClearTaskList(moneyClearTaskList) == moneyClearTaskList.size();
+
+    }
+
+
+    /**
+     * @param primaryIds
+     * @return 【短信催缴】批量发送短信测试仅
+     * templateId
+     */
+    @RequestMapping("/sendBatchMessage")
+    public Object sendBatchMessage(@RequestBody String[] primaryIds, HttpServletRequest request) throws ClientException {
+        List<MoneyClearTask> moneyClearTasks = new ArrayList<>();
+        moneyClearTasks = moneyClearTaskService.findByprimaryIds(primaryIds);
+
+        String templateId = request.getParameter("templateId");
+        String companyId = request.getParameter("companyId");
+        SmsInfo smsInfo = new SmsInfo();
+        String annual = priceDefineService.findCurrentHeatAnnual(companyId);
+        String userName = userLoginService.getUserLoginById(UserUtils.getUserId()).getUsername();
+        for (MoneyClearTask moneyClearTask : moneyClearTasks) {
+            try {
+                smsInfo = aliFishService.sendMessageByAliFishAndRecord(moneyClearTask, templateId, companyId);
+                smsInfo.setAnnual(annual);
+                smsInfo.setCreateUser(userName);
+                smsInfoService.insert(smsInfo);
+                moneyClearTask.setReminders("reminders_1");//短信催缴
+                moneyClearTaskService.updateByPrimaryKeySelective(moneyClearTask);//更新催缴措施
+            } catch (ClientException e) {
+                e.printStackTrace();
+            }
+        }
+        Root root = new Root();
+        root.setMsg("发送完成！");
+        root.setData(null);//这里先设置为空 ，后期看业务需求再加上相关的信息
+        return root;
+
+    }
+
+
+    /**
+     * @param id
+     * @return 统计分析-任务查询-清欠催缴
+     */
+    @GetMapping("/getTotalData")
+    public Object getTotal(@RequestParam String id,
+                           @RequestParam(value = "beginCreateDate", required = false) String beginCreateDate,
+                           @RequestParam(value = "endCreateDate", required = false) String endCreateDate,
+                           @RequestParam(value = "reminders", required = false) String reminders,
+                           @RequestParam(value = "executPerson", required = false) String executPerson,
+                           HttpServletRequest request) {
+
+
+        List<String> consumerIdList = new ArrayList<>();
+        List<House> houseList = houseService.getHouseListById(id);
+        for (House house : houseList) {
+            consumerIdList.add(house.getConsumerId());
+        }
+
+
+        MoneyClearTask paramTask = new MoneyClearTask();
+        paramTask.setReminders(reminders);
+        paramTask.setExecutPerson(executPerson);
+        BasePageEntity basePageEntity = new BasePageEntity();
+        basePageEntity.setPageParams(request);
+        Root root = new Root();
+        PageInfo pageInfo = moneyClearTaskService.getMoneyClearTaskList(beginCreateDate, endCreateDate, consumerIdList, paramTask, basePageEntity);
+        root.setCond(getCond(basePageEntity.getPage(), basePageEntity.getPageSize(), (int) pageInfo.getTotal(),
+                basePageEntity.getSortby(), basePageEntity.getOrder()));
+
+        TaskNumResult numAnalysis = moneyClearTaskService.getTaskNum(beginCreateDate, endCreateDate, consumerIdList, paramTask);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        resultMap.put("tableList", pageInfo.getList());
+        resultMap.put("numAnalysis", numAnalysis);
+        root.setData(resultMap);
+
+        return root;
+    }
+
+
+    /**
+     * @return
+     */
+    @GetMapping("/updateTask")
+    public Object updateTask(@RequestBody List<MoneyClearTask> moneyClearTasks) {
+        Root root = new Root();
+        root.setMsg("操作成功！");
+        for (MoneyClearTask moneyClearTask : moneyClearTasks) {
+            try {
+                moneyClearTaskService.updateByPrimaryKeySelective(moneyClearTask);
+            } catch (Exception e) {
+                root.setCode(1);
+                root.setMsg("部分条目更新失败！");
+                e.printStackTrace();
+            }
+        }
+        return root;
+    }
+}

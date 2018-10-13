@@ -1,0 +1,37 @@
+package cn.plou.web.system.organizationMessage.staff.dao;
+
+import cn.plou.web.system.organizationMessage.staff.entity.Staff;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffInfo;
+import cn.plou.web.system.organizationMessage.staff.vo.StaffVo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@Mapper
+public interface StaffMapper {
+
+    int insertStaff(Staff staff);
+
+    Staff selectByPrimaryKey(String staffId);
+
+    int deleteBatchByIds(List<String> staffId);
+
+    int updateStaffBatch(StaffVo staffVo);
+
+    int updateStaffById(Staff staff);
+
+    List<String> selectAllIds();
+
+    List<Staff> selectStaffByDepartmentId(String departmentId);
+
+    List<StaffInfo> selectAllStaff(@Param("companyIds") List<String> companyIds,
+                                   @Param("staffVo")StaffVo staffVo,
+                                   @Param("order") String order,
+                                   @Param("sortby") String sortby,
+                                    @Param("page") Integer page,
+                                   @Param("pageSize")Integer pageSize);
+
+//    int insert(Staff record);
+
+}

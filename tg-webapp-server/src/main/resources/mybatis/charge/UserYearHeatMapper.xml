@@ -1,0 +1,2847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.chargeconfig.dao.UserYearHeatMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="annual" jdbcType="VARCHAR" property="annual" />
+    <result column="heating_area" jdbcType="DECIMAL" property="heatingArea" />
+    <result column="pay_area" jdbcType="DECIMAL" property="payArea" />
+    <result column="seal_area" jdbcType="DECIMAL" property="sealArea" />
+    <result column="area_price_type" jdbcType="VARCHAR" property="areaPriceType" />
+    <result column="heat_user_type" jdbcType="VARCHAR" property="heatUserType" />
+    <result column="pre_price" jdbcType="DECIMAL" property="prePrice" />
+    <result column="adv_heat_cost" jdbcType="DECIMAL" property="advHeatCost" />
+    <result column="sum_receivable" jdbcType="DECIMAL" property="sumReceivable" />
+    <result column="sum_account" jdbcType="DECIMAL" property="sumAccount" />
+    <result column="margin_now" jdbcType="DECIMAL" property="marginNow" />
+    <result column="pay_over" jdbcType="VARCHAR" property="payOver" />
+    <result column="heating_status" jdbcType="VARCHAR" property="heatingStatus" />
+    <result column="sysauto_heating_status" jdbcType="VARCHAR" property="sysautoHeatingStatus" />
+    <result column="around_heating" jdbcType="VARCHAR" property="aroundHeating" />
+    <result column="total_value" jdbcType="DECIMAL" property="totalValue" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="actbegin_time" jdbcType="TIMESTAMP" property="actbeginTime" />
+    <result column="actend_time" jdbcType="TIMESTAMP" property="actendTime" />
+    <result column="heat_target" jdbcType="DECIMAL" property="heatTarget" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, consumer_id, annual, heating_area, pay_area, seal_area, area_price_type, 
+    heat_user_type, pre_price, adv_heat_cost, sum_receivable, sum_account, margin_now, 
+    pay_over, heating_status, sysauto_heating_status, around_heating, total_value, company_id, 
+    actbegin_time, actend_time, heat_target, rowno, notes, memo1, memo2, create_date, 
+    create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_year_heat
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user_year_heat
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    insert into user_year_heat (primary_id, consumer_id, annual, 
+      heating_area, pay_area, seal_area, 
+      area_price_type, heat_user_type, pre_price, 
+      adv_heat_cost, sum_receivable, sum_account, 
+      margin_now, pay_over, heating_status, 
+      sysauto_heating_status, around_heating, total_value, 
+      company_id, actbegin_time, actend_time, 
+      heat_target, rowno, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user
+      )
+    values (#{primaryId,jdbcType=VARCHAR}, #{consumerId,jdbcType=VARCHAR}, #{annual,jdbcType=VARCHAR}, 
+      #{heatingArea,jdbcType=DECIMAL}, #{payArea,jdbcType=DECIMAL}, #{sealArea,jdbcType=DECIMAL}, 
+      #{areaPriceType,jdbcType=VARCHAR}, #{heatUserType,jdbcType=VARCHAR}, #{prePrice,jdbcType=DECIMAL}, 
+      #{advHeatCost,jdbcType=DECIMAL}, #{sumReceivable,jdbcType=DECIMAL}, #{sumAccount,jdbcType=DECIMAL}, 
+      #{marginNow,jdbcType=DECIMAL}, #{payOver,jdbcType=VARCHAR}, #{heatingStatus,jdbcType=VARCHAR}, 
+      #{sysautoHeatingStatus,jdbcType=VARCHAR}, #{aroundHeating,jdbcType=VARCHAR}, #{totalValue,jdbcType=DECIMAL}, 
+      #{companyId,jdbcType=VARCHAR}, #{actbeginTime,jdbcType=TIMESTAMP}, #{actendTime,jdbcType=TIMESTAMP}, 
+      #{heatTarget,jdbcType=DECIMAL}, #{rowno,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    insert into user_year_heat
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="annual != null">
+        annual,
+      </if>
+      <if test="heatingArea != null">
+        heating_area,
+      </if>
+      <if test="payArea != null">
+        pay_area,
+      </if>
+      <if test="sealArea != null">
+        seal_area,
+      </if>
+      <if test="areaPriceType != null">
+        area_price_type,
+      </if>
+      <if test="heatUserType != null">
+        heat_user_type,
+      </if>
+      <if test="prePrice != null">
+        pre_price,
+      </if>
+      <if test="advHeatCost != null">
+        adv_heat_cost,
+      </if>
+      <if test="sumReceivable != null">
+        sum_receivable,
+      </if>
+      <if test="sumAccount != null">
+        sum_account,
+      </if>
+      <if test="marginNow != null">
+        margin_now,
+      </if>
+      <if test="payOver != null">
+        pay_over,
+      </if>
+      <if test="heatingStatus != null">
+        heating_status,
+      </if>
+      <if test="sysautoHeatingStatus != null">
+        sysauto_heating_status,
+      </if>
+      <if test="aroundHeating != null">
+        around_heating,
+      </if>
+      <if test="totalValue != null">
+        total_value,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="actbeginTime != null">
+        actbegin_time,
+      </if>
+      <if test="actendTime != null">
+        actend_time,
+      </if>
+      <if test="heatTarget != null">
+        heat_target,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingArea != null">
+        #{heatingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="payArea != null">
+        #{payArea,jdbcType=DECIMAL},
+      </if>
+      <if test="sealArea != null">
+        #{sealArea,jdbcType=DECIMAL},
+      </if>
+      <if test="areaPriceType != null">
+        #{areaPriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="heatUserType != null">
+        #{heatUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="prePrice != null">
+        #{prePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="advHeatCost != null">
+        #{advHeatCost,jdbcType=DECIMAL},
+      </if>
+      <if test="sumReceivable != null">
+        #{sumReceivable,jdbcType=DECIMAL},
+      </if>
+      <if test="sumAccount != null">
+        #{sumAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="marginNow != null">
+        #{marginNow,jdbcType=DECIMAL},
+      </if>
+      <if test="payOver != null">
+        #{payOver,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingStatus != null">
+        #{heatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sysautoHeatingStatus != null">
+        #{sysautoHeatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="aroundHeating != null">
+        #{aroundHeating,jdbcType=VARCHAR},
+      </if>
+      <if test="totalValue != null">
+        #{totalValue,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="actbeginTime != null">
+        #{actbeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actendTime != null">
+        #{actendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="heatTarget != null">
+        #{heatTarget,jdbcType=DECIMAL},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+
+
+  <insert id="insertByBatch" parameterType="java.util.List">
+    insert into user_year_heat (
+    primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    seal_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    sysauto_heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    heat_target,
+    rowno,
+    notes,
+    memo1,
+    memo2,
+    create_date,
+    create_user,
+    update_date,
+    update_user
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.primaryId,jdbcType=VARCHAR},
+      #{item.consumerId,jdbcType=VARCHAR},
+      #{item.annual,jdbcType=VARCHAR},
+      #{item.heatingArea,jdbcType=DECIMAL},
+      #{item.payArea,jdbcType=DECIMAL},
+      #{item.sealArea,jdbcType=DECIMAL},
+      #{item.areaPriceType,jdbcType=VARCHAR},
+      #{item.heatUserType,jdbcType=VARCHAR},
+      #{item.prePrice,jdbcType=DECIMAL},
+      #{item.advHeatCost,jdbcType=DECIMAL},
+      #{item.sumReceivable,jdbcType=DECIMAL},
+      #{item.sumAccount,jdbcType=DECIMAL},
+      #{item.marginNow,jdbcType=DECIMAL},
+      #{item.payOver,jdbcType=VARCHAR},
+      #{item.heatingStatus,jdbcType=VARCHAR},
+      #{item.sysautoHeatingStatus,jdbcType=VARCHAR},
+      #{item.aroundHeating,jdbcType=VARCHAR},
+      #{item.totalValue,jdbcType=DECIMAL},
+      #{item.companyId,jdbcType=VARCHAR},
+      #{item.actbeginTime,jdbcType=TIMESTAMP},
+      #{item.actendTime,jdbcType=TIMESTAMP},
+      #{item.heatTarget,jdbcType=DECIMAL},
+      #{item.rowno,jdbcType=VARCHAR},
+      #{item.notes,jdbcType=VARCHAR},
+      #{item.memo1,jdbcType=VARCHAR},
+      #{item.memo2,jdbcType=VARCHAR},
+      #{item.createDate,jdbcType=TIMESTAMP},
+      #{item.createUser,jdbcType=VARCHAR},
+      #{item.updateDate,jdbcType=TIMESTAMP},
+      #{item.updateUser,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    update user_year_heat
+    <set>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        annual = #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingArea != null">
+        heating_area = #{heatingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="payArea != null">
+        pay_area = #{payArea,jdbcType=DECIMAL},
+      </if>
+      <if test="sealArea != null">
+        seal_area = #{sealArea,jdbcType=DECIMAL},
+      </if>
+      <if test="areaPriceType != null">
+        area_price_type = #{areaPriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="heatUserType != null">
+        heat_user_type = #{heatUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="prePrice != null">
+        pre_price = #{prePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="advHeatCost != null">
+        adv_heat_cost = #{advHeatCost,jdbcType=DECIMAL},
+      </if>
+      <if test="sumReceivable != null">
+        sum_receivable = #{sumReceivable,jdbcType=DECIMAL},
+      </if>
+      <if test="sumAccount != null">
+        sum_account = #{sumAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="marginNow != null">
+        margin_now = #{marginNow,jdbcType=DECIMAL},
+      </if>
+      <if test="payOver != null">
+        pay_over = #{payOver,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingStatus != null">
+        heating_status = #{heatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sysautoHeatingStatus != null">
+        sysauto_heating_status = #{sysautoHeatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="aroundHeating != null">
+        around_heating = #{aroundHeating,jdbcType=VARCHAR},
+      </if>
+      <if test="totalValue != null">
+        total_value = #{totalValue,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="actbeginTime != null">
+        actbegin_time = #{actbeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actendTime != null">
+        actend_time = #{actendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="heatTarget != null">
+        heat_target = #{heatTarget,jdbcType=DECIMAL},
+      </if>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByConsumerIdSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    update user_year_heat
+    <set>
+      <if test="annual != null">
+        annual = #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingArea != null">
+        heating_area = #{heatingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="payArea != null">
+        pay_area = #{payArea,jdbcType=DECIMAL},
+      </if>
+      <if test="sealArea != null">
+        seal_area = #{sealArea,jdbcType=DECIMAL},
+      </if>
+      <if test="areaPriceType != null">
+        area_price_type = #{areaPriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="heatUserType != null">
+        heat_user_type = #{heatUserType,jdbcType=VARCHAR},
+      </if>
+      <if test="prePrice != null">
+        pre_price = #{prePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="advHeatCost != null">
+        adv_heat_cost = #{advHeatCost,jdbcType=DECIMAL},
+      </if>
+      <if test="sumReceivable != null">
+        sum_receivable = #{sumReceivable,jdbcType=DECIMAL},
+      </if>
+      <if test="sumAccount != null">
+        sum_account = #{sumAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="marginNow != null">
+        margin_now = #{marginNow,jdbcType=DECIMAL},
+      </if>
+      <if test="payOver != null">
+        pay_over = #{payOver,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingStatus != null">
+        heating_status = #{heatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sysautoHeatingStatus != null">
+        sysauto_heating_status = #{sysautoHeatingStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="aroundHeating != null">
+        around_heating = #{aroundHeating,jdbcType=VARCHAR},
+      </if>
+      <if test="totalValue != null">
+        total_value = #{totalValue,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="actbeginTime != null">
+        actbegin_time = #{actbeginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actendTime != null">
+        actend_time = #{actendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="heatTarget != null">
+        heat_target = #{heatTarget,jdbcType=DECIMAL},
+      </if>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where consumer_id = #{consumerId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    update user_year_heat
+    set consumer_id = #{consumerId,jdbcType=VARCHAR},
+      annual = #{annual,jdbcType=VARCHAR},
+      heating_area = #{heatingArea,jdbcType=DECIMAL},
+      pay_area = #{payArea,jdbcType=DECIMAL},
+      seal_area = #{sealArea,jdbcType=DECIMAL},
+      area_price_type = #{areaPriceType,jdbcType=VARCHAR},
+      heat_user_type = #{heatUserType,jdbcType=VARCHAR},
+      pre_price = #{prePrice,jdbcType=DECIMAL},
+      adv_heat_cost = #{advHeatCost,jdbcType=DECIMAL},
+      sum_receivable = #{sumReceivable,jdbcType=DECIMAL},
+      sum_account = #{sumAccount,jdbcType=DECIMAL},
+      margin_now = #{marginNow,jdbcType=DECIMAL},
+      pay_over = #{payOver,jdbcType=VARCHAR},
+      heating_status = #{heatingStatus,jdbcType=VARCHAR},
+      sysauto_heating_status = #{sysautoHeatingStatus,jdbcType=VARCHAR},
+      around_heating = #{aroundHeating,jdbcType=VARCHAR},
+      total_value = #{totalValue,jdbcType=DECIMAL},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      actbegin_time = #{actbeginTime,jdbcType=TIMESTAMP},
+      actend_time = #{actendTime,jdbcType=TIMESTAMP},
+      heat_target = #{heatTarget,jdbcType=DECIMAL},
+      rowno = #{rowno,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="findAllUserYearHeats" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_heat
+  </select>
+
+  <select id="findLastUserYearHeats" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_heat  order by primary_id desc limit 1
+  </select>
+
+  <select id="findAllUserYearHeatsByAnnual" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_heat
+    where annual = #{annual,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findByUserAndAnnual" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_heat
+    where annual = #{annual,jdbcType=VARCHAR}
+    and consumer_id = #{consumerId,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <select id="findByUser" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    d.primary_id, d.consumer_id, d.annual, d.heating_area, d.pay_area, d.seal_area, p.price_name as area_price_type,
+    t1.type_name as heat_user_type, d.pre_price, d.adv_heat_cost, d.sum_receivable, d.sum_account, d.margin_now,
+    t2.type_name as pay_over, d.heating_status, d.sysauto_heating_status,  t3.type_name as around_heating, d.total_value, d.company_id,
+    d.actbegin_time, d.actend_time, d.heat_target, d.rowno, d.notes, d.memo1, d.memo2, d.create_date,
+    u1.username as create_user, d.update_date, u2.username as update_user
+    from user_year_heat as d
+    left join type_mst as t1 on d.heat_user_type = t1.id
+    left join type_mst as t2 on d.pay_over = t2.id
+    left join type_mst as t3 on d.around_heating = t3.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    left join price_define as p on d.area_price_type = p.primary_id
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and d.consumer_id = #{consumerId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and d.annual = #{annual}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+
+
+  <select id="findUserYearHeatDetailInfo" resultType="cn.plou.web.charge.chargeconfig.vo.UserYearHeatDetailInfo">
+    select
+    d.primary_id, d.consumer_id, d.annual, d.heating_area, d.pay_area, d.seal_area, p.price_name as area_price_type,
+    d.heat_user_type,t1.type_name as heat_user_type_name, d.pre_price, d.adv_heat_cost, d.sum_receivable, d.sum_account, d.margin_now,
+    d.pay_over,t2.type_name as pay_over_name, d.heating_status,t4.type_name as heating_status_name, d.sysauto_heating_status,  d.around_heating,t3.type_name as around_heating_name, d.total_value, d.company_id,
+    d.actbegin_time, d.actend_time, d.heat_target, d.rowno, d.notes, d.memo1, d.memo2, d.create_date,
+    u1.username as create_user, d.update_date, u2.username as update_user
+    from user_year_heat as d
+    left join type_mst as t1 on d.heat_user_type = t1.id
+    left join type_mst as t2 on d.pay_over = t2.id
+    left join type_mst as t3 on d.around_heating = t3.id
+    left join type_mst as t4 on d.heating_status = t4.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    left join price_define as p on d.area_price_type = p.primary_id
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and d.consumer_id = #{consumerId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and d.annual = #{annual}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+  <select id="findByUserForOldAnnual" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    d.primary_id, d.consumer_id, d.annual, d.heating_area, d.pay_area, d.seal_area, p.price_name as area_price_type,
+    t1.type_name as heat_user_type, d.pre_price, d.adv_heat_cost, d.sum_receivable, d.sum_account, d.margin_now,
+    t2.type_name as pay_over, d.heating_status, d.sysauto_heating_status,  t3.type_name as around_heating, d.total_value, d.company_id,
+    d.actbegin_time, d.actend_time, d.heat_target, d.rowno, d.notes, d.memo1, d.memo2, d.create_date,
+    u1.username as create_user, d.update_date, u2.username as update_user
+    from user_year_heat as d
+    left join type_mst as t1 on d.heat_user_type = t1.id
+    left join type_mst as t2 on d.pay_over = t2.id
+    left join type_mst as t3 on d.around_heating = t3.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    left join price_define as p on d.area_price_type = p.primary_id
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and d.consumer_id = #{consumerId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and d.annual &lt; #{annual}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+  <delete id="deleteByConsumerIds" parameterType="java.lang.String">
+    delete from user_year_heat
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+  <delete id="deleteByConsumerId" parameterType="java.lang.String">
+    delete from user_year_heat
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and consumer_id = #{consumerId}
+    </if>
+    <if test="communityId !=null  and communityId != '' ">
+      and substring(consumer_id,1,10) = #{communityId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+
+  <select id="getOldYearOwe" resultType="java.math.BigDecimal">
+    select sum((case when sum_receivable is null then 0 else sum_receivable end) - (case when sum_account is null then 0 else sum_account end))
+    from user_year_heat
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and consumer_id = #{consumerId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual  &lt;  #{annual}
+    </if>
+  </select>
+
+
+<!--  <select id="calcLateFee" resultType="cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee">
+    select company_id,consumer_id,annual,overdue_begin_time,overdue_rate,(oldLateFee+jinETotal*overdue_rate/100) as late_fee from
+    (
+    select user_year_heat.company_id ,user_year_heat.consumer_id ,user_year_heat.annual ,
+    (select sum(total) from user_year_receivable_detail where user_year_receivable_detail.annual =user_year_heat.annual and user_year_receivable_detail.consumer_id = user_year_heat.consumer_id and user_year_receivable_detail.charging_item not in('charging_item_1','charging_item_2','charging_item_7')) as jinETotal,
+    (select total from user_year_receivable_detail where user_year_receivable_detail.annual =user_year_heat.annual and user_year_receivable_detail.consumer_id = user_year_heat.consumer_id and user_year_receivable_detail.charging_item = 'charging_item_7') as oldLateFee,
+    price_define.overdue_begin_time,
+    price_define.overdue_rate
+    from user_year_heat
+    LEFT JOIN price_define on user_year_heat.area_price_type = price_define.primary_id
+    where overdue_begin_time > #{dateNow} and user_year_heat.annual= #{annual}
+    ) as t1 ;
+  </select>-->
+
+
+
+  <select id="calcLateFee" resultType="cn.plou.web.charge.chargeconfig.vo.UserYearHeatLateFee">
+    select company_id,consumer_id,annual,overdue_begin_time,overdue_rate,(oldLateFee+jinETotal*overdue_rate/100) as late_fee from
+    (
+    select user_year_heat.company_id ,user_year_heat.consumer_id ,user_year_heat.annual ,
+    a.total as jinETotal,
+    b.total  as oldLateFee,
+    price_define.overdue_begin_time,
+    price_define.overdue_rate
+    from user_year_heat
+    left join (select user_year_receivable_detail.consumer_id,annual,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where   user_year_receivable_detail.charging_item not in('charging_item_1','charging_item_2','charging_item_7') GROUP BY user_year_receivable_detail.consumer_id,annual) a
+    on a.consumer_id = user_year_heat.consumer_id  and a.annual = user_year_heat.annual
+    left join (select user_year_receivable_detail.consumer_id,annual,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where   user_year_receivable_detail.charging_item = 'charging_item_7' GROUP BY user_year_receivable_detail.consumer_id,annual) b
+    on b.consumer_id = user_year_heat.consumer_id  and b.annual = user_year_heat.annual
+    LEFT JOIN price_define on user_year_heat.area_price_type = price_define.primary_id
+    where overdue_begin_time > #{dateNow} and user_year_heat.annual= price_define.annual   and price_define.yeat_flag = 1 and user_year_heat.heating_status = 'heating_status_1' and user_year_heat.margin_now &lt; 0
+    ) as t1
+  </select>
+
+
+    <select id="getStatisticalData" resultType="cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO">
+      SELECT
+        info.consumer_id,info.heating_area,info.charge_area,
+        heat.annual, heat.pay_area,heat.adv_heat_cost,heat.sum_receivable,heat.sum_account,heat.pay_over,heat.heating_status
+      FROM
+        user_year_heat AS heat
+
+        LEFT JOIN  houses_info AS info ON info.consumer_id = heat.consumer_id
+      WHERE
+        info.consumer_id  LIKE concat(#{id},'%')
+    </select>
+  <select id="findFeeLessByBuildingNo" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+
+    select
+    d.primary_id, d.consumer_id, d.annual, d.heating_area, d.pay_area, d.seal_area, p.price_name as area_price_type,
+    t1.type_name as heat_user_type, d.pre_price, d.adv_heat_cost, d.sum_receivable, d.sum_account, d.margin_now,
+    t2.type_name as pay_over, d.heating_status, d.sysauto_heating_status,  t3.type_name as around_heating, d.total_value, d.company_id,
+    d.actbegin_time, d.actend_time, d.heat_target, d.rowno, d.notes, d.memo1, d.memo2, d.create_date,
+    u1.username as create_user, d.update_date, u2.username as update_user
+    from user_year_heat as d
+    left join type_mst as t1 on d.heat_user_type = t1.id
+    left join type_mst as t2 on d.pay_over = t2.id
+    left join type_mst as t3 on d.around_heating = t3.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    left join price_define as p on d.area_price_type = p.primary_id
+
+
+
+    where 1=1
+
+    <if test="buildingNo!=null and buildingNo!=''">
+      and  d.consumer_id like  concat(#{buildingNo},'%')
+    </if>
+    and  d.margin_now <![CDATA[ < ]]> 0
+
+
+
+    <if test="base.sortby != null   and  base.sortby != ''">
+      order by ${sortby}
+    </if>
+
+    <if test="base.order != null  and  base.order != ''">
+      ${order}
+    </if>
+
+  </select>
+  <select id="findAllUserYearHeatsByConsumerIds" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    select
+    d.primary_id, d.consumer_id, d.annual, d.heating_area, d.pay_area, d.seal_area, p.price_name as area_price_type,
+    d.heat_user_type, d.pre_price, d.adv_heat_cost, d.sum_receivable, d.sum_account, d.margin_now,
+    t2.type_name as pay_over, d.heating_status, d.sysauto_heating_status,  t3.type_name as around_heating, d.total_value, d.company_id,
+    d.actbegin_time, d.actend_time, d.heat_target, d.rowno, d.notes, d.memo1, d.memo2, d.create_date,
+    u1.username as create_user, d.update_date, u2.username as update_user,h.name,h.tel
+    from user_year_heat as d
+    left join type_mst as t1 on d.heat_user_type = t1.id
+    left join type_mst as t2 on d.pay_over = t2.id
+    left join type_mst as t3 on d.around_heating = t3.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    left join houses_info as h on d.consumer_id = h.consumer_id
+    left join price_define as p on d.area_price_type = p.primary_id
+    where d.consumer_id in
+    <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getCountByAnnual" resultType="java.lang.Integer">
+        select count(*)
+        from user_year_heat
+        where company_id = #{companyId,jdbcType=VARCHAR} and annual = #{annual,jdbcType=VARCHAR}
+    </select>
+
+
+  <select id="getChargeSumByAnnual" resultType="cn.plou.web.charge.chargeconfig.vo.ChargeSumVO">
+    SELECT
+    a1.heat_user_type AS heat_user_type,
+    heating_area,
+    pre_price,
+    price_name,
+    adv_heat_cost,
+    pay_area,
+    0 as area_total,
+    0 as total_value,
+    0 as heat_total,
+    0 as sum_receivable
+    FROM
+    (
+    SELECT
+    uyh.heat_user_type as heat_user_type,
+    sum(uyh.heating_area) AS heating_area,
+    area_price_type,
+    sum(uyh.adv_heat_cost) AS adv_heat_cost,
+    sum(uyh.pay_area) AS pay_area
+    FROM
+    user_year_heat uyh
+    WHERE
+    uyh.company_id = #{companyId,jdbcType=VARCHAR} and uyh.annual = #{annual,jdbcType=VARCHAR}
+    GROUP BY
+    heat_user_type,area_price_type
+    ) AS a1
+    LEFT JOIN price_define pd on a1.area_price_type = pd.primary_id
+    WHERE
+    a1.heat_user_type IS NOT NULL
+      <if test="sortby!=null">
+        order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    </select>
+  <select id="getHeatInfoByCompanyId" resultType="cn.plou.web.charge.chargeconfig.vo.HeatInfoVO">
+    select user_year_heat.primary_id, houses_info.consumer_id,  houses_info.`name`,houses_info.address, user_year_heat.annual,
+    user_year_heat.heating_area,
+    user_year_heat.pay_area,
+    user_year_heat.area_price_type, t1.type_name as area_price_type_name,
+    houses_info.heat_user_type, t2.type_name as heat_user_type_name,
+    houses_info.charge_type, t6.type_name as charge_type_name,
+    user_year_heat.pre_price,
+    houses_info.contry_stat, t3.type_name as contry_stat_name,
+    houses_info.water_type,t4.type_name as water_type_name,
+    houses_info.house_type,t5.type_name as house_type_name
+    from user_year_heat
+    left join houses_info on user_year_heat.consumer_id=houses_info.consumer_id
+    left join type_mst as t1 on user_year_heat.area_price_type=t1.id
+    left join type_mst as t2 on houses_info.heat_user_type=t2.id
+    left join type_mst as t3 on houses_info.contry_stat=t3.id
+    left join type_mst as t4 on houses_info.water_type=t4.id
+    left join type_mst as t5 on houses_info.house_type=t5.id
+    left join type_mst as t6 on houses_info.charge_type=t6.id
+
+    WHERE
+    user_year_heat.company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="areaPriceType!=null">
+      and area_price_type = #{areaPriceType,jdbcType=VARCHAR}
+    </if>
+    <if test="chargeType!=null">
+      and houses_info.charge_type = #{chargeType,jdbcType=VARCHAR}
+    </if>
+    <if test="heatUserType!=null">
+      and houses_info.heat_user_type = #{heatUserType,jdbcType=VARCHAR}
+    </if>
+    <if test="heatingStatus!=null">
+      and houses_info.heating_status = #{heatingStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="floorHigh!=null">
+      and houses_info.floor_high = #{floorHigh,jdbcType=VARCHAR}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+  <select id="getChargeHouseDataList"  resultType="cn.plou.web.charge.chargeconfig.vo.ChargeHouseDataVO">
+    SELECT
+    consumer_id,
+    address,
+    name,
+    charge_area,
+    charge_type,
+    heat_user_type,
+    house_type,
+    contry_stat,
+    net_status,
+    has_generated
+    FROM
+    (
+    SELECT
+    h.consumer_id consumer_id,
+    h.address address,
+    h.name name,
+    h.charge_area charge_area,
+    h.charge_type charge_type,
+    h.heat_user_type heat_user_type,
+    h.net_status net_status,
+    h.house_type house_type,
+    h.contry_stat contry_stat,
+    (
+    SELECT
+    count(0)
+    FROM
+    user_year_heat
+    WHERE
+    user_year_heat.consumer_id = h.consumer_id
+    AND annual = #{annual,jdbcType=VARCHAR}
+    ) AS has_generated
+    FROM
+    houses_info h
+    WHERE
+    h.isvalid = 1
+    <if test="stationIds != null">
+      and substring(h.consumer_id,1,10) in (
+      select commuity_id from commuity_info where station_id in
+      <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      )
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(h.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    ) AS t1
+    where has_generated = #{hasGenerated,jdbcType=VARCHAR}
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+
+  <select id="getChargeHouseDataAllList"  resultType="cn.plou.web.charge.chargeconfig.vo.ChargeHouseDataVO">
+    SELECT
+    consumer_id,
+    address,
+    name,
+    charge_area,
+    charge_type,
+    heat_user_type,
+    house_type,
+    contry_stat,
+    net_status,
+    has_generated
+    FROM
+    (
+    SELECT
+    h.consumer_id consumer_id,
+    h.address address,
+    h.name name,
+    h.charge_area charge_area,
+    h.charge_type charge_type,
+    h.heat_user_type heat_user_type,
+    h.house_type house_type,
+    h.net_status net_status,
+    h.contry_stat contry_stat,
+    (
+    SELECT
+    count(0)
+    FROM
+    user_year_heat
+    WHERE
+    user_year_heat.consumer_id = h.consumer_id
+    AND annual = #{annual,jdbcType=VARCHAR}
+    ) AS has_generated
+    FROM
+    houses_info h
+    WHERE
+    h.isvalid = 1
+    <if test="stationIds != null">
+      and substring(h.consumer_id,1,10) in (
+      select commuity_id from commuity_info where station_id in
+      <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      )
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(h.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    ) AS t1
+    where 1 = 1
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+  <select id="selectCountByChargeType"  resultType="java.lang.Integer">
+        select count(*)
+        from user_year_heat
+        where  company_id = #{companyId,jdbcType=VARCHAR}  and annual = #{annual,jdbcType=VARCHAR} and heat_user_type = #{chargeType,jdbcType=VARCHAR} and heating_status = 'heating_status_1'
+    </select>
+
+
+
+    <select id="selectCountNotHeating"  resultType="java.lang.Integer">
+        select count(*)
+        from user_year_heat
+        where  company_id = #{companyId,jdbcType=VARCHAR}  and annual = #{annual,jdbcType=VARCHAR} and (heating_status is null or heating_status &lt;> 'heating_status_1')
+    </select>
+
+
+
+
+    <update id="updateHeatingStatus" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearHeat">
+    update user_year_heat
+    set heating_status = #{heatingStatus,jdbcType=VARCHAR},
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+        update_user = #{updateUser,jdbcType=VARCHAR}
+    where consumer_id = #{consumerId,jdbcType=VARCHAR} and
+      company_id = #{companyId,jdbcType=VARCHAR} and
+      annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <delete id="deleteByCompanyId" parameterType="java.lang.String">
+    delete from user_year_heat
+    where 1=1
+    <if test="companyId !=null  and companyId != '' ">
+      and company_id = #{companyId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+
+  <delete id="deleteByCommuityIds" parameterType="java.lang.String">
+    delete from user_year_heat
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+  <delete id="deleteByStationIds" parameterType="java.lang.String">
+    delete from user_year_heat
+    where 1=1
+    <if test="stationIds != null">
+      and substring(consumer_id,1,10) in (
+      select commuity_id from commuity_info where station_id in
+      <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      )
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+<!--
+
+  <insert id="insertForGenerated" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,case houses_info.heating_status when  null then 0
+    when 'heating_status_1' then 0
+    else pd.pre_price_tmp*houses_info.charge_area
+  end
+
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,case houses_info.heating_status when  null then 0
+    when 'heating_status_1' then 0
+    else (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+  end
+
+    ,case houses_info.heating_status when  null then 'pay_over_2'
+    when 'heating_status_1' then
+        case when (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) is null
+        then 'pay_over_4'
+         when (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) = 0
+        then 'pay_over_1'
+         when (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) = 0
+        and (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+        then 'pay_over_4'
+         when (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) > 0
+        and (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+        then 'pay_over_3'
+        else 'pay_over_4'
+      end
+    when 'heating_status_2' then 'pay_over_4'
+    else 'pay_over_4'
+  end
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1'
+  </insert>
+-->
+
+
+<!--
+
+    <insert id="insertForGenerated" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,case houses_info.heating_status when  null then 0
+    when 'heating_status_1' then 0
+    else pd.pre_price_tmp*houses_info.charge_area
+  end
+
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,case houses_info.heating_status when  null then 0
+    when 'heating_status_1' then 0
+    else (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+  end
+
+    ,case houses_info.heating_status when  null then 'pay_over_2'
+    when 'heating_status_1' then
+        case when (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR}) is null
+        then 'pay_over_2'
+         when (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR}) >= 0
+        then 'pay_over_1'
+         when (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR}) &lt; 0
+        then 'pay_over_2'
+        else 'pay_over_2'
+      end
+    when 'heating_status_2' then 'pay_over_4'
+    else 'pay_over_4'
+  end
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1'
+  </insert>-->
+
+
+<!--
+      <insert id="insertForGenerated" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,case houses_info.heating_status when  null then 0
+      when 'heating_status_1' then 0
+      else pd.pre_price_tmp*houses_info.charge_area
+    end
+
+      ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+      ,0
+      ,case houses_info.heating_status when  null then 0
+      when 'heating_status_1' then 0
+      else (select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    end
+          ,case houses_info.heating_status when  null then 'pay_over_4'
+    when 'heating_status_1' then 'pay_over_2'
+    when 'heating_status_2' then 'pay_over_4'
+    else 'pay_over_4'
+  end
+
+
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+      and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+      ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+      and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1'
+    </insert>-->
+
+    <insert id="insertForGeneratedHeatingStatus1" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    , case when (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) is null
+        then 'pay_over_4'
+         when (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) = 0
+        then 'pay_over_1'
+         when (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) = 0
+        and (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+        then 'pay_over_4'
+         when (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) > 0
+        and (select margin_now from user_year_heat where  consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+        then 'pay_over_3'
+        else 'pay_over_4'
+      end
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+
+
+
+
+
+
+  <insert id="insertForGeneratedHeatingStatus1_1" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    , 'pay_over_4'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1' and (select margin_now from user_year_heat where  user_year_heat.consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) is null
+  </insert>
+
+
+
+  <insert id="insertForGeneratedHeatingStatus1_2" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    ,  'pay_over_1'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1' and (select margin_now from user_year_heat where  user_year_heat.consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) = 0
+  </insert>
+
+
+
+  <insert id="insertForGeneratedHeatingStatus1_3" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    , 'pay_over_4'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1' and (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) = 0
+        and (select margin_now from user_year_heat where  user_year_heat.consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+  </insert>
+
+
+
+
+  <insert id="insertForGeneratedHeatingStatus1_4" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    ,   'pay_over_3'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1' and (select count(0) from user_year_account_detail where  user_year_account_detail.consumer_id = houses_info.consumer_id and  user_year_account_detail.annual = #{lastannual,jdbcType=VARCHAR}) > 0
+        and (select margin_now from user_year_heat where  user_year_heat.consumer_id = houses_info.consumer_id and  annual = #{lastannual,jdbcType=VARCHAR}) &lt; 0
+  </insert>
+
+
+
+
+  <insert id="insertForGeneratedHeatingStatusNull" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,0
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,0
+    ,'pay_over_2'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and  houses_info.heating_status is null
+  </insert>
+
+
+
+    <insert id="insertForGeneratedNotHeatingStatus1" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+    ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,0
+    ,(select 0-sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+    ,'pay_over_4'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,(select start_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,(select end_time from heating_time where heating_time.company_id = houses_info.company_id and heating_time.station_id = (select station_id from commuity_info where commuity_info.commuity_id =  substring(houses_info.consumer_id,1,10)  )
+    and heating_time.`year` = #{annual,jdbcType=VARCHAR})
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and  houses_info.heating_status is null and houses_info.heating_status &lt;> 'heating_status_1'
+  </insert>
+
+
+<!--
+  <insert id="insertForGenerated" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,case houses_info.heating_status when  null then 0
+      when 'heating_status_1' then 0
+      else pd.pre_price_tmp*houses_info.charge_area
+    end
+
+      ,(select sum(total) from user_year_receivable_detail where user_year_receivable_detail.consumer_id = houses_info.consumer_id and  user_year_receivable_detail.annual = #{annual,jdbcType=VARCHAR})
+      ,0
+      ,case houses_info.heating_status when  null then 0
+      when 'heating_status_1' then 0
+      else -9999
+    end
+          ,case houses_info.heating_status when  null then 'pay_over_4'
+    when 'heating_status_1' then 'pay_over_2'
+    when 'heating_status_2' then 'pay_over_4'
+    else 'pay_over_4'
+  end
+
+
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1'
+    </insert>-->
+
+
+    <!--没有供暖状态的-->
+  <insert id="insertForGenerated1" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+
+      ,null
+      ,0
+      ,0
+      , 'pay_over_4'
+
+
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status  is null
+    </insert>
+
+
+
+    <!--供暖的-->
+  <insert id="insertForGenerated2" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(a.consumer_id,#{annual,jdbcType=VARCHAR})
+      ,a.consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+      ,a.total
+    ,case when b.account_cost is null then 0 else b.account_cost end
+    ,case when b.account_cost is null then 0-a.total else b.account_cost-a.total end
+       ,'pay_over_2'
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+            (select user_year_receivable_detail.consumer_id,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and user_year_receivable_detail.company_id=#{companyId,jdbcType=VARCHAR}  GROUP BY user_year_receivable_detail.consumer_id) a
+     left join
+    (select user_year_account_detail.consumer_id,sum(user_year_account_detail.account_cost) as account_cost from user_year_account_detail where annual = #{annual,jdbcType=VARCHAR} and user_year_account_detail.company_id=#{companyId,jdbcType=VARCHAR}  GROUP BY user_year_account_detail.consumer_id) b on a.consumer_id = b.consumer_id
+left join
+      houses_info on a.consumer_id = houses_info.consumer_id
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+    </insert>
+
+<!--停暖的-->
+  <insert id="insertForGenerated3" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+      ,0
+      ,0
+      ,0
+          , 'pay_over_4'
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      houses_info.company_id=#{companyId,jdbcType=VARCHAR} and houses_info.net_status = 'net_status_1' and houses_info.heating_status &lt;> 'heating_status_1'  and houses_info.heating_status is not null
+    </insert>
+
+
+  <!--没有供暖状态的-->
+  <insert id="insertForGenerated1ForOneStationAllCommunity" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+
+      ,null
+      ,0
+      ,0
+      , 'pay_over_4'
+
+
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR})  and houses_info.net_status = 'net_status_1' and
+houses_info.heating_status  is null
+    </insert>
+
+
+
+  <!--供暖的-->
+  <insert id="insertForGenerated2ForOneStationAllCommunity" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(a.consumer_id,#{annual,jdbcType=VARCHAR})
+      ,a.consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+    ,a.total
+    ,case when b.account_cost is null then 0 else b.account_cost end
+    ,case when b.account_cost is null then 0-a.total else b.account_cost-a.total end
+    ,'pay_over_2'
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+            (select user_year_receivable_detail.consumer_id,sum(user_year_receivable_detail.total) as total from
+user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} GROUP BY user_year_receivable_detail.consumer_id) a
+    left join
+    (select user_year_account_detail.consumer_id,sum(user_year_account_detail.account_cost) as account_cost from user_year_account_detail where annual = #{annual,jdbcType=VARCHAR}
+      GROUP BY user_year_account_detail.consumer_id) b on a.consumer_id = b.consumer_id
+left join
+      houses_info on a.consumer_id = houses_info.consumer_id
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR})  and houses_info.net_status = 'net_status_1' and
+houses_info.heating_status = 'heating_status_1'
+    </insert>
+
+  <!--停暖的-->
+  <insert id="insertForGenerated3ForOneStationAllCommunity" parameterType="java.lang.String">
+      INSERT INTO user_year_heat
+      (primary_id,
+      consumer_id,
+      annual,
+      heating_area,
+      pay_area,
+      area_price_type,
+      heat_user_type,
+      pre_price,
+      adv_heat_cost,
+      sum_receivable,
+      sum_account,
+      margin_now,
+      pay_over,
+      heating_status,
+      around_heating,
+      total_value,
+      company_id,
+      actbegin_time,
+      actend_time,
+      rowno,
+      create_date,
+      create_user
+      )
+      select
+      concat(consumer_id,#{annual,jdbcType=VARCHAR})
+      ,consumer_id
+      ,#{annual,jdbcType=VARCHAR}
+      ,houses_info.heating_area
+      ,houses_info.charge_area
+      ,houses_info.unit_price_type
+      ,houses_info.charge_type
+      ,pd.pre_price_tmp
+      ,pd.pre_price_tmp*houses_info.charge_area
+      ,0
+      ,0
+      ,0
+          , 'pay_over_4'
+      ,houses_info.heating_status
+      ,'around_heating_15'
+      ,0
+      ,houses_info.company_id
+      ,null
+      ,null
+      ,houses_info.rowno
+      ,now()
+      ,#{createUser,jdbcType=VARCHAR}
+      from
+      houses_info
+      LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+      where
+      substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR})  and houses_info.net_status = 'net_status_1' and
+houses_info.heating_status &lt;> 'heating_status_1'  and houses_info.heating_status is not null
+    </insert>
+
+
+
+  <!--没有供暖状态的-->
+  <insert id="insertForGenerated1ForSelectedCommunity" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+
+    ,null
+    ,0
+    ,0
+    , 'pay_over_4'
+
+
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status  is null
+  </insert>
+
+
+
+  <!--供暖的-->
+  <insert id="insertForGenerated2ForSelectedCommunity" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(a.consumer_id,#{annual,jdbcType=VARCHAR})
+    ,a.consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+    ,a.total
+    ,case when b.account_cost is null then 0 else b.account_cost end
+    ,case when b.account_cost is null then 0-a.total else b.account_cost-a.total end
+    ,'pay_over_2'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    (select user_year_receivable_detail.consumer_id,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR}
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(user_year_receivable_detail.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    GROUP BY user_year_receivable_detail.consumer_id) a
+    left join
+    (select user_year_account_detail.consumer_id,sum(user_year_account_detail.account_cost) as account_cost from user_year_account_detail where annual = #{annual,jdbcType=VARCHAR}    <if test="commuityIds!=null">
+    <if test="commuityIds.size()>0">
+      and substring(user_year_account_detail.consumer_id,1,10) in
+      <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </if>
+    GROUP BY user_year_account_detail.consumer_id) b on a.consumer_id = b.consumer_id
+    left join
+    houses_info on a.consumer_id = houses_info.consumer_id
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+  <!--停暖的-->
+  <insert id="insertForGenerated3ForSelectedCommunity" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+    ,0
+    ,0
+    ,0
+    , 'pay_over_4'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status &lt;> 'heating_status_1'  and houses_info.heating_status is not null
+  </insert>
+
+
+  <!--没有供暖状态的-->
+  <insert id="insertForGenerated1ForSelectedConsumer" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+
+    ,null
+    ,0
+    ,0
+    , 'pay_over_4'
+
+
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status  is null
+  </insert>
+
+
+
+  <!--供暖的-->
+  <insert id="insertForGenerated2ForSelectedConsumer" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(a.consumer_id,#{annual,jdbcType=VARCHAR})
+    ,a.consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+    ,a.total
+    ,case when b.account_cost is null then 0 else b.account_cost end
+    ,case when b.account_cost is null then 0-a.total else b.account_cost-a.total end
+    ,'pay_over_2'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    (select user_year_receivable_detail.consumer_id,sum(user_year_receivable_detail.total) as total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR}
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and user_year_receivable_detail.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    GROUP BY user_year_receivable_detail.consumer_id) a
+    left join
+    (select user_year_account_detail.consumer_id,sum(user_year_account_detail.account_cost) as account_cost from user_year_account_detail where annual = #{annual,jdbcType=VARCHAR}
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and user_year_account_detail.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    GROUP BY user_year_account_detail.consumer_id) b on a.consumer_id = b.consumer_id
+    left join
+    houses_info on a.consumer_id = houses_info.consumer_id
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+  <!--停暖的-->
+  <insert id="insertForGenerated3ForSelectedConsumer" parameterType="java.lang.String">
+    INSERT INTO user_year_heat
+    (primary_id,
+    consumer_id,
+    annual,
+    heating_area,
+    pay_area,
+    area_price_type,
+    heat_user_type,
+    pre_price,
+    adv_heat_cost,
+    sum_receivable,
+    sum_account,
+    margin_now,
+    pay_over,
+    heating_status,
+    around_heating,
+    total_value,
+    company_id,
+    actbegin_time,
+    actend_time,
+    rowno,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR})
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,houses_info.heating_area
+    ,houses_info.charge_area
+    ,houses_info.unit_price_type
+    ,houses_info.charge_type
+    ,pd.pre_price_tmp
+    ,pd.pre_price_tmp*houses_info.charge_area
+    ,0
+    ,0
+    ,0
+    , 'pay_over_4'
+    ,houses_info.heating_status
+    ,'around_heating_15'
+    ,0
+    ,houses_info.company_id
+    ,null
+    ,null
+    ,houses_info.rowno
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and houses_info.net_status = 'net_status_1' and houses_info.heating_status &lt;> 'heating_status_1'  and houses_info.heating_status is not null
+  </insert>
+
+  <update id="updateForGenerated2" parameterType="java.lang.String">
+    update user_year_heat
+    set heating_status = 'pay_over_1'
+    where company_id = #{companyId,jdbcType=VARCHAR} and
+      annual = #{annual,jdbcType=VARCHAR} and heating_status = 'pay_over_2' and margin_now >= 0
+  </update>
+
+
+
+  <update id="updateForGenerated3" >
+    update user_year_heat
+     set actbegin_time = #{startTime,jdbcType=TIMESTAMP}
+    where company_id = #{companyId,jdbcType=VARCHAR} and
+      annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated4" >
+    update user_year_heat
+     set actend_time =  #{endTime,jdbcType=TIMESTAMP}
+    where company_id = #{companyId,jdbcType=VARCHAR} and
+      annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateForGenerated2ForOneStationAllCommunity" parameterType="java.lang.String">
+    update user_year_heat
+    set heating_status = 'pay_over_1'
+    where substring(consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR})  and
+      annual = #{annual,jdbcType=VARCHAR} and heating_status = 'pay_over_2' and margin_now >= 0
+  </update>
+
+
+
+  <update id="updateForGenerated3ForOneStationAllCommunity" >
+    update user_year_heat
+     set actbegin_time = #{startTime,jdbcType=TIMESTAMP}
+    where substring(consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and
+      annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated4ForOneStationAllCommunity" >
+    update user_year_heat
+     set actend_time =  #{endTime,jdbcType=TIMESTAMP}
+    where substring(consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and
+      annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated2ForSelectedCommunity" parameterType="java.lang.String">
+    update user_year_heat
+    set heating_status = 'pay_over_1'
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR} and heating_status = 'pay_over_2' and margin_now >= 0
+  </update>
+
+
+
+  <update id="updateForGenerated3ForSelectedCommunity" >
+    update user_year_heat
+    set actbegin_time = #{startTime,jdbcType=TIMESTAMP}
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated4ForSelectedCommunity" >
+    update user_year_heat
+    set actend_time =  #{endTime,jdbcType=TIMESTAMP}
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated2ForSelectedConsumer" parameterType="java.lang.String">
+    update user_year_heat
+    set heating_status = 'pay_over_1'
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR} and heating_status = 'pay_over_2' and margin_now >= 0
+  </update>
+
+
+
+  <update id="updateForGenerated3ForSelectedConsumer" >
+    update user_year_heat
+    set actbegin_time = #{startTime,jdbcType=TIMESTAMP}
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updateForGenerated4ForSelectedConsumer" >
+    update user_year_heat
+    set actend_time =  #{endTime,jdbcType=TIMESTAMP}
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and
+    annual = #{annual,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getchoosedYearOwe" resultType="java.math.BigDecimal">
+    select sum((case when sum_receivable is null then 0 else sum_receivable end) - (case when sum_account is null then 0 else sum_account end))
+    from user_year_heat
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and consumer_id = #{consumerId}
+    </if>
+    <if test="annuals !=null  and annuals.size() > 0 ">
+      and annual  in
+      <foreach collection="annuals" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+  <select id="getStatisticalDataBycommuityIds" resultType="cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO">
+    SELECT
+    info.consumer_id,info.heating_area,info.charge_area,
+    heat.annual, heat.pay_area,heat.adv_heat_cost,heat.sum_receivable,heat.sum_account,heat.pay_over,heat.heating_status
+    FROM
+    user_year_heat AS heat
+
+    LEFT JOIN houses_info AS info ON info.consumer_id = heat.consumer_id
+
+
+    <if test="list.size()>0">
+      WHERE
+      <foreach collection="list" item="id" open="(" separator="or" close=")">
+        info.consumer_id  LIKE concat(#{id},'%')
+      </foreach>
+    </if>
+  </select>
+
+
+</mapper>

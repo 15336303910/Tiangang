@@ -1,0 +1,42 @@
+package cn.plou.web.system.commonMessage.typeMst.dao;
+
+
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMstKey;
+import cn.plou.web.system.commonMessage.typeMst.vo.TypeMstVo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@Mapper
+public interface TypeMstMapper {
+    int deleteByPrimaryKey(String id);
+
+    int deleteTypeMstBatchByIds(List<TypeMstKey> typeMstKeys);
+
+    int insert(TypeMst record);
+
+    int insertSelective(TypeMst record);
+
+//    List<TypeMst> selectAllTypeMst();
+
+    TypeMst selectByPrimaryKey(String id);
+
+    List<TypeMst> selectTypeMstAllType();
+
+    List<TypeMst> selectAllTypeMst();
+
+    List<TypeMst> selectDownInfoByTypeKbn(String typeKbn);
+
+    List<TypeMst> selectTypeMstByTypeKbn(@Param("typeKbn") String typeKbn, @Param("typeMstVo") TypeMstVo typeMstVo,@Param("order")String order,
+                                         @Param("sortby")String sortby,@Param("page")Integer page,@Param("pageSize")Integer pageSize);
+
+    int updateByPrimaryKeySelective(TypeMst record);
+
+    int updateTypeMstBatch(TypeMstVo typeMstVo);
+
+    int updateByPrimaryKey(TypeMst record);
+
+    TypeMst getByTypeKbnAndTypeName(@Param("typeKbn") String typeKbn, @Param("typeName") String typeName);
+}

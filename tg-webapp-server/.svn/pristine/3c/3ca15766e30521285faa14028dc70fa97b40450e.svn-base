@@ -1,0 +1,59 @@
+package cn.plou.web.common.aspect;
+
+import cn.plou.web.common.config.common.Root;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/24 17:49
+ * 为了处理ControllerAdvice不能处理的返回值为null或者字符串的 情况
+ */
+
+@Aspect
+@Component
+@Slf4j
+public class ControllerMethodHander {
+
+
+    @Pointcut("execution(* cn.plou..*.*Controller.*(..))")
+    public void executeService() {
+
+    }
+
+    @Around("executeService()")
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        long begin = System.currentTimeMillis();
+
+        Object o = point.proceed();
+        if (o == null||o instanceof String) {
+         Root  root=  new Root();
+            root.setCode(0);
+            root.setMsg(o==null?"暂无数据": (String) o);
+
+            long end = System.currentTimeMillis();
+          //  log.info("接口调用结束",point.getTarget().getClass()+"."+point.getSignature().getName(),(end-begin)/1000000);
+            double  costTime= (double)(end-begin)*0.001;
+            if(costTime>3){
+                log.warn("控制器："+point.getTarget().getClass().getSimpleName()+"的方法："+point.getSignature().getName()+"调用结束,消耗时间："+costTime+"s,需要优化！！！！！");
+            }else{
+                log.warn("控制器："+point.getTarget().getClass().getSimpleName()+"的方法："+point.getSignature().getName()+"调用结束,消耗时间："+costTime+"s");
+            }
+            return root;
+        }
+        long end = System.currentTimeMillis();
+        double  costTime= (double)(end-begin)*0.001;
+        if(costTime>3){
+            log.warn("控制器："+point.getTarget().getClass().getSimpleName()+"的方法："+point.getSignature().getName()+"调用结束,消耗时间："+costTime+"s,需要优化！！！！！");
+        }else{
+            log.warn("控制器："+point.getTarget().getClass().getSimpleName()+"的方法："+point.getSignature().getName()+"调用结束,消耗时间："+costTime+"s");
+        }
+        return o;
+    }
+
+}
+

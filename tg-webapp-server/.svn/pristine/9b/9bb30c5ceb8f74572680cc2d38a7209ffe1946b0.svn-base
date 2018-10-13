@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.userLogin.dao.UserLoginMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.userLogin.entity.UserLogin">
+        <id column="user_code" jdbcType="VARCHAR" property="userCode"/>
+        <result column="user_psw" jdbcType="VARCHAR" property="userPsw"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="identity_card" jdbcType="VARCHAR" property="identityCard"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="lasttime" jdbcType="TIMESTAMP" property="lasttime"/>
+        <result column="devide_id" jdbcType="VARCHAR" property="devideId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="staff_id" jdbcType="VARCHAR" property="staffId"/>
+    </resultMap>
+
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.permission.userLogin.vo.UserLoginInfo">
+        <id column="user_code" jdbcType="VARCHAR" property="userCode"/>
+        <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <id column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="user_psw" jdbcType="VARCHAR" property="userPsw"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="identity_card" jdbcType="VARCHAR" property="identityCard"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="lasttime" jdbcType="TIMESTAMP" property="lasttime"/>
+        <result column="devide_id" jdbcType="VARCHAR" property="devideId"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="status_name" jdbcType="VARCHAR" property="statusName"/>
+        <result column="staff_id" jdbcType="VARCHAR" property="staffId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    user_code, user_psw, username, identity_card, email, phone, tel, notes, lasttime, 
+    devide_id,status,staff_id
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_login
+        where user_code = #{userCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_login
+        where username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllUserLogin" parameterType="map" resultMap="BaseInfoMap">
+        select
+        u.user_code user_code, u.user_psw user_psw, u.username username, u.identity_card identity_card, u.email email,
+        u.phone phone, u.tel tel,
+        u.notes notes, u.lasttime lasttime,
+        u.devide_id devide_id,u.staff_id staff_id,r.role_id role_id,r.role_name role_name
+        from user_login u
+        left join rl_user_role rur on u.user_code=rur.userid
+        left join role_define r on rur.role_id=r.role_id
+        where 1=1
+        <if test="roleIds!=null">
+            and rur.role_id in
+            <foreach collection="roleIds" item="item"  open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="roleId!=null">
+            and rur.role_id=#{roleId}
+        </if>
+        <if test="userLoginVo!=null">
+            <if test="userLoginVo.username!=null">
+                and u.username like concat('%',#{userLoginVo.username},'%')
+            </if>
+            <if test="userLoginVo.identityCard!=null">
+                and u.identity_card like concat('%',#{userLoginVo.identityCard},'%')
+            </if>
+            <if test="userLoginVo.email!=null">
+                and u.email like concat('%',#{userLoginVo.email},'%')
+            </if>
+            <if test="userLoginVo.phone!=null">
+                and u.phone like concat('%',#{userLoginVo.phone},'%')
+            </if>
+            <if test="userLoginVo.tel!=null">
+                and u.tel like concat('%',#{userLoginVo.tel},'%')
+            </if>
+            <if test="userLoginVo.notes!=null">
+                and u.notes like concat('%',#{userLoginVo.notes},'%')
+            </if>
+            <if test="userLoginVo.roleId!=null">
+                and rur.role_id=#{userLoginVo.roleId}
+            </if>
+        </if>
+        <if test="sortby!=null">
+            order by ${sortby}
+        </if>
+        <if test="order!=null">
+            ${order}
+        </if>
+        <!--<if test="page!=null">-->
+        <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+        <!--</if>-->
+        <!--</if>-->
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user_login
+    where user_code = #{userCode,jdbcType=VARCHAR}
+  </delete>
+
+    <delete id="deleteUserLoginBatchByIds" parameterType="java.util.List">
+        delete from user_login
+        where user_code in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insert" parameterType="cn.plou.web.system.permission.userLogin.entity.UserLogin">
+    insert into user_login (user_code, user_psw, username, 
+      identity_card, email, phone, 
+      tel, notes, lasttime, 
+      devide_id, status, staff_id)
+    values (#{userCode,jdbcType=VARCHAR}, #{userPsw,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{identityCard,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{lasttime,jdbcType=TIMESTAMP}, 
+      #{devideId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{staffId,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="cn.plou.web.system.permission.userLogin.entity.UserLogin">
+        insert into user_login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userCode != null">
+                user_code,
+            </if>
+            <if test="userPsw != null">
+                user_psw,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="identityCard != null">
+                identity_card,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="tel != null">
+                tel,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="lasttime != null">
+                lasttime,
+            </if>
+            <if test="devideId != null">
+                devide_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="staffId != null">
+                staff_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userCode != null">
+                #{userCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userPsw != null">
+                #{userPsw,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="lasttime != null">
+                #{lasttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devideId != null">
+                #{devideId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="staffId != null">
+                #{staffId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.userLogin.entity.UserLogin">
+        update user_login
+        <set>
+            <if test="userPsw != null">
+                user_psw = #{userPsw,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                identity_card = #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="lasttime != null">
+                lasttime = #{lasttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devideId != null">
+                devide_id = #{devideId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+	      <if test="staffId != null">
+	        staff_id = #{staffId,jdbcType=VARCHAR},
+	      </if>
+        </set>
+        where user_code = #{userCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.userLogin.entity.UserLogin">
+    update user_login
+    set user_psw = #{userPsw,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      identity_card = #{identityCard,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      lasttime = #{lasttime,jdbcType=TIMESTAMP},
+      devide_id = #{devideId,jdbcType=VARCHAR},
+      staff_id = #{staffId,jdbcType=VARCHAR}
+    where user_code = #{userCode,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateUserLoginBatch" parameterType="cn.plou.web.system.permission.userLogin.vo.UserLoginVo">
+        update user_login
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                identity_card = #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null">
+                tel = #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="lasttime != null">
+                lasttime = #{lasttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="devideId != null">
+                devide_id = #{devideId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+      <if test="staffId != null">
+        staff_id = #{staffId,jdbcType=VARCHAR},
+      </if>
+        </set>
+        where user_code in
+        <foreach collection="userCodes" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

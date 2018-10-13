@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.weather.dao.WeatherFurMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.weather.entity.WeatherFur">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+    <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+    <result column="weather" jdbcType="VARCHAR" property="weather" />
+    <result column="spead" jdbcType="VARCHAR" property="spead" />
+    <result column="light" jdbcType="VARCHAR" property="light" />
+    <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+    <resultMap id="BaseInfoMap" type="cn.plou.web.system.commonMessage.weather.vo.WeatherFurInfo">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="z_c_city" jdbcType="VARCHAR" property="cityName" />
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+        <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+        <result column="weather" jdbcType="VARCHAR" property="weather" />
+        <result column="spead" jdbcType="VARCHAR" property="spead" />
+        <result column="light" jdbcType="VARCHAR" property="light" />
+        <result column="humidity" jdbcType="VARCHAR" property="humidity" />
+        <result column="notes" jdbcType="VARCHAR" property="notes" />
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+        <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, city, read_time, temperature, weather, spead, light, humidity, notes, create_date,
+    create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from weather_fur_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectWeatherFurByCity" parameterType="java.lang.String" resultMap="BaseInfoMap">
+    select
+     w.primary_id, w.city, w.read_time, w.temperature, w.weather, w.spead, w.light, w.humidity, w.notes, w.create_date,
+    w.create_user, w.update_date, w.update_user,c.z_c_city
+    from weather_fur_data w
+    left join zone_city_info c on w.city=c.z_c_cityid
+    where c.z_c_city like concat ('%',#{city},'%') and DATE_FORMAT(w.read_time,'%Y-%m-%d')=curdate()
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from weather_fur_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherFur">
+    insert into weather_fur_data (primary_id, city, read_time,
+      temperature, weather, spead, 
+      light, humidity, notes, 
+      create_date, create_user, update_date, 
+      update_user)
+    values (#{primaryId,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{readTime,jdbcType=DECIMAL},
+      #{temperature,jdbcType=VARCHAR}, #{weather,jdbcType=VARCHAR}, #{spead,jdbcType=VARCHAR}, 
+      #{light,jdbcType=VARCHAR}, #{humidity,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherFur">
+    insert into weather_fur_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="weather != null">
+        weather,
+      </if>
+      <if test="spead != null">
+        spead,
+      </if>
+      <if test="light != null">
+        light,
+      </if>
+      <if test="humidity != null">
+        humidity,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primary_id != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=DECIMAL},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="weather != null">
+        #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="spead != null">
+        #{spead,jdbcType=VARCHAR},
+      </if>
+      <if test="light != null">
+        #{light,jdbcType=VARCHAR},
+      </if>
+      <if test="humidity != null">
+        #{humidity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherFur">
+    update weather_fur_data
+    <set>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=DECIMAL},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=VARCHAR},
+      </if>
+      <if test="weather != null">
+        weather = #{weather,jdbcType=VARCHAR},
+      </if>
+      <if test="spead != null">
+        spead = #{spead,jdbcType=VARCHAR},
+      </if>
+      <if test="light != null">
+        light = #{light,jdbcType=VARCHAR},
+      </if>
+      <if test="humidity != null">
+        humidity = #{humidity,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.weather.entity.WeatherFur">
+    update weather_fur_data
+    set city = #{city,jdbcType=VARCHAR},
+      read_time = #{readTime,jdbcType=DECIMAL},
+      temperature = #{temperature,jdbcType=VARCHAR},
+      weather = #{weather,jdbcType=VARCHAR},
+      spead = #{spead,jdbcType=VARCHAR},
+      light = #{light,jdbcType=VARCHAR},
+      humidity = #{humidity,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

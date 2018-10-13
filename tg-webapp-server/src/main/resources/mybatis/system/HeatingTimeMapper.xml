@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.heatingTime.dao.HeatingTimeMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeInfo">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="station_name" jdbcType="VARCHAR"  property="stationName" />
+    <result column="company_name" jdbcType="VARCHAR"  property="companyName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    primary_id, station_id, year, start_time, end_time, company_id, rowno, notes, memo1, memo2, create_date,
+    create_user, update_date, update_user
+  </sql>
+
+  <insert id="insertHeatingTime" parameterType="cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime">
+    insert into heating_time
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="stationId != null">
+        station_id,
+      </if>
+      <if test="year != null">
+        year,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null">
+        #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteBatchByIds" parameterType="java.util.List">
+    delete from heating_time
+    where
+    primary_id in
+    <foreach collection="primaryIds" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <update id="updateHeatingTimeBatch" parameterType="cn.plou.web.system.commonMessage.heatingTime.vo.HeatingTimeVo">
+    update heating_time
+    <set>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null">
+        year = #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+    primary_id in
+    <foreach collection="primaryIds" item="item" index="index" open="(" separator="," close=")">
+       #{item}
+    </foreach>
+  </update>
+
+  <update id="updateHeatingById" parameterType="cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime">
+    update heating_time
+    set start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      rowno = #{rowno,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      station_id = #{stationId,jdbcType=VARCHAR},
+      year = #{year,jdbcType=VARCHAR}
+    where primary_id = #{primaryId}
+  </update>
+
+  <select id="selectHeatingTimeById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from heating_time
+    where primary_id = #{primaryId}
+  </select>
+  
+  <select id="getStartByStation" parameterType="java.lang.String" resultType="Date">
+    SELECT max(start_time) as start_time from heating_time 
+    where station_id = #{stationId,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="getStartByCompany" parameterType="java.lang.String" resultType="Date">
+    SELECT max(start_time) as start_time from heating_time 
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+  
+
+  <select id="selectAllHeatingTime" parameterType="map" resultMap="BaseInfoMap">
+    select
+    h.station_id station_id, h.year year, h.start_time start_time, h.end_time end_time,h.primary_id,
+    h.company_id company_id, h.rowno rowno, h.notes notes, h.memo1 memo1, h.memo2 memo2, h.create_date create_date,
+    h.create_user create_user, h.update_date update_date, h.update_user update_user,  c.company_name company_name
+    from heating_time h
+    LEFT JOIN
+    company_info c
+    ON h.company_id = c.company_id
+    where 1 = 1
+    <if test="companyIds != null">
+      <if test="companyIds.size()>0">
+        and h.company_id in
+        <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and h.station_id = #{stationId}
+    </if>
+    <if test="heatingTimeVo != null">
+    <if test="heatingTimeVo.year != null">
+      and h.year = #{heatingTimeVo.year}
+    </if>
+    <if test="heatingTimeVo.startTime != null">
+      and h.start_time = #{heatingTimeVo.startTime}
+    </if>
+    <if test="heatingTimeVo.endTime != null">
+      and h.end_time = #{heatingTimeVo.endTime}
+    </if>
+    <if test="heatingTimeVo.stationId!=null">
+      and h.station_id = #{heatingTimeVo.stationId}
+    </if>
+      <if test="heatingTimeVo.notes!=null">
+        and h.notes = #{heatingTimeVo.notes}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="page!=null">
+      <if test="pageSize!=null">
+        limit ${page},${pageSize}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectHeatingTimes"  parameterType="java.lang.String"  resultMap="BaseInfoMap">
+    select
+    h.station_id station_id, h.year year, h.start_time start_time, h.end_time end_time,h.primary_id,
+    h.company_id company_id, h.rowno rowno, h.notes notes, h.memo1 memo1, h.memo2 memo2, h.create_date create_date,
+    h.create_user create_user, h.update_date update_date, h.update_user update_user, s.station_name station_name, c.company_name company_name
+    from heating_time h
+    LEFT JOIN
+    station_info s
+    ON h.station_id = s.station_id
+    LEFT JOIN
+    company_info c
+    ON h.company_id = c.company_id
+    where 1 = 1
+    <if test="companyIds!=null">
+      <if test="companyIds.size()>0">
+        and h.company_id in
+        <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationIds!=null">
+      <if test="stationIds.size()>0">
+        and h.station_id in
+        <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="year != null">
+      and h.year = #{year}
+    </if>
+  </select>
+  <!--<insert id="insert" parameterType="cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime">-->
+    <!--insert into heating_time (station_id, year, start_time, -->
+      <!--end_time, company_id, rowno, -->
+      <!--notes, memo1, memo2, -->
+      <!--create_date, create_user, update_date, -->
+      <!--update_user)-->
+    <!--values (#{stationId,jdbcType=VARCHAR}, #{year,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, -->
+      <!--#{endTime,jdbcType=TIMESTAMP}, #{companyId,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, -->
+      <!--#{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, -->
+      <!--#{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, -->
+      <!--#{updateUser,jdbcType=VARCHAR})-->
+  <!--</insert>-->
+
+  <select id="selectAllIds"  resultType="java.lang.String">
+  select
+  primary_id
+  from heating_time
+  </select>
+
+  <select id="selectHeatingTimeCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from heating_time h
+    where 1 = 1
+    <if test="companyIds != null">
+      <if test="companyIds.size()>0">
+        and h.company_id in
+        <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+
+    <if test="stationId != null">
+      and h.station_id = #{stationId}
+    </if>
+    <if test="heatingTimeVo != null">
+      <if test="heatingTimeVo.year != null">
+        and h.year = #{heatingTimeVo.year}
+      </if>
+      <if test="heatingTimeVo.startTime != null">
+        and h.start_time = #{heatingTimeVo.startTime}
+      </if>
+      <if test="heatingTimeVo.endTime != null">
+        and h.end_time = #{heatingTimeVo.endTime}
+      </if>
+      <if test="heatingTimeVo.stationId!=null">
+        and h.station_id = #{heatingTimeVo.stationId}
+      </if>
+    </if>
+  </select>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.heatingTime.entity.HeatingTime">
+    update heating_time
+    <set>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null">
+        year = #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <select id="getAnnualByCompanyId" resultType="java.lang.String">
+    SELECT DISTINCT(year)  FROM `heating_time` WHERE company_id=#{companyId}  order by  year  desc
+  </select>
+</mapper>

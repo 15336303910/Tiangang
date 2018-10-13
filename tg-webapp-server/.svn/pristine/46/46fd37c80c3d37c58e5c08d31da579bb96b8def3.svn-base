@@ -1,0 +1,23 @@
+package cn.plou.web.charge.chargeconfig.dto;
+
+import cn.plou.web.common.config.common.BasePageEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * @ClassName: ChargeAccountSearchDTO
+ * @Description: 对接设置搜索
+ * @Author: youbc
+ * @Date 2018年9月18日16:39:23
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class DockingSetSearchDTO extends BasePageEntity {
+
+    @NotEmpty(message = "请选择公司")
+    private String companyId; // 公司ID
+
+    private String bankId; // 银行名称
+}

@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.charge.heatingmanage.dao.HouseYearHeatstateDetailMapper">
+    <resultMap id="BaseResultMap" type="cn.plou.web.charge.heatingmanage.domain.HouseYearHeatstateDetail">
+        <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+        <result column="consumer_id" jdbcType="VARCHAR" property="consumerId"/>
+        <result column="flow_id" jdbcType="VARCHAR" property="flowId"/>
+        <result column="annual" jdbcType="VARCHAR" property="annual"/>
+        <result column="company_id" jdbcType="VARCHAR" property="companyId"/>
+        <result column="appr_person" jdbcType="VARCHAR" property="apprPerson"/>
+        <result column="appr_time" jdbcType="TIMESTAMP" property="apprTime"/>
+        <result column="appr_telephone" jdbcType="VARCHAR" property="apprTelephone"/>
+        <result column="task_type" jdbcType="VARCHAR" property="taskType"/>
+        <result column="task_contect" jdbcType="VARCHAR" property="taskContect"/>
+        <result column="handler" jdbcType="VARCHAR" property="handler"/>
+        <result column="emerge" jdbcType="VARCHAR" property="emerge"/>
+        <result column="overtime" jdbcType="VARCHAR" property="overtime"/>
+        <result column="execute_person" jdbcType="VARCHAR" property="executePerson"/>
+        <result column="execute_time" jdbcType="TIMESTAMP" property="executeTime"/>
+        <result column="feedback_contect" jdbcType="VARCHAR" property="feedbackContect"/>
+        <result column="end_state" jdbcType="VARCHAR" property="endState"/>
+        <result column="house_view" jdbcType="VARCHAR" property="houseView"/>
+        <result column="house_sign" jdbcType="VARCHAR" property="houseSign"/>
+        <result column="visit_person" jdbcType="VARCHAR" property="visitPerson"/>
+        <result column="visit_time" jdbcType="TIMESTAMP" property="visitTime"/>
+        <result column="visit_contect" jdbcType="VARCHAR" property="visitContect"/>
+        <result column="satisfy" jdbcType="VARCHAR" property="satisfy"/>
+        <result column="notes" jdbcType="VARCHAR" property="notes"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="cost_type" jdbcType="VARCHAR" property="costType"/>
+        <result column="nums" jdbcType="DECIMAL" property="nums"/>
+        <result column="single_cost" jdbcType="DECIMAL" property="singleCost"/>
+        <result column="total_cost" jdbcType="DECIMAL" property="totalCost"/>
+        <result column="act_cost" jdbcType="DECIMAL" property="actCost"/>
+        <result column="billno" jdbcType="VARCHAR" property="billno"/>
+        <result column="receiptno" jdbcType="VARCHAR" property="receiptno"/>
+        <result column="print_flag" jdbcType="VARCHAR" property="printFlag"/>
+        <result column="pay_channel" jdbcType="VARCHAR" property="payChannel"/>
+        <result column="diameter" jdbcType="VARCHAR" property="diameter"/>
+        <result column="control_type" jdbcType="VARCHAR" property="controlType"/>
+        <result column="appoint_time" jdbcType="TIMESTAMP" property="appointTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        primary_id, consumer_id, flow_id, annual, company_id, appr_person, appr_time, appr_telephone, task_type,
+        task_contect, handler , emerge, overtime, execute_person, execute_time,
+        feedback_contect, end_state, house_view, house_sign, visit_person, visit_time,
+        visit_contect, satisfy, notes, create_date, create_user, update_date, update_user,
+        cost_type, nums, single_cost, total_cost, act_cost, billno, receiptno, print_flag, pay_channel,
+        diameter, control_type, appoint_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house_year_heatstate_detail
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="get" parameterType="java.lang.String" resultType="cn.plou.web.charge.heatingmanage.vo.HeatingServeVO">
+        select d.primary_id       as primaryId,
+               d.consumer_id      as consumerId,
+               d.company_id       as companyId,
+               i.address,
+               d.diameter,
+               d.control_type     as controlType,
+               d.appr_person      as apprPerson,
+               d.appr_telephone   as apprTelephone,
+               d.task_type        as taskType,
+               d.emerge,
+               t2.type_name       as emergeName,
+               d.appoint_time     as appointTime,
+               d.overtime,
+               d.task_contect        taskContect,
+               d.cost_type        as costType,
+               d.single_cost      as singleCost,
+               d.nums,
+               d.total_cost       as totalCost,
+               d.act_cost         as actCost,
+               d.pay_channel      as payChannel,
+               d.print_flag       as printFlag,
+               d.billno,
+               d.receiptno,
+               d.appr_time        as apprTime,
+               d.handler,
+               u.username         as handlerName,
+               d.execute_person   as executePerson,
+               d.execute_time     as executeTime,
+               d.end_state        as endState,
+               d.feedback_contect as feedbackContect,
+               d.house_view       as houseView,
+               d.visit_person     as visitPerson,
+               d.visit_time       as visitTime,
+               d.satisfy,
+               d.visit_contect    as visitContect,
+               d.notes
+        from house_year_heatstate_detail d
+                 left join houses_info i on i.consumer_id = d.consumer_id
+                 left join type_mst t2 on t2.id = d.emerge
+                 left join user_login u on u.user_code = d.handler
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" parameterType="cn.plou.web.charge.heatingmanage.domain.HouseYearHeatstateDetail">
+        insert into house_year_heatstate_detail (primary_id,
+                                                 consumer_id,
+                                                 flow_id,
+                                                 annual,
+                                                 company_id,
+                                                 appr_person,
+                                                 appr_time,
+                                                 appr_telephone,
+                                                 task_type,
+                                                 task_contect,
+                                                 handler,
+                                                 emerge,
+                                                 overtime,
+                                                 execute_person,
+                                                 execute_time,
+                                                 feedback_contect,
+                                                 end_state,
+                                                 house_view,
+                                                 house_sign,
+                                                 visit_person,
+                                                 visit_time,
+                                                 visit_contect,
+                                                 satisfy,
+                                                 notes,
+                                                 create_date,
+                                                 create_user,
+                                                 update_date,
+                                                 update_user,
+                                                 cost_type,
+                                                 nums,
+                                                 single_cost,
+                                                 total_cost,
+                                                 act_cost,
+                                                 billno,
+                                                 receiptno,
+                                                 print_flag,
+                                                 pay_channel,
+                                                 diameter,
+                                                 control_type,
+                                                 appoint_time)
+        values (#{primaryId,jdbcType=VARCHAR},
+                #{consumerId,jdbcType=VARCHAR},
+                #{flowId,jdbcType=VARCHAR},
+                #{annual,jdbcType=VARCHAR},
+                #{companyId,jdbcType=VARCHAR},
+                #{apprPerson,jdbcType=VARCHAR},
+                #{apprTime,jdbcType=TIMESTAMP},
+                #{apprTelephone,jdbcType=TIMESTAMP},
+                #{taskType,jdbcType=VARCHAR},
+                #{taskContect,jdbcType=VARCHAR},
+                #{handler,jdbcType=VARCHAR},
+                #{emerge,jdbcType=VARCHAR},
+                #{overtime,jdbcType=VARCHAR},
+                #{executePerson,jdbcType=VARCHAR},
+                #{executeTime,jdbcType=TIMESTAMP},
+                #{feedbackContect,jdbcType=VARCHAR},
+                #{endState,jdbcType=VARCHAR},
+                #{houseView,jdbcType=VARCHAR},
+                #{houseSign,jdbcType=VARCHAR},
+                #{visitPerson,jdbcType=VARCHAR},
+                #{visitTime,jdbcType=TIMESTAMP},
+                #{visitContect,jdbcType=VARCHAR},
+                #{satisfy,jdbcType=VARCHAR},
+                #{notes,jdbcType=VARCHAR},
+                #{createDate,jdbcType=TIMESTAMP},
+                #{createUser,jdbcType=VARCHAR},
+                #{updateDate,jdbcType=TIMESTAMP},
+                #{updateUser,jdbcType=VARCHAR},
+                #{costType,jdbcType=VARCHAR},
+                #{nums,jdbcType=DECIMAL},
+                #{singleCost,jdbcType=DECIMAL},
+                #{totalCost,jdbcType=DECIMAL},
+                #{actCost,jdbcType=DECIMAL},
+                #{billno,jdbcType=VARCHAR},
+                #{receiptno,jdbcType=VARCHAR},
+                #{printFlag,jdbcType=VARCHAR},
+                #{payChannel,jdbcType=VARCHAR},
+                #{diameter,jdbcType=VARCHAR},
+                #{controlType,jdbcType=VARCHAR},
+                #{appointTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.heatingmanage.domain.HouseYearHeatstateDetail">
+        update house_year_heatstate_detail
+        set consumer_id      = #{consumerId,jdbcType=VARCHAR},
+            flow_id          = #{flowId,jdbcType=VARCHAR},
+            annual           = #{annual,jdbcType=VARCHAR},
+            company_id       = #{companyId,jdbcType=VARCHAR},
+            appr_person      = #{apprPerson,jdbcType=VARCHAR},
+            appr_time        = #{apprTime,jdbcType=TIMESTAMP},
+            appr_telephone   = #{apprTelephone,jdbcType=TIMESTAMP},
+            task_type        = #{taskType,jdbcType=VARCHAR},
+            task_contect     = #{taskContect,jdbcType=VARCHAR},
+            handler          = #{handler,jdbcType=VARCHAR},
+            emerge           = #{emerge,jdbcType=VARCHAR},
+            overtime         = #{overtime,jdbcType=VARCHAR},
+            execute_person   = #{executePerson,jdbcType=VARCHAR},
+            execute_time     = #{executeTime,jdbcType=TIMESTAMP},
+            feedback_contect = #{feedbackContect,jdbcType=VARCHAR},
+            end_state        = #{endState,jdbcType=VARCHAR},
+            house_view       = #{houseView,jdbcType=VARCHAR},
+            house_sign       = #{houseSign,jdbcType=VARCHAR},
+            visit_person     = #{visitPerson,jdbcType=VARCHAR},
+            visit_time       = #{visitTime,jdbcType=TIMESTAMP},
+            visit_contect    = #{visitContect,jdbcType=VARCHAR},
+            satisfy          = #{satisfy,jdbcType=VARCHAR},
+            notes            = #{notes,jdbcType=VARCHAR},
+            create_date      = #{createDate,jdbcType=TIMESTAMP},
+            create_user      = #{createUser,jdbcType=VARCHAR},
+            update_date      = #{updateDate,jdbcType=TIMESTAMP},
+            update_user      = #{updateUser,jdbcType=VARCHAR},
+            cost_type        = #{costType,jdbcType=VARCHAR},
+            nums             = #{nums,jdbcType=DECIMAL},
+            single_cost      = #{singleCost,jdbcType=DECIMAL},
+            total_cost       = #{totalCost,jdbcType=DECIMAL},
+            act_cost         = #{actCost,jdbcType=DECIMAL},
+            billno           = #{billno,jdbcType=VARCHAR},
+            receiptno        = #{receiptno,jdbcType=VARCHAR},
+            print_flag       = #{printFlag,jdbcType=VARCHAR},
+            pay_channel      = #{payChannel,jdbcType=VARCHAR},
+            diameter         = #{diameter,jdbcType=VARCHAR},
+            control_type     = #{controlType,jdbcType=VARCHAR},
+            appoint_time     = #{appointTime,jdbcType=TIMESTAMP}
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getListBySearch" parameterType="cn.plou.web.charge.heatingmanage.dto.HeatingServeSearchDTO"
+            resultType="cn.plou.web.charge.heatingmanage.vo.HeatingServeListVO">
+        select
+        d.primary_id as primaryId,
+        d.consumer_id as consumerId,
+        d.flow_id as flowId,
+        i.address,
+        d.annual,
+        d.appr_person as apprPerson,
+        d.appr_time as apprTime,
+        d.task_type as taskType,
+        t1.type_name as taskTypeName,
+        d.task_contect taskContect,
+        d.emerge,
+        t2.type_name as emergeName,
+        d.overtime,
+        d.end_state as endState,
+        t3.type_name as endStateName,
+        d.handler,
+        u.username as handlerName,
+        d.execute_person as executePerson,
+        u2.staff_name as executePersonName,
+        d.execute_time as executeTime,
+        d.feedback_contect as feedbackContect,
+        d.house_view as houseView,
+        d.house_sign as houseSign,
+        d.visit_person as visitPerson,
+        u3.staff_name as visitPersonName,
+        d.visit_time as visitTime,
+        d.visit_contect as visitContect,
+        d.satisfy,
+        t5.type_name as satisfyName,
+        d.notes,
+        d.create_date as createDate,
+        d.create_user as createUser,
+        u4.username as createUserName,
+        d.update_date as updateDate,
+        d.update_user as updateUser,
+        u5.username as updateUserName,
+        d.cost_type as costType,
+        t6.type_name as costTypeName,
+        d.nums,
+        d.single_cost as singleCost,
+        d.total_cost as totalCost,
+        d.act_cost as actCost,
+        d.billno,
+        d.receiptno,
+        d.print_flag as printFlag,
+        t7.type_name as printFlagName,
+        d.pay_channel as payChannel,
+        t8.type_name as payChannelName,
+        d.diameter,
+        d.control_type as controlType,
+        t9.type_name as controlTypeName,
+        d.appoint_time as appointTime
+        from house_year_heatstate_detail d
+        left join houses_info i on i.consumer_id = d.consumer_id
+        left join type_mst t1 on t1.id = d.task_type
+        left join type_mst t2 on t2.id = d.emerge
+        left join type_mst t3 on t3.id = d.end_state
+        left join user_login u on u.user_code = d.handler
+        left join staff_info u2 on u2.staff_id = d.execute_person
+        left join staff_info u3 on u3.staff_id = d.visit_person
+        left join type_mst t5 on t5.id = d.satisfy
+        left join user_login u4 on u4.user_code = d.create_user
+        left join user_login u5 on u5.user_code = d.update_user
+        left join type_mst t6 on t6.id = d.cost_type
+        left join type_mst t7 on t7.id = d.print_flag
+        left join type_mst t8 on t8.id = d.pay_channel
+        left join type_mst t9 on t9.id = d.control_type
+        where
+        <choose>
+            <when test="consumerId != null and consumerId != ''">
+                d.consumer_id = #{consumerId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                d.consumer_id like CONCAT(#{rangeId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
+        <if test="apprTimeStart != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="apprTimeEnd != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="taskType != null and taskType != ''">and d.task_type = #{taskType,jdbcType=VARCHAR}</if>
+        <if test="emerge != null and emerge != ''">and d.emerge = #{emerge,jdbcType=VARCHAR}</if>
+        <if test="endState != null and endState != ''">and d.end_state = #{endState,jdbcType=VARCHAR}</if>
+        <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
+        <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
+        <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+        <if test="sortby != null and sortby != ''">
+            order by d.${sortby}
+        </if>
+        <if test="order != null and order != ''">
+            ${order}
+        </if>
+    </select>
+
+    <select id="getListCountBySearch" parameterType="cn.plou.web.charge.heatingmanage.dto.HeatingServeSearchDTO"
+            resultType="java.lang.Integer">
+        select count(*)
+        from house_year_heatstate_detail
+        where
+        <choose>
+            <when test="consumerId != null and consumerId != ''">
+                consumer_id = #{consumerId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                consumer_id like CONCAT(#{rangeId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
+        <if test="apprTimeStart != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="apprTimeEnd != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="taskType != null and taskType != ''">and task_type = #{taskType,jdbcType=VARCHAR}</if>
+        <if test="emerge != null and emerge != ''">and emerge = #{emerge,jdbcType=VARCHAR}</if>
+        <if test="endState != null and endState != ''">and end_state = #{endState,jdbcType=VARCHAR}</if>
+        <if test="satisfy != null and satisfy != ''">and satisfy = #{satisfy,jdbcType=VARCHAR}</if>
+        <if test="executePerson != null and executePerson != ''">and execute_person = #{executePerson,jdbcType=VARCHAR}</if>
+        <if test="visitPerson != null and visitPerson != ''">and visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+    </select>
+
+    <select id="getListBySearchOfStation" resultType="cn.plou.web.charge.heatingmanage.vo.HeatingServeListVO">
+        select
+        d.primary_id as primaryId,
+        d.consumer_id as consumerId,
+        d.flow_id as flowId,
+        i.address,
+        d.annual,
+        d.appr_person as apprPerson,
+        d.appr_time as apprTime,
+        d.task_type as taskType,
+        t1.type_name as taskTypeName,
+        d.task_contect taskContect,
+        d.emerge,
+        t2.type_name as emergeName,
+        d.overtime,
+        d.end_state as endState,
+        t3.type_name as endStateName,
+        d.handler,
+        u.username as handlerName,
+        d.execute_person as executePerson,
+        u2.staff_name as executePersonName,
+        d.execute_time as executeTime,
+        d.feedback_contect as feedbackContect,
+        d.house_view as houseView,
+        d.house_sign as houseSign,
+        d.visit_person as visitPerson,
+        u3.staff_name as visitPersonName,
+        d.visit_time as visitTime,
+        d.visit_contect as visitContect,
+        d.satisfy,
+        t5.type_name as satisfyName,
+        d.notes,
+        d.create_date as createDate,
+        d.create_user as createUser,
+        u4.username as createUserName,
+        d.update_date as updateDate,
+        d.update_user as updateUser,
+        u5.username as updateUserName,
+        d.cost_type as costType,
+        t6.type_name as costTypeName,
+        d.nums,
+        d.single_cost as singleCost,
+        d.total_cost as totalCost,
+        d.act_cost as actCost,
+        d.billno,
+        d.receiptno,
+        d.print_flag as printFlag,
+        t7.type_name as printFlagName,
+        d.pay_channel as payChannel,
+        t8.type_name as payChannelName,
+        d.diameter,
+        d.control_type as controlType,
+        t9.type_name as controlTypeName,
+        d.appoint_time as appointTime
+        from house_year_heatstate_detail d
+        left join houses_info i on i.consumer_id = d.consumer_id
+        left join type_mst t1 on t1.id = d.task_type
+        left join type_mst t2 on t2.id = d.emerge
+        left join type_mst t3 on t3.id = d.end_state
+        left join user_login u on u.user_code = d.handler
+        left join staff_info u2 on u2.staff_id = d.execute_person
+        left join staff_info u3 on u3.staff_id = d.visit_person
+        left join type_mst t5 on t5.id = d.satisfy
+        left join user_login u4 on u4.user_code = d.create_user
+        left join user_login u5 on u5.user_code = d.update_user
+        left join type_mst t6 on t6.id = d.cost_type
+        left join type_mst t7 on t7.id = d.print_flag
+        left join type_mst t8 on t8.id = d.pay_channel
+        left join type_mst t9 on t9.id = d.control_type
+        <where>
+            <choose>
+                <when test="dto.consumerId != null and dto.consumerId != ''">
+                    d.consumer_id = #{dto.consumerId,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    <foreach collection="list" item="id" open="and (" separator="or" close=")">
+                        d.consumer_id like concat(#{id}, '%')
+                    </foreach>
+                </otherwise>
+            </choose>
+            <if test="dto.apprTimeStart != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+            <if test="dto.apprTimeEnd != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+            <if test="dto.taskType != null and dto.taskType != ''">and d.task_type = #{dto.taskType,jdbcType=VARCHAR}</if>
+            <if test="dto.emerge != null and dto.emerge != ''">and d.emerge = #{dto.emerge,jdbcType=VARCHAR}</if>
+            <if test="dto.endState != null and dto.endState != ''">and d.end_state = #{dto.endState,jdbcType=VARCHAR}</if>
+            <if test="dto.satisfy != null and dto.satisfy != ''">and d.satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
+            <if test="dto.executePerson != null and dto.executePerson != ''">and d.execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
+            <if test="dto.visitPerson != null and dto.visitPerson != ''">and d.visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+        </where>
+        <if test="dto.sortby != null and dto.sortby != ''">
+            order by d.${dto.sortby}
+        </if>
+        <if test="dto.order != null and dto.order != ''">
+            ${dto.order}
+        </if>
+
+    </select>
+
+    <select id="getListCountBySearchOfStation" resultType="java.lang.Integer">
+        select count(*)
+        from house_year_heatstate_detail
+        <where>
+            <choose>
+                <when test="dto.consumerId != null and dto.consumerId != ''">
+                    consumer_id = #{dto.consumerId,jdbcType=VARCHAR}
+                </when>
+                <otherwise>
+                    <foreach collection="list" item="id" open="and (" separator="or" close=")">
+                        consumer_id like concat(#{id}, '%')
+                    </foreach>
+                </otherwise>
+            </choose>
+            <if test="dto.apprTimeStart != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+            <if test="dto.apprTimeEnd != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+            <if test="dto.taskType != null and dto.taskType != ''">and task_type = #{dto.taskType,jdbcType=VARCHAR}</if>
+            <if test="dto.emerge != null and dto.emerge != ''">and emerge = #{dto.emerge,jdbcType=VARCHAR}</if>
+            <if test="dto.endState != null and dto.endState != ''">and end_state = #{dto.endState,jdbcType=VARCHAR}</if>
+            <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
+            <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
+            <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+        </where>
+    </select>
+
+    <select id="getTodayLast" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from house_year_heatstate_detail
+        where company_id = #{companyId,jdbcType=VARCHAR}
+        and TO_DAYS(create_date) = TO_DAYS(NOW())
+        order by create_date desc LIMIT 1
+    </select>
+    <select id="getTotalResultOfNormalByType" resultType="cn.plou.web.charge.heatingmanage.domain.ServeResultByType">
+
+
+        select temp1.task_type, type_mst.type_name as task_type_name, temp1.apply_num, temp2.end_num
+        from (select task_type, count(1) as apply_num
+        from house_year_heatstate_detail as d
+        where 1=1
+        <choose>
+            <when test="consumerId != null and consumerId != ''">
+                and    d.consumer_id = #{consumerId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and d.consumer_id like CONCAT(#{rangeId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
+        <if test="apprTimeStart != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="apprTimeEnd != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="taskType != null and taskType != ''">and d.task_type = #{taskType,jdbcType=VARCHAR}</if>
+        <if test="emerge != null and emerge != ''">and d.emerge = #{emerge,jdbcType=VARCHAR}</if>
+        <if test="endState != null and endState != ''">and d.end_state = #{endState,jdbcType=VARCHAR}</if>
+        <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
+        <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
+        <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+
+        group by task_type
+        order by apply_num desc
+        limit 0,3) as temp1
+        left join (select task_type, count(1) as end_num
+        from house_year_heatstate_detail as d
+        where end_state = 'end_state_1'
+
+
+        <choose>
+            <when test="consumerId != null and consumerId != ''">
+                and    d.consumer_id = #{consumerId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and d.consumer_id like CONCAT(#{rangeId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
+        <if test="apprTimeStart != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="apprTimeEnd != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="taskType != null and taskType != ''">and d.task_type = #{taskType,jdbcType=VARCHAR}</if>
+        <if test="emerge != null and emerge != ''">and d.emerge = #{emerge,jdbcType=VARCHAR}</if>
+        <if test="endState != null and endState != ''">and d.end_state = #{endState,jdbcType=VARCHAR}</if>
+        <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
+        <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
+        <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+
+        group by task_type) as temp2 on temp1.task_type = temp2.task_type
+        left join type_mst on temp1.task_type = type_mst.id;
+
+
+    </select>
+    <select id="getTotalResultOfStationByType" resultType="cn.plou.web.charge.heatingmanage.domain.ServeResultByType">
+
+        select temp1.task_type, type_mst.type_name as task_type_name, temp1.apply_num, temp2.end_num
+        from (select task_type, count(1) as apply_num
+        from house_year_heatstate_detail as d
+        where 1=1
+
+        <if test="list != null and list.size() != 0">
+            <foreach collection="list" item="id" open="and (" separator="or" close=")">
+                consumer_id like concat(#{id}, '%')
+            </foreach>
+        </if>
+        <if test="dto.apprTimeStart != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.apprTimeEnd != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.taskType != null and dto.taskType != ''">and task_type = #{dto.taskType,jdbcType=VARCHAR}</if>
+        <if test="dto.emerge != null and dto.emerge != ''">and emerge = #{dto.emerge,jdbcType=VARCHAR}</if>
+        <if test="dto.endState != null and dto.endState != ''">and end_state = #{dto.endState,jdbcType=VARCHAR}</if>
+        <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
+        <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
+        <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+
+
+        group by task_type
+        order by apply_num desc
+        limit 0,3) as temp1
+        left join (select task_type, count(1) as end_num
+        from house_year_heatstate_detail as d
+        where end_state = 'end_state_1'
+
+        <if test="list != null and list.size() != 0">
+            <foreach collection="list" item="id" open="and (" separator="or" close=")">
+                consumer_id like concat(#{id}, '%')
+            </foreach>
+        </if>
+
+        <if test="dto.apprTimeStart != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.apprTimeEnd != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.taskType != null and dto.taskType != ''">and task_type = #{dto.taskType,jdbcType=VARCHAR}</if>
+        <if test="dto.emerge != null and dto.emerge != ''">and emerge = #{dto.emerge,jdbcType=VARCHAR}</if>
+        <if test="dto.endState != null and dto.endState != ''">and end_state = #{dto.endState,jdbcType=VARCHAR}</if>
+        <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
+        <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
+        <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+
+
+        group by task_type) as temp2 on temp1.task_type = temp2.task_type
+        left join type_mst on temp1.task_type = type_mst.id;
+
+    </select>
+    <select id="getCountOfNormalByendState" resultType="java.lang.Integer">
+
+        select   count(1)  from house_year_heatstate_detail  as  d
+
+
+        where 1=1
+        <choose>
+            <when test="consumerId != null and consumerId != ''">
+                and    d.consumer_id = #{consumerId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and d.consumer_id like CONCAT(#{rangeId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
+        <if test="apprTimeStart != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="apprTimeEnd != null">and DATE_FORMAT(d.appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="taskType != null and taskType != ''">and d.task_type = #{taskType,jdbcType=VARCHAR}</if>
+        <if test="emerge != null and emerge != ''">and d.emerge = #{emerge,jdbcType=VARCHAR}</if>
+        <if test="endState != null and endState != ''">and d.end_state = #{endState,jdbcType=VARCHAR}</if>
+        <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
+        <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
+        <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+
+
+
+
+
+    </select>
+    <select id="getCountOfStationByendState" resultType="java.lang.Integer">
+
+        select   count(1)  from house_year_heatstate_detail  as  d
+        where 1=1
+        <if test="list != null and list.size() != 0">
+            <foreach collection="list" item="id" open="and (" separator="or" close=")">
+                consumer_id like concat(#{id}, '%')
+            </foreach>
+        </if>
+
+        <if test="dto.apprTimeStart != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.apprTimeStart,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.apprTimeEnd != null">and DATE_FORMAT(appr_time, '%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.apprTimeEnd,jdbcType=TIMESTAMP}, '%Y-%m-%d')</if>
+        <if test="dto.taskType != null and dto.taskType != ''">and task_type = #{dto.taskType,jdbcType=VARCHAR}</if>
+        <if test="dto.emerge != null and dto.emerge != ''">and emerge = #{dto.emerge,jdbcType=VARCHAR}</if>
+        <if test="dto.endState != null and dto.endState != ''">and end_state = #{dto.endState,jdbcType=VARCHAR}</if>
+        <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
+        <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
+        <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+
+
+    </select>
+</mapper>

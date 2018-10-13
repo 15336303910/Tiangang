@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.mbus.dao.MeterTimingDefineMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="mbus_code" jdbcType="VARCHAR" property="mbusCode" />
+    <result column="up_comm_mode" jdbcType="VARCHAR" property="upCommMode" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="exec_day" jdbcType="VARCHAR" property="execDay" />
+    <result column="timing" jdbcType="VARCHAR" property="timing" />
+    <result column="intervals" jdbcType="INTEGER" property="intervals" />
+    <result column="next_send_time" jdbcType="VARCHAR" property="nextSendTime" />
+    <result column="re_read" jdbcType="VARCHAR" property="reRead" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="send_times" jdbcType="INTEGER" property="sendTimes" />
+    <result column="time_index" jdbcType="INTEGER" property="timeIndex" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="valid_flg" jdbcType="INTEGER" property="validFlg" />
+    <result column="success_flag" jdbcType="VARCHAR" property="successFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, mbus_code, up_comm_mode, order_type, exec_day, timing, intervals, next_send_time, 
+    re_read, company_id, send_times, time_index, equipment_no, valid_flg, success_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from meter_timing_define
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByMbusCodeAndUpCommMode" parameterType="map" resultMap="BaseResultMap">
+    select
+    mbus_code, up_comm_mode, order_type, exec_day, timing, intervals, next_send_time,
+    re_read, company_id, send_times, time_index, equipment_no, valid_flg, success_flag
+    from meter_timing_define
+    where mbus_code = #{mbusCode} and up_comm_mode = #{upCommMode}
+  </select>
+
+  <select id="selectAllMbusCodes" resultType="java.lang.String">
+    select distinct mbus_code
+    from meter_timing_define
+    limit 0,100000
+  </select>
+
+  <select id="selectAllTimigByMbusCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/> from meter_timing_define
+    where mbus_code = #{mbusCode}
+  </select>
+
+  <select id="selectAllByDefineVo" parameterType="map" resultMap="BaseResultMap">
+    select
+    mbus_code, up_comm_mode, order_type, exec_day, timing, intervals, next_send_time,
+    re_read, company_id, send_times, time_index, equipment_no, valid_flg, success_flag
+    from meter_timing_define
+    where 
+    <if test="mbusCodes != null">
+    mbus_code in
+    <foreach collection="mbusCodes" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    </if>
+    <if test="timingTasks != null">
+      and (timing,order_type) in
+      <foreach collection="timingTasks" index="index" item="timingTasks" open="(" separator="," close=")">
+        (#{timingTasks.timing},#{timingTasks.orderType})
+      </foreach>
+      <!--<foreach collection="timingTasks" index="index" item="timingTasks" open="(" separator="," close=")">
+        <if test="index == 0">
+          and timing = #{timingTasks.timing}
+          and order_type = #{timingTasks.orderType}
+        </if>
+        <if test="index != 0">
+          or timing = #{timingTasks.timing}
+          and order_type = #{timingTasks.orderType}
+        </if>
+      </foreach>-->
+    </if>
+    <if test="intervals != null">
+      and intervals = #{intervals}
+    </if>
+    <if test="upCommMode!=null">
+      and up_comm_mode = #{upCommMode}
+    </if>
+  </select>
+
+  <select id="selectIntervalsByMbusCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/> from meter_timing_define
+    where mbus_code = #{mbusCode} and up_comm_mode = "up_comm_mode_1"
+  </select>
+
+  <select id="selectPrimaryIdByData" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" /> from from meter_timing_define
+    where mbus_code = #{mbusCode} and up_comm_mode = #{upCommMode}
+    <if test="timing != null">
+      and order_type = #{orderType} and timing = #{timing}
+    </if>
+    <if test="intervals != null">
+      and intervals = #{intervals}
+    </if>
+  </select>
+
+  <select id="selectAllIntervalsByMbusCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from meter_timing_define
+    where mbus_code in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from meter_timing_define
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteTimingDefineBatch" parameterType="java.util.List">
+    delete from meter_timing_define
+    <if test="list == null or list.size()==0">
+      where 1=0
+    </if>
+    <if test="list.size()>0">
+      where primary_id in
+      <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine">
+    insert into meter_timing_define (primary_id, mbus_code, up_comm_mode, 
+      order_type, exec_day, timing, 
+      intervals, next_send_time, re_read, 
+      company_id, send_times, time_index, 
+      equipment_no, valid_flg, success_flag
+      )
+    values (#{primaryId,jdbcType=VARCHAR}, #{mbusCode,jdbcType=VARCHAR}, #{upCommMode,jdbcType=VARCHAR}, 
+      #{orderType,jdbcType=VARCHAR}, #{execDay,jdbcType=VARCHAR}, #{timing,jdbcType=VARCHAR}, 
+      #{intervals,jdbcType=INTEGER}, #{nextSendTime,jdbcType=VARCHAR}, #{reRead,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{sendTimes,jdbcType=INTEGER}, #{timeIndex,jdbcType=INTEGER}, 
+      #{equipmentNo,jdbcType=VARCHAR}, #{validFlg,jdbcType=INTEGER}, #{successFlag,jdbcType=VARCHAR}
+      )
+  </insert>
+
+ <!-- <insert id="insertSelectiveBatch" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="mbusCode != null">
+        mbus_code,
+      </if>
+      <if test="upCommMode != null">
+        up_comm_mode,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="execDay != null">
+        exec_day,
+      </if>
+      <if test="timing != null">
+        timing,
+      </if>
+      <if test="intervals != null">
+        intervals,
+      </if>
+      <if test="nextSendTime != null">
+        next_send_time,
+      </if>
+      <if test="reRead != null">
+        re_read,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="sendTimes != null">
+        send_times,
+      </if>
+      <if test="timeIndex != null">
+        time_index,
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no,
+      </if>
+      <if test="validFlg != null">
+        valid_flg,
+      </if>
+      <if test="successFlag != null">
+        success_flag,
+      </if>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusCode != null">
+        #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="upCommMode != null">
+        #{upCommMode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="execDay != null">
+        #{execDay,jdbcType=VARCHAR},
+      </if>
+      <if test="timing != null">
+        #{timing,jdbcType=VARCHAR},
+      </if>
+      <if test="intervals != null">
+        #{intervals,jdbcType=INTEGER},
+      </if>
+      <if test="nextSendTime != null">
+        #{nextSendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reRead != null">
+        #{reRead,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTimes != null">
+        #{sendTimes,jdbcType=INTEGER},
+      </if>
+      <if test="timeIndex != null">
+        #{timeIndex,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentNo != null">
+        #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlg != null">
+        #{validFlg,jdbcType=INTEGER},
+      </if>
+      <if test="successFlag != null">
+        #{successFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    </foreach>
+  </insert>-->
+
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine">
+    insert into meter_timing_define
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="mbusCode != null">
+        mbus_code,
+      </if>
+      <if test="upCommMode != null">
+        up_comm_mode,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="execDay != null">
+        exec_day,
+      </if>
+      <if test="timing != null">
+        timing,
+      </if>
+      <if test="intervals != null">
+        intervals,
+      </if>
+      <if test="nextSendTime != null">
+        next_send_time,
+      </if>
+      <if test="reRead != null">
+        re_read,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="sendTimes != null">
+        send_times,
+      </if>
+      <if test="timeIndex != null">
+        time_index,
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no,
+      </if>
+      <if test="validFlg != null">
+        valid_flg,
+      </if>
+      <if test="successFlag != null">
+        success_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="mbusCode != null">
+        #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="upCommMode != null">
+        #{upCommMode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="execDay != null">
+        #{execDay,jdbcType=VARCHAR},
+      </if>
+      <if test="timing != null">
+        #{timing,jdbcType=VARCHAR},
+      </if>
+      <if test="intervals != null">
+        #{intervals,jdbcType=INTEGER},
+      </if>
+      <if test="nextSendTime != null">
+        #{nextSendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reRead != null">
+        #{reRead,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTimes != null">
+        #{sendTimes,jdbcType=INTEGER},
+      </if>
+      <if test="timeIndex != null">
+        #{timeIndex,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentNo != null">
+        #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlg != null">
+        #{validFlg,jdbcType=INTEGER},
+      </if>
+      <if test="successFlag != null">
+        #{successFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="insertSelectiveBatch" parameterType="java.util.List">
+    START TRANSACTION;
+    <foreach collection="list" item="item" index="index" separator=";" >
+      insert into meter_timing_define
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          primary_id,
+          mbus_code,
+        <if test="item.upCommMode != null">
+          up_comm_mode,
+        </if>
+        <if test="item.orderType != null">
+          order_type,
+        </if>
+        <if test="item.execDay != null">
+          exec_day,
+        </if>
+        <if test="item.timing != null">
+          timing,
+        </if>
+        <if test="item.intervals != null">
+          intervals,
+        </if>
+        <if test="item.nextSendTime != null">
+          next_send_time,
+        </if>
+        <if test="item.reRead != null">
+          re_read,
+        </if>
+        <if test="item.companyId != null">
+          company_id,
+        </if>
+        <if test="item.sendTimes != null">
+          send_times,
+        </if>
+        <if test="item.timeIndex != null">
+          time_index,
+        </if>
+        <if test="item.equipmentNo != null">
+          equipment_no,
+        </if>
+        <if test="item.validFlg != null">
+          valid_flg,
+        </if>
+        <if test="item.successFlag != null">
+          success_flag,
+        </if>
+      </trim>
+    values
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+          #{item.primaryId,jdbcType=VARCHAR},
+          #{item.mbusCode,jdbcType=VARCHAR},
+        <if test="item.upCommMode != null">
+          #{item.upCommMode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.upCommMode == null">
+          "",
+        </if>
+        <if test="item.orderType != null">
+          #{item.orderType,jdbcType=VARCHAR},
+        </if>
+        <if test="item.orderType == null">
+          "",
+        </if>
+        <if test="item.execDay != null">
+          #{item.execDay,jdbcType=VARCHAR},
+        </if>
+        <if test="item.execDay == null">
+          "",
+        </if>
+        <if test="item.timing != null">
+          #{item.timing,jdbcType=VARCHAR},
+        </if>
+        <if test="item.timing == null">
+          "",
+        </if>
+        <if test="item.intervals != null">
+          #{item.intervals,jdbcType=INTEGER},
+        </if>
+        <if test="item.intervals == null">
+          "",
+        </if>
+        <if test="item.nextSendTime != null">
+          #{item.nextSendTime,jdbcType=VARCHAR},
+        </if>
+        <if test="item.nextSendTime == null">
+          "",
+        </if>
+        <if test="item.reRead != null">
+          #{item.reRead,jdbcType=VARCHAR},
+        </if>
+        <if test="item.reRead == null">
+          "",
+        </if>
+        <if test="item.companyId != null">
+          #{item.companyId,jdbcType=VARCHAR},
+        </if>
+        <if test="item.sendTimes != null">
+          #{item.sendTimes,jdbcType=INTEGER},
+        </if>
+        <if test="item.sendTimes == null">
+          "",
+        </if>
+        <if test="item.timeIndex != null">
+          #{item.timeIndex,jdbcType=INTEGER},
+        </if>
+        <if test="item.timeIndex == null">
+          "",
+        </if>
+        <if test="item.equipmentNo != null">
+          #{item.equipmentNo,jdbcType=VARCHAR},
+        </if>
+        <if test="item.equipmentNo == null">
+          "",
+        </if>
+        <if test="item.validFlg != null">
+          #{item.validFlg,jdbcType=INTEGER},
+        </if>
+        <if test="item.validFlg == null">
+          "",
+        </if>
+        <if test="item.successFlag != null">
+          #{item.successFlag,jdbcType=VARCHAR},
+        </if>
+        <if test="item.successFlag == null">
+          "",
+        </if>
+      </trim>
+    </foreach>
+    COMMIT;
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine">
+    update meter_timing_define
+    <set>
+      <if test="mbusCode != null">
+        mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="upCommMode != null">
+        up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="execDay != null">
+        exec_day = #{execDay,jdbcType=VARCHAR},
+      </if>
+      <if test="timing != null">
+        timing = #{timing,jdbcType=VARCHAR},
+      </if>
+      <if test="intervals != null">
+        intervals = #{intervals,jdbcType=INTEGER},
+      </if>
+      <if test="nextSendTime != null">
+        next_send_time = #{nextSendTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reRead != null">
+        re_read = #{reRead,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTimes != null">
+        send_times = #{sendTimes,jdbcType=INTEGER},
+      </if>
+      <if test="timeIndex != null">
+        time_index = #{timeIndex,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlg != null">
+        valid_flg = #{validFlg,jdbcType=INTEGER},
+      </if>
+      <if test="successFlag != null">
+        success_flag = #{successFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine">
+    update meter_timing_define
+    set mbus_code = #{mbusCode,jdbcType=VARCHAR},
+      up_comm_mode = #{upCommMode,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=VARCHAR},
+      exec_day = #{execDay,jdbcType=VARCHAR},
+      timing = #{timing,jdbcType=VARCHAR},
+      intervals = #{intervals,jdbcType=INTEGER},
+      next_send_time = #{nextSendTime,jdbcType=VARCHAR},
+      re_read = #{reRead,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      send_times = #{sendTimes,jdbcType=INTEGER},
+      time_index = #{timeIndex,jdbcType=INTEGER},
+      equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      valid_flg = #{validFlg,jdbcType=INTEGER},
+      success_flag = #{successFlag,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  
+  <insert id="insertSelectiveBatch2" parameterType="java.util.List">
+  insert into meter_timing_define (primary_id, mbus_code, up_comm_mode,
+  order_type, exec_day, timing,
+  intervals, next_send_time, re_read,
+  company_id, send_times, time_index,
+  equipment_no, valid_flg, success_flag
+  )
+values
+<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+  #{item.primaryId,jdbcType=VARCHAR}, #{ item.mbusCode,jdbcType=VARCHAR}, #{ item.upCommMode,jdbcType=VARCHAR},
+  #{item.orderType,jdbcType=VARCHAR}, #{ item.execDay,jdbcType=VARCHAR}, #{ item.timing,jdbcType=VARCHAR},
+  #{item.intervals,jdbcType=INTEGER}, #{ item.nextSendTime,jdbcType=VARCHAR}, #{ item.reRead,jdbcType=VARCHAR},
+  #{item.companyId,jdbcType=VARCHAR}, #{ item.sendTimes,jdbcType=INTEGER}, #{ item.timeIndex,jdbcType=INTEGER},
+  #{item.equipmentNo,jdbcType=VARCHAR}, #{ item.validFlg,jdbcType=INTEGER}, #{ item.successFlag,jdbcType=VARCHAR}
+</foreach>
+  </insert>
+</mapper>

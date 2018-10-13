@@ -1,0 +1,48 @@
+{
+  "from": 0,
+  "size": {{size}},
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "match_phrase": {
+                  "sourceid": {
+                    "query": "{{sourceid}}"
+                  }
+                }
+              },
+              {
+                "match_phrase": {
+                  "pointid": {
+                    "query": "{{pointid}}"
+                  }
+                }
+              },
+              {
+                "range": {
+                  "sysReadTimeLong": {
+                    "from": {{from}},
+                    "to": {{to}},
+                    "include_lower": true,
+                    "include_upper": true
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+  ,
+	"sort": [
+		{
+			"sysReadTimeLong": {
+				"order": "{{order}}"
+			}
+		}
+	]
+}

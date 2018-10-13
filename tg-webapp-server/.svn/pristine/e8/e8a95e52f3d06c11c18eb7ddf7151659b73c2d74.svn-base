@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.charge.chargeconfig.dao.PriceDefineMapper">
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+        <result column="primary_id" property="primaryId" jdbcType="VARCHAR"/>
+        <result column="price_name" property="priceName" jdbcType="VARCHAR"/>
+        <result column="annual" property="annual" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="pre_price" property="prePrice" jdbcType="VARCHAR"/>
+        <result column="area_price" property="areaPrice" jdbcType="VARCHAR"/>
+        <result column="heat_price" property="heatPrice" jdbcType="VARCHAR"/>
+        <result column="yeat_flag" property="yeatFlag" jdbcType="INTEGER"/>
+        <result column="notes" property="notes" jdbcType="VARCHAR"/>
+        <result column="overdue_begin_time" property="overdueBeginTime" jdbcType="TIMESTAMP"/>
+        <result column="overdue_rate" property="overdueRate" jdbcType="DECIMAL"/>
+        <result column="instruct" property="instruct" jdbcType="VARCHAR"/>
+        <result column="exchanger_price" property="exchangerPrice" jdbcType="DECIMAL"/>
+        <result column="metering_charging_type" property="MeteringChargingType" jdbcType="VARCHAR"/>
+        <result column="approve_res" property="approveRes" jdbcType="VARCHAR"/>
+        <result column="approve_serial" property="approveSerial" jdbcType="VARCHAR"/>
+        <result column="approve_name" property="approveName" jdbcType="VARCHAR"/>
+        <result column="approve_date" property="approveDate" jdbcType="TIMESTAMP"/>
+        <result column="approve_type" property="approveType" jdbcType="VARCHAR"/>
+
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR"/>
+    <result column="pre_price_tmp" jdbcType="DECIMAL" property="prePriceTmp" />
+    <result column="area_price_tmp" jdbcType="DECIMAL" property="areaPriceTmp" />
+    <result column="heat_price_tmp" jdbcType="DECIMAL" property="heatPriceTmp" />
+    <result column="exchanger_price_tmp" jdbcType="DECIMAL" property="exchangerPriceTmp" />
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        primary_id,
+        price_name,
+        annual,
+        company_id,
+        pre_price,
+        area_price,
+        heat_price,
+        yeat_flag,
+        notes,
+        overdue_begin_time,
+        overdue_rate,
+        instruct,
+        exchanger_price,
+        metering_charging_type,
+        approve_res,
+        `approve_serial`,
+        create_date,
+        create_user,
+        update_date,
+        update_user, 
+        pre_price_tmp,
+        area_price_tmp,
+        heat_price_tmp,
+        exchanger_price_tmp
+    </sql>
+
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List_Tmp">
+        primary_id,
+        price_name,
+        annual,
+        company_id,
+        pre_price,
+        area_price,
+        heat_price,
+        yeat_flag,
+        notes,
+        overdue_begin_time,
+        overdue_rate,
+        instruct,
+        exchanger_price,
+        metering_charging_type,
+        approve_res,
+
+        `approve_serial`,
+        `approve_name`,
+        `approve_date`,
+        `approve_type`,
+
+        create_date,
+        create_user,
+        update_date,
+        update_user
+    </sql>
+
+    <!--auto generated Code-->
+    <insert id="insert">
+        INSERT INTO price_define (
+            `primary_id`,
+            `price_name`,
+            `annual`,
+            `company_id`,
+            `pre_price`,
+            `area_price`,
+            `heat_price`,
+            `yeat_flag`,
+            `notes`,
+            `overdue_begin_time`,
+            `overdue_rate`,
+            `instruct`,
+            `exchanger_price`,
+            `metering_charging_type`,
+            `approve_res`,
+            `approve_serial`,
+            create_date,
+            create_user,
+            update_date,
+            update_user,
+        pre_price_tmp,
+        area_price_tmp,
+        heat_price_tmp,
+        exchanger_price_tmp
+        ) VALUES (
+            #{priceDefine.primaryId,jdbcType=VARCHAR},
+            #{priceDefine.priceName,jdbcType=VARCHAR},
+            #{priceDefine.annual,jdbcType=VARCHAR},
+            #{priceDefine.companyId,jdbcType=VARCHAR},
+            #{priceDefine.prePrice,jdbcType=VARCHAR},
+            #{priceDefine.areaPrice,jdbcType=VARCHAR},
+            #{priceDefine.heatPrice,jdbcType=VARCHAR},
+            #{priceDefine.yeatFlag,jdbcType=INTEGER},
+            #{priceDefine.notes,jdbcType=VARCHAR},
+            #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},
+            #{priceDefine.overdueRate,jdbcType=DECIMAL},
+            #{priceDefine.instruct,jdbcType=VARCHAR},
+            #{priceDefine.exchangerPrice,jdbcType=DECIMAL},
+            #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},
+            #{priceDefine.approveRes,jdbcType=VARCHAR},
+            #{priceDefine.approveSerial,jdbcType=VARCHAR},
+            #{priceDefine.createDate,jdbcType=TIMESTAMP},
+            #{priceDefine.createUser,jdbcType=VARCHAR},
+            #{priceDefine.updateDate,jdbcType=TIMESTAMP},
+            #{priceDefine.updateUser,jdbcType=VARCHAR},
+            #{priceDefine.prePriceTmp,jdbcType=DECIMAL},
+            #{priceDefine.areaPriceTmp,jdbcType=DECIMAL},
+            #{priceDefine.heatPriceTmp,jdbcType=DECIMAL},
+            #{priceDefine.exchangerPriceTmp,jdbcType=DECIMAL}
+        )
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="priceDefine.primaryId">
+        INSERT INTO price_define
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="priceDefine.primaryId!=null"> `primary_id`,</if>
+            <if test="priceDefine.priceName!=null"> `price_name`,</if>
+            <if test="priceDefine.annual!=null"> `annual`,</if>
+            <if test="priceDefine.companyId!=null"> `company_id`,</if>
+            <if test="priceDefine.prePrice!=null"> `pre_price`,</if>
+            <if test="priceDefine.areaPrice!=null"> `area_price`,</if>
+            <if test="priceDefine.heatPrice!=null"> `heat_price`,</if>
+            <if test="priceDefine.yeatFlag!=null"> `yeat_flag`,</if>
+            <if test="priceDefine.notes!=null"> `notes`,</if>
+            <if test="priceDefine.overdueBeginTime!=null"> `overdue_begin_time`,</if>
+            <if test="priceDefine.overdueRate!=null"> `overdue_rate`,</if>
+            <if test="priceDefine.instruct!=null"> `instruct`,</if>
+            <if test="priceDefine.exchangerPrice!=null"> `exchanger_price`,</if>
+            <if test="priceDefine.MeteringChargingType!=null"> `metering_charging_type`,</if>
+            <if test="priceDefine.approveRes!=null"> `approve_res`,</if>
+            <if test="priceDefine.approveSerial!=null"> `approve_serial`,</if>
+            <if test="priceDefine.approveName!=null"> `approve_name`,</if>
+            <if test="priceDefine.approveDate!=null"> `approve_date`</if>
+
+            <if test="priceDefine.prePriceTmp!=null"> `pre_price_tmp`,</if>
+            <if test="priceDefine.areaPriceTmp!=null"> `area_price_tmp`,</if>
+            <if test="priceDefine.heatPriceTmp!=null"> `heat_price_tmp`,</if>
+            <if test="priceDefine.exchangerPriceTmp!=null"> `exchanger_price_tmp`</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="priceDefine.primaryId!=null"> #{priceDefine.primaryId,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.priceName!=null"> #{priceDefine.priceName,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.annual!=null"> #{priceDefine.annual,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.companyId!=null"> #{priceDefine.companyId,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.prePrice!=null"> #{priceDefine.prePrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.areaPrice!=null"> #{priceDefine.areaPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.heatPrice!=null"> #{priceDefine.heatPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.yeatFlag!=null"> #{priceDefine.yeatFlag,jdbcType=INTEGER},</if>
+            <if test="priceDefine.notes!=null"> #{priceDefine.notes,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.overdueBeginTime!=null"> #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},</if>
+            <if test="priceDefine.overdueRate!=null"> #{priceDefine.overdueRate,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.instruct!=null"> #{priceDefine.instruct,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.exchangerPrice!=null"> #{priceDefine.exchangerPrice,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.MeteringChargingType!=null"> #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveRes!=null"> #{priceDefine.approveRes,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveSerial!=null"> #{priceDefine.approveSerial,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveName!=null"> #{priceDefine.approveName,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveDate!=null"> #{priceDefine.approveDate,jdbcType=TIMESTAMP},</if>
+
+            <if test="priceDefine.prePriceTmp!=null"> #{priceDefine.prePriceTmp,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.areaPriceTmp!=null"> #{priceDefine.areaPriceTmp,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.heatPriceTmp!=null"> #{priceDefine.heatPriceTmp,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.exchangerPriceTmp!=null"> #{priceDefine.exchangerPriceTmp,jdbcType=DECIMAL}</if>
+        </trim>
+    </insert>
+
+    <!--  &lt;!&ndash;auto generated Code&ndash;&gt;
+      <insert id="insertList">        INSERT INTO price_define(
+          <include refid="Base_Column_List"/>
+          )VALUES
+          <foreach collection="priceDefines" item="priceDefine" index="index" separator=",">
+              (
+              #{priceDefine.primaryId,jdbcType=VARCHAR},
+              #{priceDefine.priceName,jdbcType=VARCHAR},
+              #{priceDefine.annual,jdbcType=VARCHAR},
+              #{priceDefine.companyId,jdbcType=VARCHAR},
+              #{priceDefine.prePrice,jdbcType=VARCHAR},
+              #{priceDefine.areaPrice,jdbcType=VARCHAR},
+              #{priceDefine.heatPrice,jdbcType=VARCHAR},
+              #{priceDefine.yeatFlag,jdbcType=INTEGER},
+              #{priceDefine.notes,jdbcType=VARCHAR},
+              #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},
+              #{priceDefine.overdueRate,jdbcType=DECIMAL},
+              #{priceDefine.instruct,jdbcType=VARCHAR},
+              #{priceDefine.exchangerPrice,jdbcType=DECIMAL},
+              #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},
+              #{priceDefine.approveRes,jdbcType=VARCHAR},
+              #{priceDefine.approveSerial,jdbcType=VARCHAR},
+              )
+          </foreach>
+  </insert>-->
+
+    <!--auto generated Code-->
+    <update id="update">
+        UPDATE price_define
+        <set>
+            <if test="priceDefine.priceName != null"> `price_name` = #{priceDefine.priceName,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.annual != null"> `annual` = #{priceDefine.annual,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.companyId != null"> `company_id` = #{priceDefine.companyId,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.prePrice != null"> `pre_price` = #{priceDefine.prePrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.areaPrice != null"> `area_price` = #{priceDefine.areaPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.heatPrice != null"> `heat_price` = #{priceDefine.heatPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.yeatFlag != null"> `yeat_flag` = #{priceDefine.yeatFlag,jdbcType=INTEGER},</if>
+            <if test="priceDefine.notes != null"> `notes` = #{priceDefine.notes,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.overdueBeginTime != null"> `overdue_begin_time` = #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},</if>
+            <if test="priceDefine.overdueRate != null"> `overdue_rate` = #{priceDefine.overdueRate,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.instruct != null"> `instruct` = #{priceDefine.instruct,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.exchangerPrice != null"> `exchanger_price` = #{priceDefine.exchangerPrice,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.MeteringChargingType != null"> `metering_charging_type` = #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveRes != null"> `approve_res` = #{priceDefine.approveRes,jdbcType=VARCHAR},</if>
+            `approve_serial` = #{priceDefine.approveSerial,jdbcType=VARCHAR},
+            <if test="priceDefine.createDate != null"> `create_date` =  #{priceDefine.createDate,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.createUser != null"> `create_user` =  #{priceDefine.createUser,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.updateDate != null"> `update_date` = #{priceDefine.updateDate,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.updateUser != null"> `update_user` =    #{priceDefine.updateUser,jdbcType=DECIMAL},</if>
+        </set>
+        WHERE primary_id = #{priceDefine.primaryId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+    <!--auto generated by codehelper on 2018-08-20 08:51:50-->
+    <delete id="deleteByPrimaryId">
+        delete from price_define
+        where primary_id = #{primaryId,jdbcType=VARCHAR}</delete>
+
+    <!--auto generated by codehelper on 2018-08-20 09:19:13-->
+    <select id="findBycompanyId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where company_id=#{companyId,jdbcType=VARCHAR} and (
+        approve_res = '已通过-内容新增' or
+        approve_res = '已驳回-内容新增' or
+        approve_res = '已通过-内容更新' or
+        approve_res = '已驳回-内容新增' or
+        approve_res = '已驳回-内容更新' or
+        approve_res = '已驳回-热价删除'
+        )
+        ORDER BY annual DESC,create_date desc
+    </select>
+
+    <select id="selectByAnnualAndConsumerId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where 1=1
+        <if test="companyId != null">
+            and company_id = substring(#{consumerId},1,5)
+        </if>
+        <if test="annual != null">
+            and annual=#{annual,jdbcType=VARCHAR}
+        </if>
+        and yeat_flag=1
+    </select>
+
+    <select id="selectByAnnualAndCompanyId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where 1=1
+        <if test="companyId != null">
+            and company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="annual != null">
+            and annual=#{annual,jdbcType=VARCHAR}
+        </if>
+         and yeat_flag=1
+    </select>
+
+
+    <select id="selectByAnnualAndCompanyIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where annual=#{annual,jdbcType=VARCHAR}
+        <if test="companyIds!=null">
+            <if test="companyIds.size()>0">
+                and company_id in
+                <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </if>
+        and yeat_flag=1
+    </select>
+
+
+    <select id="selectByAnnualAndCommunityIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where annual=#{annual,jdbcType=VARCHAR}
+        and primary_id in
+        <if test="commuityIds!=null">
+            <if test="commuityIds.size()>0">
+                (select unit_price_type from houses_info where substring(houses_info.consumer_id,1,10) in
+                <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                )
+            </if>
+        </if>
+        and yeat_flag=1
+    </select>
+
+
+    <select id="selectByAnnualAndConsumerIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where annual=#{annual,jdbcType=VARCHAR}
+        and primary_id in
+        <if test="consumerIds!=null">
+            <if test="consumerIds.size()>0">
+                (select unit_price_type from houses_info where houses_info.consumer_id in
+                <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+                )
+            </if>
+        </if>
+        and yeat_flag=1
+    </select>
+
+    <select id="selectByAnnualAndStationIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where annual=#{annual,jdbcType=VARCHAR}
+        and primary_id in
+        <if test="stationIds!=null">
+            <if test="stationIds.size()>0">
+                (select unit_price_type from houses_info where substring(houses_info.consumer_id,1,10) in
+                    (select commuity_id from commuity_info where station_id in
+                        <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    )
+                )
+            </if>
+        </if>
+        and yeat_flag=1
+    </select>
+
+    <select id="findBycompanyIdFromTemp" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List_Tmp"/>
+        from price_define_tmp
+        where company_id=#{companyId,jdbcType=VARCHAR} and approve_res=#{approveRes}
+
+        ORDER BY annual DESC, create_date DESC
+    </select>
+
+    <!--auto generated by codehelper on 2018-08-21 14:11:04-->
+    <select id="findCurrentHeatAnnual" resultType="java.lang.String">
+        select  distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId}
+    </select>
+    <update id="changeOtherToNotCurrent">
+        UPDATE price_define
+        set yeat_flag = 0
+        where annual != #{annual} and  company_id =#{companyId}
+    </update>
+    <insert id="insertToTemp">
+        iNSERT INTO price_define_tmp (
+            primary_id,
+            price_name,
+            annual,
+            company_id,
+            pre_price,
+            area_price,
+            heat_price,
+            yeat_flag,
+            notes,
+            overdue_begin_time,
+            overdue_rate,
+            instruct,
+            exchanger_price,
+            metering_charging_type,
+            approve_res,
+            approve_serial,
+            approve_name,
+            approve_date,
+            approve_type,
+            create_date,
+            create_user,
+            update_date,
+            update_user
+
+        ) VALUES (
+            #{priceDefine.primaryId,jdbcType=VARCHAR},
+            #{priceDefine.priceName,jdbcType=VARCHAR},
+            #{priceDefine.annual,jdbcType=VARCHAR},
+            #{priceDefine.companyId,jdbcType=VARCHAR},
+            #{priceDefine.prePrice,jdbcType=VARCHAR},
+            #{priceDefine.areaPrice,jdbcType=VARCHAR},
+            #{priceDefine.heatPrice,jdbcType=VARCHAR},
+            #{priceDefine.yeatFlag,jdbcType=INTEGER},
+            #{priceDefine.notes,jdbcType=VARCHAR},
+            #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},
+            #{priceDefine.overdueRate,jdbcType=DECIMAL},
+            #{priceDefine.instruct,jdbcType=VARCHAR},
+            #{priceDefine.exchangerPrice,jdbcType=DECIMAL},
+            #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},
+            #{priceDefine.approveRes,jdbcType=VARCHAR},
+            #{priceDefine.approveSerial,jdbcType=VARCHAR},
+            #{priceDefine.approveName,jdbcType=VARCHAR},
+            #{priceDefine.approveDate,jdbcType=TIMESTAMP},
+            #{priceDefine.approveType,jdbcType=VARCHAR},
+            #{priceDefine.createDate,jdbcType=TIMESTAMP},
+            #{priceDefine.createUser,jdbcType=VARCHAR},
+            #{priceDefine.updateDate,jdbcType=TIMESTAMP},
+            #{priceDefine.updateUser,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="selectByPrimaryKeyFromTemp" resultType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+        select
+        <include refid="Base_Column_List_Tmp"/>
+        from price_define_tmp
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+    </select>
+
+
+    <delete id="deleteByPrimaryIdFromTemp">
+        delete from price_define_tmp
+        where primary_id = #{primaryId,jdbcType=VARCHAR}
+
+
+    </delete>
+
+
+    <update id="updateTemp">
+        UPDATE price_define_tmp
+        <set>
+            <if test="priceDefine.priceName != null"> price_name = #{priceDefine.priceName,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.annual != null"> annual = #{priceDefine.annual,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.companyId != null"> company_id = #{priceDefine.companyId,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.prePrice != null"> pre_price = #{priceDefine.prePrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.areaPrice != null"> area_price = #{priceDefine.areaPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.heatPrice != null"> heat_price = #{priceDefine.heatPrice,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.yeatFlag != null"> yeat_flag = #{priceDefine.yeatFlag,jdbcType=INTEGER},</if>
+            <if test="priceDefine.notes != null"> notes = #{priceDefine.notes,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.overdueBeginTime != null"> overdue_begin_time = #{priceDefine.overdueBeginTime,jdbcType=TIMESTAMP},</if>
+            <if test="priceDefine.overdueRate != null"> overdue_rate = #{priceDefine.overdueRate,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.instruct != null"> instruct = #{priceDefine.instruct,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.exchangerPrice != null"> exchanger_price = #{priceDefine.exchangerPrice,jdbcType=DECIMAL},</if>
+            <if test="priceDefine.MeteringChargingType != null"> metering_charging_type = #{priceDefine.MeteringChargingType,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveRes != null"> approve_res = #{priceDefine.approveRes,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveSerial != null"> approve_serial = #{priceDefine.approveSerial,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveName != null"> approve_name = #{priceDefine.approveName,jdbcType=VARCHAR},</if>
+            <if test="priceDefine.approveDate != null"> approve_date = #{priceDefine.approveDate},</if>
+            <if test="priceDefine.approveType != null"> approve_type = #{priceDefine.approveType},</if>
+
+            <if test="priceDefine.createDate != null"> create_date = #{priceDefine.createDate},</if>
+            <if test="priceDefine.createUser != null"> create_user = #{priceDefine.createUser},</if>
+
+
+            <if test="priceDefine.updateDate != null"> update_date = #{priceDefine.updateDate},</if>
+            <if test="priceDefine.updateUser != null"> update_user = #{priceDefine.updateUser}</if>
+        </set>
+        WHERE primary_id = #{priceDefine.primaryId,jdbcType=VARCHAR}
+    </update>
+    <select id="getTodayLastFlowId" resultType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+        select
+        <include refid="Base_Column_List_Tmp"/>
+        from price_define_tmp
+        where company_id = #{companyId,jdbcType=VARCHAR}
+        and TO_DAYS(create_date) = TO_DAYS(NOW())
+        order by create_date desc LIMIT 1
+    </select>
+    <select id="findTempData" resultType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+
+        select
+        <include refid="Base_Column_List_Tmp"/>
+        from price_define_tmp
+        where approve_serial = #{approveSerial}
+    </select>
+
+    <select id="findOriginData" resultType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where approve_serial = #{approveSerial}
+    </select>
+
+
+    <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+    update price_define
+    set price_name = #{priceName,jdbcType=VARCHAR},
+      annual = #{annual,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      pre_price = #{prePrice,jdbcType=VARCHAR},
+      area_price = #{areaPrice,jdbcType=VARCHAR},
+      heat_price = #{heatPrice,jdbcType=VARCHAR},
+      yeat_flag = #{yeatFlag,jdbcType=INTEGER},
+      notes = #{notes,jdbcType=VARCHAR},
+      overdue_begin_time = #{overdueBeginTime,jdbcType=TIMESTAMP},
+      overdue_rate = #{overdueRate,jdbcType=DECIMAL},
+      instruct = #{instruct,jdbcType=VARCHAR},
+      exchanger_price = #{exchangerPrice,jdbcType=VARCHAR},
+      metering_charging_type = #{meteringChargingType,jdbcType=VARCHAR},
+      approve_res = #{approveRes,jdbcType=VARCHAR},
+      approve_serial = #{approveSerial,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      pre_price_tmp = #{prePriceTmp,jdbcType=DECIMAL},
+      area_price_tmp = #{areaPriceTmp,jdbcType=DECIMAL},
+      heat_price_tmp = #{heatPriceTmp,jdbcType=DECIMAL},
+      exchanger_price_tmp = #{exchangerPriceTmp,jdbcType=DECIMAL}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+
+    <update id="updateTmpValueByPrimaryKey"  parameterType="cn.plou.web.charge.chargeconfig.entity.PriceDefine">
+    update price_define
+    set pre_price_tmp = #{prePriceTmp,jdbcType=DECIMAL},
+      area_price_tmp = #{areaPriceTmp,jdbcType=DECIMAL},
+      heat_price_tmp = #{heatPriceTmp,jdbcType=DECIMAL},
+      exchanger_price_tmp = #{exchangerPriceTmp,jdbcType=DECIMAL}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+    <select id="findBypriceNameAndcompanyId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_define
+        where  1=1
+        <if test="priceName!=''  and  priceName!=null  ">
+          and   price_name = #{priceName}
+        </if>
+        <if test="companyId!=''  and  companyId!=null  ">
+            and   company_id = #{companyId}
+        </if>
+    </select>
+
+
+</mapper>
+

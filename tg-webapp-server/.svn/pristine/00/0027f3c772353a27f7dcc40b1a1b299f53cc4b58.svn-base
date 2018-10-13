@@ -1,0 +1,137 @@
+package cn.plou.web.heatManage.housecontrol.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.PageUtils;
+import cn.plou.web.common.utils.Query;
+import cn.plou.web.heatManage.housecontrol.domain.HouseControlInfoDO;
+import cn.plou.web.heatManage.housecontrol.service.HouseControlService;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+
+/**
+ * 
+ * 
+ * @author lvkun
+ * @date 2018-07-26 07:00:00
+ */
+
+@RestController
+@RequestMapping("${heatManagePath}/houseControl")
+public class HouseControlController {
+	@Autowired
+	private HouseControlService houseControlService;
+	
+	@PostMapping("/getControlInfo")
+	public Object getControlInfo(@RequestBody Map<String,Object> params){
+		Root root = new Root();
+		try{
+		root =  houseControlService.controlInfoList(params);
+		return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+	
+	@PostMapping("/operControlInfo")
+	public Object operControlInfo(@RequestBody Map<String,Object> params) {
+		Root root = new Root();
+		try{
+		 root =  houseControlService.operControlInfo(params);
+		return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+	
+	@PostMapping("/operDevInfo")
+	public Object operDevInfo(@RequestBody Map<String,Object> params) {
+		Root root = new Root();
+		try{
+		 root =  houseControlService.operDevInfo(params);
+		return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+	@PostMapping("/getCalFlowUpperValue")
+	public Object getCalFlowUpperValue(@RequestBody Map<String,Object> params) {
+		Root root = new Root();
+		try{
+			//calKindId,heatingArea,flowingIndex,flowUpperRatio
+		 //root =  houseControlService.operDevInfo(params);
+			root.setData(120);
+			return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+	/**
+	 * ID，操作时间
+	 * @param map(String[] ids,String location,String type,Map<key,value> map)
+	 * @return
+	 */
+//	@PostMapping("/houseControl")
+//	public Object houseControl(@RequestBody Map<String, Object> map) {
+//		Root root = new Root();
+//		String data = houseControlService.houseControl(map);
+//		if (data.isEmpty()) {
+//			root.setMsg("输入参数错误");
+//			root.setCode(1);
+//		} else {
+//			root.setCode(0);
+//			root.setData(data);
+//		}
+//		return root;
+//	}
+	
+	@GetMapping("/getControlDetailInfo")
+	public Object getControlDetailInfo(@RequestParam Map<String, Object> params){
+		Root root = new Root();
+		try{
+		 root =  houseControlService.getControlDetailInfo(params);
+		return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+	
+	
+	@GetMapping("/getControlHisInfo")
+	public Object getControlHisInfo(@RequestParam Map<String, Object> params){
+		Root root = new Root();
+		try{
+		 root =  houseControlService.getControlHisInfo(params);
+		return root;
+		}catch(Exception ex){
+			root.setCode(1);
+			root.setMsg(ex.getMessage());
+		}
+		return root;
+	}
+}

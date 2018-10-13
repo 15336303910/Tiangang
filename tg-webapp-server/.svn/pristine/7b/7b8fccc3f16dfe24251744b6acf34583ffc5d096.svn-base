@@ -1,0 +1,414 @@
+package cn.plou.web.common.idgenerater.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.service.BuildService;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.house.vo.HouseInfo;
+import cn.plou.web.system.baseMessage.producer.service.ProducerService;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.baseMessage.system.service.SystemService;
+import cn.plou.web.system.baseMessage.unit.entity.Unit;
+import cn.plou.web.system.baseMessage.unit.service.UnitService;
+import cn.plou.web.system.meterMessage.meter.entity.Meter;
+import cn.plou.web.system.meterMessage.meter.service.MeterService;
+import cn.plou.web.system.meterMessage.meter.vo.MeterInfo;
+import cn.plou.web.system.meterMessage.meter.vo.MeterListInfo;
+import cn.plou.web.system.meterMessage.meter.vo.MeterVo;
+
+@Service
+public class IDGenerater {
+
+	private static Map<String, Integer> houseIdMap = new ConcurrentHashMap<>(); // 单元ID，户ID最大值
+	private static Map<String, Integer> unitIdMap = new ConcurrentHashMap<>(); // 楼ID，单元ID最大值	
+	private static Map<String, Integer> buildIdMap = new ConcurrentHashMap<>(); // 小区ID，楼ID最大值		
+	private static Map<String, Integer> communityIdMap = new ConcurrentHashMap<>(); // 公司ID，小区ID最大值	
+	private static Map<String, Integer> meterIdMap = new ConcurrentHashMap<>(); // 公司ID，小区ID最大值	
+	
+	private static Integer companyId = 0;
+	private static Integer stationId = 0;
+	private static Integer systemId = 0;
+	private static Integer producerId = 0;
+	
+  @Autowired
+  private HouseService houseService;
+  @Autowired
+  private UnitService unitService;
+  @Autowired
+  private BuildService buildService;
+  @Autowired
+  private CommuityService commuityService;
+  @Autowired
+  private CompanyService companyService;
+  @Autowired
+  private MeterService meterService;
+  @Autowired
+  private StationService stationService;
+  @Autowired
+  private SystemService systemService;
+  @Autowired
+  private ProducerService producerService; 
+  
+  public synchronized String generateProducerId() {
+		Integer index = producerId;
+		if (producerId == 0) {
+			index = producerService.getMaxProducerId();
+			if(index == null || index <0){
+				index = 0;
+			}
+		}
+		
+		index++;
+		producerId = index;
+		String id = String.format("%05d", producerId);
+		return id;
+	}
+  public synchronized String generateStationId() {
+		Integer index = stationId;
+		if (stationId == 0) {
+			index = stationService.getMaxStationId();
+			if(index == null || index <0){
+				index = 0;
+			}
+		}
+		
+		index++;
+		stationId = index;
+		String id = String.format("%06d", stationId);
+		return id;
+	}
+  
+  public synchronized String generateSystemId() {
+		Integer index = systemId;
+		if (systemId == 0) {
+			index = systemService.getMaxSystemId();
+			if(index == null || index <0){
+				index = 0;
+			}
+		}
+		
+		index++;
+		systemId = index;
+		String id = String.format("%06d", systemId);
+		return id;
+	}
+  
+	public synchronized List<String>  generateHouseId(String unitId,Integer num,Boolean check) {
+		Integer index = 0;
+		synchronized (houseIdMap) {
+			index = houseIdMap.get(unitId);
+			if (index == null) {
+				if (check) {
+					index = houseService.getMaxHouseId(unitId);
+				} else {
+					index = 0;
+				}
+			}
+			
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < num; i++) {
+				index++;
+				String id = unitId + String.format("%04d", index);
+				list.add(id);
+			}
+			houseIdMap.put(unitId, index);
+			return list;
+		}
+	}
+	
+	public synchronized List<String> generateUnitId(String buildId,Integer num,Boolean check) {
+		Integer index = 0;
+		synchronized (unitIdMap) {
+			index = unitIdMap.get(buildId);
+			if (index == null) {
+				if(check){
+					index = unitService.getMaxUnitId(buildId);
+				}else{
+					index = 0;
+				}
+			}
+			
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < num; i++) {
+				index++;
+				String id = buildId + String.format("%02d", (index));
+				list.add(id);
+			}
+			unitIdMap.put(buildId, index);
+			return list;
+		}
+		
+	}
+	
+	public synchronized List<String> generateBuildId(String commuityId, Integer num, Boolean check) {
+		Integer index = 0;
+		synchronized (buildIdMap) {
+			index = buildIdMap.get(commuityId);
+			if (index == null) {
+				if (check) {
+					index = buildService.getMaxBuildId(commuityId);
+				}else{
+					index = 0;
+				}
+			}
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < num; i++) {
+				index++;
+				String id = commuityId + String.format("%03d", (index));
+				list.add(id);
+			}
+			buildIdMap.put(commuityId, index);
+			return list;
+		}
+	}
+	
+	public synchronized List<String> generateCommunityId(String companyId, Integer num) {
+		Integer index = 0;
+		
+		synchronized (communityIdMap) {
+			index = communityIdMap.get(companyId);
+			if (index == null) {
+				index = commuityService.getMaxCommuityId(companyId);
+			}
+			List<String> list = new ArrayList<String>();
+			for (int i = 0; i < num; i++) {
+				index++;
+				String id = companyId + String.format("%05d", (index));
+				list.add(id);
+			}
+			communityIdMap.put(companyId, index);
+			return list;
+		}
+	}
+	
+	
+	public synchronized String generateCompanyId() {
+		Integer index = companyId;
+		if (companyId == 0) {
+			index = companyService.getMaxCompanyId();
+			if(index == null || index <0){
+				index = 0;
+			}
+		}
+		
+		index++;
+		companyId = index;
+		String id = String.format("%05d", companyId);
+		return id;
+	}
+	
+	public synchronized String generateMeterId(String meterType, String consumerId, Boolean check) {
+		Integer index = 0;
+		meterType = meterType.substring(meterType.indexOf("_") + 1);
+		String strId = meterType + consumerId;
+		index = meterIdMap.get(strId);
+		if (index == null) {
+			if (check) {
+				index = meterService.getMaxmeterId(strId);
+				if (index == null) {
+					index = 0;
+				}
+			} else {
+				index = 0;
+			}
+		}
+		index++;
+		meterIdMap.put(strId, index);
+		String id = strId + String.format("%02d", (index));
+		return id;
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param commuityId，小区ID
+	 * @param meters，用户信息
+	 * @return
+	 */
+	public synchronized Boolean generateHouseIdsbyCommuity(String commuityId, List<HouseInfo> houses) {
+		// 转化成楼名，单元名map
+		Map<String, List<HouseInfo>> buildsMap = getHousebyBuildName(houses);
+		for (String buildname : buildsMap.keySet()) {
+			generateHouseIdsbyBuild(commuityId, buildsMap.get(buildname));
+		}
+		return true;
+	}
+	
+	private void generateHouseIdsbyBuild(String commuityId, List<HouseInfo> list) {
+			Map<String, List<HouseInfo>> unitMap = getHousebyUnitName(list);
+			String buildId = generateBuildId(commuityId, 1, false).get(0);
+			for (String unitname : unitMap.keySet()) {
+				generateHouseIdsbyUnit(buildId, unitMap.get(unitname));
+			}
+	}
+	
+	private void generateHouseIdsbyUnit(String buildId, List<HouseInfo> list) {
+			String unitId = generateUnitId(buildId, 1, false).get(0);
+			System.out.println("buildId:" + buildId + "--------生成的---------" + unitId );
+			for (HouseInfo house : list) {
+				house.setConsumerId(generateHouseId(unitId, 1, false).get(0));
+				house.setRowno(house.getConsumerId());
+				house.setUnitId(unitId);
+				house.setBuildingNo(buildId);
+			}
+}
+	/**
+	 * 小区ID，
+	 * 
+	 * @param commuityId，小区ID
+	 * @param meters，用户信息
+	 * @param type，模式，根据新系统模板导入新系统选择1，根据老系统导入新系统2
+	 * @return
+	 */
+	public synchronized Boolean generateHouseIdsbyCommuityWithUpdat(String commuityId, List<HouseInfo> houses) {
+    List<HouseInfo> houseInfoList = new ArrayList<>();
+    houseInfoList = houseService.getAllHouse(null, null, commuityId, null, null,
+    		null, null, null, 0, 100000).getList();
+    if(houseInfoList.size() > 0){
+    	for(HouseInfo newhouse:houses ){
+    		Boolean flag = false;
+    		for(HouseInfo orghouse:houseInfoList ){
+    			if(newhouse.getUnitId().equals(orghouse.getUnitId()) && newhouse.getRoomName().equals(orghouse.getRoomName())){
+    				newhouse.setConsumerId(orghouse.getConsumerId());
+    				newhouse.setRowno(orghouse.getRowno());
+    				flag = true;
+    				break;
+    			}
+    		}
+    		if(!flag){
+    			newhouse.setConsumerId(generateHouseId(newhouse.getUnitId(), 1, false).get(0));
+    			newhouse.setRowno(newhouse.getConsumerId());
+    		}
+    	}
+		} else {
+			for(HouseInfo newhouse:houses ){
+    			newhouse.setConsumerId(generateHouseId(newhouse.getUnitId(), 1, false).get(0));
+    			newhouse.setRowno(newhouse.getConsumerId());
+    	}
+		}
+		return true;
+	}
+
+	/**
+	 * 小区ID，
+	 * 
+	 * @param commuityId，小区ID
+	 * @param meters，用户信息
+	 * @param type，模式，根据新系统模板导入新系统选择1，根据老系统导入新系统2
+	 * @return
+	 */
+	public synchronized Boolean generateHouseIdsbyCommuityNoUpdat(String commuityId, List<HouseInfo> houses) {
+		List<Build> builds = buildService.getBuildTree(commuityId);
+		if (builds.size() > 0) {
+			return false;
+		} else {
+			return generateHouseIdsbyCommuity(commuityId, houses);
+		}
+	}
+	
+	public Map<String, List<HouseInfo>> getHousebyUnitName(List<HouseInfo> houses) {
+		Map<String, List<HouseInfo>> map = new HashMap<String, List<HouseInfo>>();
+		for(HouseInfo info:houses){
+			String key = info.getUnitName();
+			System.out.println(key +"单元名");
+			if(map.containsKey(key)){
+				map.get(key).add(info);
+			}else{
+				List<HouseInfo> infos = new ArrayList<HouseInfo>();
+				infos.add(info);
+				map.put(key, infos);
+			}
+		}
+		return map;
+	}
+	
+	public Map<String, List<HouseInfo>> getHousebyBuildName(List<HouseInfo> houses) {
+		Map<String, List<HouseInfo>> map = new HashMap<String, List<HouseInfo>>();
+		for(HouseInfo info:houses){
+			String key = info.getBuildingName();
+			if(map.containsKey(key)){
+				map.get(key).add(info);
+			}else{
+				List<HouseInfo> infos = new ArrayList<HouseInfo>();
+				infos.add(info);
+				map.put(key, infos);
+			}
+		}
+		return map;
+	}
+	
+	public Map<String, List<HouseInfo>> getHousebyCommunity(List<HouseInfo> houses) {
+		Map<String, List<HouseInfo>> map = new HashMap<String, List<HouseInfo>>();
+		for(HouseInfo info:houses){
+			String key = info.getUnitId().substring(0,10);
+			if(map.containsKey(key)){
+				map.get(key).add(info);
+			}else{
+				List<HouseInfo> infos = new ArrayList<HouseInfo>();
+				infos.add(info);
+				map.put(key, infos);
+			}
+		}
+		return map;
+	}
+	
+	public synchronized Boolean generateMeterIdsbyCommuity(String commuityId, List<Meter> meters) {
+		List<MeterInfo>  ListInfo = meterService.getAllMeter(1, 1000000, null, null, null, null, commuityId, null, null,null,null).getMeterInfoList();
+			for(Meter meter: meters){
+				Boolean flag = false;
+				for(MeterInfo meterOrg: ListInfo){
+					if(meterOrg.getAddress2nd().equals(meter.getAddress2nd()) 
+							&& meterOrg.getConsumerId().equals(meter.getConsumerId())){
+						meter.setMeterId(meterOrg.getMeterId());
+						meter.setRowno(meterOrg.getRowno());
+						flag = true;
+						break;
+					}
+				}
+				if(!flag){
+					meter.setMeterId(generateMeterId(meter.getMeterType(), meter.getConsumerId(),false));
+					meter.setRowno(meter.getMeterId());
+				}
+			}
+			return true;
+	}
+	
+	public void generateUnitIdsbyCommuityWithUpdat(String commuity, List<Unit> list) {
+		List<Unit> units = unitService.getAllUnitByCommuity(commuity);
+		int countup = 0;
+		int total = 0;
+			for (Unit newUnit : list) {
+				total++;
+				Boolean flag = false;
+				for (Unit orgUnit : units) {
+					if (orgUnit.getUnitName().equals(newUnit.getUnitName()) 
+							&& orgUnit.getBuildingId().equals(newUnit.getBuildingId())) {
+						flag = true;
+						countup++;
+						newUnit.setUnitId(orgUnit.getUnitId());
+						newUnit.setRowno(newUnit.getUnitId());
+						break;
+					}
+				}
+				if (!flag) {
+					newUnit.setUnitId(generateUnitId(newUnit.getBuildingId(),1, false).get(0));
+					newUnit.setRowno(newUnit.getUnitId());
+				}	
+			}
+			System.out.println("批量更新，单元总数：" + total+",其中更新" + countup);
+	}
+	
+}

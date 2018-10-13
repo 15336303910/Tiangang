@@ -1,0 +1,257 @@
+package cn.plou.web.charge.heatingmanage.controller;
+
+import cn.plou.web.charge.chargeconfig.entity.PriceDefine;
+import cn.plou.web.charge.chargeconfig.util.MoneyConverter;
+import cn.plou.web.charge.heatingmanage.domain.ServeResultByType;
+import cn.plou.web.charge.heatingmanage.dto.*;
+import cn.plou.web.charge.heatingmanage.service.HeatingServeService;
+import cn.plou.web.charge.heatingmanage.vo.HeatingServeDepartmentVO;
+import cn.plou.web.charge.heatingmanage.vo.HeatingServeListVO;
+import cn.plou.web.charge.heatingmanage.vo.HeatingServeUserListVO;
+import cn.plou.web.charge.heatingmanage.vo.HeatingServeVO;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.house.entity.House;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @ClassName: HeatingServeController
+ * @Description: 供热服务
+ * @Author: youbc
+ * @Date 2018-08-15 15:55
+ */
+@RestController
+@RequestMapping("${chargePath}/heating-manage/heating-serve/")
+@Slf4j
+public class HeatingServeController {
+
+
+    @Autowired
+    private HeatingServeService heatingServeService;
+
+    @Autowired
+    private CommuityService commuityService;
+
+
+    @Resource
+    private HouseService houseService;
+
+    /**
+     * @Description: 服务申请
+     * @Param: [serviceApplicationDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/21 8上午30
+     */
+    @PostMapping("service-application")
+    public Root serviceApplication(@Valid ServiceApplicationDTO serviceApplicationDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        heatingServeService.serviceApplication(serviceApplicationDTO);
+        return new Root();
+    }
+
+    /**
+     * @Description: 服务缴费
+     * @Param: [servicePaymentDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/21 8上午32
+     */
+    @PostMapping("service-payment")
+    public Root servicePayment(@Valid ServicePaymentDTO servicePaymentDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        heatingServeService.servicePayment(servicePaymentDTO);
+        return new Root();
+    }
+
+    /**
+     * @Description: 服务反馈
+     * @Param: [serviceFeedbackDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/21 9上午23
+     */
+    @PostMapping("service-feedback")
+    public Root serviceFeedback(@Valid ServiceFeedbackDTO serviceFeedbackDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        heatingServeService.serviceFeedback(serviceFeedbackDTO);
+        return new Root();
+    }
+
+    /**
+     * @Description: 供热服务列表
+     * @Param: [heatingServeSearchDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/22 15下午58
+     */
+    @PostMapping("list")
+    public Root list(@Valid HeatingServeSearchDTO heatingServeSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        Root root = new Root();
+        BindingResultHandler.handle(bindingResult);
+        PageInfo pageInfo = heatingServeService.list(heatingServeSearchDTO);
+        root.setCond(getCond(heatingServeSearchDTO.getPage(), heatingServeSearchDTO.getPageSize(), (int) pageInfo.getTotal(), heatingServeSearchDTO.getOrder(), heatingServeSearchDTO.getSortby()));
+        root.setData(pageInfo.getList());
+        return root;
+    }
+
+    /**
+     * @Description: 供热服务用户列表
+     * @Param: [heatingServeUserSearchDTO]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/8/22 15下午58
+     */
+    @PostMapping("user-list")
+    public Root userList(@Valid HeatingServeUserSearchDTO heatingServeUserSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        List<HeatingServeUserListVO> list = new ArrayList<>();
+        Integer count = 0;
+        String rangeId = heatingServeUserSearchDTO.getRangeId();
+        if (rangeId.length() == Constant.STATION_ID_LENGTH) {
+            List<String> ids = commuityService.getCommuityIdsByStationId(rangeId);
+            if (ids.size() > 0) {
+                list = heatingServeService.userListOfStation(heatingServeUserSearchDTO, ids);
+                count = heatingServeService.userListCountOfStation(heatingServeUserSearchDTO, ids);
+            }
+        } else {
+            list = heatingServeService.userList(heatingServeUserSearchDTO);
+            count = heatingServeService.userListCount(heatingServeUserSearchDTO);
+        }
+
+        Root root = new Root();
+        root.setData(list);
+        root.setCond(getCond(heatingServeUserSearchDTO.getPage(), heatingServeUserSearchDTO.getPageSize(), count, heatingServeUserSearchDTO.getOrder(), heatingServeUserSearchDTO.getSortby()));
+        return root;
+    }
+
+    /**
+     * @Description: 供热服务弹框内容
+     * @Param: [primaryId]
+     * @Return: cn.plou.web.charge.heatingmanage.vo.HeatingServeVO
+     * @Author: youbc
+     * @Date: 2018/8/21 15下午55
+     */
+    @GetMapping("get")
+    public HeatingServeVO get(@RequestParam String primaryId) {
+        return heatingServeService.get(primaryId);
+    }
+
+    /**
+     * @Description: 获取应收金额
+     * @Param: [singleCost, nums, companyId, typeId]
+     * @Return: java.math.BigDecimal
+     * @Author: youbc
+     * @Date: 2018/9/7 10上午57
+     */
+    @GetMapping("get-total-cost")
+    public BigDecimal getTotalCost(@RequestParam BigDecimal singleCost, @RequestParam BigDecimal nums, @RequestParam String companyId, @RequestParam String typeId) {
+        BigDecimal total = singleCost.multiply(nums);
+        return MoneyConverter.Convert(companyId, total, typeId);
+    }
+
+    /**
+     * @Description: 执行人、回访人下拉框
+     * @Param: [companyId]
+     * @Return: java.util.List<cn.plou.web.charge.heatingmanage.vo.HeatingServeDepartmentVO>
+     * @Author: youbc
+     * @Date: 2018/8/23 8上午40
+     */
+    @GetMapping("get-users")
+    public List<HeatingServeDepartmentVO> getUsers(@RequestParam String companyId) {
+        return heatingServeService.getUsers(companyId);
+    }
+
+
+    /**
+     * @param heatingServeSearchDTO
+     * @return 统计分析-任务查询-供热管理
+     */
+    @GetMapping("getTotal")
+    public Object getTotal(@Valid HeatingServeSearchDTO heatingServeSearchDTO, BindingResult bindingResult) {
+        Root root = new Root();
+        BindingResultHandler.handle(bindingResult);
+        PageInfo pageInfo = heatingServeService.list(heatingServeSearchDTO);
+        root.setCond(getCond(heatingServeSearchDTO.getPage(), heatingServeSearchDTO.getPageSize(), (int) pageInfo.getTotal(), heatingServeSearchDTO.getOrder(), heatingServeSearchDTO.getSortby()));
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("tableList", pageInfo.getList());
+        //下方表格
+        List<ServeResultByType> sortedByTypeList = heatingServeService.getTotalResultByType(heatingServeSearchDTO);
+        heatingServeSearchDTO.setEndState("end_state_1");
+        Integer completedNum = heatingServeService.getCountByendState(heatingServeSearchDTO);
+        heatingServeSearchDTO.setEndState(null);
+        Integer totalNum = heatingServeService.getCountByendState(heatingServeSearchDTO);
+        //统计信息
+        resultMap.put("sortedByTypeNum", sortedByTypeList);
+        resultMap.put("completedNum", completedNum);
+        resultMap.put("unCompletedNum", totalNum - completedNum);
+        resultMap.put("totalNum", totalNum);
+        root.setData(resultMap);
+
+        return root;
+    }
+
+
+    private Map<String, Map> sortMapByValue(Map<String, List<HeatingServeListVO>> oriMap) {
+        Map<String, Map> sortedMap = new LinkedHashMap<String, Map>();
+        if (oriMap != null && !oriMap.isEmpty()) {
+            List<Map.Entry<String, List<HeatingServeListVO>>> entryList = new ArrayList<Map.Entry<String, List<HeatingServeListVO>>>(oriMap.entrySet());
+            Collections.sort(entryList, new Comparator<Map.Entry<String, List<HeatingServeListVO>>>() {
+                public int compare(Map.Entry<String, List<HeatingServeListVO>> entry1, Map.Entry<String, List<HeatingServeListVO>> entry2) {
+                    int value1 = 0, value2 = 0;
+                    try {
+                        value1 = entry1.getValue().size();
+                        value2 = entry2.getValue().size();
+
+                    } catch (NumberFormatException e) {
+                        value1 = 0;
+                        value2 = 0;
+                    }
+                    return value2 - value1;
+                }
+            });
+            Iterator<Map.Entry<String, List<HeatingServeListVO>>> iter = entryList.iterator();
+            Map.Entry<String, List<HeatingServeListVO>> tmpEntry = null;
+            while (iter.hasNext()) {
+                tmpEntry = iter.next();
+                List<HeatingServeListVO> tempVO = tmpEntry.getValue();
+                int completedNum = 0;
+                for (HeatingServeListVO heatingServeListVO : tempVO) {
+                    if (heatingServeListVO.getEndState() != null && heatingServeListVO.getEndState().equals("end_state_2")) {
+                        completedNum++;
+                    }
+                }
+                Map<String, Object> tempMap = new HashMap<>();
+                tempMap.put("completedNum", completedNum);
+                tempMap.put("totalNum", tempVO.size());
+                tempMap.put("taskTypeName", tempVO.get(0).getTaskTypeName());
+                sortedMap.put(tmpEntry.getKey(), tempMap);
+            }
+        }
+        return sortedMap;
+    }
+
+
+}
+
+
+

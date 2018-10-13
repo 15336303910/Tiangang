@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.pageGridUser.dao.PageGridUserMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.pageGridUser.entity.PageGridUser">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="page_no" jdbcType="VARCHAR" property="pageNo" />
+    <result column="grid_name" jdbcType="VARCHAR" property="gridName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="hide" jdbcType="VARCHAR" property="hide" />
+    <result column="colsort" jdbcType="INTEGER" property="colsort" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, page_no, grid_name, name, hide, colsort
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from grid_col_user
+    where page_no = #{pageGridKey.pageNo} and grid_name = #{pageGridKey.gridName} and name = #{pageGridKey.name} and user_id = #{userId}
+  </select>
+  <select id="selectAllIds" resultType="java.lang.String">
+    select
+    id
+    from grid_col_user
+  </select>
+  <select id="selectAllPageGridUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from grid_col_user
+    where user_id = #{userId}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGridKey">
+    delete from grid_col_user
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+      and grid_name = #{gridName,jdbcType=VARCHAR}
+      and name = #{name,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.commonMessage.pageGridUser.entity.PageGridUser">
+    insert into grid_col_user (id, page_no, grid_name, 
+      name, hide, colsort, 
+      user_id)
+    values (#{id,jdbcType=VARCHAR}, #{pageNo,jdbcType=VARCHAR}, #{gridName,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{hide,jdbcType=VARCHAR}, #{colsort,jdbcType=INTEGER}, 
+      #{userId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.commonMessage.pageGridUser.entity.PageGridUser">
+    insert into grid_col_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pageNo != null">
+        page_no,
+      </if>
+      <if test="gridName != null">
+        grid_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="hide != null">
+        hide,
+      </if>
+      <if test="colsort != null">
+        colsort,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNo != null">
+        #{pageNo,jdbcType=VARCHAR},
+      </if>
+      <if test="gridName != null">
+        #{gridName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="hide != null">
+        #{hide,jdbcType=VARCHAR},
+      </if>
+      <if test="colsort != null">
+        #{colsort,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.pageGridUser.entity.PageGridUser">
+    update grid_col_user
+    <set>
+      <if test="pageNo != null">
+        page_no = #{pageNo,jdbcType=VARCHAR},
+      </if>
+      <if test="gridName != null">
+        grid_name = #{gridName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="hide != null">
+        hide = #{hide,jdbcType=VARCHAR},
+      </if>
+      <if test="colsort != null">
+        colsort = #{colsort,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where page_no=#{pageNo} and grid_name=#{gridName} and name=#{name} and user_id = #{userId}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.pageGridUser.entity.PageGridUser">
+    update grid_col_user
+    set page_no = #{pageNo,jdbcType=VARCHAR},
+      grid_name = #{gridName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      hide = #{hide,jdbcType=VARCHAR},
+      colsort = #{colsort,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.permission.userLoginHistory.dao.UserLoginHistoryMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId"/>
+    <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="intime" jdbcType="TIMESTAMP" property="intime" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="ipcity" jdbcType="VARCHAR" property="ipcity" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    primary_id, user_code, username, intime, ip, ipcity
+  </sql>
+
+  <insert id="insertUserLoginHistory" parameterType="cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory">
+    insert into user_login_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId!=null">
+        primary_id,
+      </if>
+      <if test="userCode != null">
+        user_code,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="intime != null">
+        intime,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="ipcity != null">
+        ipcity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="userCode != null">
+        #{userCode,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="intime != null">
+        #{intime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="ipcity != null">
+        #{ipcity,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectAllIds" resultType="java.lang.String">
+    select
+    primary_id
+    from user_login_history
+  </select>
+
+  <select id="selectAllUserLoginHistory" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_login_history
+    where 1 = 1
+    <if test="userLoginHistoryVo != null">
+      <if test="userLoginHistoryVo.userCode != null">
+        and user_code = #{userLoginHistoryVo.userCode}
+      </if>
+      <if test="userLoginHistoryVo.username != null">
+        and username LIKE concat('%',#{userLoginHistoryVo.username},'%')
+      </if>
+      <if test="userLoginHistoryVo.startTime != null">
+        and intime >= #{userLoginHistoryVo.startTime}
+      </if>
+      <if test="userLoginHistoryVo.endTime != null">
+        and #{userLoginHistoryVo.endTime} >= intime
+      </if>
+      <if test="userLoginHistoryVo.ip != null">
+        and ip = #{userLoginHistoryVo.ip}
+      </if>
+      <if test="userLoginHistoryVo.ipcity != null">
+        and ipcity = #{userLoginHistoryVo.ipcity}
+      </if>
+    </if>
+    <if test="userCodes!=null">
+      <if test="userCodes.size()!=0">
+        and user_code in
+        <foreach collection="userCodes" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <!--<if test="page!=null">-->
+      <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <!--<select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">-->
+  <!--select -->
+  <!--<include refid="Base_Column_List" />-->
+  <!--from user_login_history-->
+  <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</select>-->
+
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.String">-->
+  <!--delete from user_login_history-->
+  <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</delete>-->
+
+  <!--<insert id="insert" parameterType="cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory">-->
+  <!--insert into user_login_history (id, user_code, username, -->
+  <!--intime, ip, ipcity-->
+  <!--)-->
+  <!--values (#{id,jdbcType=VARCHAR}, #{userCode,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, -->
+  <!--#{intime,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR}, #{ipcity,jdbcType=VARCHAR}-->
+  <!--)-->
+  <!--</insert>-->
+
+  <!--<update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory">-->
+    <!--update user_login_history-->
+    <!--<set>-->
+      <!--<if test="userCode != null">-->
+        <!--user_code = #{userCode,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="username != null">-->
+        <!--username = #{username,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="intime != null">-->
+        <!--intime = #{intime,jdbcType=TIMESTAMP},-->
+      <!--</if>-->
+      <!--<if test="ip != null">-->
+        <!--ip = #{ip,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <!--<if test="ipcity != null">-->
+        <!--ipcity = #{ipcity,jdbcType=VARCHAR},-->
+      <!--</if>-->
+    <!--</set>-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+  <!--<update id="updateByPrimaryKey" parameterType="cn.plou.web.system.permission.userLoginHistory.entity.UserLoginHistory">-->
+    <!--update user_login_history-->
+    <!--set user_code = #{userCode,jdbcType=VARCHAR},-->
+      <!--username = #{username,jdbcType=VARCHAR},-->
+      <!--intime = #{intime,jdbcType=TIMESTAMP},-->
+      <!--ip = #{ip,jdbcType=VARCHAR},-->
+      <!--ipcity = #{ipcity,jdbcType=VARCHAR}-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+</mapper>

@@ -1,0 +1,173 @@
+package cn.plou.web.common.config;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.MethodParameter;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import springfox.documentation.spring.web.json.Json;
+import springfox.documentation.swagger.web.UiConfiguration;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@ControllerAdvice
+@Slf4j
+@Component
+public class MyResponseBodyAdvice implements ResponseBodyAdvice<Object> {
+
+
+    /**
+     * 基于@ExceptionHandler异常处理,返回JSON信息
+     * 统一异常处理
+     */
+    @ExceptionHandler // youbc 此为统一异常处理。开发把这一行注掉，方便控制台打印异常进行调试。正式部署时解除注释
+    @ResponseBody
+    public Root handleAndReturnData(Exception ex) {
+        Root root = new Root();
+        log.error(ex.getMessage());
+        if (ex instanceof BusinessException) {
+            root.setCode(((BusinessException) ex).getCode());
+            root.setMsg(ex.getMessage());
+        } else if (ex instanceof TypeMismatchException) {
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg("传参类型错误，需要类型为：" + ((TypeMismatchException) ex).getRequiredType().getSimpleName());
+        } else if (ex instanceof BindException) {
+            //Bean Validator验证消息返回
+            BindingResult bindingResult = ((BindException) ex).getBindingResult();
+            StringBuilder errorMessage = new StringBuilder("填写信息错误:");
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                errorMessage.append(fieldError.getDefaultMessage()).append("；");
+            }
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg(errorMessage.toString());
+        } else if (ex instanceof DuplicateKeyException) {
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg("您所添加的对象编号已存在，请重试");
+        } else if (ex instanceof UnauthorizedException) {
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg("没有访问权限");
+        } else if (ex instanceof UnauthenticatedException) {
+            root.setCode(Constant.NO_LOGIN_ERROR);
+            root.setMsg("没有登录");
+        } /*else if (ex instanceof UncategorizedSQLException) {
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg("字段内容过长，请检查后重新输入");
+        }*/ else  if(ex  instanceof ConstraintViolationException){//这一个跟下一个判断用二选一用一个即可
+            root.setMsg("请求参数不合法");
+            for(ConstraintViolation<?> s:  ((ConstraintViolationException) ex).getConstraintViolations()){
+                root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+                root.setMsg( s.getInvalidValue()+": "+s.getMessage());
+            }
+
+        } else if(ex instanceof ValidationException){
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+            root.setMsg( ex.getMessage());
+
+        } else{
+
+            root.setCode(Constant.DEFAULT_ERROR_STATUS_CODE);
+             root.setMsg("服务器内部错误：" + ex.getMessage());//开发使用
+            //root.setMsg("操作失败");//正式上线使用
+        }
+        return root;
+    }
+
+
+    /**
+     此组件是否支持给定的控制器方法返回类型,这里是json
+     * @param returnType 返回json类型
+     * @param converterType 报文转换为指定
+     * @return 指定类型
+     */
+    @Override
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+        /*log.info("MyResponseBodyAdvice==>supports:" + converterType);
+        log.info("MyResponseBodyAdvice==>supports:" + returnType.getClass());
+        log.info("MyResponseBodyAdvice==>supports:" + MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType));*/
+        return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
+    }
+
+    /**
+     * @param body
+     * @param returnType
+     * @param selectedContentType
+     * @param selectedConverterType
+     * @param request
+     * @param response
+     * 先进行统一异常处理，再进行这一步
+     * @return
+     */
+    @Override
+    public Object beforeBodyWrite(Object body,
+                                  MethodParameter returnType,
+                                  MediaType selectedContentType,
+                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  ServerHttpRequest request, ServerHttpResponse response) {
+        Root root = new Root();//定义返回数据的根节点
+        if (body == null) {
+            root.setCode(1);
+            root.setMsg("暂无数据");
+            return root;
+        }
+        if (body instanceof Root) {
+            /*if (((Root) body).getStatus().getCode().equals(Constant.NO_LOGIN_ERROR))
+               response.setStatusCode(HttpStatus.UNAUTHORIZED);//返回http状态码：未认证*/
+           response.setStatusCode(HttpStatus.OK);
+
+            if(((Root) body).getData() instanceof Map) {
+                if (((Map) ((Root) body).getData()).containsKey("error")) {
+                    root.setCode(1);
+                    root.setMsg((String) ((Map) ((Root) body).getData()).get("message"));
+                    return root;
+                }
+            }
+             return body;
+        }
+        String path = request.getURI().getPath();
+        if (body instanceof Json ||
+                body instanceof UiConfiguration ||
+                path.contains("swagger") ||// 过滤swagger-ui调用的接口
+                path.contains("api-doc"))
+            return body;
+        if (body instanceof Boolean) {
+            if ((Boolean) body) {
+                root.setCode(0);
+                root.setMsg("成功");
+            } else {
+                root.setCode(1);
+                root.setMsg("操作失败");
+            }
+        } else {
+            root.setData(body);
+        }
+        return root;
+    }
+}
+

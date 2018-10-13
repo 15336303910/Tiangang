@@ -1,0 +1,11 @@
+{
+	"from": 0,
+	"size": {{size}},
+	"sort": [
+		{
+			"timestamp": {
+				"order": "desc"
+			}
+		}
+	]
+}

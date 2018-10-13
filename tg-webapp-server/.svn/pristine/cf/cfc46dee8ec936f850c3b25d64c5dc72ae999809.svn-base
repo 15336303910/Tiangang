@@ -1,0 +1,84 @@
+package cn.plou.web.charge.chargeconfig.service.impl;
+
+import cn.plou.web.charge.chargeconfig.dao.BankInterfaceHistoryMapper;
+import cn.plou.web.charge.chargeconfig.dao.BankInterfaceInfoMapper;
+import cn.plou.web.charge.chargeconfig.dto.BankDockingSearchDTO;
+import cn.plou.web.charge.chargeconfig.entity.BankInterfaceHistory;
+import cn.plou.web.charge.chargeconfig.entity.BankInterfaceInfo;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceHistoryService;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceInfoService;
+import cn.plou.web.charge.chargeconfig.vo.BankDockingListVO;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * 2018/8/15 15:38
+ */
+
+
+@Service
+@Transactional(rollbackFor = Exception.class)
+public class BankInterfaceHistoryServiceImpl implements BankInterfaceHistoryService {
+
+    @Resource
+    private BankInterfaceHistoryMapper bankInterfaceHistoryMapper;
+
+    @Override
+    public int deleteByPrimaryKey(String primaryId) {
+        return bankInterfaceHistoryMapper.deleteByPrimaryKey(primaryId);
+    }
+
+    @Override
+    public int insert(BankInterfaceHistory record) {
+        return bankInterfaceHistoryMapper.insert(record);
+    }
+
+    @Override
+    public int insertSelective(BankInterfaceHistory record) {
+        return bankInterfaceHistoryMapper.insertSelective(record);
+    }
+
+    @Override
+    public BankInterfaceHistory selectByPrimaryKey(String primaryId) {
+        return bankInterfaceHistoryMapper.selectByPrimaryKey(primaryId);
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(BankInterfaceHistory record) {
+        return bankInterfaceHistoryMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public int updateByPrimaryKey(BankInterfaceHistory record) {
+        return bankInterfaceHistoryMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public BankInterfaceHistory findLastBankInterfaceHistory() {
+        return bankInterfaceHistoryMapper.findLastBankInterfaceHistory();
+    }
+
+    @Override
+    public List<BankDockingListVO> list(BankDockingSearchDTO bankDockingSearchDTO) {
+        return bankInterfaceHistoryMapper.getListBySearch(bankDockingSearchDTO);
+    }
+
+    @Override
+    public Integer listCount(BankDockingSearchDTO bankDockingSearchDTO) {
+        return bankInterfaceHistoryMapper.getListCountBySearch(bankDockingSearchDTO);
+    }
+
+    @Override
+    public List<BankDockingListVO> listOfStation(BankDockingSearchDTO bankDockingSearchDTO, List<String> ids) {
+        return bankInterfaceHistoryMapper.getListBySearchOfStation(bankDockingSearchDTO ,ids);
+    }
+
+    @Override
+    public Integer listCountOfStation(BankDockingSearchDTO bankDockingSearchDTO, List<String> ids) {
+        return bankInterfaceHistoryMapper.getListCountBySearchOfStation(bankDockingSearchDTO, ids);
+    }
+
+}

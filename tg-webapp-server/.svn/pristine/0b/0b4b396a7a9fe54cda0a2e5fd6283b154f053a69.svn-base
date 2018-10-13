@@ -1,0 +1,115 @@
+package cn.plou.web.charge.chargeconfig.controller;
+
+import cn.plou.web.charge.chargeconfig.dto.BankDockingSearchDTO;
+import cn.plou.web.charge.chargeconfig.dto.DockingSetSaveDTO;
+import cn.plou.web.charge.chargeconfig.dto.DockingSetSearchDTO;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceHistoryService;
+import cn.plou.web.charge.chargeconfig.service.BankInterfaceInfoService;
+import cn.plou.web.charge.chargeconfig.vo.BankDockingListVO;
+import cn.plou.web.charge.chargeconfig.vo.DockingSetInfoVO;
+import cn.plou.web.charge.chargeconfig.vo.DockingSetListVO;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @Description: 通道管理
+ * @Param:
+ * @Return:
+ * @Author: youbc
+ * @Date: 2018/9/18 16下午27
+ */
+@RestController
+@RequestMapping("${chargePath}/channel-management")
+public class ChannelManagementController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private BankInterfaceHistoryService bankInterfaceHistoryService;
+
+    @Autowired
+    private BankInterfaceInfoService bankInterfaceInfoService;
+
+    /**
+     * @Description: 银行对接列表
+     * @Param: [bankDockingSearchDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/18 16下午58
+     */
+    @PostMapping("bank-docking-list")
+    public Root bankDockingList(@Valid BankDockingSearchDTO bankDockingSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        List<BankDockingListVO> list = bankInterfaceHistoryService.list(bankDockingSearchDTO);
+        Root root = new Root();
+        root.setData(list);
+        root.setCond(getCond(bankDockingSearchDTO.getPage(), bankDockingSearchDTO.getPageSize(), bankInterfaceHistoryService.listCount(bankDockingSearchDTO), bankDockingSearchDTO.getOrder(), bankDockingSearchDTO.getSortby()));
+        return root;
+    }
+
+    /**
+     * @Description: 对接设置列表
+     * @Param: [bankDockingSearchDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/19 8上午52
+     */
+    @PostMapping("docking-set-list")
+    public Root dockingSetList(@Valid DockingSetSearchDTO bankDockingSearchDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        List<DockingSetListVO> list = bankInterfaceInfoService.list(bankDockingSearchDTO);
+        Root root = new Root();
+        root.setData(list);
+        root.setCond(getCond(bankDockingSearchDTO.getPage(), bankDockingSearchDTO.getPageSize(), bankInterfaceInfoService.listCount(bankDockingSearchDTO), bankDockingSearchDTO.getOrder(), bankDockingSearchDTO.getSortby()));
+        return root;
+    }
+
+    /**
+     * @Description: 保存对接设置信息
+     * @Param: [dockingSetSaveDTO, bindingResult]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/19 9上午18
+     */
+    @PostMapping("save-set")
+    public Root saveSet(@Valid DockingSetSaveDTO dockingSetSaveDTO, BindingResult bindingResult) {
+        BindingResultHandler.handle(bindingResult);
+        bankInterfaceInfoService.save(dockingSetSaveDTO);
+        return new Root();
+    }
+
+    /**
+     * @Description: 对接设置信息弹框
+     * @Param: [primaryId]
+     * @Return: cn.plou.web.charge.chargeconfig.vo.DockingSetInfoVO
+     * @Author: youbc
+     * @Date: 2018/9/19 10上午27
+     */
+    @GetMapping("get-set")
+    public DockingSetInfoVO getSet(@RequestParam String primaryId) {
+        return bankInterfaceInfoService.getSet(primaryId);
+    }
+
+    /**
+     * @Description: 删除对接设置信息
+     * @Param: [primaryId]
+     * @Return: cn.plou.web.common.config.common.Root
+     * @Author: youbc
+     * @Date: 2018/9/19 10上午30
+     */
+    @PostMapping("delete-set")
+    public Root deleteSet(@RequestParam String primaryId) {
+        bankInterfaceInfoService.deleteSet(primaryId);
+        return new Root();
+    }
+}

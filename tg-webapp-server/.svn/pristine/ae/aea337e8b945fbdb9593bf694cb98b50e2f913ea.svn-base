@@ -1,0 +1,124 @@
+package cn.plou.web.system.commonMessage.typeMst.service.impl;
+
+import cn.plou.web.common.utils.CamelCaseUtil;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.common.utils.SerializeUtil;
+import cn.plou.web.system.commonMessage.typeMst.dao.TypeMstMapper;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMstKey;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.commonMessage.typeMst.vo.TypeMstVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class TypeMstServiceImpl implements TypeMstService {
+
+    @Autowired
+    TypeMstMapper typeMstMapper;
+
+    @Override
+    public TypeMst getTypeMstById(String id) {
+        return typeMstMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int addTypeMst(TypeMst typeMst) {
+        List<TypeMst> typeMstList = getTypeMstAllType();
+        for(TypeMst mst:typeMstList){
+            if(typeMst.getTypeKbn().equals(mst.getTypeKbn())){
+                typeMst.setTypeKbnName(mst.getTypeKbnName());
+                break;
+            }
+        }
+        typeMst.setId((typeMst.getTypeKbn())+"_"+(typeMst.getTypeId()));
+        return typeMstMapper.insertSelective(typeMst);
+    }
+
+    @Override
+    public List<TypeMst> getDownInfoByTypeKbns(List<String> typeKbns) {
+        List<TypeMst> typeMstList=new ArrayList<TypeMst>();
+        for(String typeKbn:typeKbns){
+            List<TypeMst> list = typeMstMapper.selectDownInfoByTypeKbn(typeKbn);
+            typeMstList.addAll(list);
+        }
+        return typeMstList;
+    }
+
+    @Override
+    public PageInfo<TypeMst> getTypeMstByTypeKbn(String typeKbn, TypeMstVo typeMstVo, String order, String sortby, Integer page, Integer pageSize) {
+//        page=(page-1)*pageSize;
+        sortby = CamelCaseUtil.toUnderscoreCase(sortby);
+        PageHelper.startPage(page,pageSize);
+        List<TypeMst> typeMstList = typeMstMapper.selectTypeMstByTypeKbn(typeKbn, typeMstVo, order, sortby, page, pageSize);
+        PageInfo<TypeMst> pageInfo=new PageInfo<>(typeMstList);
+        return pageInfo;
+    }
+
+    @Override
+    public int modifyTypeMstBatch(TypeMstVo typeMstVo) {
+        return typeMstMapper.updateTypeMstBatch(typeMstVo);
+    }
+
+    @Override
+    public int modifyTypeMst(TypeMst typeMst) {
+        return typeMstMapper.updateByPrimaryKeySelective(typeMst);
+    }
+
+    @Override
+    public int deleteTypeMstBatchByIds(List<TypeMstKey> typeMstKeys) {
+        return typeMstMapper.deleteTypeMstBatchByIds(typeMstKeys);
+    }
+
+    @Override
+    public List<TypeMst> getTypeMstAllType() {
+        return typeMstMapper.selectTypeMstAllType();
+    }
+    
+    @Override
+    public String typeNameByTypeId(List<TypeMst> types, String typeed, String typeId) {
+        for (TypeMst type : types) {
+            if (type.getTypeKbn().equals(typeed) && type.getTypeId().equals(typeId)) {
+                return type.getTypeName();
+            }
+        }
+        return typeId;
+    }
+
+    @Override
+    public String getTypeNameById(List<TypeMst> types, String id) {
+        for (TypeMst type : types) {
+            if (type.getId().equals(id)) {
+                return type.getTypeName();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public List<TypeMst> getAllTypeMst() {
+        return typeMstMapper.selectAllTypeMst();
+    }
+
+    @Override
+    public List<TypeMst> getAllTypeMstByRedis() {
+        List<TypeMst> typeMstList = new ArrayList<>();
+        RedisUtil redisUtil = RedisUtil.getSingleton();
+        Jedis jedis = null;
+        try {
+            jedis = redisUtil.getJedis();
+            byte[] bytes = jedis.get("typeMstList".getBytes());
+            typeMstList = SerializeUtil.unserializeForList(bytes);
+        } finally {
+            RedisUtil.returnSource(jedis);
+        }
+        return typeMstList;
+    }
+}
+

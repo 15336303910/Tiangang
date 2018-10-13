@@ -1,0 +1,32 @@
+package cn.plou.web.charge.chargeconfig.dto;
+
+import cn.plou.web.common.config.common.BasePageEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotEmpty;
+import java.util.Date;
+
+/**
+ * @ClassName: ChargeAccountSearchDTO
+ * @Description: 每日对账查询
+ * @Author: youbc
+ * @Date 2018-08-31 15:14
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ChargeAccountSearchDTO extends BasePageEntity {
+
+    @NotEmpty(message = "请选择范围（公司、站、小区等）")
+    private String companyId; // 公司ID
+
+    private Date accountTimeStart; // 缴费日期
+
+    private Date accountTimeEnd; // 缴费日期
+
+    private String isreconciliations; // 是否对账（已对账、未对账）
+
+    private String accountType; // 缴费方式
+
+    private String accountChannel; // 缴费通道
+}

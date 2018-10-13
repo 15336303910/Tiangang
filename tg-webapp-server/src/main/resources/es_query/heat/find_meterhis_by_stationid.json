@@ -1,0 +1,49 @@
+{
+	"from": 0,
+	"size": 5000,
+	"query": {
+		"bool": {
+			"filter": [
+				{
+					"bool": {
+						"must": [
+							{
+								"bool": {
+									"should": [
+										{
+											"match_phrase": {
+												"stationId": {
+													"query": 28,
+													"slop": 0,
+													"boost": 1
+												}
+											}
+										},
+										{
+											"match_phrase": {
+												"stationId": {
+													"query": 26,
+													"slop": 0,
+													"boost": 1
+												}
+											}
+										}
+									],
+									"disable_coord": false,
+									"adjust_pure_negative": true,
+									"boost": 1
+								}
+							}
+						],
+						"disable_coord": false,
+						"adjust_pure_negative": true,
+						"boost": 1
+					}
+				}
+			],
+			"disable_coord": false,
+			"adjust_pure_negative": true,
+			"boost": 1
+		}
+	}
+}

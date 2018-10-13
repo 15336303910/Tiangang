@@ -1,0 +1,4 @@
+package cn.plou.web.balance.distribution.vo;
+
+public class BalanceValveDataNowSelectInfo{
+}

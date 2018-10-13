@@ -1,0 +1,28 @@
+2018-10-11 13:30:17 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-11 13:30:27 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@6973a3fd].  Returning null to indicate a session could not be found.
+2018-10-11 13:30:27 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003} connected
+2018-10-11 13:30:27 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003} pool-connect
+2018-10-11 13:30:27 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003, pstmt-20008} created. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-11 13:30:27 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003, pstmt-20008} Parameters : [1, 9527, 3]
+2018-10-11 13:30:27 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003, pstmt-20008} Types : [INTEGER, VARCHAR, VARCHAR]
+2018-10-11 13:30:27 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003, pstmt-20008} executed. 6.208059 millis. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-11 13:30:27 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003, pstmt-20008} closed
+2018-10-11 13:30:27 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10003} pool-recycle
+2018-10-11 13:30:27 [INFO ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：verifyAlarm调用结束,消耗时间：0.094s
+2018-10-11 13:30:40 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

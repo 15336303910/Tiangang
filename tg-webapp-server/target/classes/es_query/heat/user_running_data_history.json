@@ -1,0 +1,51 @@
+{
+	"from": 0,
+	"size": 200,
+	"query": {
+		"bool": {
+			"filter": [
+				{
+					"bool": {
+						"must": [
+							{
+								"bool": {
+									"must": [
+										{
+											"match_phrase": {
+												"consumer_id": {
+													"query": {{consumerId}},
+													"slop": 0,
+													"boost": 1
+												}
+											}
+										},
+										{
+											"range": {
+												"system_read_time": {
+													"from": {{beginTime}},
+													"to": {{endTime}},
+													"include_lower": true,
+													"include_upper": true,
+													"boost": 1
+												}
+											}
+										}
+									],
+									"disable_coord": false,
+									"adjust_pure_negative": true,
+									"boost": 1
+								}
+							}
+						],
+						"disable_coord": false,
+						"adjust_pure_negative": true,
+						"boost": 1
+					}
+				}
+			],
+			"disable_coord": false,
+			"adjust_pure_negative": true,
+			"boost": 1
+		}
+	}
+}

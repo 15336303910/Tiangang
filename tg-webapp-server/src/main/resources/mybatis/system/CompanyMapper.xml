@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.company.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.company.entity.Company">
+    <id column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="super_company_id" jdbcType="VARCHAR" property="superCompanyId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="company_nature" jdbcType="VARCHAR" property="companyNature" />
+    <result column="company_summary" jdbcType="VARCHAR" property="companySummary" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="service_tel" jdbcType="VARCHAR" property="serviceTel" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="company_type" jdbcType="VARCHAR" property="companyType" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="industry" jdbcType="VARCHAR" property="industry" />
+    <result column="proviance" jdbcType="VARCHAR" property="proviance" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+  </resultMap>
+
+  <resultMap id="ResultInfo" type="cn.plou.web.system.baseMessage.company.vo.CompanyInfo">
+    <id column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName" />
+    <result column="super_company_id" jdbcType="VARCHAR" property="superCompanyId" />
+    <result column="superCompanyName" jdbcType="VARCHAR" property="superCompanyName"/>
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="companyNature" jdbcType="VARCHAR" property="companyNature" />
+    <result column="companyNatureName" jdbcType="VARCHAR" property="companyNatureName"/>
+    <result column="companySummary" jdbcType="VARCHAR" property="companySummary" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="serviceTel" jdbcType="VARCHAR" property="serviceTel" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="companyType" jdbcType="VARCHAR" property="companyType" />
+    <result column="companyTypeName" jdbcType="VARCHAR" property="companyTypeName" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="industry" jdbcType="VARCHAR" property="industry" />
+    <result column="proviance" jdbcType="VARCHAR" property="proviance" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="industryName" jdbcType="VARCHAR" property="industryName" />
+    <result column="provianceName" jdbcType="VARCHAR" property="provianceName" />
+    <result column="cityName" jdbcType="VARCHAR" property="cityName" />
+    <result column="areaName" jdbcType="VARCHAR" property="areaName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    company_id, rowno, company_name, super_company_id, address, company_nature, company_summary, 
+    tel, service_tel, email, url, company_type, longitude, latitude, notes, memo1, memo2, 
+    create_date, create_user, update_date, update_user, industry, proviance, city, area
+  </sql>
+  <sql id="useful_List">
+    company_id, rowno, company_name, super_company_id, address, company_nature, company_summary,
+    tel, service_tel, email, url, company_type, longitude, latitude, notes, memo1, memo2
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="useful_List" />
+    from company_info
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCompanyByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="useful_List" />
+    from company_info
+    where company_name = #{companyName}
+  </select>
+
+  <select id="selectChildrenCompany" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="useful_List" />
+    from company_info
+    where super_company_id = #{companyId}
+  </select>
+  
+  <select id="selectChildrenCompanys" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="useful_List" />
+	from company_info
+	where super_company_id in 
+	<foreach collection="companyIds" item="item" open="(" separator="," close=")">
+		#{item}
+	</foreach>
+  </select>
+  
+  <select id="selectAllCompanyIds"  resultType="java.lang.String">
+    select
+    company_id
+    from company_info
+  </select>
+  <select id="selectAllParentCompanyIds" resultType="java.lang.String">
+    select
+    company_id
+    from company_info
+    where super_company_id = 0
+  </select>
+  
+  <select id="selectParentIdsById" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+    super_company_id
+    from company_info
+    where company_id = #{companyId} and super_company_id != 0
+  </select>
+  
+  <select id="selectAllCompanys"  resultMap="BaseResultMap">
+    select
+    <include refid="useful_List" />
+    from company_info
+  </select>
+  <select id="selectAllCompany" parameterType="map" resultMap="ResultInfo">
+    /*select
+    c1.company_id, c1.rowno, c1.company_name companyName, c1.super_company_id,
+    c2.company_name superCompanyName, c1.address, c1.company_nature ,
+    (select type_name from type_mst where type_kbn='company_nature' and type_id=c1.company_nature) companyNatureName,
+    c1.company_summary companySummary,
+    c1.tel, c1.service_tel serviceTel, c1.email, c1.url, c1.company_type,
+    (select type_name from type_mst where type_kbn='company_type' and type_id=c1.company_type) companyTypeName,
+    c1.longitude, c1.latitude, c1.notes, c1.update_date,
+    c1.update_user, c1.industry,
+    (select type_name from type_mst where type_kbn='industry' and type_id=c1.industry) industryName,
+    c1.proviance,
+    (select z_p_province from zone_province_info where z_p_provinceid=c1.proviance) provianceName,c1.city,
+    (select z_c_city from zone_city_info where z_c_cityid=c1.city) cityName, c1.area,
+    (select z_a_area from zone_area_info where z_a_areaid=c1.area) areaName,c1.memo1*/
+    select
+    c1.company_id, c1.rowno, c1.company_name companyName, c1.super_company_id,
+    c2.company_name superCompanyName, c1.address, c1.company_nature companyNature ,
+    c1.company_summary companySummary,c1.tel, c1.service_tel serviceTel, c1.email, c1.url, c1.company_type companyType,
+    c1.longitude, c1.latitude, c1.notes, c1.update_date,c1.update_user, c1.industry,c1.proviance,c1.city,c1.area,c1.memo1,
+    zp.z_p_province provianceName,zc.z_c_city cityName,za.z_a_area areaName
+    from company_info c1
+    LEFT JOIN company_info c2 ON c1.super_company_id=c2.company_id
+    LEFT JOIN zone_province_info zp ON c1.proviance=zp.z_p_provinceid
+    LEFT JOIN zone_city_info zc ON c1.city=zc.z_c_cityid
+    LEFT JOIN zone_area_info za ON c1.area=za.z_a_areaid
+    where c1.company_id is not null
+    <if test="companyIds!=null">
+      <if test="companyIds.size!=0">
+        and c1.company_id  in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="companyVo!=null">
+      <if test="companyVo.companyName != null">
+        and c1.company_name LIKE concat('%',#{companyVo.companyName},'%')
+      </if>
+      <if test="companyVo.superCompanyId != null">
+        and c1.super_company_id = #{companyVo.superCompanyId}
+      </if>
+      <if test="companyVo.address != null">
+        and c1.address LIKE concat('%',#{companyVo.address},'%')
+      </if>
+      <if test="companyVo.companyNature != null">
+        and c1.company_nature = #{companyVo.companyNature}
+      </if>
+      <if test="companyVo.companyType != null">
+        and c1.company_type = #{companyVo.companyType}
+      </if>
+      <if test="companyVo.city != null">
+        and c1.city = #{companyVo.city}
+      </if>
+      <if test="companyVo.proviance != null">
+        and c1.proviance = #{companyVo.proviance}
+      </if>
+      <if test="companyVo.area != null">
+        and c1.area = #{companyVo.area}
+      </if>
+      <if test="companyVo.tel != null">
+        and c1.tel LIKE concat('%',#{companyVo.tel},'%')
+      </if>
+      <if test="companyVo.serviceTel != null">
+        and c1.service_tel LIKE concat('%',#{companyVo.serviceTel},'%')
+      </if>
+      <if test="companyVo.longitude != null">
+        and c1.longitude = #{companyVo.longitude}
+      </if>
+      <if test="companyVo.latitude != null">
+        and c1.latitude = #{companyVo.latitude}
+      </if>
+    </if>
+    <if test="sortby != null">
+       order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+       limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectCompanyListCount" parameterType="map" resultType="java.lang.Integer">
+    select
+    count(*)
+    from company_info c1
+    where c1.company_id is not null
+    <if test="companyIds!=null">
+      <if test="companyIds.size!=0">
+        and c1.company_id  in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="companyVo!=null">
+      <if test="companyVo.companyName != null">
+        and c1.company_name LIKE concat('%',#{companyVo.companyName},'%')
+      </if>
+      <if test="companyVo.superCompanyId != null">
+        and c1.super_company_id = #{companyVo.superCompanyId}
+      </if>
+      <if test="companyVo.address != null">
+        and c1.address LIKE concat('%',#{companyVo.address},'%')
+      </if>
+      <if test="companyVo.companyNature != null">
+        and c1.company_nature = #{companyVo.companyNature}
+      </if>
+      <if test="companyVo.companyType != null">
+        and c1.company_type = #{companyVo.companyType}
+      </if>
+      <if test="companyVo.city != null">
+        and c1.city = #{companyVo.city}
+      </if>
+      <if test="companyVo.proviance != null">
+        and c1.proviance = #{companyVo.proviance}
+      </if>
+      <if test="companyVo.area != null">
+        and c1.area = #{companyVo.area}
+      </if>
+      <if test="companyVo.tel != null">
+        and c1.tel LIKE concat('%',#{companyVo.tel},'%')
+      </if>
+      <if test="companyVo.serviceTel != null">
+        and c1.service_tel LIKE concat('%',#{companyVo.serviceTel},'%')
+      </if>
+      <if test="companyVo.longitude != null">
+        and c1.longitude = #{companyVo.longitude}
+      </if>
+      <if test="companyVo.latitude != null">
+        and c1.latitude = #{companyVo.latitude}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectDownInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    company_id,company_name
+    from company_info
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteBatchByIds" parameterType="java.lang.String">
+    delete from company_info
+    where company_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+  </delete>
+  <delete id="deleteByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.company.entity.CompanyKey">
+    delete from company_info
+    where company_id = #{companyId,jdbcType=VARCHAR}
+      and rowno = #{rowno,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.company.entity.Company">
+    insert into company_info (company_id, rowno, company_name, 
+      super_company_id, address, company_nature, 
+      company_summary, tel, service_tel, 
+      email, url, company_type, 
+      longitude, latitude, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user, 
+      industry, proviance, city, 
+      area)
+    values (#{companyId,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{superCompanyId,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{companyNature,jdbcType=VARCHAR}, 
+      #{companySummary,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{serviceTel,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{companyType,jdbcType=VARCHAR}, 
+      #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{industry,jdbcType=VARCHAR}, #{proviance,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.company.entity.Company">
+    insert into company_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="superCompanyId != null">
+        super_company_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="companyNature != null">
+        company_nature,
+      </if>
+      <if test="companySummary != null">
+        company_summary,
+      </if>
+      <if test="tel != null">
+        tel,
+      </if>
+      <if test="serviceTel != null">
+        service_tel,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="companyType != null">
+        company_type,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="industry != null">
+        industry,
+      </if>
+      <if test="proviance != null">
+        proviance,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="superCompanyId != null">
+        #{superCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNature != null">
+        #{companyNature,jdbcType=VARCHAR},
+      </if>
+      <if test="companySummary != null">
+        #{companySummary,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceTel != null">
+        #{serviceTel,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="companyType != null">
+        #{companyType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="proviance != null">
+        #{proviance,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateBatch" parameterType="cn.plou.web.system.baseMessage.company.vo.CompanyVo">
+    update company_info
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="superCompanyId != null">
+        super_company_id = #{superCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNature != null">
+        company_nature = #{companyNature,jdbcType=VARCHAR},
+      </if>
+      <if test="companySummary != null">
+        company_summary = #{companySummary,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceTel != null">
+        service_tel = #{serviceTel,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="companyType != null">
+        company_type = #{companyType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        industry = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="proviance != null">
+        proviance = #{proviance,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where company_id in
+    <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.company.entity.Company">
+    update company_info
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="superCompanyId != null">
+        super_company_id = #{superCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNature != null">
+        company_nature = #{companyNature,jdbcType=VARCHAR},
+      </if>
+      <if test="companySummary != null">
+        company_summary = #{companySummary,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        tel = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceTel != null">
+        service_tel = #{serviceTel,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="companyType != null">
+        company_type = #{companyType,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        industry = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="proviance != null">
+        proviance = #{proviance,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.company.entity.Company">
+    update company_info
+    set company_name = #{companyName,jdbcType=VARCHAR},
+      super_company_id = #{superCompanyId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      company_nature = #{companyNature,jdbcType=VARCHAR},
+      company_summary = #{companySummary,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR},
+      service_tel = #{serviceTel,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      company_type = #{companyType,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      industry = #{industry,jdbcType=VARCHAR},
+      proviance = #{proviance,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR}
+    where company_id = #{companyId,jdbcType=VARCHAR}
+      and rowno = #{rowno,jdbcType=VARCHAR}
+  </update>
+  <select id="getMaxCompanyId" resultType="java.lang.String">
+     select
+       max(company_id)
+     from company_info
+  </select>
+</mapper>

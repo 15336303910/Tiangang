@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.meterMessage.pipeDevice.dao.PipeDeviceMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice">
+    <id column="pipe_device_id" jdbcType="VARCHAR" property="pipeDeviceId" />
+    <result column="pipe_device_name" jdbcType="VARCHAR" property="pipeDeviceName" />
+    <result column="ascription_id" jdbcType="VARCHAR" property="ascriptionId" />
+    <result column="father_no" jdbcType="VARCHAR" property="fatherNo" />
+    <result column="pipe_device_no" jdbcType="VARCHAR" property="pipeDeviceNo" />
+    <result column="hight" jdbcType="DECIMAL" property="hight" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="out_diam" jdbcType="DECIMAL" property="outDiam" />
+    <result column="pipe_wall" jdbcType="DECIMAL" property="pipeWall" />
+    <result column="technique_param" jdbcType="VARCHAR" property="techniqueParam" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="device_classify" jdbcType="VARCHAR" property="deviceClassify" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="lenth" jdbcType="DECIMAL" property="lenth" />
+    <result column="length_adjust_factor" jdbcType="DECIMAL" property="lengthAdjustFactor" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="in_diam" jdbcType="DECIMAL" property="inDiam" />
+    <result column="pipe_id" jdbcType="VARCHAR" property="pipeId" />
+    <result column="pipe_type_id" jdbcType="VARCHAR" property="pipeTypeId" />
+  </resultMap>
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.meterMessage.pipeDevice.vo.PipeDeviceInfo">
+    <id column="pipe_device_id" jdbcType="VARCHAR" property="pipeDeviceId" />
+    <result column="pipe_device_name" jdbcType="VARCHAR" property="pipeDeviceName" />
+    <result column="pipe_device" jdbcType="VARCHAR" property="pipeDevice" />
+    <result column="ascription_id" jdbcType="VARCHAR" property="ascriptionId" />
+    <result column="station_name" jdbcType="VARCHAR" property="stationName" />
+    <result column="producer_name" jdbcType="VARCHAR" property="producerName" />
+    <result column="father_no" jdbcType="VARCHAR" property="fatherNo" />
+    <result column="pipe_device_no" jdbcType="VARCHAR" property="pipeDeviceNo" />
+    <result column="hight" jdbcType="DECIMAL" property="hight" />
+    <result column="equipment_no" jdbcType="VARCHAR" property="equipmentNo" />
+    <result column="out_diam" jdbcType="DECIMAL" property="outDiam" />
+    <result column="pipe_wall" jdbcType="DECIMAL" property="pipeWall" />
+    <result column="technique_param" jdbcType="VARCHAR" property="techniqueParam" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+    <result column="device_classify" jdbcType="VARCHAR" property="deviceClassify" />
+    <result column="device_classify_name" jdbcType="VARCHAR" property="deviceClassifyName" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="lenth" jdbcType="DECIMAL" property="lenth" />
+    <result column="length_adjust_factor" jdbcType="DECIMAL" property="lengthAdjustFactor" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="in_diam" jdbcType="DECIMAL" property="inDiam" />
+    <result column="pipe_id" jdbcType="VARCHAR" property="pipeId" />
+    <result column="pipe_type_name" jdbcType="VARCHAR" property="pipeTypeName" />
+    <result column="caliber" jdbcType="VARCHAR" property="caliber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pipe_device_id, pipe_device_name, ascription_id, father_no, pipe_device_no, hight, 
+    equipment_no, out_diam, pipe_wall, technique_param, factory, device_classify, charge_person, 
+    lenth, length_adjust_factor, start_time, longitude, latitude, company_id, notes, 
+    memo1, memo2, create_date, create_user, update_date, update_user, in_diam, pipe_type_id,pipe_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseInfoMap">
+    select 
+     pd.pipe_device_id,pd.pipe_device_name, pd.ascription_id,s.station_name,p.producer_name, pd.father_no, pd.pipe_device_no, pd.hight,
+    pd.equipment_no, pd.out_diam, pd.pipe_wall, pd.technique_param, pd.factory, pd.device_classify, pd.charge_person,
+    pd.lenth, pd.length_adjust_factor, pd.start_time, pd.longitude, pd.latitude, pd.company_id, c.company_name,pd.notes,
+    pd.memo1, pd.memo2, pd.create_date, pd.create_user, pd.update_date, pd.update_user, pd.in_diam, pd.pipe_id,pd.pipe_type_id
+    from pipe_device_info pd
+    left join company_info c on pd.company_id=c.company_id
+    left join station_info s on pd.ascription_id=s.station_id
+    left join producer_info p on pd.ascription_id=p.producer_id
+    where pipe_device_id = #{pipeDeviceId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from pipe_device_info
+  </select>
+
+  <select id="selectPipeDeviceByAscriptionId"  resultMap="BaseResultMap">
+    select
+    pipe_device_id, pipe_device_name
+    from pipe_device_info where ascription_id=#{id}
+  </select>
+
+  <select id="selectAllPipeDevice" parameterType="java.lang.String" resultMap="BaseInfoMap">
+    select
+    pd.pipe_device_id pipe_device_id,pd.pipe_device_name pipe_device_name, pd.ascription_id ascription_id,
+    pd.father_no father_no, pd.pipe_device_no pipe_device_no, pd.hight hight,
+    pd.equipment_no equipment_no, pd.out_diam out_diam, pd.pipe_wall pipe_wall, pd.technique_param technique_param, pd.factory factory,
+    pd.device_classify device_classify, pd.charge_person charge_person,
+    pd.lenth lenth, pd.length_adjust_factor length_adjust_factor, pd.start_time start_time, pd.longitude longitude, pd.latitude latitude,
+    pd.company_id company_id, c.company_name company_name,pd.notes notes,
+    pd.memo1 memo1, pd.memo2 memo2, pd.create_date create_date, pd.create_user create_user, pd.update_date update_date, pd.update_user update_user,
+    pd.in_diam in_diam, pd.pipe_id pipe_id,pd.pipe_type_id pipe_type_id,pt.pipe_type_name pipe_type_name
+    from pipe_device_info pd
+    left join company_info c on pd.company_id=c.company_id
+    left join pipe_info pt on pd.pipe_type_id=pt.pipe_type_id
+    left join pipe_device_info p on pd.father_no=p.pipe_device_id
+    where 1=1
+    <if test="companyIds!=null">
+    <if test="companyIds.size()>0">
+      and pd.company_id in
+      <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    </if>
+    <if test="ids.size()>0">
+      and pd.ascription_id in
+      <foreach collection="ids" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="pipeDeviceVo!=null">
+      <if test="pipeDeviceVo.pipeDeviceName!=null">
+        and pd.pipe_device_name like concat('%',#{pipeDeviceVo.pipeDeviceName},'%')
+      </if>
+      <if test="pipeDeviceVo.ascriptionId!=null">
+        and pd.ascription_id =#{pipeDeviceVo.ascriptionId}
+      </if>
+      <if test="pipeDeviceVo.chargePerson!=null">
+        and pd.charge_person like concat('%',#{pipeDeviceVo.chargePerson},'%')
+      </if>
+      <if test="pipeDeviceVo.notes!=null">
+        and pd.notes like concat('%',#{pipeDeviceVo.notes},'%')
+      </if>
+      <if test="pipeDeviceVo.fatherNo!=null">
+        and pd.father_no =#{pipeDeviceVo.fatherNo}
+      </if>
+      <if test="pipeDeviceVo.pipeDeviceNo!=null">
+        and pd.pipe_device_no =#{pipeDeviceVo.pipeDeviceNo}
+      </if>
+      <if test="pipeDeviceVo.pipeId!=null">
+        and pd.pipe_id =#{pipeDeviceVo.pipeId}
+      </if>
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <!--<if test="page!=null">-->
+      <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pipe_device_info
+    where pipe_device_id = #{pipeDeviceId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deletePipeDeviceBatchByIds" parameterType="java.util.List">
+    delete from pipe_device_info
+    where pipe_device_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice">
+    insert into pipe_device_info (pipe_device_id, pipe_device_name, ascription_id, 
+      father_no, pipe_device_no, hight, 
+      equipment_no, out_diam, pipe_wall, 
+      technique_param, factory, device_classify, 
+      charge_person, lenth, length_adjust_factor, 
+      start_time, longitude, latitude, 
+      company_id, notes, memo1, 
+      memo2, create_date, create_user, 
+      update_date, update_user, in_diam, 
+      pipe_id)
+    values (#{pipeDeviceId,jdbcType=VARCHAR}, #{pipeDeviceName,jdbcType=VARCHAR}, #{ascriptionId,jdbcType=VARCHAR}, 
+      #{fatherNo,jdbcType=VARCHAR}, #{pipeDeviceNo,jdbcType=VARCHAR}, #{hight,jdbcType=DECIMAL}, 
+      #{equipmentNo,jdbcType=VARCHAR}, #{outDiam,jdbcType=DECIMAL}, #{pipeWall,jdbcType=DECIMAL}, 
+      #{techniqueParam,jdbcType=VARCHAR}, #{factory,jdbcType=VARCHAR}, #{deviceClassify,jdbcType=VARCHAR}, 
+      #{chargePerson,jdbcType=VARCHAR}, #{lenth,jdbcType=DECIMAL}, #{lengthAdjustFactor,jdbcType=DECIMAL}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, 
+      #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{inDiam,jdbcType=DECIMAL}, 
+      #{pipeId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice">
+    insert into pipe_device_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pipeDeviceId != null">
+        pipe_device_id,
+      </if>
+      <if test="pipeDeviceName != null">
+        pipe_device_name,
+      </if>
+      <if test="ascriptionId != null">
+        ascription_id,
+      </if>
+      <if test="fatherNo != null">
+        father_no,
+      </if>
+      <if test="pipeDeviceNo != null">
+        pipe_device_no,
+      </if>
+      <if test="hight != null">
+        hight,
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no,
+      </if>
+      <if test="outDiam != null">
+        out_diam,
+      </if>
+      <if test="pipeWall != null">
+        pipe_wall,
+      </if>
+      <if test="techniqueParam != null">
+        technique_param,
+      </if>
+      <if test="factory != null">
+        factory,
+      </if>
+      <if test="deviceClassify != null">
+        device_classify,
+      </if>
+      <if test="chargePerson != null">
+        charge_person,
+      </if>
+      <if test="lenth != null">
+        lenth,
+      </if>
+      <if test="lengthAdjustFactor != null">
+        length_adjust_factor,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="inDiam != null">
+        in_diam,
+      </if>
+      <if test="pipeId != null">
+        pipe_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pipeDeviceId != null">
+        #{pipeDeviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeDeviceName != null">
+        #{pipeDeviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="ascriptionId != null">
+        #{ascriptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherNo != null">
+        #{fatherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeDeviceNo != null">
+        #{pipeDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hight != null">
+        #{hight,jdbcType=DECIMAL},
+      </if>
+      <if test="equipmentNo != null">
+        #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outDiam != null">
+        #{outDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeWall != null">
+        #{pipeWall,jdbcType=DECIMAL},
+      </if>
+      <if test="techniqueParam != null">
+        #{techniqueParam,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceClassify != null">
+        #{deviceClassify,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="lenth != null">
+        #{lenth,jdbcType=DECIMAL},
+      </if>
+      <if test="lengthAdjustFactor != null">
+        #{lengthAdjustFactor,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="inDiam != null">
+        #{inDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeId != null">
+        #{pipeId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice">
+    update pipe_device_info
+    <set>
+      <if test="pipeDeviceName != null">
+        pipe_device_name = #{pipeDeviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="ascriptionId != null">
+        ascription_id = #{ascriptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherNo != null">
+        father_no = #{fatherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeDeviceNo != null">
+        pipe_device_no = #{pipeDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hight != null">
+        hight = #{hight,jdbcType=DECIMAL},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outDiam != null">
+        out_diam = #{outDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeWall != null">
+        pipe_wall = #{pipeWall,jdbcType=DECIMAL},
+      </if>
+      <if test="techniqueParam != null">
+        technique_param = #{techniqueParam,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceClassify != null">
+        device_classify = #{deviceClassify,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="lenth != null">
+        lenth = #{lenth,jdbcType=DECIMAL},
+      </if>
+      <if test="lengthAdjustFactor != null">
+        length_adjust_factor = #{lengthAdjustFactor,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="inDiam != null">
+        in_diam = #{inDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pipe_device_id = #{pipeDeviceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.meterMessage.pipeDevice.entity.PipeDevice">
+    update pipe_device_info
+    set pipe_device_name = #{pipeDeviceName,jdbcType=VARCHAR},
+      ascription_id = #{ascriptionId,jdbcType=VARCHAR},
+      father_no = #{fatherNo,jdbcType=VARCHAR},
+      pipe_device_no = #{pipeDeviceNo,jdbcType=VARCHAR},
+      hight = #{hight,jdbcType=DECIMAL},
+      equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      out_diam = #{outDiam,jdbcType=DECIMAL},
+      pipe_wall = #{pipeWall,jdbcType=DECIMAL},
+      technique_param = #{techniqueParam,jdbcType=VARCHAR},
+      factory = #{factory,jdbcType=VARCHAR},
+      device_classify = #{deviceClassify,jdbcType=VARCHAR},
+      charge_person = #{chargePerson,jdbcType=VARCHAR},
+      lenth = #{lenth,jdbcType=DECIMAL},
+      length_adjust_factor = #{lengthAdjustFactor,jdbcType=DECIMAL},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      in_diam = #{inDiam,jdbcType=DECIMAL},
+      pipe_id = #{pipeId,jdbcType=VARCHAR}
+    where pipe_device_id = #{pipeDeviceId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updatePipeDeviceBatch" parameterType="cn.plou.web.system.meterMessage.pipeDevice.vo.PipeDeviceVo">
+    update pipe_device_info
+    <set>
+      <if test="pipeDeviceName != null">
+        pipe_device_name = #{pipeDeviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="ascriptionId != null">
+        ascription_id = #{ascriptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherNo != null">
+        father_no = #{fatherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeDeviceNo != null">
+        pipe_device_no = #{pipeDeviceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hight != null">
+        hight = #{hight,jdbcType=DECIMAL},
+      </if>
+      <if test="equipmentNo != null">
+        equipment_no = #{equipmentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outDiam != null">
+        out_diam = #{outDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeWall != null">
+        pipe_wall = #{pipeWall,jdbcType=DECIMAL},
+      </if>
+      <if test="techniqueParam != null">
+        technique_param = #{techniqueParam,jdbcType=VARCHAR},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceClassify != null">
+        device_classify = #{deviceClassify,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="lenth != null">
+        lenth = #{lenth,jdbcType=DECIMAL},
+      </if>
+      <if test="lengthAdjustFactor != null">
+        length_adjust_factor = #{lengthAdjustFactor,jdbcType=DECIMAL},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+
+      <if test="inDiam != null">
+        in_diam = #{inDiam,jdbcType=DECIMAL},
+      </if>
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pipe_device_id in
+    <foreach collection="pipeDeviceIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+</mapper>

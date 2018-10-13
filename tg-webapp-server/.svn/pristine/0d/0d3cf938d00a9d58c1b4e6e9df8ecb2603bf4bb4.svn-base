@@ -1,0 +1,153 @@
+package cn.plou.web.system.meterMessage.mbus.service.impl;
+
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.meterMessage.mbus.dao.MbusMapper;
+import cn.plou.web.system.meterMessage.mbus.dao.MeterTimingDefineMapper;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.meterMessage.mbus.entity.MeterTimingDefine;
+import cn.plou.web.system.meterMessage.mbus.service.MbusService;
+import cn.plou.web.system.meterMessage.mbus.service.MeterTimingDefineService;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusInfo;
+import cn.plou.web.system.meterMessage.mbus.vo.MbusListInfo;
+import cn.plou.web.system.meterMessage.mbus.vo.MeterTimingDefineVo;
+import cn.plou.web.system.meterMessage.mbus.vo.TimingTask;
+import cn.plou.web.system.permission.rlRoleData.service.RlRoleDataService;
+import cn.plou.web.system.permission.role.service.DataRoleService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Component
+public class MeterTimingDefineServiceImpl implements MeterTimingDefineService {
+    @Autowired
+    private MeterTimingDefineMapper meterTimingDefineMapper;
+    @Autowired
+    private MbusMapper mbusMapper;
+    @Autowired
+    private RlRoleDataService rlRoleDataService;
+    @Autowired
+    private DataRoleService dataRoleService;
+    @Autowired
+    private MbusService mbusService;
+
+    @Override
+    public int deleteTimingDefineBatch(List<String> mbusCodes) {
+        return 0;
+    }
+
+    @Override
+    public int addOrDelTimingDefineBatch(MeterTimingDefineVo meterTimingDefineVo) {
+        List<String> mbusCodes = meterTimingDefineVo.getMbusCodes();
+        List<MeterTimingDefine> meterTimingDefineListNow = null;
+        if(mbusCodes != null){
+        	meterTimingDefineListNow = meterTimingDefineMapper.selectAllByDefineVo(meterTimingDefineVo.getMbusCodes(),meterTimingDefineVo.getTimingTasks(),meterTimingDefineVo.getUpCommMode(),meterTimingDefineVo.getIntervals());
+        }
+        List<MeterTimingDefine> meterTimingDefineListNew = new ArrayList<>();
+        List<String> needDeletePrimaryIdList = new ArrayList<>();
+        List<MeterTimingDefine> needInsertList = new ArrayList<>();
+        MbusListInfo mbusListInfo = new MbusListInfo();
+        if(meterTimingDefineVo.getConsumerId()!=null){
+            String consumerId = meterTimingDefineVo.getConsumerId();
+            if(consumerId.length()==5){
+                mbusListInfo = mbusService.getAllMbus(null,null,consumerId,null,null,null,null,null,null,null,null);
+            }else if(consumerId.length()==6){
+                mbusListInfo = mbusService.getAllMbus(null,null,null,consumerId,null,null,null,null,null,null,null);
+            }else if(consumerId.length()==10){
+                mbusListInfo = mbusService.getAllMbus(null,null,null,null,consumerId,null,null,null,null,null,null);
+            }else if(consumerId.length()==13){
+                mbusListInfo = mbusService.getAllMbus(null,null,null,null,null,consumerId,null,null,null,null,null);
+            }else if(consumerId.length()==15){
+                mbusListInfo = mbusService.getAllMbus(null,null,null,null,null,null,consumerId,null,null,null,null);
+            }else if(consumerId.length()==19){
+                mbusListInfo = mbusService.getAllMbus(null,null,null,null,null,null,null,consumerId,null,null,null);
+            }
+            for(MbusInfo mbusInfo:mbusListInfo.getMbusInfoList()){
+                mbusCodes.add(mbusInfo.getMbusCode());
+            }
+        }
+        //根据传过来的参数获取全部任务列表
+        for(String mbusCode:mbusCodes){
+            Mbus mbus = mbusMapper.selectByMbusCode(mbusCode);
+            if(meterTimingDefineVo.getTimingTasks()==null){
+                MeterTimingDefine meterTimingDefine = new MeterTimingDefine();
+                BeanUtils.copyProperties(meterTimingDefineVo,meterTimingDefine);
+                meterTimingDefine.setMbusCode(mbusCode);
+                meterTimingDefine.setCompanyId(mbus.getCompanyId());
+                meterTimingDefine.setEquipmentNo(mbus.getEquipmentNo());
+                //meterTimingDefine.setPrimaryId(UUID.randomUUID().toString().replace("-",""));
+                meterTimingDefineListNew.add(meterTimingDefine);
+            }else{
+                for(TimingTask timingTask:meterTimingDefineVo.getTimingTasks()){
+                    MeterTimingDefine meterTimingDefine1 = new MeterTimingDefine();
+                    BeanUtils.copyProperties(meterTimingDefineVo,meterTimingDefine1);
+                    meterTimingDefine1.setTiming(timingTask.getTiming());
+                    meterTimingDefine1.setOrderType(timingTask.getOrderType());
+                    meterTimingDefine1.setMbusCode(mbusCode);
+                    meterTimingDefine1.setCompanyId(mbus.getCompanyId());
+                    meterTimingDefine1.setEquipmentNo(mbus.getEquipmentNo());
+                    if(timingTask.getOrderType().equals("task_meter_0")){
+                        meterTimingDefine1.setValidFlg(0);
+                    }
+                    //meterTimingDefine1.setPrimaryId(UUID.randomUUID().toString().replace("-",""));
+                    meterTimingDefineListNew.add(meterTimingDefine1);
+                }
+            }
+        }
+        for(MeterTimingDefine meterTimingDefine:meterTimingDefineListNow){
+            if(!meterTimingDefineListNew.contains(meterTimingDefine)){
+                needDeletePrimaryIdList.add(meterTimingDefine.getPrimaryId());
+            }
+        }
+        for(MeterTimingDefine meterTimingDefine:meterTimingDefineListNew){
+            if(!meterTimingDefineListNow.contains(meterTimingDefine)){
+                meterTimingDefine.setPrimaryId(UUID.randomUUID().toString().replace("-",""));
+                needInsertList.add(meterTimingDefine);
+            }
+        }
+        /*List<MeterTimingDefine> meterTimingDefines = new ArrayList<>();
+        List<String> mbusCodes = meterTimingDefineVo.getMbusCodes();
+        List<MeterTimingDefine> needInsertDatas = new ArrayList<>();
+        List<String> needDeleteIds = new ArrayList<>();
+        if(meterTimingDefineVo.getUpCommonMode().equals("up_comm_mode_0")){
+            for(String mbusCode:meterTimingDefineVo.getMbusCodes()){
+                for(TimingTask timingTask : meterTimingDefineVo.getTimingTasks()){
+                    MeterTimingDefine meterTimingDefine = meterTimingDefineMapper.selectPrimaryIdByData(mbusCode,"up_comm_mode_0",null,timingTask.getTiming(),timingTask.getOrderType());
+                    List<MeterTimingDefine> meterTimingDefine1s = meterTimingDefineMapper.selectAllTimigByMbusCode(mbusCode);
+                }
+            }
+        }else if(meterTimingDefineVo.getUpCommonMode().equals("up_comm_mode_1")){
+            List<MeterTimingDefine> meterTimingDefineListNow = meterTimingDefineMapper.selectAllIntervalsByMbusCodes(meterTimingDefineVo.getMbusCodes());
+            //List<MeterTimingDefine> meterTimingDefineListNew = meterTimingDefineMapper.
+
+            for(String mbusCode:meterTimingDefineVo.getMbusCodes()){
+                *//*MeterTimingDefine meterTimingDefine = meterTimingDefineMapper.selectPrimaryIdByData(mbusCode,"up_comm_mode_1",meterTimingDefineVo.getIntervals(),null,null);
+                MeterTimingDefine meterTimingDefine1 = meterTimingDefineMapper.selectIntervalsByMbusCode(mbusCode);
+                if (meterTimingDefine==null){
+                    if(meterTimingDefine1!=null){
+                        needDeleteIds.add(meterTimingDefine1.getPrimaryId());
+                    }
+                    MeterTimingDefine needInsertData = new MeterTimingDefine();
+                    needInsertData.setPrimaryId(UUID.randomUUID().toString().replace("-",""));
+                    needInsertData.setMbusCode(mbusCode);
+                    needInsertData.setIntervals(meterTimingDefineVo.getIntervals());
+                    needInsertData.setUpCommMode(meterTimingDefineVo.getUpCommonMode());
+                    needInsertData.setMbusCode(mbusMapper.selectByMbusCode(mbusCode).getEquipmentNo());
+                    needInsertData.setCompanyId(mbusMapper.selectByMbusCode(mbusCode).getCompanyId());
+                    needInsertDatas.add(needInsertData);
+                }*//*
+            }
+        }*/
+        meterTimingDefineMapper.deleteTimingDefineBatch(needDeletePrimaryIdList);
+        meterTimingDefineMapper.insertSelectiveBatch2(needInsertList);
+        return needDeletePrimaryIdList.size()+needInsertList.size();
+    }
+
+    @Override
+    public List<MeterTimingDefine> getTimingDefineByMbusCodes(String mbusCode) {
+        return meterTimingDefineMapper.selectAllTimigByMbusCode(mbusCode);
+    }
+}

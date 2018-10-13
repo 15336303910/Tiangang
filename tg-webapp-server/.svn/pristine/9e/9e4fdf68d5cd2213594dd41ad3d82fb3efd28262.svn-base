@@ -1,0 +1,180 @@
+package cn.plou.web.system.meterMessage.meterModifyData.vo;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class MeterModifyDataVo {
+
+    private List<String> rownos;
+
+    private String meterId;
+
+    private String meterType;
+
+    private String consumerId;
+
+    private String address2nd;
+
+    private String flag;
+
+    private Date meterModifyTime;
+
+    private String modifyReason;
+
+    private String oldMetetBegin;
+
+    private String oldMetetEnd;
+
+    private String newMetetAddress2nd;
+
+    private String newMetetBegin;
+
+    private String companyId;
+
+    private String notes;
+
+    private String memo1;
+
+    private String memo2;
+
+    private String factory;
+
+    public List<String> getRownos() {
+        return rownos;
+    }
+
+    public void setRownos(List<String> rownos) {
+        this.rownos = rownos;
+    }
+
+    public String getMeterId() {
+        return meterId;
+    }
+
+    public void setMeterId(String meterId) {
+        this.meterId = meterId;
+    }
+
+    public String getMeterType() {
+        return meterType;
+    }
+
+    public void setMeterType(String meterType) {
+        this.meterType = meterType;
+    }
+
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public void setConsumerId(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public String getAddress2nd() {
+        return address2nd;
+    }
+
+    public void setAddress2nd(String address2nd) {
+        this.address2nd = address2nd;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    public Date getMeterModifyTime() {
+        return meterModifyTime;
+    }
+
+    public void setMeterModifyTime(Date meterModifyTime) {
+        this.meterModifyTime = meterModifyTime;
+    }
+
+    public String getModifyReason() {
+        return modifyReason;
+    }
+
+    public void setModifyReason(String modifyReason) {
+        this.modifyReason = modifyReason;
+    }
+
+    public String getOldMetetBegin() {
+        return oldMetetBegin;
+    }
+
+    public void setOldMetetBegin(String oldMetetBegin) {
+        this.oldMetetBegin = oldMetetBegin;
+    }
+
+    public String getOldMetetEnd() {
+        return oldMetetEnd;
+    }
+
+    public void setOldMetetEnd(String oldMetetEnd) {
+        this.oldMetetEnd = oldMetetEnd;
+    }
+
+    public String getNewMetetAddress2nd() {
+        return newMetetAddress2nd;
+    }
+
+    public void setNewMetetAddress2nd(String newMetetAddress2nd) {
+        this.newMetetAddress2nd = newMetetAddress2nd;
+    }
+
+    public String getNewMetetBegin() {
+        return newMetetBegin;
+    }
+
+    public void setNewMetetBegin(String newMetetBegin) {
+        this.newMetetBegin = newMetetBegin;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getMemo1() {
+        return memo1;
+    }
+
+    public void setMemo1(String memo1) {
+        this.memo1 = memo1;
+    }
+
+    public String getMemo2() {
+        return memo2;
+    }
+
+    public void setMemo2(String memo2) {
+        this.memo2 = memo2;
+    }
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+}

@@ -1,0 +1,212 @@
+package cn.plou.web.system.meterMessage.mbus.controller;
+
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import cn.afterturn.easypoi.handler.inter.IExcelDataHandler;
+import cn.plou.web.common.config.common.BaseController;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.importDataBatch.ImportResult;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.common.utils.SerializeUtil;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.meterMessage.mbus.service.MbusService;
+import cn.plou.web.system.meterMessage.mbus.vo.*;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.Jedis;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import javax.servlet.ServletRequest;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+import static cn.plou.web.common.utils.PageInfo.getPageInfo;
+
+@RestController
+@RequestMapping("${systemPath}/mbus")
+@EnableSwagger2
+@Api(description = "通讯设备管理")
+public class MbusController  {
+    private static final Logger log = LoggerFactory.getLogger(MbusController.class);
+    @Autowired
+    private MbusService mbusService;
+    @Autowired
+    private StationService stationService;
+
+    @ApiOperation("根据查询条件获取全部通讯设备信息")
+    @PostMapping("/getAllMbus")
+    @RequiresPermissions("20004")
+    public Root getAllMbus(@RequestBody MbusSelectInfo mbusSelectInfo) {
+        Root root = new Root();
+        if(mbusSelectInfo.getSortby()!=null){
+            if(mbusSelectInfo.getSortby().equals("factoryName")){
+                mbusSelectInfo.setSortby("factory");
+            }else if(mbusSelectInfo.getSortby().equals("mbusPositionName")){
+                mbusSelectInfo.setSortby("mbusPosition");
+            }else if(mbusSelectInfo.getSortby().equals("upCommModeName")){
+                mbusSelectInfo.setSortby("upCommMode");
+            }else if(mbusSelectInfo.getSortby().equals("transModeName")){
+                mbusSelectInfo.setSortby("transMode");
+            }else if(mbusSelectInfo.getSortby().equals("channlModeName")){
+                mbusSelectInfo.setSortby("channlMode");
+            }else if(mbusSelectInfo.getSortby().equals("downProName")){
+                mbusSelectInfo.setSortby("downPro");
+            }else if(mbusSelectInfo.getSortby().equals("mbusProName")){
+                mbusSelectInfo.setSortby("mbusPro");
+            }else if(mbusSelectInfo.getSortby().equals("protocolName")){
+                mbusSelectInfo.setSortby("protocol");
+            }else if(mbusSelectInfo.getSortby().equals("simProviderName")){
+                mbusSelectInfo.setSortby("simProvider");
+            }else if(mbusSelectInfo.getSortby().equals("isFirstName")){
+                mbusSelectInfo.setSortby("isFirst");
+            }else if(mbusSelectInfo.getSortby().equals("runningStateName")){
+                mbusSelectInfo.setSortby("runningState");
+            }else if(mbusSelectInfo.getSortby().equals("busyStatusName")){
+                mbusSelectInfo.setSortby("busyStatus");
+            }else if(mbusSelectInfo.getSortby().equals("equipmentNoName")){
+                mbusSelectInfo.setSortby("equipmentNo");
+            }
+        }
+        //PageHelper.startPage(mbusSelectInfo.getPage(),mbusSelectInfo.getPageSize());
+        MbusListInfo mbusListInfo = mbusService.getAllMbus(mbusSelectInfo.getPage(),mbusSelectInfo.getPageSize(),mbusSelectInfo.getCompanyId(), mbusSelectInfo.getStationId(), mbusSelectInfo.getCommuityId(), mbusSelectInfo.getBuildingNo(), mbusSelectInfo.getUnitId(), mbusSelectInfo.getHouseId(), mbusSelectInfo.getOrder(), mbusSelectInfo.getSortby(), mbusSelectInfo.getSearchCondition());
+        //PageInfo pageInfo = new PageInfo(mbusList);
+        root.setData(mbusListInfo.getMbusInfoList());
+//        root.setCond(getCond(pageInfo.getPageNum(), pageInfo.getPageSize(), (int)pageInfo.getTotal(), mbusSelectInfo.getOrder(), mbusSelectInfo.getSortby()));
+        root.setCond(getCond(mbusSelectInfo.getPage(), mbusSelectInfo.getPageSize(),mbusListInfo.getCount(), mbusSelectInfo.getOrder(), mbusSelectInfo.getSortby()));
+        return root;
+    }
+
+    @ApiOperation("根据所属id获取通讯设备下拉框")
+    @GetMapping("/getMbusDownInfo")
+    //  @RequiresPermissions("20004")
+    public List<Mbus> getMbusDownInfoByConsumerId(@RequestParam String consumerId) {
+        return mbusService.geDownInfoByConsumerId(consumerId);
+    }
+
+    @ApiOperation("根据id获取对应通讯设备信息")
+    @GetMapping("/getMbusById")
+    @RequiresPermissions("20004")
+    public Mbus getMbusById(@RequestParam String mbusId) {
+        return mbusService.getMbusById(mbusId);
+    }
+
+    @ApiOperation("根据id批量删除通讯设备信息（真）")
+    @DeleteMapping("/deleteMbusBatch")
+    @RequiresPermissions("20002")
+    public Boolean deleteMbusBatchByIds(@RequestBody List<String> mbusIds) {
+        return mbusService.deleteMbusBatchByIds(mbusIds) == mbusIds.size();
+    }
+
+    @ApiOperation("根据id批量删除通讯设备信息（假）")
+    @PutMapping("setDelMbusBatch")
+    @RequiresPermissions("20002")
+    public Boolean setDelMbusBatchByIds(@RequestBody List<String> mbusIds) {
+        return mbusService.modifyDelMbusBatchById(mbusIds) == mbusIds.size();
+    }
+
+    @ApiOperation("添加一个通讯设备信息")
+    @PostMapping("/addMbus")
+    @RequiresPermissions("20001")
+    public Boolean addMbus(@RequestBody Mbus mbus) {
+        mbus.setIsvalid(1);
+        mbus.setMbusId(mbus.getMbusCode() + "_"+mbus.getFactory());
+        if(mbus.getMbusPosition().contains("1")){
+            mbus.setCompanyId(stationService.getStationById(mbus.getConsumerId()).getCompanyId());
+        }else{
+            mbus.setCompanyId(mbus.getConsumerId().substring(0, 5));
+        }
+        return mbusService.addMbus(mbus) == 1;
+    }
+
+    @ApiOperation("批量修改通讯设备信息")
+    @PutMapping("/modifyMbusBatch")
+    @RequiresPermissions("20003")
+    public Boolean modifyMbusBatch(@RequestBody MbusVo mbusVo) {
+        if (mbusVo.getConsumerId() != null && !mbusVo.getMbusPosition().contains("1")) {
+            mbusVo.setCompanyId(mbusVo.getConsumerId().substring(0, 5));
+        }else if(mbusVo.getConsumerId() != null && mbusVo.getMbusPosition().contains("1")){
+            mbusVo.setCompanyId(stationService.getStationById(mbusVo.getConsumerId()).getCompanyId());
+        }
+        return mbusService.modifyBatch(mbusVo) == mbusVo.getMbusIds().size();
+    }
+
+    @ApiOperation("修改一条通讯设备信息")
+    @PutMapping("/modifyMbus")
+    @RequiresPermissions("20003")
+    public Boolean modifyMbus(@RequestBody Mbus mbus) {
+        if (mbus.getConsumerId() != null && !mbus.getMbusPosition().contains("1")) {
+            mbus.setCompanyId(mbus.getConsumerId().substring(0, 5));
+        }else if(mbus.getConsumerId() != null && mbus.getMbusPosition().contains("1")){
+            mbus.setCompanyId(stationService.getStationById(mbus.getConsumerId()).getCompanyId());
+        }
+        return mbusService.modifyMbus(mbus) == 1;
+    }
+    @ApiOperation("根据excel表格批量获取通讯设备信息")
+    @PostMapping(value="/importExcel")
+    public ImportResult excelImport(@RequestParam("file") MultipartFile file, ServletRequest request) {
+        ImportResult importResult = mbusService.importExcel(file,request);
+        return importResult;
+    }
+
+    @ApiOperation("批量导出通信设备信息")
+    @PostMapping("/exportExcel")
+    public Root exportExcel(ServletRequest request,@RequestBody MbusSelectInfo mbusSelectInfo) {
+        Root root = new Root();
+        root.setCode(0);
+        root.setMsg("导出成功");
+        root.setData(mbusService.exportExcel(request,mbusSelectInfo));
+        return root;
+    }
+/*
+    @ApiOperation("根据公司获取全部通讯设备信息")
+    @GetMapping("/getMbusByCompany")
+    public List<MbusInfo> getMbusByCompany(@RequestParam String companyId){
+        return mbusService.getAllMbusByCompany(companyId);
+    }*/
+/*@PostMapping("excelImport")
+public void excelImport(@RequestParam("file") MultipartFile file) {
+    ImportParams importParams = new ImportParams();
+    // 数据处理
+    IExcelDataHandler<Mbus> handler = new MbusExcelHandler();
+    handler.setNeedHandlerFields(new String[] { "mbus_id" });// 注意这里对应的是excel的列名。也就是对象上指定的列名。
+    importParams.setDataHanlder(handler);
+
+    // 需要验证
+    importParams.setNeedVerfiy(true);
+
+    try {
+        ExcelImportResult<Mbus> result = ExcelImportUtil.importExcelMore(file.getInputStream(), Mbus.class,importParams);
+        List<Mbus> successList = result.getList();
+        List<Mbus> failList = result.getFailList();
+        result.getFailWorkbook();
+
+        log.info("是否存在验证未通过的数据:" + result.isVerfiyFail());
+        log.info("验证通过的数量:" + successList.size());
+        log.info("验证未通过的数量:" + failList.size());
+
+        for (Mbus user : successList) {
+            log.info("成功列表信息:ID="+user.getMbusId()+user.getMbusCode()+"-");
+        }
+        for (Mbus user : failList) {
+            log.info("失败列表信息:" + user.getMbusId()+"-"+user.getMbusCode());
+        }
+    } catch (IOException e) {
+        log.error(e.getMessage(), e);
+    } catch (Exception e) {
+        log.error(e.getMessage(), e);
+    }
+}*/
+}

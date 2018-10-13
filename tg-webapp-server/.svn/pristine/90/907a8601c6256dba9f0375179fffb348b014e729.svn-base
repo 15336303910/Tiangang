@@ -1,0 +1,32 @@
+package cn.plou.web.system.permission.rlRoleData.dao;
+
+import cn.plou.web.system.permission.rlRoleData.entity.RlRoleData;
+import cn.plou.web.system.permission.rlRoleData.vo.RlRoleDataVo;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface RlRoleDataMapper {
+
+    List<String> selectAllIds();
+
+    int insertRlRoleData(RlRoleData rlRoleData);
+
+    int updateRlRoleDataBatch(RlRoleDataVo rlRoleDataVo);
+
+    List<RlRoleData> selectRlRoleDataByRoleId(String roleId);
+
+//    List<RlRoleData> selectAllRlRoleData(@Param("rlRoleDataVo")  RlRoleDataVo rlRoleDataVo,
+//                                             @Param("order")String order, @Param("sortby")String sortby);
+    List<RlRoleData> selectRlRoleDataByUserId(String userId);
+
+    List<String> selectAllRlRoleData();
+//    int updateByPrimaryKey(RlRoleData record);
+
+    int deleteRlRoleData(String roleId);
+
+    int deleteRlRoleDataByColumn(String columnValue);
+
+//    int insert(RlRoleData record);
+}

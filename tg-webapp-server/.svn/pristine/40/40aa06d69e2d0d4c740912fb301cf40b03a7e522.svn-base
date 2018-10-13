@@ -1,0 +1,40 @@
+package cn.plou.web.charge.heatingmanage.service;
+
+import cn.plou.web.charge.heatingmanage.domain.MoneyClearTask;
+import cn.plou.web.charge.heatingmanage.domain.TaskNumResult;
+import cn.plou.web.common.config.common.BasePageEntity;
+import com.github.pagehelper.PageInfo;
+import java.util.List;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/23 8:56
+ */
+public interface MoneyClearTaskService {
+
+
+    /**
+     * @param primaryIds 流水号数组
+     * @return   清欠列表
+     */
+    List<MoneyClearTask> findByprimaryIds(String [] primaryIds);
+
+
+    /**
+     * @param moneyClearTask
+     * @param basePageEntity
+     * @return 分页信息
+     */
+    PageInfo<MoneyClearTask> getMoneyClearTaskList(String beginCreateDate,String  endCreateDate, List<String>   consumerIdList,MoneyClearTask  moneyClearTask, BasePageEntity  basePageEntity);
+
+
+
+     int   addMoneyClearTaskList(List<MoneyClearTask>  moneyClearTasks);
+
+    int updateByPrimaryKeySelective(MoneyClearTask record);
+
+
+    TaskNumResult getTaskNum(String beginCreateDate, String  endCreateDate, List<String>   consumerIdList, MoneyClearTask moneyClearTask);
+
+
+}

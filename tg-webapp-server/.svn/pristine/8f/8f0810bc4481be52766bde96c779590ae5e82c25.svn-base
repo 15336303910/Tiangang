@@ -1,0 +1,101 @@
+package cn.plou.web.mobile.station.controller;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.websocket.server.PathParam;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+
+import cn.plou.common.utils.Tools;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.mobile.common.AppTools;
+import cn.plou.web.mobile.station.service.StationAppService;
+import cn.plou.web.mobile.station.vo.RunningDataVo;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfoVo;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : StationController.java
+ * @Author : WangJiWei
+ * @Date : 2018年9月19日上午9:18:30
+ *
+ * @Comments :
+ * 
+ */
+@RestController
+@RequestMapping("/mobile/station")
+public class StationAppController extends AppBaseController {
+
+    @Autowired
+    StationAppService stationService;
+
+    /**
+     * 获取用户权限内的所有系统
+     */
+    @RequestMapping("/ids")
+    public Root findStationInfoList() {
+
+	/** TODO 登录复用web端 */
+	// String userId = UserUtils.getUserId();
+	String userId = "95277";
+	List<SystemInfoVo> systems = stationService.findSystemByUserId(userId);
+	
+	Map<String, List<SystemInfoVo>> result = AppTools.groupBy(systems,
+		SystemInfoVo::getCompanyName);
+	return success(JSON.toJSON(result));
+	/**
+	 * 数据格式:
+	 * 
+	 * <pre>
+	{
+	    "code": 0,
+	    "msg": "操作成功",
+	    "data": {
+	      "王基伟测试公司": [
+	        {
+	          "companyId": "00240",
+	          "systemId": "000261",
+	          "systemName": "b-1",
+	          "companyName": "王基伟测试公司",
+	          "stationName": "bbbbbbbb",
+	          "stationId": "000240"
+	        },
+	        {
+	          "companyId": "00240",
+	          "systemId": "000262",
+	          "systemName": "c-1",
+	          "companyName": "王基伟测试公司",
+	          "stationName": "ccccccccc",
+	          "stationId": "000241"
+	        }
+	      ]
+	    }
+	  }
+	 * </pre>
+	 * 
+	 */
+    }
+
+    /**
+     * 实时数据
+     */
+    @GetMapping("/{systemId}/metrics")
+    public Root realTimeData(@PathVariable String systemId) {
+
+	String userId = "95277";
+	List<RunningDataVo> rdv = stationService.findRunningData(userId, systemId);
+	Object data = Tools.isNotEmpty(rdv) ? null : JSONArray.parseArray(JSON.toJSONString(rdv));
+	return success(data);
+    }
+
+}
