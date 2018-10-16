@@ -1,0 +1,77 @@
+2018-10-16 10:02:24 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-16 10:02:39 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@16914f50].  Returning null to indicate a session could not be found.
+2018-10-16 10:02:39 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-16 10:02:39 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} created. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:39 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} Parameters : [1, 9527, 3]
+2018-10-16 10:02:39 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} Types : [INTEGER, VARCHAR, VARCHAR]
+2018-10-16 10:02:39 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} executed. 35.650419 millis. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:39 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20000} closed
+2018-10-16 10:02:39 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-16 10:02:39 [INFO ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：verifyAlarm调用结束,消耗时间：0.369s
+2018-10-16 10:02:43 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@395ff0e3].  Returning null to indicate a session could not be found.
+2018-10-16 10:02:43 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-16 10:02:43 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} created. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:43 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} Parameters : [1, 9527, 3]
+2018-10-16 10:02:43 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} Types : [INTEGER, VARCHAR, VARCHAR]
+2018-10-16 10:02:43 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} executed. 39.040165 millis. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:43 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20001} closed
+2018-10-16 10:02:43 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-16 10:02:43 [INFO ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：verifyAlarm调用结束,消耗时间：0.043000000000000003s
+2018-10-16 10:02:44 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@7318b8dc].  Returning null to indicate a session could not be found.
+2018-10-16 10:02:44 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-16 10:02:44 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} created. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:44 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} Parameters : [1, 9527, 3]
+2018-10-16 10:02:44 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} Types : [INTEGER, VARCHAR, VARCHAR]
+2018-10-16 10:02:44 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} executed. 249.417868 millis. 
+update alarm_info
+    set result = ?,
+      result_time = NOW(),
+      result_person = ?
+    where primary_id in 
+     (  
+			?
+	 )
+2018-10-16 10:02:44 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20002} closed
+2018-10-16 10:02:44 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-16 10:02:44 [INFO ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：verifyAlarm调用结束,消耗时间：0.254s
+2018-10-16 10:02:49 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

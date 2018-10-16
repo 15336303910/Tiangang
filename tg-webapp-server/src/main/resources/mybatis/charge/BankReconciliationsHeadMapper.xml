@@ -271,4 +271,36 @@
         where platform_code = #{platformCode,jdbcType=VARCHAR}
         and DATE_FORMAT(transaction_date,'%Y%m%d') = #{transactionDate,jdbcType=TIMESTAMP}
     </select>
+
+    <select id="generalLedgerList" parameterType="cn.plou.web.charge.chargeconfig.dto.GeneralLedgerSearchDTO" resultType="cn.plou.web.charge.chargeconfig.vo.GeneralLedgerListVO">
+        select
+        primary_id,
+        h.company_id,
+        c.company_name,
+        annual,
+        bank_id,
+        t1.type_name as bankName,
+        platform_code, transaction_total, transaction_money,
+        transaction_date,
+        reconciliations_flag,
+        t2.type_name as reconciliationsFlagName,
+        h.notes, h.memo1, h.memo2, h.create_date, h.create_user,
+        h.update_date, h.update_user
+        from bank_reconciliations_head h
+        left JOIN company_info c ON h.company_id = c.company_id
+        left join type_mst t1 on t1.id = h.bank_id
+        left join type_mst t2 on t2.id = h.reconciliations_flag
+        where h.company_id = #{companyId,jdbcType=VARCHAR}
+        <if test="transactionDateStart != null">and DATE_FORMAT(h.transaction_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{transactionDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="transactionDateEnd != null">and DATE_FORMAT(h.transaction_date,'%Y-%m-%d') &lt;= DATE_FORMAT(#{transactionDateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="bankId != ''">and h.bank_id = #{bankId,jdbcType=VARCHAR}</if>
+        <if test="annual != ''">and h.annual = #{annual,jdbcType=VARCHAR}</if>
+        <if test="reconciliationsFlag != ''">and h.reconciliations_flag = #{reconciliationsFlag,jdbcType=VARCHAR}</if>
+        <if test="sortby != null and sortby != ''">
+            order by ${sortby}
+        </if>
+        <if test="order != null and order != ''">
+            ${order}
+        </if>
+    </select>
 </mapper>

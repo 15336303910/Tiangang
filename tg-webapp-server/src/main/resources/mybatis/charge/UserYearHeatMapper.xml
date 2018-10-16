@@ -878,7 +878,7 @@
     select user_year_heat.primary_id, houses_info.consumer_id,  houses_info.`name`,houses_info.address, user_year_heat.annual,
     user_year_heat.heating_area,
     user_year_heat.pay_area,
-    user_year_heat.area_price_type, t1.type_name as area_price_type_name,
+    user_year_heat.area_price_type, price_define.price_name as area_price_type_name,
     houses_info.heat_user_type, t2.type_name as heat_user_type_name,
     houses_info.charge_type, t6.type_name as charge_type_name,
     user_year_heat.pre_price,
@@ -887,7 +887,7 @@
     houses_info.house_type,t5.type_name as house_type_name
     from user_year_heat
     left join houses_info on user_year_heat.consumer_id=houses_info.consumer_id
-    left join type_mst as t1 on user_year_heat.area_price_type=t1.id
+    left join  price_define  on user_year_heat.area_price_type=price_define.primary_id
     left join type_mst as t2 on houses_info.heat_user_type=t2.id
     left join type_mst as t3 on houses_info.contry_stat=t3.id
     left join type_mst as t4 on houses_info.water_type=t4.id

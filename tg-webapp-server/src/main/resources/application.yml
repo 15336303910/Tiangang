@@ -4,6 +4,7 @@
 systemPath: /system  #系统模块
 chargePath: /charge  #收费模块
 heatManagePath: /heatManage  #供热模块
+balancePath: /balance  #平衡阀模块
 
 #银行对账文件存放路径
 bank-file-path: C:\Users\Administrator\Desktop\

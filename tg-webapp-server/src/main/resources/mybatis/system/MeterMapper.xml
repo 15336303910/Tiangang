@@ -2058,6 +2058,15 @@
    <update id="modifyMeterAddress" parameterType="map">
     	update meter_info
     		set address = #{address} where consumer_id = #{consumerId}
-     </update>  
-    
+     </update>
+  
+  <select id="getAllIdsByConsumerIds" parameterType="java.util.List" resultType="java.lang.String">
+    select meter_id
+    from meter_info
+    where 
+    consumer_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
 </mapper>
