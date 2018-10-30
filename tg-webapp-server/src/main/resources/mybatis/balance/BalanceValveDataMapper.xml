@@ -30,7 +30,7 @@
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
-    <result column="env_time" jdbcType="DECIMAL" property="envTime" />
+    <result column="env_temp" jdbcType="DECIMAL" property="envTemp" />
     <result column="open_set" jdbcType="DECIMAL" property="openSet" />
     <result column="open_level" jdbcType="DECIMAL" property="openLevel" />
     <result column="base_open" jdbcType="VARCHAR" property="baseOpen" />
@@ -56,7 +56,7 @@
     pressure_diff, set_pressure_diff, pressure_diff__threshold, in_temperature, out_temperature, 
     set_temperature, temperature_threshold, sample_flow_speed, unit_flow_speed, upper_limit_flow, 
     max_flow_threshold, sys_read_time, company_id, notes, memo1, memo2, create_date, 
-    create_user, update_date, update_user, env_time, open_set, open_level, base_open, 
+    create_user, update_date, update_user, env_temp, open_set, open_level, base_open, 
     low_temp, com_interval, exchange_temp, exchange_press, exchange_frame, locks, time_param, 
     temp_param, time_open_param, time_temp_param, time_temp_cure_param, press_adj, cal, 
     open_time, current_times, read_time
@@ -90,7 +90,7 @@
       sys_read_time, company_id, notes, 
       memo1, memo2, create_date, 
       create_user, update_date, update_user, 
-      env_time, open_set, open_level, 
+      env_temp, open_set, open_level, 
       base_open, low_temp, com_interval, 
       exchange_temp, exchange_press, exchange_frame, 
       locks, time_param, temp_param, 
@@ -107,7 +107,7 @@
       #{sysReadTime,jdbcType=TIMESTAMP}, #{companyId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
       #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
       #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
-      #{envTime,jdbcType=DECIMAL}, #{openSet,jdbcType=DECIMAL}, #{openLevel,jdbcType=DECIMAL}, 
+      #{envTemp,jdbcType=DECIMAL}, #{openSet,jdbcType=DECIMAL}, #{openLevel,jdbcType=DECIMAL}, 
       #{baseOpen,jdbcType=VARCHAR}, #{lowTemp,jdbcType=DECIMAL}, #{comInterval,jdbcType=DECIMAL}, 
       #{exchangeTemp,jdbcType=VARCHAR}, #{exchangePress,jdbcType=VARCHAR}, #{exchangeFrame,jdbcType=VARCHAR}, 
       #{locks,jdbcType=VARCHAR}, #{timeParam,jdbcType=VARCHAR}, #{tempParam,jdbcType=VARCHAR}, 
@@ -202,8 +202,8 @@
       <if test="updateUser != null">
         update_user,
       </if>
-      <if test="envTime != null">
-        env_time,
+      <if test="envtemp != null">
+        env_temp,
       </if>
       <if test="openSet != null">
         open_set,
@@ -348,8 +348,8 @@
       <if test="updateUser != null">
         #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="envTime != null">
-        #{envTime,jdbcType=DECIMAL},
+      <if test="envTemp != null">
+        #{envTemp,jdbcType=DECIMAL},
       </if>
       <if test="openSet != null">
         #{openSet,jdbcType=DECIMAL},
@@ -494,8 +494,8 @@
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="envTime != null">
-        env_time = #{envTime,jdbcType=DECIMAL},
+      <if test="envTemp != null">
+        env_temp = #{envTemp,jdbcType=DECIMAL},
       </if>
       <if test="openSet != null">
         open_set = #{openSet,jdbcType=DECIMAL},
@@ -586,7 +586,7 @@
       create_user = #{createUser,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=VARCHAR},
-      env_time = #{envTime,jdbcType=DECIMAL},
+      env_temp = #{envTemp,jdbcType=DECIMAL},
       open_set = #{openSet,jdbcType=DECIMAL},
       open_level = #{openLevel,jdbcType=DECIMAL},
       base_open = #{baseOpen,jdbcType=VARCHAR},

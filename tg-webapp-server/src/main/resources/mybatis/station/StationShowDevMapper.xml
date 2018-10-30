@@ -153,4 +153,5 @@
 		memo2 = #{memo2,jdbcType=VARCHAR}
 		where primary_id = #{primaryId,jdbcType=VARCHAR}
 	</update>
+
 </mapper>

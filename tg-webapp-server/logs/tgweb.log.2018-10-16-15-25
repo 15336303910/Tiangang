@@ -1,0 +1,3 @@
+2018-10-16 15:25:03 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-16 15:25:26 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-16 15:25:49 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.alarm.dao.AlarmInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.plou.web.station.alarm.entity.AlarmInfo" >
+    <id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="commuity_id" property="commuityId" jdbcType="VARCHAR" />
+    <result column="station_id" property="stationId" jdbcType="VARCHAR" />
+    <result column="sys_id" property="sysId" jdbcType="VARCHAR" />
+    <result column="dev_id" property="devId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="des" property="des" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="INTEGER" />
+    <result column="result_time" property="resultTime" jdbcType="TIMESTAMP" />
+    <result column="result_des" property="resultDes" jdbcType="VARCHAR" />
+    <result column="result_person" property="resultPerson" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="VARCHAR" />
+    <result column="val" property="val" jdbcType="VARCHAR" />
+    <result column="valset" property="valset" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <resultMap id="BaseResultMapVo" type="cn.plou.web.station.alarm.vo.AlarmInfoVo" >
+    <id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="commuity_id" property="commuityId" jdbcType="VARCHAR" />
+    <result column="station_id" property="stationId" jdbcType="VARCHAR" />
+    <result column="sys_id" property="sysId" jdbcType="VARCHAR" />
+    <result column="dev_id" property="devId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="des" property="des" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="INTEGER" />
+    <result column="result_time" property="resultTime" jdbcType="TIMESTAMP" />
+    <result column="result_des" property="resultDes" jdbcType="VARCHAR" />
+    <result column="result_person" property="resultPerson" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="VARCHAR" />
+    <result column="val" property="val" jdbcType="VARCHAR" />
+    <result column="valset" property="valset" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="groupByResultMap" type="cn.plou.web.station.alarm.vo.AlarmStatistics" >
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    primary_id, company_id, commuity_id, station_id, sys_id, dev_id, type, begin_time, 
+    end_time, des, result, result_time, result_des, result_person, level, val, valset
+  </sql>
+  
+    <select id="findAlarms" resultMap="BaseResultMapVo" parameterType="cn.plou.web.mobile.station.query.AlarmsQuery" >
+    select 
+    <include refid="Base_Column_List" />
+    from alarm_info
+    where 1 = 1
+    <if test="query.stationIds != null" >
+       and station_id in 
+       <foreach collection="query.stationIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    
+    <if test="query.type != null" >
+       and type = #{query.type,jdbcType=VARCHAR}
+    </if>
+    
+    <if test="query.level != null" >
+       and level = #{query.level,jdbcType=VARCHAR}
+    </if>
+    
+    <if test="query.alarmTime !=null and query.endTime != null and query.startTime != null" >
+  		and end_time &lt;= #{query.endTime,jdbcType=TIMESTAMP} and end_time &gt;= #{query.startTime,jdbcType=TIMESTAMP}
+    </if>
+    
+    <if test="query.resultTime !=null and query.endTime != null and query.startTime != null" >
+  		and result_time &lt;= #{query.endTime,jdbcType=TIMESTAMP} and result_time &gt;= #{query.startTime,jdbcType=TIMESTAMP}
+    </if>
+    
+    <if test="query.result != null" >
+       and result = #{query.result,jdbcType=INTEGER}
+    </if>
+    <if test="query.sortBy != null" >
+       order by ${query.sortBy}
+    </if>
+    <if test="query.sortBy != null and query.order != null" >
+       ${query.order}
+    </if>
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from alarm_info
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findLatestAlarmCount" resultType="Integer">
+    select 
+     count(primary_id)
+    from alarm_info
+    where result = #{result,jdbcType=INTEGER}
+    <if test="stationIds != null" >
+       and station_id in 
+       <foreach collection="stationIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="endTime != null" >
+  		and end_time &gt;= #{endTime,jdbcType=TIMESTAMP} 
+    </if>
+  </select>
+  
+  
+  <select id="findAlarmStatisticsGroupByType" resultMap="groupByResultMap">
+   SELECT type as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+    <if test="stationIds != null" >
+       and station_id in 
+       <foreach collection="stationIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="start != null and end != null" >
+  		and end_time &gt;= #{start,jdbcType=TIMESTAMP} and end_time &lt;= #{end,jdbcType=TIMESTAMP}
+    </if>
+    group by type
+  </select>
+  
+  <select id="findAlarmStatisticsGroupByLevel" resultMap="groupByResultMap">
+   SELECT level as type,COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+    <if test="stationIds != null" >
+       and station_id in
+       <foreach collection="stationIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="start != null and end != null" >
+  		and end_time &gt;= #{start,jdbcType=TIMESTAMP} and end_time &lt;= #{end,jdbcType=TIMESTAMP}
+    </if>
+    group by level
+  </select>
+  
+   <select id="getCountByResult" resultType="Integer">
+   SELECT COUNT(primary_id) as total 
+   from alarm_info WHERE 1=1
+    <if test="stationIds != null" >
+       and station_id in
+       <foreach collection="stationIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="start != null and end != null" >
+  		and end_time &gt;= #{start,jdbcType=TIMESTAMP} and end_time &lt;= #{end,jdbcType=TIMESTAMP}
+    </if>
+     <if test="result != null" >
+  		and result = #{result,jdbcType=INTEGER} 
+    </if>
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from alarm_info
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.station.alarm.entity.AlarmInfo" >
+    insert into alarm_info (primary_id, company_id, commuity_id, 
+      station_id, sys_id, dev_id, 
+      type, begin_time, end_time, 
+      des, result, result_time, 
+      result_des, result_person, level, 
+      val, valset)
+    values (#{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{commuityId,jdbcType=VARCHAR}, 
+      #{stationId,jdbcType=VARCHAR}, #{sysId,jdbcType=VARCHAR}, #{devId,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{des,jdbcType=VARCHAR}, #{result,jdbcType=INTEGER}, #{resultTime,jdbcType=TIMESTAMP}, 
+      #{resultDes,jdbcType=VARCHAR}, #{resultPerson,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
+      #{val,jdbcType=VARCHAR}, #{valset,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.station.alarm.entity.AlarmInfo" >
+    insert into alarm_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        primary_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="commuityId != null" >
+        commuity_id,
+      </if>
+      <if test="stationId != null" >
+        station_id,
+      </if>
+      <if test="sysId != null" >
+        sys_id,
+      </if>
+      <if test="devId != null" >
+        dev_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="beginTime != null" >
+        begin_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="des != null" >
+        des,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+      <if test="resultTime != null" >
+        result_time,
+      </if>
+      <if test="resultDes != null" >
+        result_des,
+      </if>
+      <if test="resultPerson != null" >
+        result_person,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="val != null" >
+        val,
+      </if>
+      <if test="valset != null" >
+        valset,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null" >
+        #{commuityId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null" >
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="sysId != null" >
+        #{sysId,jdbcType=VARCHAR},
+      </if>
+      <if test="devId != null" >
+        #{devId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null" >
+        #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=INTEGER},
+      </if>
+      <if test="resultTime != null" >
+        #{resultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resultDes != null" >
+        #{resultDes,jdbcType=VARCHAR},
+      </if>
+      <if test="resultPerson != null" >
+        #{resultPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="val != null" >
+        #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="valset != null" >
+        #{valset,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.alarm.entity.AlarmInfo" >
+    update alarm_info
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="commuityId != null" >
+        commuity_id = #{commuityId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null" >
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="sysId != null" >
+        sys_id = #{sysId,jdbcType=VARCHAR},
+      </if>
+      <if test="devId != null" >
+        dev_id = #{devId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null" >
+        des = #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        result = #{result,jdbcType=INTEGER},
+      </if>
+      <if test="resultTime != null" >
+        result_time = #{resultTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resultDes != null" >
+        result_des = #{resultDes,jdbcType=VARCHAR},
+      </if>
+      <if test="resultPerson != null" >
+        result_person = #{resultPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="val != null" >
+        val = #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="valset != null" >
+        valset = #{valset,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.station.alarm.entity.AlarmInfo" >
+    update alarm_info
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      commuity_id = #{commuityId,jdbcType=VARCHAR},
+      station_id = #{stationId,jdbcType=VARCHAR},
+      sys_id = #{sysId,jdbcType=VARCHAR},
+      dev_id = #{devId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      des = #{des,jdbcType=VARCHAR},
+      result = #{result,jdbcType=INTEGER},
+      result_time = #{resultTime,jdbcType=TIMESTAMP},
+      result_des = #{resultDes,jdbcType=VARCHAR},
+      result_person = #{resultPerson,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      val = #{val,jdbcType=VARCHAR},
+      valset = #{valset,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateAlarms" >
+    update alarm_info
+    set result = #{result,jdbcType=INTEGER},
+      result_time = NOW(),
+      result_person = #{userId,jdbcType=VARCHAR}
+    where primary_id in 
+    <foreach collection="alarmIds" item="item" open="("
+			separator="," close=")">
+			#{item}
+	</foreach>
+  </update>
+</mapper>

@@ -14,23 +14,27 @@
 		`mbus_id`,`consumer_id`,`install_time`,`install_address`,`mbus_code`,`factory`,`equipment_no`,`mbus_position`,`running_state`,`busy_status`,`up_comm_mode`,`trans_mode`,`channl_mode`,`online_time`,`offline_time`,`down_pro`,`mbus_pro`,`protocol`,`socket`,`sim_card`,`sim_provider`,`server_port`,`use_start_time`,`supper_device_address`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`create_date`,`create_user`,`update_date`,`update_user`,`is_first`,`card_flow`,`send_interval`,`isvalid`
 		from mbus_info
 		<where>
+			running_state!='mbus_run_status_0'
 			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
-
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -88,31 +92,54 @@
 			</otherwise>
 		</choose>
 		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
+			limit ${offset}, ${limit}
 		</if>
 	</select>
 
 	<select id="groupList" resultType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
-		select (select m.type_name from type_mst m where m.id = n.running_state) typeName,
+		select m.type_name typeName,
 		`running_state`,count(*) as cnts
 		from mbus_info n
+		left join
+			type_mst m
+		on
+			m.id =n.running_state
 		<where>
-			and n.running_state = #{runningState}
+<!-- 			and n.running_state = #{runningState} -->
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -123,28 +150,47 @@
 				</otherwise>
 			</choose>
 		</where>
-		group by running_state
+		group by running_state,m.type_name
 	</select>
 
 	<select id="errorCount" resultType="int">
 		select count(*) from mbus_info n
 		<where>
 			and n.running_state = #{runningState}
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -160,23 +206,43 @@
 	<select id="count" resultType="int">
 		select count(*) from mbus_info
 		<where>
+		<if test="errorFlay != null and errorFlay != ''">running_state!='mbus_run_status_0' and running_state!='' and running_state is not null</if>
 			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
 
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -370,5 +436,4 @@
 			#{mbusId}
 		</foreach>
 	</delete>
-
 </mapper>

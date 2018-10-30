@@ -1,23 +1,44 @@
+
 # ===================================================================================
 # ======================= system config ↓↓↓↓ ================================================
 # ===================================================================================
 
 # -------- mongodb start --------------
 ## mongodb://user:pwd@ip1:port1,ip2:port2/database
-# spring.data.mongodb.uri: mongodb://test:test@192.168.1.62:27017/test
+# spring.data.mongodb.uri: mongodb://test:test@192.168.2.62:27017/test
 # -------- mongodb end ----------------
 
 # --------------- Spring start ------------------
 # Whether subclass-based (CGLIB) proxies are to be created (true) as opposed to standard Java interface-based proxies (false).
+
+#银行对账文件存放路径
+bank-file-path: F:\VIS
+
+#文件上传路径
+uploadPath: E:/tg-micro/uploads/
+
+server.port: 50001
 spring.aop.proxy-target-class: true
 # spring.jpa.properties.hibernate.show_sql: true
 spring.jpa.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.2.53:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+<<<<<<< .mine
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://58.59.67.182:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+=======
+    driverClassName: com.mysql.jdbc.Driver
+    #driverClassName: com.mysql.cj.jdbc.Driver
+
+    # url: jdbc:mysql://121.204.154.165:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.2.53:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    # url: jdbc:mysql://localhost:3306/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+
+    #url: jdbc:mysql://58.59.67.182:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+>>>>>>> .r1823
     # url: jdbc:mysql://localhost:3306/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+
     username: root
     #password: root
     password: 123456
@@ -38,10 +59,16 @@ spring:
     poolPreparedStatements: true
     maxPoolPreparedStatementPerConnectionSize: 20
     # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+
+    #filters: stat,wall,slf4j
+    #filters: stat, wall, slf4j
+
     #filters: stat,wall,slf4j
     filters: stat,slf4j
+
     # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    #connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
     # 合并多个DruidDataSource的监控数据
     #useGlobalDataSourceStat: true
 # --------------- Spring end ------------------
@@ -56,8 +83,13 @@ spring:
 # If you select "true" It means adding ElasticSearch support.
 elasticsearch.enable: true
 # ES' hosts
-elasticsearch.addr: 192.168.1.60:9300,192.168.1.61:9300,192.168.1.62:9300
+<<<<<<< .mine
+elasticsearch.addr: 192.168.2.60:9300,192.168.2.61:9300,192.168.2.62:9300
+#elasticsearch.addr.http: 192.168.2.50:9200
+=======
+elasticsearch.addr: 192.168.2.60:9300,192.168.2.61:9300,192.168.2.62:9300
 #elasticsearch.addr.http: 192.168.1.50:9200
+>>>>>>> .r1823
 # ES' cluster name
 elasticsearch.cluster.name: clus
 # 是否启用Client阻塞  ,如果true,在es连接池中没有可用连接时,会一直创建
@@ -65,28 +97,35 @@ elasticsearch.client.concurrent.limit: true
 # ES连接池的大小
 elasticsearch.client.queue.size: 10
 elasticsearch.client.queue.max.size: 50
-elasticsearch.sql.url: 192.168.1.62:9300
+elasticsearch.sql.url: 192.168.2.62:9300
 # ------ ElasticSearch-config end --------
 
 # ------- Redis-config start ----------
 # If you select "true" It means adding redis support.
+
 redis.enable: true
-#redis.host: 192.168.1.61
+<<<<<<< .mine
+#redis.host: 192.168.2.61
 redis.host: localhost
+=======
+redis.host: 192.168.2.61
+#redis.host: localhost
+>>>>>>> .r1823
 redis.port: 6379
-#redis.password: 86a1b907d54bf7010394bf316e183e67
+redis.password: 86a1b907d54bf7010394bf316e183e67
 redis.database: 6
 redis.pool.max-total: 500
 redis.pool.max-idle: 50
 redis.pool.max-wait: 100000
 redis.pool.min-idle: 8
+
 # ------- Redis-config end -------
 
 
 mq.enable: kafka
 mq.consumer.ids: hahaha1
 # ------------ Kafka ----------------------------
-bootstraps.servers: 192.168.1.60:9092,192.168.1.61:9092,192.168.1.62:9092
+bootstraps.servers: 192.168.2.60:9092,192.168.2.61:9092,192.168.2.62:9092
 ############# Consumer 默认 ###########################
 consumer.enable.auto.commit: true
 consumer.session.timeout: 25000
@@ -110,7 +149,7 @@ value.serializer: org.apache.kafka.common.serialization.StringSerializer
 #####################################################
 ###############Topic#################################
 #control
-control.topic: control_topic1
+control.topic: web_control_topic
 control.groupId: control_dcgrsoup122
 # heat
 meter.heat.topic: topic12
@@ -134,5 +173,6 @@ communicator.protocol-ports: tcp:50001,udp:5050,tcp:50500
 alidayu.signature: 天罡
 alidayu.accessKeyId: dwfdsfsdf
 alidayu.accessKeySecret: dssdfgdfgdf
+
 
 

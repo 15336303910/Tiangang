@@ -1,0 +1,4 @@
+2018-10-18 09:14:02 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 09:14:29 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 09:14:34 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] The collection must not be null
+2018-10-18 09:14:54 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

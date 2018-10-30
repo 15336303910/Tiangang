@@ -49,6 +49,21 @@
       and name = #{name,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectPageGridListByGridNameAndPageNo" parameterType="map" resultMap="InfoMap">
+    select
+    <include refid="Base_Column_List" />
+    from grid_col
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+    and grid_name = #{gridName,jdbcType=VARCHAR}
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    limit 0,1000
+  </select>
+
   <select id="selectAllPageGrid" parameterType="map" resultMap="BaseResultMap">
     select
     page_no, grid_name, name, id, display, colid, align, width, issort, hide, colsort,
@@ -398,4 +413,6 @@
       and grid_name = #{gridName,jdbcType=VARCHAR}
       and name = #{name,jdbcType=VARCHAR}
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

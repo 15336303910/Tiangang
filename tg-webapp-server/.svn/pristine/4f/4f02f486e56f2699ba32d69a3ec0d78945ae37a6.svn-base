@@ -1,0 +1,341 @@
+package cn.plou.web.mobile.station.controller;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Sets;
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.constant.CKey;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.mobile.common.AppTools;
+import cn.plou.web.mobile.station.query.AlarmsQuery;
+import cn.plou.web.mobile.station.query.ParamQuery;
+import cn.plou.web.mobile.station.service.heatrun.AlarmService;
+import cn.plou.web.mobile.station.service.heatrun.ParamDetailService;
+import cn.plou.web.mobile.station.service.heatrun.RunningDataService;
+import cn.plou.web.mobile.station.service.heatrun.StationAppService;
+import cn.plou.web.mobile.station.vo.LineData;
+import cn.plou.web.mobile.station.vo.ParamGroupVo;
+import cn.plou.web.mobile.station.vo.RunningDataVo;
+import cn.plou.web.station.alarm.vo.AlarmInfoVo;
+import cn.plou.web.station.stationDataPoint.vo.StationDataPointVo;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfoVo;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : HeatRunController.java
+ * @Author : WangJiWei
+ * @Date : 2018年9月19日上午9:18:30
+ *
+ * @Comments :热力运行
+ * 
+ */
+@RestController
+@RequestMapping("/mobile/station")
+public class HeatRunController extends AppBaseController {
+
+    @Autowired
+    StationAppService stationService;
+    @Autowired
+    AlarmService alarmService;
+    @Autowired
+    RunningDataService runningDataService;
+    @Autowired
+    ParamDetailService paramDetailService;
+    @Autowired
+    TypeMstService typeMstService;
+
+    /**
+     * 获取用户权限内的所有系统
+     */
+    @RequestMapping("/systems")
+    public Root findStationInfoList() throws Exception {
+
+	/** TODO 登录复用web端 */
+	// String userId = UserUtils.getUserId();
+	String userId = "zbhb";
+	List<SystemInfoVo> systems = stationService.findSystemByUserId(userId);
+	return success(JSON.toJSON(systems));
+    }
+
+    /**
+     * 实时数据
+     */
+    @GetMapping("/system/{systemId}/metrics")
+    public Root realTimeData(@PathVariable String systemId) throws Exception {
+	String userId = "zbhb";
+	List<RunningDataVo> rdv = runningDataService.findRunningData(userId, systemId);
+	Object data = JSONArray.parseArray(JSON.toJSONString(rdv));
+	return success(data);
+    }
+
+    /**
+     * TODO
+     */
+    @PostMapping("/alarm/count")
+    public Root alarmCount(@RequestBody List<String> systemIds) {
+	Integer alarmCount = alarmService.alarmCount(systemIds);
+//	JSONObject j = new JSONObject();
+//	j.put("alarm", alarmCount);
+	return success(alarmCount);
+    }
+
+    /**
+     * 报警统计
+     */
+    @PostMapping("/alarm/stat")
+    public Root alarmStat(@RequestBody(required = false) List<String> systemIds) throws Exception {
+	if (systemIds == null || systemIds.size() == 0) {
+	    systemIds = checkSystemIds();
+	}
+	Map<String, Object> alarmStatistics = alarmService.findAlarmStatistics(systemIds);
+	Object data = new JSONObject(alarmStatistics);
+	return success(data);
+    }
+
+    private List<String> checkSystemIds() throws Exception {
+	Set<String> temp = Sets.newHashSet();
+	List<SystemInfoVo> sysInfos = stationService
+		.findSystemByUserId(/* UserUtils.getUserId() */"zbhb");
+	if (sysInfos != null && sysInfos.size() != 0) {
+	    sysInfos.forEach(s -> {
+		temp.add(s.getSystemId());
+	    });
+	}
+	return new ArrayList<>(temp); // TODO
+	// return Arrays.asList("1", "2");
+    }
+
+    /**
+     * 查询字典
+     */
+    @RequestMapping("/typeMst")
+    public Root typeMst(@RequestBody List<String> typeKbns) {
+	List<TypeMst> typeMsts = typeMstService.getDownInfoByTypeKbns(typeKbns);
+	Object data = JSONArray.toJSON(typeMsts);
+	return success(data);
+    }
+
+    /**
+     * 报警日志列表
+     */
+    @PostMapping("/alarm/list")
+    public Root alarms(@RequestBody AlarmsQuery query) throws Exception {
+	if (query.getSystemIds() == null || query.getSystemIds().size() == 0) {
+	    query.setSystemIds(checkSystemIds());
+	}
+	query.setResultTime(null);
+//	query.setAlarmTime(StringUtils.isBlank(query.getAlarmTime())
+//		? AppTools.curDateStr(CKey.YMD_) : query.getAlarmTime());
+	query.setOffset((query.getPage() - 1) * query.getPageSize()); // 滚动分页,不需要处理边界
+	Integer alarmTotal = alarmService.alarmTotal(query);
+	List<AlarmInfoVo> alarms = alarmService.findAlarms(query);
+	List<TypeMst> typeMst = typeMstService
+		.getDownInfoByTypeKbns(Arrays.asList("station_alarm_type"));
+	Map<String, TypeMst> typeMap = AppTools.listToMap(typeMst, TypeMst::getTypeId, __ -> __);
+	alarms.forEach(a -> {
+	    a.setTypeName(typeMap.get(a.getType()).getTypeName());
+	});
+	Cond cond = new Cond();
+	cond.setPage(query.getPage());
+	cond.setTotal(alarmTotal);
+	return success(JSONArray.toJSON(alarms), cond);
+	/**
+	 * <pre>
+	 * {
+	      "code": 0,
+	      "msg": "操作成功",
+	      "data": 
+	        [{
+	          "devId": "1",
+	          "resultTime": 1539049708000,
+	          "val": "123",
+	          "valset": "123",
+	          "level": "1",
+	          "sysId": "1",
+	          "resultPerson": "王基伟",
+	          "primaryId": "1",
+	          "type": "1",
+	          "typeName":"低值报警",
+	          "result": 1,
+	          "companyId": "1",
+	          "des": "1",
+	          "beginTime": 1543303818000,
+	          "endTime": 1543248000000,
+	          "commuityId": "1",
+	          "stationId": "1"
+	        }]
+	      "cond":{"total":55,"page":1}
+	    }
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 报警确认
+     */
+    @PostMapping("/alarm/verify")
+    public Root verifyAlarm(@RequestBody List<String> alarmIds) throws Exception {
+	if (alarmIds != null && alarmIds.size() != 0) {
+	    // String userId = UserUtils.getUserId();
+	    String userId = "zbhb";
+	    alarmService.verifyAlarm(userId, alarmIds);
+	}
+	return success(null);
+    }
+
+    /**
+     * 操作日志
+     */
+    @PostMapping("/alarm/operations")
+    public Root alarmOperations(@RequestBody AlarmsQuery query) throws Exception {
+	if (query.getSystemIds() == null || query.getSystemIds().size() == 0) {
+	    query.setSystemIds(checkSystemIds());
+	}
+	/** 只查询处理过的日志 */
+	query.setResult(1);
+	query.setAlarmTime(null);
+	query.setResultTime(StringUtils.isBlank(query.getResultTime())
+		? AppTools.curDateStr(CKey.YMD_) : query.getResultTime());
+	query.setOffset((query.getPage() - 1) * query.getPageSize());
+	Integer alarmTotal = alarmService.alarmTotal(query);
+	List<AlarmInfoVo> alarms = alarmService.findAlarms(query);
+	Cond cond = new Cond();
+	cond.setPage(query.getPage());
+	cond.setTotal(alarmTotal);
+	return success(JSONArray.toJSON(alarms), cond);
+    }
+
+    /**
+     * 参数列表页
+     */
+    @RequestMapping("/param/list")
+    public Root paramList(String systemId) {
+	Collection<ParamGroupVo> pgs = this.paramDetailService.findParamList(systemId);
+	Object data = JSONArray.toJSON(pgs);
+	return success(data);
+	/**
+	 * <pre>
+	 * {
+	    "code": 0,
+	    "msg": "操作成功",
+	    "data": [
+	        {
+	            "showdevtypes": [
+	                {
+	                    "showdevtype": "1",
+	                    "showdevtypeName": "热泵"
+	                }
+	            ],
+	            "group": "设备参数"
+	        },
+	        {
+	            "showdevtypes": [
+	                {
+	                    "showdevtype": "2",
+	                    "showdevtypeName": "1#循环泵"
+	                }
+	            ],
+	            "group": "设备参数1"
+	        }
+	    ]
+	}
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 参数指标实时数据 TODO 具体点位历史(stationId,systemId)
+     */
+    @PostMapping("/param/{systemId}/{showdevtype}")
+    public Root paramRunningData(@PathVariable String systemId, @PathVariable String showdevtype) {
+
+	List<StationDataPointVo> sdp = this.paramDetailService.findRunningDataByParam(systemId,
+		showdevtype);
+	Date maxTime = AppTools
+		.extremeValue(sdp, (a, b) -> a.getTime().compareTo(b.getTime()), "max").getTime();
+	JSONObject obj = new JSONObject();
+	obj.put("lastTime", maxTime.getTime());
+	obj.put("metrics", sdp);
+	return success(obj);
+
+	/**
+	 * <pre>
+	 * {
+	    "code":0,
+	    "data":{
+	        "lastTime":1539743823143,
+	        "metrics":[
+	            {
+	                "pointName":"一次回压",
+	                "pointid":"asd",
+	                "showdevtype":"type1",
+	                "time":1539743823073,
+	                "val":5.5
+	            },
+	            {
+	                "pointName":"一次回压",
+	                "pointid":"asd",
+	                "showdevtype":"type1",
+	                "time":1539743823073,
+	                "val":5.5
+	            }
+	        ]
+	    },
+	    "msg":"操作成功"
+	  }
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 指定参数曲线历史数据
+     * 
+     * @throws Exception
+     */
+    @PostMapping("/param/{systemId}/{showdevtype}/{pointid}")
+    public Root paramHistory(@PathVariable String systemId, @PathVariable String showdevtype,
+	    @PathVariable String pointid, @RequestBody ParamQuery paramQuery) throws Exception {
+	List<LineData> his = this.paramDetailService.findHistory(systemId, pointid, paramQuery);
+	Object data = JSONArray.toJSON(his);
+	return success(data);
+
+    }
+
+    /**
+     * 参数历史数据列表 created by wzd.
+     */
+    @PostMapping("/param/{systemId}/{pointid}/list")
+    public Root paramHistoryDataList(@PathVariable String systemId, @PathVariable String pointid,
+	    @RequestBody ParamQuery paramQuery) throws Exception {
+	String Limit = "  limit " + paramQuery.getPageSize() * (paramQuery.getPage() - 1) + ","
+		+ paramQuery.getPageSize();
+	Integer total = this.paramDetailService.findParamHistoryCount(systemId, pointid,
+		paramQuery);
+	List<LineData> his = this.paramDetailService.findParamHistoryDataList(systemId, pointid,
+		Limit, paramQuery);
+	Object data = JSONArray.toJSON(his);
+	Cond cond = new Cond();
+	cond.setPage(paramQuery.getPage());
+	cond.setTotal(total);
+	return success(data, cond);
+    }
+}

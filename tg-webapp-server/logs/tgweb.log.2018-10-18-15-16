@@ -1,0 +1,224 @@
+2018-10-18 15:16:01 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@e280f10].  Returning null to indicate a session could not be found.
+2018-10-18 15:16:04 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 15:16:05 [WARN ](MySqlValidConnectionChecker   ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Cannot resolve com.mysq.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.
+java.lang.NullPointerException
+	at com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker.<init>(MySqlValidConnectionChecker.java:48)
+	at com.alibaba.druid.pool.ElasticSearchDruidDataSource.initValidConnectionChecker(ElasticSearchDruidDataSource.java:890)
+	at com.alibaba.druid.pool.ElasticSearchDruidDataSource.init(ElasticSearchDruidDataSource.java:556)
+	at com.alibaba.druid.pool.ElasticSearchDruidDataSource.getConnection(ElasticSearchDruidDataSource.java:907)
+	at com.alibaba.druid.pool.ElasticSearchDruidDataSource.getConnection(ElasticSearchDruidDataSource.java:903)
+	at cn.plou.web.common.utils.Support.querryFromEs(Support.java:76)
+	at cn.plou.web.mobile.station.service.AppBaseService.queryES(AppBaseService.java:37)
+	at cn.plou.web.mobile.station.service.impl.ParamDetailServiceImpl.findParamHistoryDataList(ParamDetailServiceImpl.java:170)
+	at cn.plou.web.mobile.station.controller.StationAppController.paramHistoryDataList(StationAppController.java:477)
+	at cn.plou.web.mobile.station.controller.StationAppController$$FastClassBySpringCGLIB$$f7f862d8.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:747)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:89)
+	at cn.plou.web.common.aspect.ControllerMethodHander.monitorPerformence(ControllerMethodHander.java:50)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:644)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:633)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	at cn.plou.web.mobile.station.controller.StationAppController$$EnhancerBySpringCGLIB$$aadcfd86.paramHistoryDataList(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:209)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:136)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:102)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:877)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:783)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:991)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:877)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:661)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:851)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.shiro.web.servlet.AdviceFilter.executeChain(AdviceFilter.java:108)
+	at org.apache.shiro.web.servlet.AdviceFilter.doFilterInternal(AdviceFilter.java:137)
+	at org.apache.shiro.web.servlet.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:125)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.executeChain(AbstractShiroFilter.java:449)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter$1.call(AbstractShiroFilter.java:365)
+	at org.apache.shiro.subject.support.SubjectCallable.doCall(SubjectCallable.java:90)
+	at org.apache.shiro.subject.support.SubjectCallable.call(SubjectCallable.java:83)
+	at org.apache.shiro.subject.support.DelegatingSubject.execute(DelegatingSubject.java:383)
+	at org.apache.shiro.web.servlet.AbstractShiroFilter.doFilterInternal(AbstractShiroFilter.java:362)
+	at org.apache.shiro.web.servlet.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:125)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at cn.plou.web.common.shiro.filter.CorsFilter.doFilter(CorsFilter.java:24)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:123)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.HttpPutFormContentFilter.doFilterInternal(HttpPutFormContentFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:81)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:200)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:198)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:496)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:140)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:803)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:790)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1459)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+2018-10-18 15:16:45 [INFO ](RepositoryConfigurationDelegate) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-10-18 15:16:45 [INFO ](RepositoryConfigurationDelegate) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-10-18 15:16:48 [WARN ](DefaultWebSecurityManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] The org.apache.shiro.web.mgt.DefaultWebSecurityManager implementation expects SessionManager instances that implement the org.apache.shiro.web.session.mgt.WebSessionManager interface.  The configured instance is of type [org.apache.shiro.session.mgt.DefaultSessionManager] which does not implement this interface..  This may cause unexpected behavior.
+2018-10-18 15:16:48 [DEBUG](LogFactory                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2018-10-18 15:16:48 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Class not found: org.jboss.vfs.VFS
+2018-10-18 15:16:48 [DEBUG](JBoss6VFS                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] JBoss 6 VFS API is not available in this environment.
+2018-10-18 15:16:48 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Class not found: org.jboss.vfs.VirtualFile
+2018-10-18 15:16:48 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] VFS implementation org.apache.ibatis.io.JBoss6VFS is not valid in this environment.
+2018-10-18 15:16:48 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Using VFS adapter org.apache.ibatis.io.DefaultVFS
+2018-10-18 15:16:48 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Scanned package: 'cn.plou.**.domain' for aliases
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed configuration file: 'class path resource [mybatis-config.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveControlTempHMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveDataMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveDataNowMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BuildRunningDataMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\UnitRunningDataMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankInterfaceHistoryMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankInterfaceInfoMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankReconciliationsDetailMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankReconciliationsHeadMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatInfoMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatInfoTmpMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatMoneyDetailMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HeatCheckDetailMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HouseHeatDetailMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HouseYearHeatstateDetailMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\MoneyClearTaskMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\MoneyStateInfoMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\PriceAccuracyInfoMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\PriceDefineMapper.xml]'
+2018-10-18 15:16:49 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ReconciliationsHistoryMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\SmsInfoMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\SmsTemplateMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearAccountDetailMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearHeatMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearReceivableDetailMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HistoryDataMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HouseControlMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HouseRunningDataAnalysisTotalMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\MbusInfoMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\MeterInfoMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\ParamIntervalMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\RunningDataTotalMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\SystemMarkersMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\WeatherDataMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\AlarmInfoMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationDataPointMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationDevRelativeMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationShowDevMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationShowDevTypeMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\SystemPointMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\BuildMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\CommuityMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\CompanyMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\DepartmentMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\HeatingTimeMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\HouseMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MapLineMapper.xml]'
+2018-10-18 15:16:50 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MapPointMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusReadmodelMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusTestMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MenuMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterKeyMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterModifyDataMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterTimingDefineMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PageGridMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\pageGridUserMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PipeDeviceMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PipeMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PriceDefineMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ProducerMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlMenuRoleMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlRoleDataMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlRoleValveMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlUserRoleMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RoleMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\SewageStationMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\StaffMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\StationMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\SystemMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\TypeMstMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UnitMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserDataHistoryMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserLoginHistoryMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserLoginMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserPageHistoryMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherFurMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherNowMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneAreaMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneCityMapper.xml]'
+2018-10-18 15:16:51 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneProvinceMapper.xml]'
+2018-10-18 15:16:51 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] [location] null
+2018-10-18 15:16:51 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] [configuration] org.apache.ibatis.session.Configuration@6233c6c2
+2018-10-18 15:16:51 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] MapperLocation's length:84
+2018-10-18 15:16:51 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Location:I:/work1/tg-webapp-server/target/classes/mybatis
+2018-10-18 15:16:51 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Locarion's size:1
+2018-10-18 15:16:53 [DEBUG](LifecycleBeanPostProcessor    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Initializing bean [userRealm]...
+2018-10-18 15:16:53 [DEBUG](AuthorizingRealm              ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No authorizationCache instance set.  Checking for a cacheManager...
+2018-10-18 15:16:53 [DEBUG](AuthorizingRealm              ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No cache or cacheManager properties have been set.  Authorization cache cannot be obtained.
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'corsFilterFilter'
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating Shiro Filter instance.
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/swagger-ui.html#/**] from String definition [statelessAuthc]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/swagger-ui.html#/**] to filter [statelessAuthc] with config [null]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/system/**] from String definition [statelessAuthc]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/system/**] to filter [statelessAuthc] with config [null]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/heatManage/**] from String definition [statelessAuthc]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/heatManage/**] to filter [statelessAuthc] with config [null]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/charge/**] from String definition [statelessAuthc]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/charge/**] to filter [statelessAuthc] with config [null]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/balance/**] from String definition [statelessAuthc]
+2018-10-18 15:16:57 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/balance/**] to filter [statelessAuthc] with config [null]
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'requestContextFilter'
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'hiddenHttpMethodFilter'
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'httpPutFormContentFilter'
+2018-10-18 15:16:57 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'characterEncodingFilter'

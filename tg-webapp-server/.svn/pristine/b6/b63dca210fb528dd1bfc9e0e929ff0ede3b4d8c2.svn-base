@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.diagnose.dao.MbusInfoDao">
+
+	<select id="get" resultType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
+		select
+		`mbus_id`,`consumer_id`,`install_time`,`install_address`,`mbus_code`,`factory`,`equipment_no`,`mbus_position`,`running_state`,`busy_status`,`up_comm_mode`,`trans_mode`,`channl_mode`,`online_time`,`offline_time`,`down_pro`,`mbus_pro`,`protocol`,`socket`,`sim_card`,`sim_provider`,`server_port`,`use_start_time`,`supper_device_address`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`create_date`,`create_user`,`update_date`,`update_user`,`is_first`,`card_flow`,`send_interval`,`isvalid`
+		from mbus_info where mbus_id = #{value}
+	</select>
+
+	<select id="list" resultType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
+		select
+		`mbus_id`,`consumer_id`,`install_time`,`install_address`,`mbus_code`,`factory`,`equipment_no`,`mbus_position`,`running_state`,`busy_status`,`up_comm_mode`,`trans_mode`,`channl_mode`,`online_time`,`offline_time`,`down_pro`,`mbus_pro`,`protocol`,`socket`,`sim_card`,`sim_provider`,`server_port`,`use_start_time`,`supper_device_address`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`create_date`,`create_user`,`update_date`,`update_user`,`is_first`,`card_flow`,`send_interval`,`isvalid`
+		from mbus_info
+		<where>
+			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
+
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="installTime != null and installTime != ''"> and install_time = #{installTime} </if>
+			<if test="installAddress != null and installAddress != ''"> and install_address = #{installAddress} </if>
+			<if test="mbusCode != null and mbusCode != ''"> and mbus_code = #{mbusCode} </if>
+			<if test="factory != null and factory != ''"> and factory = #{factory} </if>
+			<if test="equipmentNo != null and equipmentNo != ''"> and equipment_no = #{equipmentNo} </if>
+			<if test="mbusPosition != null and mbusPosition != ''"> and mbus_position = #{mbusPosition} </if>
+			<if test="runningState != null and runningState != ''"> and running_state = #{runningState} </if>
+			<if test="busyStatus != null and busyStatus != ''"> and busy_status = #{busyStatus} </if>
+			<if test="upCommMode != null and upCommMode != ''"> and up_comm_mode = #{upCommMode} </if>
+			<if test="transMode != null and transMode != ''"> and trans_mode = #{transMode} </if>
+			<if test="channlMode != null and channlMode != ''"> and channl_mode = #{channlMode} </if>
+			<if test="onlineTime != null and onlineTime != ''"> and online_time = #{onlineTime} </if>
+			<if test="offlineTime != null and offlineTime != ''"> and offline_time = #{offlineTime} </if>
+			<if test="downPro != null and downPro != ''"> and down_pro = #{downPro} </if>
+			<if test="mbusPro != null and mbusPro != ''"> and mbus_pro = #{mbusPro} </if>
+			<if test="protocol != null and protocol != ''"> and protocol = #{protocol} </if>
+			<if test="socket != null and socket != ''"> and socket = #{socket} </if>
+			<if test="simCard != null and simCard != ''"> and sim_card = #{simCard} </if>
+			<if test="simProvider != null and simProvider != ''"> and sim_provider = #{simProvider} </if>
+			<if test="serverPort != null and serverPort != ''"> and server_port = #{serverPort} </if>
+			<if test="useStartTime != null and useStartTime != ''"> and use_start_time = #{useStartTime} </if>
+			<if test="supperDeviceAddress != null and supperDeviceAddress != ''"> and supper_device_address = #{supperDeviceAddress} </if>
+			<if test="longitude != null and longitude != ''"> and longitude = #{longitude} </if>
+			<if test="latitude != null and latitude != ''"> and latitude = #{latitude} </if>
+			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+			<if test="address != null and address != ''"> and address = #{address} </if>
+			<if test="notes != null and notes != ''"> and notes = #{notes} </if>
+			<if test="memo1 != null and memo1 != ''"> and memo1 = #{memo1} </if>
+			<if test="memo2 != null and memo2 != ''"> and memo2 = #{memo2} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+			<if test="isFirst != null and isFirst != ''"> and is_first = #{isFirst} </if>
+			<if test="cardFlow != null and cardFlow != ''"> and card_flow = #{cardFlow} </if>
+			<if test="sendInterval != null and sendInterval != ''"> and send_interval = #{sendInterval} </if>
+			<if test="isvalid != null and isvalid != ''"> and isvalid = #{isvalid} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by mbus_id desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit ${offset}, ${limit}
+		</if>
+	</select>
+
+	<select id="groupList" resultType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
+		select (select m.type_name from type_mst m where m.id = n.running_state) typeName,
+		`running_state`,count(*) as cnts
+		from mbus_info n
+		<where>
+			and n.running_state = #{runningState}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+		group by running_state
+	</select>
+
+	<select id="errorCount" resultType="int">
+		select count(*) from mbus_info n
+		<where>
+			and n.running_state = #{runningState}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from mbus_info
+		<where>
+			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
+
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="installTime != null and installTime != ''"> and install_time = #{installTime} </if>
+			<if test="installAddress != null and installAddress != ''"> and install_address = #{installAddress} </if>
+			<if test="mbusCode != null and mbusCode != ''"> and mbus_code = #{mbusCode} </if>
+			<if test="factory != null and factory != ''"> and factory = #{factory} </if>
+			<if test="equipmentNo != null and equipmentNo != ''"> and equipment_no = #{equipmentNo} </if>
+			<if test="mbusPosition != null and mbusPosition != ''"> and mbus_position = #{mbusPosition} </if>
+			<if test="runningState != null and runningState != ''"> and running_state = #{runningState} </if>
+			<if test="busyStatus != null and busyStatus != ''"> and busy_status = #{busyStatus} </if>
+			<if test="upCommMode != null and upCommMode != ''"> and up_comm_mode = #{upCommMode} </if>
+			<if test="transMode != null and transMode != ''"> and trans_mode = #{transMode} </if>
+			<if test="channlMode != null and channlMode != ''"> and channl_mode = #{channlMode} </if>
+			<if test="onlineTime != null and onlineTime != ''"> and online_time = #{onlineTime} </if>
+			<if test="offlineTime != null and offlineTime != ''"> and offline_time = #{offlineTime} </if>
+			<if test="downPro != null and downPro != ''"> and down_pro = #{downPro} </if>
+			<if test="mbusPro != null and mbusPro != ''"> and mbus_pro = #{mbusPro} </if>
+			<if test="protocol != null and protocol != ''"> and protocol = #{protocol} </if>
+			<if test="socket != null and socket != ''"> and socket = #{socket} </if>
+			<if test="simCard != null and simCard != ''"> and sim_card = #{simCard} </if>
+			<if test="simProvider != null and simProvider != ''"> and sim_provider = #{simProvider} </if>
+			<if test="serverPort != null and serverPort != ''"> and server_port = #{serverPort} </if>
+			<if test="useStartTime != null and useStartTime != ''"> and use_start_time = #{useStartTime} </if>
+			<if test="supperDeviceAddress != null and supperDeviceAddress != ''"> and supper_device_address = #{supperDeviceAddress} </if>
+			<if test="longitude != null and longitude != ''"> and longitude = #{longitude} </if>
+			<if test="latitude != null and latitude != ''"> and latitude = #{latitude} </if>
+			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+			<if test="address != null and address != ''"> and address = #{address} </if>
+			<if test="notes != null and notes != ''"> and notes = #{notes} </if>
+			<if test="memo1 != null and memo1 != ''"> and memo1 = #{memo1} </if>
+			<if test="memo2 != null and memo2 != ''"> and memo2 = #{memo2} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+			<if test="isFirst != null and isFirst != ''"> and is_first = #{isFirst} </if>
+			<if test="cardFlow != null and cardFlow != ''"> and card_flow = #{cardFlow} </if>
+			<if test="sendInterval != null and sendInterval != ''"> and send_interval = #{sendInterval} </if>
+			<if test="isvalid != null and isvalid != ''"> and isvalid = #{isvalid} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
+		insert into mbus_info
+		(
+		`mbus_id`,
+		`consumer_id`,
+		`install_time`,
+		`install_address`,
+		`mbus_code`,
+		`factory`,
+		`equipment_no`,
+		`mbus_position`,
+		`running_state`,
+		`busy_status`,
+		`up_comm_mode`,
+		`trans_mode`,
+		`channl_mode`,
+		`online_time`,
+		`offline_time`,
+		`down_pro`,
+		`mbus_pro`,
+		`protocol`,
+		`socket`,
+		`sim_card`,
+		`sim_provider`,
+		`server_port`,
+		`use_start_time`,
+		`supper_device_address`,
+		`longitude`,
+		`latitude`,
+		`company_id`,
+		`address`,
+		`notes`,
+		`memo1`,
+		`memo2`,
+		`create_date`,
+		`create_user`,
+		`update_date`,
+		`update_user`,
+		`is_first`,
+		`card_flow`,
+		`send_interval`,
+		`isvalid`
+		)
+		values
+		(
+		#{mbusId},
+		#{consumerId},
+		#{installTime},
+		#{installAddress},
+		#{mbusCode},
+		#{factory},
+		#{equipmentNo},
+		#{mbusPosition},
+		#{runningState},
+		#{busyStatus},
+		#{upCommMode},
+		#{transMode},
+		#{channlMode},
+		#{onlineTime},
+		#{offlineTime},
+		#{downPro},
+		#{mbusPro},
+		#{protocol},
+		#{socket},
+		#{simCard},
+		#{simProvider},
+		#{serverPort},
+		#{useStartTime},
+		#{supperDeviceAddress},
+		#{longitude},
+		#{latitude},
+		#{companyId},
+		#{address},
+		#{notes},
+		#{memo1},
+		#{memo2},
+		#{createDate},
+		#{createUser},
+		#{updateDate},
+		#{updateUser},
+		#{isFirst},
+		#{cardFlow},
+		#{sendInterval},
+		#{isvalid}
+		)
+	</insert>
+
+	<update id="update" parameterType="cn.plou.web.heatManage.diagnose.domain.MbusInfoDO">
+		update mbus_info
+		<set>
+			<if test="consumerId != null">`consumer_id` = #{consumerId}, </if>
+			<if test="installTime != null">`install_time` = #{installTime}, </if>
+			<if test="installAddress != null">`install_address` = #{installAddress}, </if>
+			<if test="mbusCode != null">`mbus_code` = #{mbusCode}, </if>
+			<if test="factory != null">`factory` = #{factory}, </if>
+			<if test="equipmentNo != null">`equipment_no` = #{equipmentNo}, </if>
+			<if test="mbusPosition != null">`mbus_position` = #{mbusPosition}, </if>
+			<if test="runningState != null">`running_state` = #{runningState}, </if>
+			<if test="busyStatus != null">`busy_status` = #{busyStatus}, </if>
+			<if test="upCommMode != null">`up_comm_mode` = #{upCommMode}, </if>
+			<if test="transMode != null">`trans_mode` = #{transMode}, </if>
+			<if test="channlMode != null">`channl_mode` = #{channlMode}, </if>
+			<if test="onlineTime != null">`online_time` = #{onlineTime}, </if>
+			<if test="offlineTime != null">`offline_time` = #{offlineTime}, </if>
+			<if test="downPro != null">`down_pro` = #{downPro}, </if>
+			<if test="mbusPro != null">`mbus_pro` = #{mbusPro}, </if>
+			<if test="protocol != null">`protocol` = #{protocol}, </if>
+			<if test="socket != null">`socket` = #{socket}, </if>
+			<if test="simCard != null">`sim_card` = #{simCard}, </if>
+			<if test="simProvider != null">`sim_provider` = #{simProvider}, </if>
+			<if test="serverPort != null">`server_port` = #{serverPort}, </if>
+			<if test="useStartTime != null">`use_start_time` = #{useStartTime}, </if>
+			<if test="supperDeviceAddress != null">`supper_device_address` = #{supperDeviceAddress}, </if>
+			<if test="longitude != null">`longitude` = #{longitude}, </if>
+			<if test="latitude != null">`latitude` = #{latitude}, </if>
+			<if test="companyId != null">`company_id` = #{companyId}, </if>
+			<if test="address != null">`address` = #{address}, </if>
+			<if test="notes != null">`notes` = #{notes}, </if>
+			<if test="memo1 != null">`memo1` = #{memo1}, </if>
+			<if test="memo2 != null">`memo2` = #{memo2}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createUser != null">`create_user` = #{createUser}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="updateUser != null">`update_user` = #{updateUser}, </if>
+			<if test="isFirst != null">`is_first` = #{isFirst}, </if>
+			<if test="cardFlow != null">`card_flow` = #{cardFlow}, </if>
+			<if test="sendInterval != null">`send_interval` = #{sendInterval}, </if>
+			<if test="isvalid != null">`isvalid` = #{isvalid}</if>
+		</set>
+		where mbus_id = #{mbusId}
+	</update>
+
+	<delete id="remove">
+		delete from mbus_info where mbus_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from mbus_info where mbus_id in
+		<foreach item="mbusId" collection="array" open="(" separator=","
+			close=")">
+			#{mbusId}
+		</foreach>
+	</delete>
+	<!-- ————————————————————————————————cache配置————————————————————————————  -->
+	<cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

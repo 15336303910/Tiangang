@@ -9,6 +9,11 @@
 
 # --------------- Spring start ------------------
 # Whether subclass-based (CGLIB) proxies are to be created (true) as opposed to standard Java interface-based proxies (false).
+#银行对账文件存放路径
+bank-file-path: /data/bank/
+
+#文件上传路径
+uploadPath: /data/uploads/
 spring.aop.proxy-target-class: true
 # spring.jpa.properties.hibernate.show_sql: true
 spring.jpa.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect

@@ -1,0 +1,48 @@
+
+
+##########各模块路径区分############
+systemPath: /system  #系统模块
+chargePath: /charge  #收费模块
+heatManagePath: /heatManage  #供热模块
+balancePath: /balance  #平衡阀模块
+
+#银行对账文件存放路径
+bank-file-path: C:\Users\Administrator\Desktop\
+
+#文件上传路径
+uploadPath: E:/tg-micro/uploads/
+server:
+    # context-path: /myboot 
+  session-timeout: 1800
+  #tomcat:
+  #max-threads: 1000
+  #min-spare-threads: 30
+  port: 8080
+#uri-encoding: utf-8
+spring:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: qa
+  #http:
+  servlet:
+    multipart:
+      max-file-size: 30Mb
+      max-request-size: 30Mb
+  devtools:
+    restart:
+      enabled: true
+mybatis:
+  configLocation: classpath:mybatis-config.xml
+  mapperLocations: classpath*:mybatis/**/*Mapper.xml
+  typeAliasesPackage: cn.plou.**.domain
+
+
+#pageHelper
+pagehelper:
+ helperDialect: mysql
+ reasonable: true
+ support-methods-arguments: true
+
+

@@ -379,7 +379,7 @@
     left join user_login as u2 on d.update_user = u2.user_code
     where 1=1
     <if test="consumerId !=null  and consumerId != '' ">
-      and d.consumer_id = #{consumerId}
+      and d.consumer_id  like   concat(#{consumerId},'%')
     </if>
     <if test="communityId !=null  and communityId != '' ">
       and substring(d.consumer_id,1,10) = #{communityId}
@@ -655,6 +655,7 @@
     ,#{annual,jdbcType=VARCHAR}
     ,'charging_item_3'
       ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
   else houses_info.heat_exchange_status
   end
     ,pd.exchanger_price_tmp
@@ -806,6 +807,7 @@
     ,#{annual,jdbcType=VARCHAR}
     ,'charging_item_3'
       ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
   else houses_info.heat_exchange_status
   end
     ,pd.exchanger_price_tmp
@@ -973,11 +975,13 @@
     ,#{annual,jdbcType=VARCHAR}
     ,'charging_item_3'
     ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
     else houses_info.heat_exchange_status
     end
     ,pd.exchanger_price_tmp
     ,1
     ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
     else pd.exchanger_price_tmp*houses_info.heat_exchange_status
     end
     , 'begin_data_flag_1'
@@ -1155,6 +1159,7 @@
     ,#{annual,jdbcType=VARCHAR}
     ,'charging_item_3'
     ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
     else houses_info.heat_exchange_status
     end
     ,pd.exchanger_price_tmp
@@ -1224,5 +1229,38 @@
     </if>
     and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
   </insert>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+    <select id="getUserYearReceivableDetailsByConsumerIdByCommuityIds"
+            resultType="cn.plou.web.charge.chargeconfig.vo.UserYearReceivableDetailInfo">
+      select
+      d.primary_id, d.company_id, d.consumer_id, d.annual, d.charging_item,t1.type_name as charging_item_name, d.sum, d.unit_price, d.discount,
+      d.total, d.certufucate, d.approve_res,t2.type_name as approve_res_name, d.notes, d.create_date, u1.username as create_user, d.update_date, u2.username as update_user,
+      d.approve_serial
+      from user_year_receivable_detail as d
+      left join type_mst as t1 on d.charging_item = t1.id
+      left join type_mst as t2 on d.approve_res = t2.id
+      left join user_login as u1 on d.create_user = u1.user_code
+      left join user_login as u2 on d.update_user = u2.user_code
+      where 1=1
+      <if test="list !=null  and list.size() != 0 ">
+        <foreach collection="list" item="id" open="and (" separator="or" close=")">
+          d.consumer_id like concat(#{id}, '%')
+        </foreach>
+      </if>
+      <if test="communityId !=null  and communityId != '' ">
+        and substring(d.consumer_id,1,10) = #{communityId}
+      </if>
+      <if test="annual !=null  and annual != '' ">
+        and d.annual = #{annual}
+      </if>
+      <if test="sortby!=null">
+        order by ${sortby}
+      </if>
+      <if test="order!=null">
+        ${order}
+      </if>
+    </select>
 
 </mapper>

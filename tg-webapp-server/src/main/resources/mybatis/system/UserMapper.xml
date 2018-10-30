@@ -124,4 +124,6 @@
 	<select id="listAllDept" resultType="long">
 				select DISTINCT dept_id from sys_user
 	</select>
+	<!-- ————————————————————————————————cache配置————————————————————————————  -->
+	<cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

@@ -1,0 +1,3 @@
+2018-10-18 09:02:14 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 09:02:29 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@117e85ba].  Returning null to indicate a session could not be found.
+2018-10-18 09:02:42 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

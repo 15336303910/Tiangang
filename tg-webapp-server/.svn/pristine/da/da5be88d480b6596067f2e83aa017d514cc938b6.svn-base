@@ -1,0 +1,241 @@
+package cn.plou.web.charge.heatingmanage.controller;
+
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.service.PriceDefineService;
+import cn.plou.web.charge.chargeconfig.service.UserYearHeatService;
+import cn.plou.web.charge.heatingmanage.domain.HeatCheckDetail;
+import cn.plou.web.charge.heatingmanage.dto.HeatingServeUserSearchDTO;
+import cn.plou.web.charge.heatingmanage.service.HeatCheckDetailService;
+import cn.plou.web.charge.heatingmanage.service.HeatingServeService;
+import cn.plou.web.charge.heatingmanage.vo.HeatingServeUserListVO;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import cn.plou.web.common.utils.CommonServiceImp;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.organizationMessage.staff.service.StaffService;
+import cn.plou.web.system.organizationMessage.staff.vo.StructureInfo;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/23 8:41
+ * 用户稽查相关
+ */
+
+
+@RestController
+@RequestMapping("${chargePath}/heatCheckDetail")
+public class HeatCheckDetailController {
+
+  @Resource
+  private HeatCheckDetailService heatCheckDetailService;
+
+  @Resource
+  private UserYearHeatService userYearHeatService;
+
+  @Resource
+  private PriceDefineService priceDefineService;
+
+  @Autowired
+  private StaffService staffService;
+
+  @Autowired
+  private CommuityService commuityService;
+
+  @Autowired
+  private HeatingServeService heatingServeService;
+
+  @Autowired
+  private CommonServiceImp commonServiceImp;
+
+
+  /**
+   * @param heatCheckDetail
+   * @param bindingResult
+   * @param request         page
+   *                        pageSize
+   *                        beginCreateDate
+   *                        endCreateDate
+   * @return 用户稽查列表
+   * <p>
+   * <p>
+   * /** 创建开始时间
+   */
+  @RequestMapping("/getDetailList")
+  public Object getList(@Valid HeatCheckDetail heatCheckDetail,
+                        BindingResult bindingResult,
+                        @RequestParam(value = "startDatePicker", required = false) String beginCreateDate,
+                        @RequestParam(value = "endDatePicker", required = false) String endCreateDate,
+                        HttpServletRequest request) {
+
+    BindingResultHandler.handle(bindingResult);
+    BasePageEntity basePageEntity = new BasePageEntity();
+    basePageEntity.setPageParams(request);
+    Root root = new Root();
+    PageInfo pageInfo = heatCheckDetailService.getList(beginCreateDate, endCreateDate, heatCheckDetail, basePageEntity);
+    root.setData(pageInfo.getList());
+    root.setCond(getCond(basePageEntity.getPage(), basePageEntity.getPageSize(), (int) pageInfo.getTotal(),
+      basePageEntity.getSortby(), basePageEntity.getOrder()));
+    return root;
+  }
+
+
+  /**
+   * @param heatCheckDetail
+   * @param bindingResult
+   * @return 稽查申请
+   */
+  @RequestMapping("/addDetail")
+  public Boolean addDetail(@Valid HeatCheckDetail heatCheckDetail, BindingResult bindingResult, @RequestParam(value = "taskDate_") String taskDate) {
+
+    //设置供热稽查流水号ＩＤ：用户ＩＤ＋任务安排日期
+    String id = heatCheckDetail.getConsumerId() + taskDate.substring(0, 10).replace("-", "");
+    heatCheckDetail.setPrimaryId(id);
+
+    //设置日期(str to date)
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    ParsePosition pos = new ParsePosition(0);
+    Date date = sdf.parse(taskDate, pos);
+    heatCheckDetail.setTaskDate(date);
+
+    //设置当前采暖季
+    String annual = priceDefineService.findCurrentHeatAnnual(heatCheckDetail.getConsumerId().substring(0, 5));
+    heatCheckDetail.setAnnual(annual);
+
+    //设置部门id
+    StructureInfo structureInfo = staffService.getStructureById(heatCheckDetail.getExecutPerson());
+    heatCheckDetail.setExecutDept(structureInfo.getDepartmentId());
+
+    //设置创建人
+    String userId = UserUtils.getUserId();
+    heatCheckDetail.setCreateUser(userId);
+
+    //设置创建时间
+    heatCheckDetail.setCreateDate(new Date());
+
+    BindingResultHandler.handle(bindingResult);
+    return heatCheckDetailService.addHeatCheckDetail(heatCheckDetail) == 1;
+
+  }
+
+  /**
+   * @return 稽查反馈
+   */
+  @RequestMapping("/updateDetail")
+  public Boolean updateDetail(@Valid HeatCheckDetail heatCheckDetail, BindingResult bindingResult,
+                              @RequestParam(value = "executTaskDate", required = false) String executTaskDate,
+                              @RequestParam(value = "taskDate_", required = false) String taskDate) {
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    //设置稽查执行日期(str to date)
+    if (!StringUtils.isEmpty(executTaskDate)) {
+      ParsePosition pos = new ParsePosition(0);
+      Date date = sdf.parse(executTaskDate, pos);
+      heatCheckDetail.setExecutTime(date);
+    }
+    //设置任务安排日期
+    if (!StringUtils.isEmpty(taskDate)) {
+      ParsePosition pos2 = new ParsePosition(0);
+      Date date2 = sdf.parse(taskDate, pos2);
+      heatCheckDetail.setTaskDate(date2);
+    }
+    //设置更新人
+    String userId = UserUtils.getUserId();
+    heatCheckDetail.setUpdateUser(userId);
+
+    //设置更新时间
+    heatCheckDetail.setUpdateDate(new Date());
+
+    BindingResultHandler.handle(bindingResult);
+    return heatCheckDetailService.updateHeatCheckDetail(heatCheckDetail) == 1;
+
+  }
+
+  @ApiOperation(value = "获取 用户稽查 用户信息 ")
+  @RequestMapping("/getUserAnnualHeatInfo")
+  public Root getUserAnnualHeatInfo(@RequestParam(value = "consumerId") String consumerId) throws Exception {
+    Root root = new Root();
+    String annual = priceDefineService.findCurrentHeatAnnual(consumerId.substring(0, 5));
+    UserYearHeat byUserAndAnnual = userYearHeatService.findByUserAndAnnual(consumerId, annual);
+    root.setData(byUserAndAnnual);
+    return root;
+  }
+
+  /**
+   * @Description: 稽查列表导出 Excel
+   */
+  @RequestMapping("/export-list")
+  public Root exportList(ServletRequest request, @Valid HeatCheckDetail heatCheckDetail, BindingResult bindingResult,
+                         @RequestParam(value = "startDatePicker", required = false) String beginCreateDate,
+                         @RequestParam(value = "endDatePicker", required = false) String endCreateDate) {
+    BindingResultHandler.handle(bindingResult);
+    List<HeatCheckDetail> list = new ArrayList<>();
+    String companyId = heatCheckDetail.getRangeId();
+    if (companyId.length() == Constant.STATION_ID_LENGTH) {
+      List<String> ids = commuityService.getCommuityIdsByStationId(companyId);
+      if (ids.size() > 0) {
+        list = heatCheckDetailService.listOfStation(beginCreateDate,endCreateDate,heatCheckDetail, ids);
+      }
+    } else {
+      list = heatCheckDetailService.list(beginCreateDate,endCreateDate,heatCheckDetail);
+    }
+
+    Root root = new Root();
+    root.setCode(0);
+    root.setMsg("导出成功");
+    root.setData(heatCheckDetailService.exportList(request, list));
+    return root;
+  }
+
+  /**
+   * @Description: 稽查用户列表导出 Excel
+   */
+  @RequestMapping("/export-user-list")
+  public Root exportList(ServletRequest request, @Valid HeatingServeUserSearchDTO heatingServeUserSearchDTO, BindingResult bindingResult) {
+    BindingResultHandler.handle(bindingResult);
+    List<HeatingServeUserListVO> list = new ArrayList<>();
+    heatingServeUserSearchDTO.setPage(1);
+    heatingServeUserSearchDTO.setPageSize(10000000);
+    Integer count = 0;
+    String rangeId = heatingServeUserSearchDTO.getRangeId();
+    if (rangeId.length() == Constant.STATION_ID_LENGTH) {
+      List<String> ids = commuityService.getCommuityIdsByStationId(rangeId);
+      if (ids.size() > 0) {
+        list = heatingServeService.userListOfStation(heatingServeUserSearchDTO, ids);
+      }
+    } else {
+      list = heatingServeService.userList(heatingServeUserSearchDTO);
+    }
+
+    Root root = new Root();
+    root.setCode(0);
+    root.setMsg("导出成功");
+    root.setData(commonServiceImp.getHisDataToExcel(request, "heatingAuditUser", "用户稽查-稽查用户", list));
+    return root;
+  }
+
+
+}

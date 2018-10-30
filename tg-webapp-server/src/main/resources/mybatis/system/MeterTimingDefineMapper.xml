@@ -645,4 +645,8 @@ values
       </trim>
     </foreach>
   </insert>
+
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

@@ -116,4 +116,7 @@
         and TO_DAYS(create_date) = TO_DAYS(NOW())
         order by create_date desc LIMIT 1
     </select>
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

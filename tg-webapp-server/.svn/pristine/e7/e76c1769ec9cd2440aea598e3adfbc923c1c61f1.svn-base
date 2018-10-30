@@ -1,0 +1,26 @@
+package cn.plou.web.mobile.station.query;
+
+import java.io.Serializable;
+
+import lombok.Data;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : ParamQuery.java
+ * @Author : WangJiWei
+ * @Date : 2018年10月15日上午11:44:58
+ *
+ * @Comments : 全部参数查询
+ * 
+ */
+@Data
+public class ParamQuery implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String date;
+    private String startTime;
+    private String endTime; // time => [l,r);
+    private String showType; // hour小时级、all全部
+    private String orderBy;// 只是sysReadTimeLong => asc/desc
+
+}

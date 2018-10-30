@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.monitor.dao.RunningDataTotalDao">
+
+	<select id="get"
+		resultType="cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO">
+		select
+		`consumer_id`,`heat`,`power`,`flow_speed`,`flow_upper_limit`,`in_temperature`,`out_temperature`,`room_temperature_read`,`room_temperature_set`,`outdoor_temperature`,`openness`,`open_status`,`heating_area`,`heating_index`,`flowing_index`,`heat_status`,`control_role`,`regulation_mode`,`action_limit`,`system_read_time`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`memo3`,`memo4`,`memo5`,`memo6`,`create_date`,`create_user`,`update_date`,`update_user`
+		from user_running_data_total where consumer_id = #{value}
+	</select>
+
+	<select id="getBuildingVO"
+		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select count(*) houseCnts,
+		sum(power) power,sum(flow_speed)
+		flow,avg(in_temperature)
+		inWaterTmp,avg(out_temperature) outWaterTmp
+		from
+		user_running_data_total
+		<where>
+			<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+			and system_read_time between #{beginTime} and #{endTime}
+		</where>
+	</select>
+
+	<select id="list"
+		resultType="cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO">
+        select
+		m.consumer_id,a.heat,a.power,a.flow_speed,a.flow_upper_limit,a.in_temperature,a.out_temperature,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness,a.open_status,a.heating_area,a.heating_index,a.flowing_index,a.heat_status,a.control_role,a.regulation_mode,a.action_limit,a.system_read_time,a.company_id,m.address,a.flow,a.adj_heating_index
+		from houses_info as m 
+		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id and a.system_read_time between #{beginTime} and #{endTime}
+		<where>
+			<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,15) = #{consumerId} </if>
+		</where>
+		order by substr(m.consumer_id,16,4) + 0 desc
+	</select>
+
+	<select id="houseList"
+		resultType="cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO">
+		select
+		m.consumer_id,a.heat,a.power,a.flow_speed,a.flow_upper_limit,a.in_temperature,a.out_temperature,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness,a.open_status,a.heating_area,a.heating_index,a.flowing_index,a.heat_status,a.control_role,a.regulation_mode,a.action_limit,a.system_read_time,a.company_id,m.address,a.flow,a.adj_heating_index
+		from houses_info as m 
+		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id
+		<where>
+			<if test="beginTime != null and endTime != null">
+			 	and a.system_read_time between #{beginTime} and #{endTime}
+			</if>
+			<if test="companyIds!=null">
+					<if test="companyIds.size()>0">
+						and m.company_id in
+						<foreach collection="companyIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+			</if>
+			<if test="commuityIds!=null">
+					<if test="commuityIds.size()>0">
+						and substring(m.consumer_id,1,10) in
+						<foreach collection="commuityIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+			</if>
+			<choose>			
+				<when test="type=='build'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="power != null and power != ''"> and a.power between substring_index(#{power},',',1) and
+				substring_index(#{power},',',-1)
+			</if>
+			<if test="flowSpeed != null and flowSpeed != ''"> and a.flow_speed between
+				substring_index(#{flowSpeed},',',1) and
+				substring_index(#{flowSpeed},',',-1)
+			</if>
+			<if test="inTemperature != null and inTemperature != ''"> and a.in_temperature between
+				substring_index(#{inTemperature},',',1) and
+				substring_index(#{inTemperature},',',-1)
+			</if>
+			<if test="outTemperature != null and outTemperature != ''"> and a.out_temperature between
+				substring_index(#{outTemperature},',',1) and
+				substring_index(#{outTemperature},',',-1)
+			</if>
+			<if test="roomTemperatureRead != null and roomTemperatureRead != ''"> and a.room_temperature_read between
+				substring_index(#{roomTemperatureRead},',',1) and
+				substring_index(#{roomTemperatureRead},',',-1)
+			</if>
+			<if test="tmpDiff != null and tmpDiff != ''"> and (a.in_temperature-a.out_temperature) between
+				substring_index(#{tmpDiff},',',1) and
+				substring_index(#{tmpDiff},',',-1)
+			</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by a.${sort} ${order}
+			</when>
+			<otherwise>
+				order by m.consumer_id + 0
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+	<select id="statisticsData"
+		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select
+		count(distinct substr(consumer_id,1,15))
+		unitCnts,count(consumer_id) houseCnts,
+		sum(heating_area)
+		totalArea,(select sum(h.heating_area) from user_running_data_total h
+		where h.heating_area = 'heating_status_1') totalHeatArea,
+		avg(power)
+		power,avg(flow_speed) flow,avg(in_temperature)
+		inWaterTmp,avg(out_temperature) outWaterTmp,
+		avg(room_temperature_read) houseTmp,avg(outdoor_temperature)
+		outsideTmp,avg(heating_index) heatIndex,avg(flowing_index)
+		flowIndex,avg(adj_heating_index) adjHeatingIndex
+		from
+		user_running_data_total u
+		<where>
+	
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} and system_read_time >date_add((
+						select max(system_read_time) 
+						from
+						commuity_info where company_id = #{consumerId}
+						), interval -2 hour) 
+						</if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						) and system_read_time > date_add((
+						select max(system_read_time) 
+						from
+						commuity_info where company_id = substr(#{consumerId},1,5)
+						), interval -2 hour) 
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} and system_read_time > date_add((
+						select max(system_read_time) 
+						from
+						commuity_info where company_id = substr(#{consumerId},1,5)
+						), interval -2 hour) 
+						</if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="listByBuilding"
+		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select substr(consumer_id,1,10) communityId,substr(consumer_id,1,13)
+		buildingId,
+		avg(power) power,avg(flow_speed) flow,avg(in_temperature)
+		inWaterTmp,avg(out_temperature) outWaterTmp
+		from
+		user_running_data_total
+		<where>
+			and system_read_time between #{beginTime} and #{endTime}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+		group by 1,2
+	</select>
+
+	<select id="buildingDataVo"
+		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select
+		avg(power) power,avg(flow_speed) flow,avg(in_temperature)
+		inWaterTmp,avg(out_temperature) outWaterTmp
+		from
+		user_running_data_total
+		<where>
+			and system_read_time between #{beginTime} and #{endTime}
+			and substr(consumer_id,1,13) = #{consumerId}
+		</where>
+	</select>
+
+	<select id="getAllCommunity"
+		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select commuity_id communityId,commuity_name communityName
+		from
+		commuity_info
+		<where>
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''"> and station_id = #{consumerId}  </if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and commuity_id = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		<if test="companyIds!=null">
+	      <if test="companyIds.size()>0">
+	        and company_id in
+	        <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+	          #{item}
+	        </foreach>
+	      </if>
+	    </if>
+	    <if test="commuityIds!=null">
+	      <if test="commuityIds.size()>0">
+	        and commuity_id in
+	        <foreach collection="commuityIds" item="item" index="index" open="(" separator="," close=")">
+	          #{item}
+	        </foreach>
+	      </if>
+	    </if>
+		</where>
+	</select>
+
+	<select id="getAllBuilding" resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
+		select building_no buildingId,building_name 
+		from
+		build_info
+		<where>
+			and substr(building_no,1,10) = #{consumerId}
+		</where>
+	</select>
+
+	<select id="getCommunityCount" resultType="int">
+		select count(*)
+		from
+		commuity_info
+		<where>
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''"> and station_id = #{consumerId}  </if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and commuity_id = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="getBuildingCount" resultType="int">
+		select count(*)
+		from
+		build_info
+		<where>
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(building_no,1,10) in (
+						select commuity_id
+						from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(building_no,1,10) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from user_running_data_total
+		<where>
+			<if test="consumerId != null and consumerId != ''"> and consumer_id = #{consumerId} </if>
+			<if test="heat != null and heat != ''"> and heat = #{heat} </if>
+			<if test="power != null and power != ''"> and power = #{power} </if>
+			<if test="flowSpeed != null and flowSpeed != ''"> and flow_speed = #{flowSpeed} </if>
+			<if test="flowUpperLimit != null and flowUpperLimit != ''"> and flow_upper_limit = #{flowUpperLimit} </if>
+			<if test="inTemperature != null and inTemperature != ''"> and in_temperature = #{inTemperature} </if>
+			<if test="outTemperature != null and outTemperature != ''"> and out_temperature = #{outTemperature} </if>
+			<if test="roomTemperatureRead != null and roomTemperatureRead != ''"> and room_temperature_read = #{roomTemperatureRead} </if>
+			<if test="roomTemperatureSet != null and roomTemperatureSet != ''"> and room_temperature_set = #{roomTemperatureSet} </if>
+			<if test="outdoorTemperature != null and outdoorTemperature != ''"> and outdoor_temperature = #{outdoorTemperature} </if>
+			<if test="openness != null and openness != ''"> and openness = #{openness} </if>
+			<if test="openStatus != null and openStatus != ''"> and open_status = #{openStatus} </if>
+			<if test="heatingArea != null and heatingArea != ''"> and heating_area = #{heatingArea} </if>
+			<if test="heatingIndex != null and heatingIndex != ''"> and heating_index = #{heatingIndex} </if>
+			<if test="flowingIndex != null and flowingIndex != ''"> and flowing_index = #{flowingIndex} </if>
+			<if test="heatStatus != null and heatStatus != ''"> and heat_status = #{heatStatus} </if>
+			<if test="controlRole != null and controlRole != ''"> and control_role = #{controlRole} </if>
+			<if test="regulationMode != null and regulationMode != ''"> and regulation_mode = #{regulationMode} </if>
+			<if test="actionLimit != null and actionLimit != ''"> and action_limit = #{actionLimit} </if>
+			<if test="systemReadTime != null and systemReadTime != ''"> and system_read_time = #{systemReadTime} </if>
+			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+			<if test="address != null and address != ''"> and address = #{address} </if>
+			<if test="notes != null and notes != ''"> and notes = #{notes} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+		</where>
+	</select>
+
+	<select id="houseListCount" resultType="int">
+		select count(*)
+		from houses_info as m 
+		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id and a.system_read_time between #{beginTime} and #{endTime}
+		<where>
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(m.consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='build'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="power != null and power != ''"> and a.power between substring_index(#{power},',',1) and
+				substring_index(#{power},',',-1)
+			</if>
+			<if test="flowSpeed != null and flowSpeed != ''"> and a.flow_speed between
+				substring_index(#{flowSpeed},',',1) and
+				substring_index(#{flowSpeed},',',-1)
+			</if>
+			<if test="inTemperature != null and inTemperature != ''"> and a.in_temperature between
+				substring_index(#{inTemperature},',',1) and
+				substring_index(#{inTemperature},',',-1)
+			</if>
+			<if test="outTemperature != null and outTemperature != ''"> and a.out_temperature between
+				substring_index(#{outTemperature},',',1) and
+				substring_index(#{outTemperature},',',-1)
+			</if>
+			<if test="roomTemperatureRead != null and roomTemperatureRead != ''"> and a.room_temperature_read between
+				substring_index(#{roomTemperatureRead},',',1) and
+				substring_index(#{roomTemperatureRead},',',-1)
+			</if>
+			<if test="tmpDiff != null and tmpDiff != ''"> and (a.in_temperature-a.out_temperature) between
+				substring_index(#{tmpDiff},',',1) and
+				substring_index(#{tmpDiff},',',-1)
+			</if>
+		</where>
+	</select>
+</mapper>

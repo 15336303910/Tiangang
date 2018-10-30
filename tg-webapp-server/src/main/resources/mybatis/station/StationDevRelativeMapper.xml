@@ -146,4 +146,5 @@
       update_user = #{updateUser,jdbcType=VARCHAR}
     where primary_id = #{primaryId,jdbcType=VARCHAR}
   </update>
+
 </mapper>

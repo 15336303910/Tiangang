@@ -4,12 +4,13 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import cn.plou.component.es.ESTool;
 import cn.plou.component.es.ESToolConfig;
-import cn.plou.web.common.utils.EnvUtils;
 
 /**
  * @Project : tg-micro
@@ -23,17 +24,19 @@ import cn.plou.web.common.utils.EnvUtils;
 @Configuration
 public class ESConfig {
 
-    @Bean
+	@Autowired
+	Environment  env;
+    @Bean 
     public ESTool esTool() throws UnknownHostException {
 
 	Map<String, Object> esconfig = new HashMap<>();
-	esconfig.put(ESToolConfig.ES_ADDR, EnvUtils.getEsAddr());
-	esconfig.put(ESToolConfig.ES_CLUSTER_NAME, EnvUtils.getEsClusterName());
-	esconfig.put(ESToolConfig.ES_CLIENT_QUEUE_SIZE, EnvUtils.getEsClientQueueSize());
-	esconfig.put(ESToolConfig.ES_CLIENT_CONCURRENT_LIMIT, EnvUtils.getEsClientLimit());
-	esconfig.put(ESToolConfig.ES_CLIENT_QUEUE_MAX_SIZE, EnvUtils.getEsClientQueueMaxSize());
+	esconfig.put(ESToolConfig.ES_ADDR, env.getProperty("elasticsearch.addr"));
+	esconfig.put(ESToolConfig.ES_CLUSTER_NAME, env.getProperty("elasticsearch.cluster.name"));
+	esconfig.put(ESToolConfig.ES_CLIENT_QUEUE_SIZE,Integer.parseInt(env.getProperty("elasticsearch.client.queue.size")));
+	esconfig.put(ESToolConfig.ES_CLIENT_CONCURRENT_LIMIT, Boolean.parseBoolean(env.getProperty("elasticsearch.client.concurrent.limit")));
+	esconfig.put(ESToolConfig.ES_CLIENT_QUEUE_MAX_SIZE,  Integer.parseInt(env.getProperty("elasticsearch.client.queue.max.size")));
 	ESTool es = new ESTool(esconfig);
-	//es.start();
+	es.start();
 	return es;
     }
 

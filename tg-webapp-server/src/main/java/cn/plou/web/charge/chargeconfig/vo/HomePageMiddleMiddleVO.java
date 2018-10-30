@@ -1,0 +1,41 @@
+package cn.plou.web.charge.chargeconfig.vo;
+
+import java.math.BigDecimal;
+
+public class HomePageMiddleMiddleVO {
+    private String commuityName;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
+    private BigDecimal accountRate;
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
+    }
+
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+
+    public BigDecimal getAccountRate() {
+        return accountRate;
+    }
+
+    public void setAccountRate(BigDecimal accountRate) {
+        this.accountRate = accountRate;
+    }
+
+    public String getCommuityName() {
+        return commuityName;
+    }
+
+    public void setCommuityName(String commuityName) {
+        this.commuityName = commuityName;
+    }
+}

@@ -1,0 +1,6 @@
+2018-10-18 15:48:14 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 15:48:21 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@668ec70b].  Returning null to indicate a session could not be found.
+2018-10-18 15:48:37 [INFO ](DruidDataSource               ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {dataSource-2} inited
+2018-10-18 15:48:37 [DEBUG](PreparedStatementPool         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] stmt enter cache
+2018-10-18 15:48:37 [WARN ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：paramHistoryDataList调用结束,消耗时间：16.239s,需要优化！！！！！
+2018-10-18 15:48:39 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

@@ -129,4 +129,6 @@
       user_id = #{userId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

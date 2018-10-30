@@ -1,0 +1,29 @@
+package cn.plou.web.balance.trendCurve.dao;
+
+import cn.plou.web.balance.trendCurve.entity.BuildRunningData;
+import cn.plou.web.balance.trendCurve.vo.RunningData;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
+
+public interface BuildRunningDataMapper {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(BuildRunningData record);
+
+    int insertSelective(BuildRunningData record);
+
+    BuildRunningData selectByPrimaryKey(String primaryId);
+
+    BuildRunningData selectByBuildingId(String buildingId);
+
+    int updateByPrimaryKeySelective(BuildRunningData record);
+
+    int updateByPrimaryKey(BuildRunningData record);
+
+    List<RunningData> selectBuildRuuningDataList(@Param("buildingNo") String buildingNo,
+                                                 @Param("startDate") Date startDate,
+                                                 @Param("endDate") Date endDate);
+
+}

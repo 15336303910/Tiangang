@@ -7,10 +7,10 @@ heatManagePath: /heatManage  #供热模块
 balancePath: /balance  #平衡阀模块
 
 #银行对账文件存放路径
-bank-file-path: C:\Users\Administrator\Desktop\
+#bank-file-path: F:\VIS
 
 #文件上传路径
-uploadPath: E:/tg-micro/uploads/
+#uploadPath: E:/tg-micro/uploads/
 server:
     # context-path: /myboot 
   session-timeout: 1800
@@ -33,8 +33,6 @@ spring:
   devtools:
     restart:
       enabled: true
-  cache:
-    type: ehcache
 mybatis:
   configLocation: classpath:mybatis-config.xml
   mapperLocations: classpath*:mybatis/**/*Mapper.xml

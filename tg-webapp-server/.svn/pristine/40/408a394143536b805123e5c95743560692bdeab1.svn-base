@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.stationDataPoint.dao.StationDataPointMapper">
+	<resultMap id="BaseResultMap"
+		type="cn.plou.web.station.stationDataPoint.entity.StationDataPoint">
+		<id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+		<result column="pointid" property="pointid" jdbcType="VARCHAR" />
+		<result column="sourceid" property="sourceid" jdbcType="VARCHAR" />
+		<result column="val" property="val" jdbcType="DECIMAL" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="pointDataMap"
+		type="cn.plou.web.station.stationDataPoint.vo.StationDataPointVo">
+		<result column="sourceid" property="sourceid" jdbcType="VARCHAR" />
+		<result column="pointid" property="pointid" jdbcType="VARCHAR" />
+		<result column="point_name" property="pointName" jdbcType="VARCHAR" />
+		<result column="showdevtype" property="showdevtype" jdbcType="VARCHAR" />
+		<result column="unit" property="unit" jdbcType="VARCHAR" />
+		<result column="val" property="val" jdbcType="DECIMAL" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		primary_id, pointid, sourceid, val, time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from station_data_point
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findDataBySystemId" resultMap="pointDataMap">
+		SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid = #{sourceid,jdbcType=VARCHAR} and 
+		system_point.valided = #{valided} and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+	</select>
+	
+	<select id="findDataBySystemIdAndShowdevtype" resultMap="pointDataMap">
+		SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid in
+		<foreach collection="sourceids" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+		  and 
+		system_point.valided = #{valided} and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+		and system_point.showdevtype = #{showdevtype,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findDataBySystemIds" resultMap="pointDataMap">
+		SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid in
+        <foreach collection="sourceids" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+		and system_point.valided = #{valided,jdbcType=VARCHAR} 
+		and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from station_data_point
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="cn.plou.web.station.stationDataPoint.entity.StationDataPoint">
+		insert into station_data_point (primary_id, pointid, sourceid,
+		val, time)
+		values (#{primaryId,jdbcType=VARCHAR}, #{pointid,jdbcType=VARCHAR},
+		#{sourceid,jdbcType=VARCHAR},
+		#{val,jdbcType=DECIMAL}, #{time,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="cn.plou.web.station.stationDataPoint.entity.StationDataPoint">
+		insert into station_data_point
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="primaryId != null">
+				primary_id,
+			</if>
+			<if test="pointid != null">
+				pointid,
+			</if>
+			<if test="sourceid != null">
+				sourceid,
+			</if>
+			<if test="val != null">
+				val,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="primaryId != null">
+				#{primaryId,jdbcType=VARCHAR},
+			</if>
+			<if test="pointid != null">
+				#{pointid,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceid != null">
+				#{sourceid,jdbcType=VARCHAR},
+			</if>
+			<if test="val != null">
+				#{val,jdbcType=DECIMAL},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.stationDataPoint.entity.StationDataPoint">
+		update station_data_point
+		<set>
+			<if test="pointid != null">
+				pointid = #{pointid,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceid != null">
+				sourceid = #{sourceid,jdbcType=VARCHAR},
+			</if>
+			<if test="val != null">
+				val = #{val,jdbcType=DECIMAL},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.plou.web.station.stationDataPoint.entity.StationDataPoint">
+		update station_data_point
+		set pointid = #{pointid,jdbcType=VARCHAR},
+		sourceid = #{sourceid,jdbcType=VARCHAR},
+		val = #{val,jdbcType=DECIMAL},
+		time = #{time,jdbcType=TIMESTAMP}
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- ————————————————————————————————cache配置————————————————————————————  -->
+	<cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

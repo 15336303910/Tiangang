@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.balance.dataAnalysis.dao.BalanceValveDataMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.balance.dataAnalysis.entity.BalanceValveData">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="meter_id" jdbcType="VARCHAR" property="meterId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="control_mode" jdbcType="VARCHAR" property="controlMode" />
+    <result column="openness" jdbcType="DECIMAL" property="openness" />
+    <result column="in_pressure" jdbcType="DECIMAL" property="inPressure" />
+    <result column="out_pressure" jdbcType="DECIMAL" property="outPressure" />
+    <result column="pressure_diff" jdbcType="DECIMAL" property="pressureDiff" />
+    <result column="set_pressure_diff" jdbcType="DECIMAL" property="setPressureDiff" />
+    <result column="pressure_diff__threshold" jdbcType="DECIMAL" property="pressureDiffThreshold" />
+    <result column="in_temperature" jdbcType="DECIMAL" property="inTemperature" />
+    <result column="out_temperature" jdbcType="DECIMAL" property="outTemperature" />
+    <result column="set_temperature" jdbcType="DECIMAL" property="setTemperature" />
+    <result column="temperature_threshold" jdbcType="DECIMAL" property="temperatureThreshold" />
+    <result column="sample_flow_speed" jdbcType="DECIMAL" property="sampleFlowSpeed" />
+    <result column="unit_flow_speed" jdbcType="DECIMAL" property="unitFlowSpeed" />
+    <result column="upper_limit_flow" jdbcType="DECIMAL" property="upperLimitFlow" />
+    <result column="max_flow_threshold" jdbcType="DECIMAL" property="maxFlowThreshold" />
+    <result column="sys_read_time" jdbcType="TIMESTAMP" property="sysReadTime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="env_temp" jdbcType="DECIMAL" property="envTemp" />
+    <result column="open_set" jdbcType="DECIMAL" property="openSet" />
+    <result column="open_level" jdbcType="DECIMAL" property="openLevel" />
+    <result column="base_open" jdbcType="VARCHAR" property="baseOpen" />
+    <result column="low_temp" jdbcType="DECIMAL" property="lowTemp" />
+    <result column="com_interval" jdbcType="DECIMAL" property="comInterval" />
+    <result column="exchange_temp" jdbcType="VARCHAR" property="exchangeTemp" />
+    <result column="exchange_press" jdbcType="VARCHAR" property="exchangePress" />
+    <result column="exchange_frame" jdbcType="VARCHAR" property="exchangeFrame" />
+    <result column="locks" jdbcType="VARCHAR" property="locks" />
+    <result column="time_param" jdbcType="VARCHAR" property="timeParam" />
+    <result column="temp_param" jdbcType="VARCHAR" property="tempParam" />
+    <result column="time_open_param" jdbcType="VARCHAR" property="timeOpenParam" />
+    <result column="time_temp_param" jdbcType="VARCHAR" property="timeTempParam" />
+    <result column="time_temp_cure_param" jdbcType="VARCHAR" property="timeTempCureParam" />
+    <result column="press_adj" jdbcType="VARCHAR" property="pressAdj" />
+    <result column="cal" jdbcType="DECIMAL" property="cal" />
+    <result column="open_time" jdbcType="DECIMAL" property="openTime" />
+    <result column="current_times" jdbcType="TIMESTAMP" property="currentTimes" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, rowno, meter_id, consumer_id, control_mode, openness, in_pressure, out_pressure, 
+    pressure_diff, set_pressure_diff, pressure_diff__threshold, in_temperature, out_temperature, 
+    set_temperature, temperature_threshold, sample_flow_speed, unit_flow_speed, upper_limit_flow, 
+    max_flow_threshold, sys_read_time, company_id, notes, memo1, memo2, create_date, 
+    create_user, update_date, update_user, env_temp, open_set, open_level, base_open, 
+    low_temp, com_interval, exchange_temp, exchange_press, exchange_frame, locks, time_param, 
+    temp_param, time_open_param, time_temp_param, time_temp_cure_param, press_adj, cal, 
+    open_time, current_times, read_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from balance_valve_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllByBuildId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from balance_valve_data
+    where consumer_id LIKE CONCAT (#{buildId,jdbcType=VARCHAR},'%')
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from balance_valve_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.balance.dataAnalysis.entity.BalanceValveData">
+    insert into balance_valve_data (primary_id, rowno, meter_id, 
+      consumer_id, control_mode, openness, 
+      in_pressure, out_pressure, pressure_diff, 
+      set_pressure_diff, pressure_diff__threshold, 
+      in_temperature, out_temperature, set_temperature, 
+      temperature_threshold, sample_flow_speed, 
+      unit_flow_speed, upper_limit_flow, max_flow_threshold, 
+      sys_read_time, company_id, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user, 
+      env_temp, open_set, open_level, 
+      base_open, low_temp, com_interval, 
+      exchange_temp, exchange_press, exchange_frame, 
+      locks, time_param, temp_param, 
+      time_open_param, time_temp_param, time_temp_cure_param, 
+      press_adj, cal, open_time, 
+      current_times, read_time)
+    values (#{primaryId,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, #{meterId,jdbcType=VARCHAR}, 
+      #{consumerId,jdbcType=VARCHAR}, #{controlMode,jdbcType=VARCHAR}, #{openness,jdbcType=DECIMAL}, 
+      #{inPressure,jdbcType=DECIMAL}, #{outPressure,jdbcType=DECIMAL}, #{pressureDiff,jdbcType=DECIMAL}, 
+      #{setPressureDiff,jdbcType=DECIMAL}, #{pressureDiffThreshold,jdbcType=DECIMAL}, 
+      #{inTemperature,jdbcType=DECIMAL}, #{outTemperature,jdbcType=DECIMAL}, #{setTemperature,jdbcType=DECIMAL}, 
+      #{temperatureThreshold,jdbcType=DECIMAL}, #{sampleFlowSpeed,jdbcType=DECIMAL}, 
+      #{unitFlowSpeed,jdbcType=DECIMAL}, #{upperLimitFlow,jdbcType=DECIMAL}, #{maxFlowThreshold,jdbcType=DECIMAL}, 
+      #{sysReadTime,jdbcType=TIMESTAMP}, #{companyId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{envTemp,jdbcType=DECIMAL}, #{openSet,jdbcType=DECIMAL}, #{openLevel,jdbcType=DECIMAL}, 
+      #{baseOpen,jdbcType=VARCHAR}, #{lowTemp,jdbcType=DECIMAL}, #{comInterval,jdbcType=DECIMAL}, 
+      #{exchangeTemp,jdbcType=VARCHAR}, #{exchangePress,jdbcType=VARCHAR}, #{exchangeFrame,jdbcType=VARCHAR}, 
+      #{locks,jdbcType=VARCHAR}, #{timeParam,jdbcType=VARCHAR}, #{tempParam,jdbcType=VARCHAR}, 
+      #{timeOpenParam,jdbcType=VARCHAR}, #{timeTempParam,jdbcType=VARCHAR}, #{timeTempCureParam,jdbcType=VARCHAR}, 
+      #{pressAdj,jdbcType=VARCHAR}, #{cal,jdbcType=DECIMAL}, #{openTime,jdbcType=DECIMAL}, 
+      #{currentTimes,jdbcType=TIMESTAMP}, #{readTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.balance.dataAnalysis.entity.BalanceValveData">
+    insert into balance_valve_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="meterId != null">
+        meter_id,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="controlMode != null">
+        control_mode,
+      </if>
+      <if test="openness != null">
+        openness,
+      </if>
+      <if test="inPressure != null">
+        in_pressure,
+      </if>
+      <if test="outPressure != null">
+        out_pressure,
+      </if>
+      <if test="pressureDiff != null">
+        pressure_diff,
+      </if>
+      <if test="setPressureDiff != null">
+        set_pressure_diff,
+      </if>
+      <if test="pressureDiffThreshold != null">
+        pressure_diff__threshold,
+      </if>
+      <if test="inTemperature != null">
+        in_temperature,
+      </if>
+      <if test="outTemperature != null">
+        out_temperature,
+      </if>
+      <if test="setTemperature != null">
+        set_temperature,
+      </if>
+      <if test="temperatureThreshold != null">
+        temperature_threshold,
+      </if>
+      <if test="sampleFlowSpeed != null">
+        sample_flow_speed,
+      </if>
+      <if test="unitFlowSpeed != null">
+        unit_flow_speed,
+      </if>
+      <if test="upperLimitFlow != null">
+        upper_limit_flow,
+      </if>
+      <if test="maxFlowThreshold != null">
+        max_flow_threshold,
+      </if>
+      <if test="sysReadTime != null">
+        sys_read_time,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="envtemp != null">
+        env_temp,
+      </if>
+      <if test="openSet != null">
+        open_set,
+      </if>
+      <if test="openLevel != null">
+        open_level,
+      </if>
+      <if test="baseOpen != null">
+        base_open,
+      </if>
+      <if test="lowTemp != null">
+        low_temp,
+      </if>
+      <if test="comInterval != null">
+        com_interval,
+      </if>
+      <if test="exchangeTemp != null">
+        exchange_temp,
+      </if>
+      <if test="exchangePress != null">
+        exchange_press,
+      </if>
+      <if test="exchangeFrame != null">
+        exchange_frame,
+      </if>
+      <if test="locks != null">
+        locks,
+      </if>
+      <if test="timeParam != null">
+        time_param,
+      </if>
+      <if test="tempParam != null">
+        temp_param,
+      </if>
+      <if test="timeOpenParam != null">
+        time_open_param,
+      </if>
+      <if test="timeTempParam != null">
+        time_temp_param,
+      </if>
+      <if test="timeTempCureParam != null">
+        time_temp_cure_param,
+      </if>
+      <if test="pressAdj != null">
+        press_adj,
+      </if>
+      <if test="cal != null">
+        cal,
+      </if>
+      <if test="openTime != null">
+        open_time,
+      </if>
+      <if test="currentTimes != null">
+        current_times,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="meterId != null">
+        #{meterId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="controlMode != null">
+        #{controlMode,jdbcType=VARCHAR},
+      </if>
+      <if test="openness != null">
+        #{openness,jdbcType=DECIMAL},
+      </if>
+      <if test="inPressure != null">
+        #{inPressure,jdbcType=DECIMAL},
+      </if>
+      <if test="outPressure != null">
+        #{outPressure,jdbcType=DECIMAL},
+      </if>
+      <if test="pressureDiff != null">
+        #{pressureDiff,jdbcType=DECIMAL},
+      </if>
+      <if test="setPressureDiff != null">
+        #{setPressureDiff,jdbcType=DECIMAL},
+      </if>
+      <if test="pressureDiffThreshold != null">
+        #{pressureDiffThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="inTemperature != null">
+        #{inTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outTemperature != null">
+        #{outTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="setTemperature != null">
+        #{setTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureThreshold != null">
+        #{temperatureThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="sampleFlowSpeed != null">
+        #{sampleFlowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="unitFlowSpeed != null">
+        #{unitFlowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="upperLimitFlow != null">
+        #{upperLimitFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="maxFlowThreshold != null">
+        #{maxFlowThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="sysReadTime != null">
+        #{sysReadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="envTemp != null">
+        #{envTemp,jdbcType=DECIMAL},
+      </if>
+      <if test="openSet != null">
+        #{openSet,jdbcType=DECIMAL},
+      </if>
+      <if test="openLevel != null">
+        #{openLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="baseOpen != null">
+        #{baseOpen,jdbcType=VARCHAR},
+      </if>
+      <if test="lowTemp != null">
+        #{lowTemp,jdbcType=DECIMAL},
+      </if>
+      <if test="comInterval != null">
+        #{comInterval,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeTemp != null">
+        #{exchangeTemp,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePress != null">
+        #{exchangePress,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeFrame != null">
+        #{exchangeFrame,jdbcType=VARCHAR},
+      </if>
+      <if test="locks != null">
+        #{locks,jdbcType=VARCHAR},
+      </if>
+      <if test="timeParam != null">
+        #{timeParam,jdbcType=VARCHAR},
+      </if>
+      <if test="tempParam != null">
+        #{tempParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeOpenParam != null">
+        #{timeOpenParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTempParam != null">
+        #{timeTempParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTempCureParam != null">
+        #{timeTempCureParam,jdbcType=VARCHAR},
+      </if>
+      <if test="pressAdj != null">
+        #{pressAdj,jdbcType=VARCHAR},
+      </if>
+      <if test="cal != null">
+        #{cal,jdbcType=DECIMAL},
+      </if>
+      <if test="openTime != null">
+        #{openTime,jdbcType=DECIMAL},
+      </if>
+      <if test="currentTimes != null">
+        #{currentTimes,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.balance.dataAnalysis.entity.BalanceValveData">
+    update balance_valve_data
+    <set>
+      <if test="rowno != null">
+        rowno = #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="meterId != null">
+        meter_id = #{meterId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="controlMode != null">
+        control_mode = #{controlMode,jdbcType=VARCHAR},
+      </if>
+      <if test="openness != null">
+        openness = #{openness,jdbcType=DECIMAL},
+      </if>
+      <if test="inPressure != null">
+        in_pressure = #{inPressure,jdbcType=DECIMAL},
+      </if>
+      <if test="outPressure != null">
+        out_pressure = #{outPressure,jdbcType=DECIMAL},
+      </if>
+      <if test="pressureDiff != null">
+        pressure_diff = #{pressureDiff,jdbcType=DECIMAL},
+      </if>
+      <if test="setPressureDiff != null">
+        set_pressure_diff = #{setPressureDiff,jdbcType=DECIMAL},
+      </if>
+      <if test="pressureDiffThreshold != null">
+        pressure_diff__threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="inTemperature != null">
+        in_temperature = #{inTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outTemperature != null">
+        out_temperature = #{outTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="setTemperature != null">
+        set_temperature = #{setTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="temperatureThreshold != null">
+        temperature_threshold = #{temperatureThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="sampleFlowSpeed != null">
+        sample_flow_speed = #{sampleFlowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="unitFlowSpeed != null">
+        unit_flow_speed = #{unitFlowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="upperLimitFlow != null">
+        upper_limit_flow = #{upperLimitFlow,jdbcType=DECIMAL},
+      </if>
+      <if test="maxFlowThreshold != null">
+        max_flow_threshold = #{maxFlowThreshold,jdbcType=DECIMAL},
+      </if>
+      <if test="sysReadTime != null">
+        sys_read_time = #{sysReadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="envTemp != null">
+        env_temp = #{envTemp,jdbcType=DECIMAL},
+      </if>
+      <if test="openSet != null">
+        open_set = #{openSet,jdbcType=DECIMAL},
+      </if>
+      <if test="openLevel != null">
+        open_level = #{openLevel,jdbcType=DECIMAL},
+      </if>
+      <if test="baseOpen != null">
+        base_open = #{baseOpen,jdbcType=VARCHAR},
+      </if>
+      <if test="lowTemp != null">
+        low_temp = #{lowTemp,jdbcType=DECIMAL},
+      </if>
+      <if test="comInterval != null">
+        com_interval = #{comInterval,jdbcType=DECIMAL},
+      </if>
+      <if test="exchangeTemp != null">
+        exchange_temp = #{exchangeTemp,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangePress != null">
+        exchange_press = #{exchangePress,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeFrame != null">
+        exchange_frame = #{exchangeFrame,jdbcType=VARCHAR},
+      </if>
+      <if test="locks != null">
+        locks = #{locks,jdbcType=VARCHAR},
+      </if>
+      <if test="timeParam != null">
+        time_param = #{timeParam,jdbcType=VARCHAR},
+      </if>
+      <if test="tempParam != null">
+        temp_param = #{tempParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeOpenParam != null">
+        time_open_param = #{timeOpenParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTempParam != null">
+        time_temp_param = #{timeTempParam,jdbcType=VARCHAR},
+      </if>
+      <if test="timeTempCureParam != null">
+        time_temp_cure_param = #{timeTempCureParam,jdbcType=VARCHAR},
+      </if>
+      <if test="pressAdj != null">
+        press_adj = #{pressAdj,jdbcType=VARCHAR},
+      </if>
+      <if test="cal != null">
+        cal = #{cal,jdbcType=DECIMAL},
+      </if>
+      <if test="openTime != null">
+        open_time = #{openTime,jdbcType=DECIMAL},
+      </if>
+      <if test="currentTimes != null">
+        current_times = #{currentTimes,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.balance.dataAnalysis.entity.BalanceValveData">
+    update balance_valve_data
+    set rowno = #{rowno,jdbcType=VARCHAR},
+      meter_id = #{meterId,jdbcType=VARCHAR},
+      consumer_id = #{consumerId,jdbcType=VARCHAR},
+      control_mode = #{controlMode,jdbcType=VARCHAR},
+      openness = #{openness,jdbcType=DECIMAL},
+      in_pressure = #{inPressure,jdbcType=DECIMAL},
+      out_pressure = #{outPressure,jdbcType=DECIMAL},
+      pressure_diff = #{pressureDiff,jdbcType=DECIMAL},
+      set_pressure_diff = #{setPressureDiff,jdbcType=DECIMAL},
+      pressure_diff__threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
+      in_temperature = #{inTemperature,jdbcType=DECIMAL},
+      out_temperature = #{outTemperature,jdbcType=DECIMAL},
+      set_temperature = #{setTemperature,jdbcType=DECIMAL},
+      temperature_threshold = #{temperatureThreshold,jdbcType=DECIMAL},
+      sample_flow_speed = #{sampleFlowSpeed,jdbcType=DECIMAL},
+      unit_flow_speed = #{unitFlowSpeed,jdbcType=DECIMAL},
+      upper_limit_flow = #{upperLimitFlow,jdbcType=DECIMAL},
+      max_flow_threshold = #{maxFlowThreshold,jdbcType=DECIMAL},
+      sys_read_time = #{sysReadTime,jdbcType=TIMESTAMP},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      env_temp = #{envTemp,jdbcType=DECIMAL},
+      open_set = #{openSet,jdbcType=DECIMAL},
+      open_level = #{openLevel,jdbcType=DECIMAL},
+      base_open = #{baseOpen,jdbcType=VARCHAR},
+      low_temp = #{lowTemp,jdbcType=DECIMAL},
+      com_interval = #{comInterval,jdbcType=DECIMAL},
+      exchange_temp = #{exchangeTemp,jdbcType=VARCHAR},
+      exchange_press = #{exchangePress,jdbcType=VARCHAR},
+      exchange_frame = #{exchangeFrame,jdbcType=VARCHAR},
+      locks = #{locks,jdbcType=VARCHAR},
+      time_param = #{timeParam,jdbcType=VARCHAR},
+      temp_param = #{tempParam,jdbcType=VARCHAR},
+      time_open_param = #{timeOpenParam,jdbcType=VARCHAR},
+      time_temp_param = #{timeTempParam,jdbcType=VARCHAR},
+      time_temp_cure_param = #{timeTempCureParam,jdbcType=VARCHAR},
+      press_adj = #{pressAdj,jdbcType=VARCHAR},
+      cal = #{cal,jdbcType=DECIMAL},
+      open_time = #{openTime,jdbcType=DECIMAL},
+      current_times = #{currentTimes,jdbcType=TIMESTAMP},
+      read_time = #{readTime,jdbcType=TIMESTAMP}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

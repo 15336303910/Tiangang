@@ -55,7 +55,7 @@
 
   <select id="selectDownInfoByTypeKbn" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-    id,type_kbn,type_kbn_name, type_id, type_name,notes
+    id,type_kbn,type_kbn_name, type_id, type_name,notes,order_by
     from type_mst
     where type_kbn=#{typeKbn} and show_flg=1 order by order_by
   </select>
@@ -386,4 +386,6 @@
       </foreach>
     </if>
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

@@ -1,0 +1,480 @@
+package cn.plou.web.mobile.station.controller;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Sets;
+
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.constant.CKey;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.mobile.common.AppTools;
+import cn.plou.web.mobile.station.query.AlarmsQuery;
+import cn.plou.web.mobile.station.query.ParamQuery;
+import cn.plou.web.mobile.station.service.AlarmService;
+import cn.plou.web.mobile.station.service.ParamDetailService;
+import cn.plou.web.mobile.station.service.RunningDataService;
+import cn.plou.web.mobile.station.service.StationAppService;
+import cn.plou.web.mobile.station.vo.LineData;
+import cn.plou.web.mobile.station.vo.ParamGroupVo;
+import cn.plou.web.mobile.station.vo.RunningDataVo;
+import cn.plou.web.station.alarm.vo.AlarmInfoVo;
+import cn.plou.web.station.stationDataPoint.vo.StationDataPointVo;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfoVo;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : StationController.java
+ * @Author : WangJiWei
+ * @Date : 2018年9月19日上午9:18:30
+ *
+ * @Comments :
+ * 
+ */
+@RestController
+@RequestMapping("/mobile/station")
+public class StationAppController extends AppBaseController {
+
+    @Autowired
+    StationAppService stationService;
+    @Autowired
+    AlarmService alarmService;
+    @Autowired
+    RunningDataService runningDataService;
+    @Autowired
+    ParamDetailService paramDetailService;
+    @Autowired
+    TypeMstService typeMstService;
+
+    /**
+     * 获取用户权限内的所有系统
+     */
+    @RequestMapping("/systems")
+    public Root findStationInfoList() throws Exception {
+
+	/** TODO 登录复用web端 */
+	// String userId = UserUtils.getUserId();
+	String userId = "95277";
+	List<SystemInfoVo> systems = stationService.findSystemByUserId(userId);
+	Map<String, List<SystemInfoVo>> result = AppTools.groupBy(systems,
+		SystemInfoVo::getCompanyName);
+	return success(JSON.toJSON(result));
+	/**
+	 * 数据格式:
+	 * 
+	 * <pre>
+	{
+	    "code": 0,
+	    "msg": "操作成功",
+	    "data": {
+	      "王基伟测试公司": [
+	        {
+	          "companyId": "00240",
+	          "systemId": "000261",
+	          "systemName": "b-1",
+	          "companyName": "王基伟测试公司",
+	          "stationName": "bbbbbbbb",
+	          "stationId": "000240"
+	        },
+	        {
+	          "companyId": "00240",
+	          "systemId": "000262",
+	          "systemName": "c-1",
+	          "companyName": "王基伟测试公司",
+	          "stationName": "ccccccccc",
+	          "stationId": "000241"
+	        }
+	      ]
+	    }
+	  }
+	 * </pre>
+	 * 
+	 */
+    }
+
+    /**
+     * 实时数据
+     */
+    @GetMapping("/system/{systemId}/metrics")
+    public Root realTimeData(@PathVariable String systemId) throws Exception {
+	String userId = "95277";
+	List<RunningDataVo> rdv = runningDataService.findRunningData(userId, systemId);
+	Object data = JSONArray.parseArray(JSON.toJSONString(rdv));
+	return success(data);
+	/**
+	 * 
+	 * <pre>
+	 * {
+	"code": 0,
+	"msg": "操作成功",
+	"data": [
+	{
+	  "metrics": [
+	    {
+	      "sourceid": "000002",
+	      "val": 1.1033,
+	      "unit": "kWh",
+	      "pointid": "CT_Tot",
+	      "pointName": "测试点",
+	      "showdevtype": "",
+	      "time": 1532653305000
+	    },
+	    {
+	      "sourceid": "000002",
+	      "val": 0,
+	      "unit": "A",
+	      "pointid": "Conv2_Cur",
+	      "showdevtype": "",
+	      "time": 1532653279000
+	    },
+	    {
+	      "sourceid": "000002",
+	      "unit": "",
+	      "pointid": "Stat",
+	      "showdevtype": ""
+	    }
+	      ],
+	      "category": "供回水温度",
+	      "lineData":[],
+	      "lastTime":1532653279000,
+	      "type": "0"
+	    }
+	]
+	}
+	 * </pre>
+	 * 
+	 */
+    }
+
+    @PostMapping("/alarm/count")
+    public Root alarmCount(@RequestBody List<String> stationIds) {
+	Integer alarmCount = alarmService.alarmCount();
+	JSONObject j = new JSONObject();
+	j.put("alarm", alarmCount);
+	return success(alarmCount);
+    }
+
+    /**
+     * 报警统计
+     */
+    @PostMapping("/alarm/stat")
+    public Root alarmStat(@RequestBody List<String> stationIds) throws Exception {
+	if (stationIds == null || stationIds.size() == 0) {
+	    stationIds = checkStationIds();
+	}
+	Map<String, Object> alarmStatistics = alarmService.findAlarmStatistics(stationIds);
+	Object data = new JSONObject(alarmStatistics);
+	return success(data);
+	/**
+	 * <pre>
+	 * {
+	      "code": 0,
+	      "msg": "操作成功",
+	      "data": {
+	        "newestAlarm": 3,
+	        "finishAlarm": 720,
+	    	"normal": "720",
+	        "exigency": 480,
+	        "todayAlarm": 1200,
+	        "noFinishAlarm": 480,
+	        "type": [
+	          {
+	            "type": "low_value",
+	            "typeName":"低值报警",
+	            "total": 400
+	          },
+	          {
+	            "type": "high_value",
+	            "typeName": "高值报警",
+	            "total": 400
+	          },
+	          {
+	            "type": "low_low_value",
+	            "typeName": "低低值报警",
+	            "total": 400
+	          },
+	          {
+	            "type": "high_high_value",
+	            "typeName": "高高值报警",
+	            "total": 400
+	          }
+	          ,
+	          {
+	            "type": "high_rate",
+	            "typeName": "快速升高报警",
+	            "total": 400 
+	          }
+	        ]
+	      }
+	    }
+	 * </pre>
+	 * 
+	 * 
+	 */
+    }
+
+    private List<String> checkStationIds() throws Exception {
+	Set<String> temp = Sets.newHashSet();
+	List<SystemInfoVo> sysInfos = stationService
+		.findSystemByUserId(/* UserUtils.getUserId() */"95277");
+	if (sysInfos != null && sysInfos.size() != 0) {
+	    sysInfos.forEach(s -> {
+		temp.add(s.getStationId());
+	    });
+	}
+	// return new ArrayList<>(temp); TODO
+	return Arrays.asList("1", "2");
+    }
+
+    /**
+     * 查询字典
+     */
+    @RequestMapping("/typeMst")
+    public Root typeMst(@RequestBody List<String> typeKbns) {
+	List<TypeMst> typeMsts = typeMstService.getDownInfoByTypeKbns(typeKbns);
+	Object data = JSONArray.toJSON(typeMsts);
+	return success(data);
+    }
+
+    /**
+     * 报警日志列表
+     */
+    @PostMapping("/alarm/list")
+    public Root alarms(@RequestBody AlarmsQuery query) throws Exception {
+	if (query.getStationIds() == null || query.getStationIds().size() == 0) {
+	    query.setStationIds(checkStationIds());
+	}
+	/** 默认查询未处理 */
+	query.setResult(null == query.getResult() ? 0 : query.getResult());
+	query.setResultTime(null);
+	query.setAlarmTime(StringUtils.isBlank(query.getAlarmTime())
+		? AppTools.curDateStr(CKey.YMD_) : query.getAlarmTime());
+	query.setOffset((query.getPage() - 1) * query.getPageSize()); // 滚动分页,不需要处理边界
+	Integer alarmTotal = alarmService.alarmTotal(query);
+	List<AlarmInfoVo> alarms = alarmService.findAlarms(query);
+	Cond cond = new Cond();
+	cond.setPage(query.getPage());
+	cond.setTotal(alarmTotal);
+	return success(JSONArray.toJSON(alarms), cond);
+	/**
+	 * <pre>
+	 * {
+	      "code": 0,
+	      "msg": "操作成功",
+	      "data": 
+	        [{
+	          "devId": "1",
+	          "resultTime": 1539049708000,
+	          "val": "123",
+	          "valset": "123",
+	          "level": "1",
+	          "sysId": "1",
+	          "resultPerson": "王基伟",
+	          "primaryId": "1",
+	          "type": "1",
+	          "typeName":"低值报警",
+	          "result": 1,
+	          "companyId": "1",
+	          "des": "1",
+	          "beginTime": 1543303818000,
+	          "endTime": 1543248000000,
+	          "commuityId": "1",
+	          "stationId": "1"
+	        }]
+	      "cond":{"total":55,"page":1}
+	    }
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 报警确认
+     */
+    @PostMapping("/alarm/verify")
+    public Root verifyAlarm(@RequestBody List<String> alarmIds) throws Exception {
+	if (alarmIds != null && alarmIds.size() != 0) {
+	    // String userId = UserUtils.getUserId();
+	    String userId = "9527";
+	    alarmService.verifyAlarm(userId, alarmIds);
+	}
+	return success(null);
+    }
+
+    /**
+     * 操作日志
+     */
+    @PostMapping("/alarm/operations")
+    public Root alarmOperations(@RequestBody AlarmsQuery query) throws Exception {
+	if (query.getStationIds() == null || query.getStationIds().size() == 0) {
+	    query.setStationIds(checkStationIds());
+	}
+	/** 默认查询处理过的日志 */
+	query.setResult(1);
+	query.setAlarmTime(null);
+	query.setResultTime(StringUtils.isBlank(query.getResultTime())
+		? AppTools.curDateStr(CKey.YMD_) : query.getResultTime());
+	query.setOffset((query.getPage() - 1) * query.getPageSize());
+	Integer alarmTotal = alarmService.alarmTotal(query);
+	List<AlarmInfoVo> alarms = alarmService.findAlarms(query);
+	Cond cond = new Cond();
+	cond.setPage(query.getPage());
+	cond.setTotal(alarmTotal);
+	return success(JSONArray.toJSON(alarms), cond);
+    }
+
+    /**
+     * 参数列表页
+     */
+    @RequestMapping("/param/list")
+    public Root paramList(String stationId) {
+	Collection<ParamGroupVo> pgs = this.paramDetailService.findParamList(stationId);
+	Object data = JSONArray.toJSON(pgs);
+	return success(data);
+	/**
+	 * <pre>
+	 * {
+	    "code": 0,
+	    "msg": "操作成功",
+	    "data": [
+	        {
+	            "showdevtypes": [
+	                {
+	                    "showdevtype": "1",
+	                    "showdevtypeName": "热泵"
+	                }
+	            ],
+	            "group": "设备参数"
+	        },
+	        {
+	            "showdevtypes": [
+	                {
+	                    "showdevtype": "2",
+	                    "showdevtypeName": "1#循环泵"
+	                }
+	            ],
+	            "group": "设备参数1"
+	        }
+	    ]
+	}
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 参数指标实时数据
+     */
+    @PostMapping("/param/{stationId}/{showdevtype}")
+    public Root paramRunningData(@PathVariable String stationId, @PathVariable String showdevtype) {
+
+	List<StationDataPointVo> sdp = this.paramDetailService.findRunningDataByParam(stationId,
+		showdevtype);
+	Date maxTime = AppTools
+		.extremeValue(sdp, (a, b) -> a.getTime().compareTo(b.getTime()), "max").getTime();
+	JSONObject obj = new JSONObject();
+	obj.put("lastTime", maxTime.getTime());
+	obj.put("metrics", sdp);
+	return success(obj);
+
+	/**
+	 * <pre>
+	 * {
+	    "code":0,
+	    "data":{
+	        "lastTime":1539743823143,
+	        "metrics":[
+	            {
+	                "pointName":"一次回压",
+	                "pointid":"asd",
+	                "showdevtype":"type1",
+	                "time":1539743823073,
+	                "val":5.5
+	            },
+	            {
+	                "pointName":"一次回压",
+	                "pointid":"asd",
+	                "showdevtype":"type1",
+	                "time":1539743823073,
+	                "val":5.5
+	            }
+	        ]
+	    },
+	    "msg":"操作成功"
+	  }
+	 * </pre>
+	 */
+    }
+
+    /**
+     * 指定参数曲线历史数据
+     * 
+     * @throws Exception
+     */
+    @PostMapping("/param/{stationId}/{showdevtype}/{pointid}")
+    public Root paramHistory(@PathVariable String stationId, @PathVariable String showdevtype,
+	    @PathVariable String pointid, @RequestBody ParamQuery paramQuery) throws Exception {
+	// TODO 分页
+	List<LineData> his = this.paramDetailService.findHistory(stationId, pointid, paramQuery);
+	Object data = JSONArray.toJSON(his);
+
+	return success(data);
+	/**
+	 * <pre>
+	 * {
+	    "code":0,
+	    "data":[
+	        {
+	            "val":5.5,
+	            "time":1539743430547
+	        },
+	        {
+	            "val":7.5,
+	            "time":1539743430548
+	        },
+	        {
+	            "val":6.5,
+	            "time":1539743430548
+	        },
+	        {
+	            "val":5.5,
+	            "time":1539743430548
+	        }
+	    ],
+	    "msg":"操作成功"
+	}
+	 * </pre>
+	 * 
+	 */
+    }
+
+    /**
+     * 参数历史数据列表
+     */
+    @PostMapping("/param/{stationId}/{pointid}/list")
+    public Root paramHistoryList(@PathVariable String stationId, @PathVariable String pointid,
+	    @RequestBody ParamQuery paramQuery) throws Exception {
+
+	return success();
+    }
+
+}

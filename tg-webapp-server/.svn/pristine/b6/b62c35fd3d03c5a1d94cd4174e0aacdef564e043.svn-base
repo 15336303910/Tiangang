@@ -1,0 +1,641 @@
+package cn.plou.web.heatManage.housecontrol.service.impl;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.ServletRequest;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.common.utils.DateUtil;
+import cn.plou.common.utils.JBeanUtils;
+import cn.plou.web.common.config.KafkaKey;
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.CommonServiceImp;
+import cn.plou.web.common.utils.Support;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.heatManage.history.domain.HeatMeterDataDO;
+import cn.plou.web.heatManage.history.domain.WkfDataDO;
+import cn.plou.web.heatManage.history.service.HistoryDataService;
+import cn.plou.web.heatManage.housecontrol.dao.HouseControlDao;
+import cn.plou.web.heatManage.housecontrol.domain.HouseControlDetail;
+import cn.plou.web.heatManage.housecontrol.domain.HouseControlDO;
+import cn.plou.web.heatManage.housecontrol.domain.HouseControlHisDO;
+import cn.plou.web.heatManage.housecontrol.domain.HouseControlInfoDO;
+import cn.plou.web.heatManage.housecontrol.domain.KVPoint;
+import cn.plou.web.heatManage.housecontrol.service.HouseControlService;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.station.entity.Station;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.meterMessage.mbus.entity.Mbus;
+import cn.plou.web.system.meterMessage.mbus.service.MbusService;
+import cn.plou.web.system.meterMessage.meter.service.MeterService;
+import cn.plou.web.system.permission.role.service.DataRoleService;
+
+@Component
+@Slf4j
+public class HouseControlServiceImpl implements HouseControlService {
+
+	@Autowired
+	private HouseControlDao houseControlDao;
+	@Autowired
+	private CommuityService commuityService;
+	@Autowired
+	private HistoryDataService historyDataServicve;
+	@Autowired
+	private StationService stationService;
+	@Autowired
+	private MbusService mbusService;
+	@Autowired
+	private MeterService meterService;
+	@Autowired
+	private TypeMstService typeMstService;
+	@Autowired
+	private DataRoleService dataRoleService;
+	@Autowired
+	private CommonServiceImp commonServiceImp;
+	
+	private String getMapValue(Map<String, Object> map, String mapName) {
+		if (map.get(mapName) != null) {
+			return map.get(mapName).toString();
+		}
+		return null;
+	}
+
+	private Object getMapValueO(Map<String, Object> map, String mapName) {
+		if (map.get(mapName) != null) {
+			return map.get(mapName);
+		}
+		return null;
+	}
+
+	@Override
+	public String houseControl(Map<String, Object> maps) {
+		
+		 try {
+			Object oid = maps.get("id");
+			ArrayList<String> ids = new ArrayList<>();
+			if(oid != null){
+				ids = (ArrayList<String>) maps.get("id");
+			}
+			
+			String location = getMapValue(maps,"location");
+			String type = getMapValue(maps,"type");
+			String valveControl = getMapValue(maps,"valveControl");
+			if(valveControl == null){
+				valveControl = getMapValue(maps,"meterControl");
+			}
+			if(valveControl== null){
+				return "1";
+			}
+			
+			if(type == null){
+				return "缺少必要参数";
+			}
+			String para1 = getMapValue(maps,"para1");
+			if(para1 == null || para1.isEmpty()){
+				para1 = getMapValue(maps,"executionStep");
+			}
+//			Map<String, String> condiMap = (Map<String, String>) (maps.get("map"));
+			String strids = "";
+			String companyId = getMapValue(maps,"companyId");
+				if (location == null && !type.equals("house")) {
+					log.error("页面参数为空");
+					return "缺少必要参数";
+				}
+				if (ids.size() == 0 && type.equals("house")) {
+					log.error("页面参数为空");
+					return "缺少必要参数";
+				}
+				if (ids.size() != 0) {
+					strids = ids.get(0);
+					for (int i = 1; i < ids.size(); i++) {
+						strids += "," + ids.get(i);
+					}
+				}
+			HouseControlDO housecontrol = new HouseControlDO();
+
+			if (type.equals("company")) {
+				housecontrol.setNodeSelect("substring(consumer_id, 0, 5) = '"+location+"'");
+			} else if (type.equals("station")) {
+				String commuitys = getCommuityIdByStationId(location);
+				if(commuitys.isEmpty()){
+					return "";
+				}
+				housecontrol.setNodeSelect("substring(consumer_id, 0, 10) in ("+commuitys+")");
+			} else if (type.equals("commuity")) {
+				housecontrol.setNodeSelect("substring(consumer_id, 0, 15) = '"+location+"'");
+			} else if (type.equals("building")) {
+				housecontrol.setNodeSelect("substring(consumer_id, 0, 15) = '"+location+"'");
+			} else if (type.equals("unit")) {
+				housecontrol.setNodeSelect("substring(consumer_id, 0, 15) = '"+location+"'");
+			} else if (type.equals("house")) {
+				housecontrol.setIdSelect(strids);
+			}
+			//没有公司信息的时候，得自己取一个
+			if (companyId == null && location != null) {
+				if (type.equals("station")) {
+					Station station = stationService.getStationById(location);
+					companyId = station.getCompanyId();
+				} else {
+					companyId = location.substring(0, 5);
+				}
+			}else if(companyId == null){
+				Mbus mbus = mbusService.getMbusById(ids.get(0));
+				if(mbus!= null){
+					companyId = mbusService.getMbusById(ids.get(0)).getCompanyId();
+				}
+			}
+//			for(String strkey:condiMap.keySet()){
+				housecontrol.setControlType(valveControl);
+				//if(condiMap.get(strkey) !=null){
+				housecontrol.setPara1(para1);
+				//}
+				String uuids = UUID.randomUUID().toString().replace("-", "");
+				housecontrol.setPrimaryId(uuids);
+				housecontrol.setCompanyId(companyId);
+				houseControlDao.insertControl(housecontrol);
+				//kafka
+				JSONObject obj = new JSONObject();
+				obj.put("primary_id", uuids);
+			 Support.kafkaProducer.send(KafkaKey.CONTROL_TOPIC, obj.toString());
+//			}
+			return "";
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			return ex.getMessage();
+		}
+	}
+
+	private String getCommuityIdByStationId(String location) {
+		List<String> vstr = commuityService.getCommuityIdsList("", location, "");
+		if (vstr.size() == 0) {
+			return "";
+		}
+		String strs = "'" + vstr.get(0) + "'";
+		for (int i = 1; i < vstr.size(); i++) {
+			String str = ",'" + vstr.get(0) + "'";
+			strs += str;
+		}
+		return strs;
+	}
+
+	private JSONArray getReadAndTime() {
+		JSONArray arry2 = new JSONArray();
+		JSONArray arryread = new JSONArray();
+		{
+			JSONObject objvalveConl1 = new JSONObject();
+			objvalveConl1.put("colname", "实时读取");
+			objvalveConl1.put("colid", "1");
+
+			arryread.add(objvalveConl1);
+		}
+		JSONObject objread = new JSONObject();
+		objread.put("context", arryread);
+		objread.put("name", "实时读取");
+		arry2.add(objread);
+
+		JSONArray arrytime = new JSONArray();
+		{
+			JSONObject objvalveConl1 = new JSONObject();
+			objvalveConl1.put("colname", "校时");
+			objvalveConl1.put("colid", "28");
+			arrytime.add(objvalveConl1);
+		}
+		JSONObject objtime = new JSONObject();
+		objtime.put("context", arrytime);
+		objtime.put("name", "校时");
+		arry2.add(objtime);
+		return arry2;
+	}
+
+	// private JSONObject getTempValveObjCommond() {
+	// JSONArray arry2 = getReadAndTime();
+	//
+	// JSONArray arry = new JSONArray();
+	// String[] strcolid = { "2", "3", "4", "5" };
+	// String[] strcolname = { "锁定开", "锁定关", "解锁", "锁定" };
+	// for (int i = 0; i < strcolid.length; i++) {
+	// JSONObject objs = new JSONObject();
+	// objs.put("colname", strcolname[i]);
+	// objs.put("colid", strcolid[i]);
+	// arry.add(objs);
+	// }
+	// JSONObject objModel = new JSONObject();
+	// objModel.put("context", arry);
+	// objModel.put("name", "锁定模式");
+	//
+	// arry2.add(objModel);
+	//
+	// JSONObject objmeter = new JSONObject();
+	// objmeter.put("dev", "02");
+	// objmeter.put("text", arry2);
+	//
+	// return objmeter;
+	// }
+	// private JSONObject getBalValveObjCommond() {
+	// JSONArray arry2 = getReadAndTime();
+	//
+	// JSONArray arry = new JSONArray();
+	// String[] strcolid = { "4", "5", "8", "11", "12", "33" };
+	// String[] strcolname = {"解锁", "锁定", "固定开度", "全开", "全关", "开度设置" };
+	// for (int i = 0; i < strcolid.length; i++) {
+	// JSONObject objs = new JSONObject();
+	// objs.put("colname", strcolname[i]);
+	// objs.put("colid", strcolid[i]);
+	// arry.add(objs);
+	// }
+	// JSONObject objModel = new JSONObject();
+	// objModel.put("context", arry);
+	// objModel.put("name", "锁定模式");
+	//
+	// arry2.add(objModel);
+	//
+	// JSONObject objmeter = new JSONObject();
+	// objmeter.put("dev", "09");
+	// objmeter.put("text", arry2);
+	// return objmeter;
+	// }
+
+	private void convertTypeLocation(Map<String, Object> map) {
+		String type = "";
+		String location = getMapValue(map, "location");
+		// 组织相关字段
+		type = getMapValue(map, "type");
+		if (type.equals("company")) {
+			map.put("companyId", location);
+		} else if (type.equals("station")) {
+			map.put("stationId", location);
+		} else if (type.equals("commuity")) {
+			map.put("commuityId", location);
+		} else if (type.equals("building") || type.equals("build")) {
+			map.put("buildingNo", location);
+		} else if (type.equals("unit")) {
+			map.put("unitId", location);
+		} else if (type.equals("house")) {
+			ArrayList<String> ids = (ArrayList<String>) map.get("id");
+			if (ids != null && ids.size() != 0) {
+				map.put("houseIds", getInListString(ids));
+			}
+		}
+    Boolean flag = dataRoleService.getDataRoleItemsType(UserUtils.getUserId(), map);
+    String page = getMapValue(map, "page");
+    if(page != null){
+    	page = (Integer.parseInt(page)-1)*Integer.parseInt(getMapValue(map, "pageSize"))+"";
+    	map.put("page", page);
+    }
+	}
+
+	@Override
+	public Root controlInfoList(Map<String, Object> map) {
+		Root root = new Root();
+		List<HouseControlInfoDO> runningDataTotalList = getControlInfo(map);
+		Integer cout = houseControlDao.controlInfoListCount(map);
+		setRootCond(root, map, cout);
+		root.setData(JSON.toJSON(runningDataTotalList));
+		return root;
+	}
+
+	@Override
+	public int controlInfoListCount(Map<String, Object> map) {
+		// convertTypeLocation(map); //为了造假数据屏蔽了
+		return houseControlDao.controlInfoListCount(map);
+	}
+
+	@Override
+	public Root operControlInfo(Map<String, Object> params) {
+		Root root = new Root();
+		String strdes = houseControl(params);
+		if(!strdes.equals("1")){
+			if (!strdes.isEmpty()) {
+				root.setCode(1);
+				root.setMsg(strdes);
+			}
+			return root;
+		}
+		if (params.size() <= 4) {
+			root.setCode(1);
+			root.setMsg("缺少必要的参数");
+			return root;
+		}
+		convertTypeLocation(params); // 转换接口
+		List<HouseControlInfoDO> datas = houseControlDao.controlInfoList(params);
+
+		houseControlDao.operControlInfo(params);
+		List<HouseControlHisDO> his = orderControlHis(datas, params);
+		esUpdateControlInfoHistory(his);
+		root.setData(getControlTime(params));
+		return root;
+	}
+
+	private void esUpdateControlInfoHistory(List<HouseControlHisDO> his) {
+		List<Map<String, Object>> twosmap = JBeanUtils.objectsToMaps(his);
+		Support.es.bulkAdd("house_control_his", twosmap);
+	}
+
+	private List<HouseControlHisDO> orderControlHis(List<HouseControlInfoDO> datas, Map<String, Object> params) {
+		List<HouseControlHisDO> his = new ArrayList<HouseControlHisDO>();
+		String time = DateUtil.getSysdateTimeString();
+		for (HouseControlInfoDO dat : datas) {
+			for (String key : params.keySet()) {
+				String des = "";
+				String orgVal = "";
+				if ("flowingIndex".equals(key)) {
+					des = "更改流量指标";
+					orgVal = dat.getFlowingIndex() + "";
+				} else if ("flowUpperRatio".equals(key)) {
+					des = "更改流量上限比";
+					orgVal = dat.getFlowUpperRatio() + "";
+				} else if ("flowGiveMode".equals(key)) {
+					des = "更改流量给定方式";
+					orgVal = dat.getFlowGiveMode() + "";
+				} else if ("calKind".equals(key)) {
+					des = "更改算法选择";
+					orgVal = dat.getCalKind() + "";
+				} else if ("maxFlowThreshold".equals(key)) {
+					des = "更改流量阈值";
+					orgVal = dat.getMaxFlowThreshold() + "";
+				} else if ("flowUpperValue".equals(key)) {
+					des = "更改流量上限值";
+					orgVal = dat.getFlowUpperValue() + "";
+				} else if ("controlCommond".equals(key)) {
+					des = "更改控制动作指令";
+					orgVal = dat.getControlCommond() + "";
+				} else if ("adjustModel".equals(key)) {
+					des = "更改调节方式";
+					orgVal = dat.getAdjustModel() + "";
+				}
+				if (!des.isEmpty()) {
+					HouseControlHisDO hisda = new HouseControlHisDO();
+					hisda.setMeterId(dat.getMeterId());
+					hisda.setOperater(UserUtils.getUserId());
+					hisda.setOpTime(time);
+					hisda.setNowVal(params.get(key).toString());
+					hisda.setOrgVal(orgVal);
+					hisda.setText(des);
+					his.add(hisda);
+				}
+			}
+		}
+		return null;
+	}
+
+	private Integer getControlTime(Map<String, Object> params) {
+		return 0;
+	}
+
+	Root viladHisParam(Map<String, Object> map) {
+		Root root = new Root();
+		if (map.get("id") == null) {
+			// || map.get("order")== null || map.get("pageSize")== null ||
+			// map.get("sortby") == null ||map.get("page")== null){
+			root.setMsg("必要参数缺失");
+			root.setCode(1);
+			return root;
+		}
+		return root;
+	}
+
+	@Override
+	public Root getControlDetailInfo(Map<String, Object> map) {
+		// String beginTime,String endTime,String heatStatus,String type,String
+		// id，String useHeatStatus,String houseType
+		Root root = viladHisParam(map);
+		if (root.getCode() == 1) {
+			return root;
+		}
+		Root datCount = new Root();
+		HouseControlDetail datas = esControlDetail(map, datCount);
+
+		root.setData(JSON.toJSON(datas));
+		return root;
+	}
+
+	private HouseControlDetail esControlDetail(Map<String, Object> map, Root datCount) {
+		String meterId = map.get("id").toString();
+		HouseControlDetail det = new HouseControlDetail();
+		// 添加时间限制 7天
+		Long date1 = DateUtil.getSysdateLong() - 7 * 3600 * 1000;
+		Long date2 = DateUtil.getSysdateLong();
+		String sdate1 = DateUtil.toDateTimeString(date1);
+		String sdate2 = DateUtil.toDateTimeString(date2);
+		map.put("readtime", sdate1 + "," + sdate2);
+		List<HeatMeterDataDO> rundatasM = historyDataServicve.esMeterAll(map);
+		List<WkfDataDO> rundatasV = historyDataServicve.esWkfDataAll(map);
+		det.setFlowSpeed(new ArrayList<KVPoint>());
+		det.setInTemperature(new ArrayList<KVPoint>());
+		det.setStepTotal(new ArrayList<KVPoint>());
+		det.setMeterId(meterId);
+		for (HeatMeterDataDO run : rundatasM) {
+			KVPoint point1 = new KVPoint();
+			String strTime = run.getSysReadTime();
+			point1.setTime(strTime);
+			point1.setVal(run.getFlowSpeed() + "");
+			det.getFlowSpeed().add(point1);
+			KVPoint point2 = new KVPoint();
+			point2.setTime(strTime);
+			point2.setVal(run.getInTemperature() + "");
+			det.getInTemperature().add(point2);
+		}
+		for (WkfDataDO run : rundatasV) {
+			KVPoint point3 = new KVPoint();
+			point3.setTime(run.getSysReadTime());
+			point3.setVal(run.getStepTotal() + "");
+			det.getStepTotal().add(point3);
+		}
+
+		// Long date = DateUtil.getSysdateLong() - 7*3600*1000;
+		// for(int i = 0 ; i <7; i++){
+		// KVPoint point1 = new KVPoint();
+		// point1.setTime(DateUtil.toDateTimeString(date));
+		// point1.setVal(new Float(1+0.1*i).toString());
+		// det.getFlowSpeed().add(point1);
+		// KVPoint point2 = new KVPoint();
+		// point2.setTime(DateUtil.toDateTimeString(date));
+		// point2.setVal(new Float(20+0.1*i).toString());
+		// det.getInTemperature().add(point2);
+		// KVPoint point3 = new KVPoint();
+		// point3.setTime(DateUtil.toDateTimeString(date));
+		// point3.setVal(new Integer(200*i).toString());
+		// det.getStepTotal().add(point3);
+		// date+=3600*1000;
+		// }
+		return det;
+	}
+
+	private void setRootCond(Root root, Map<String, Object> map, Integer total) {
+		String page = getMapValue(map, "page");
+		String pageSize = getMapValue(map, "pageSize");
+		String order = getMapValue(map, "order");
+		String sortby = getMapValue(map, "sortby");
+
+		root.setCond(Cond.getCond(Integer.getInteger(page), Integer.getInteger(pageSize), total, (String) order, (String) sortby));
+	}
+
+	@Override
+	public Root getControlHisInfo(Map<String, Object> map) {
+		List<HouseControlHisDO> datas = new ArrayList<HouseControlHisDO>();
+		Root root = viladHisParam(map);
+		if (root.getCode() == 1) {
+			return root;
+		}
+
+		Integer cout = getControlHisInfoCount(map);
+		if (cout == 0) {
+			setRootCond(root, map, 0);
+			root.setData(JSON.toJSON(datas));
+		}
+		datas = esControlHisInfo(map);
+		// for (int i = 0; i < 10; i++) {
+		// HouseControlHisDo dat = new HouseControlHisDo();
+		// dat.setOpTime("2018-07-31 00:0"+i+":00");
+		// dat.setOperater("王小明");
+		// dat.setOrgVal("2"+i);
+		// dat.setNowVal("2"+(i+1));
+		// dat.setText("阀门全开");
+		// datasT.add(dat);
+		// }
+		// 组合数据，将ID替换成名字，并补充对应字段
+		if (datas.size() == 0) {
+			setRootCond(root, map, 0);
+			root.setData(JSON.toJSON(datas));
+			return root;
+		}
+
+		setRootCond(root, map, cout);
+		root.setData(JSON.toJSON(datas));
+		return root;
+	}
+
+	private List<HouseControlHisDO> esControlHisInfo(Map<String, Object> map) {
+		List<HouseControlHisDO> datas = new ArrayList<HouseControlHisDO>();
+		String meterId = getMapValue(map, "id");
+		if (meterId.isEmpty()) {
+			return datas;
+		}
+		// page=1&pageSize=5
+		Integer limit = Integer.parseInt(getMapValue(map, "pageSize"));
+		Integer offset = Integer.parseInt(getMapValue(map, "page")) * limit;
+		String strsql = "select * from house_control_his where meterId='" + meterId + "' limit " + offset + "," + limit;
+		try {
+			ResultSet res = Support.querryFromEs(strsql);
+			if (res == null) {
+				return datas;
+			}
+			while (res.next()) {
+				try {
+					HouseControlHisDO dat = new HouseControlHisDO();
+					dat.setMeterId(meterId);
+					dat.setNowVal(res.getString("nowVal"));
+					dat.setOperater(res.getString("operater"));
+					dat.setOpTime(res.getString("opTime"));
+					dat.setOrgVal(res.getString("orgVal"));
+					dat.setText(res.getString("text"));
+					datas.add(dat);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return datas;
+	}
+
+	public Integer getControlHisInfoCount(Map<String, Object> params) {
+		String meterId = getMapValue(params, "id");
+		if (meterId.isEmpty()) {
+			return 0;
+		}
+		String strsql = "select count(*) as count from house_control_his where meterId='" + meterId + "'";
+		try {
+			ResultSet resCount = Support.querryFromEs(strsql);
+			if (resCount != null) {
+				if (resCount.next()) {
+					Double contd = resCount.getDouble("count");
+					return contd.intValue();
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("esCount error");
+		}
+		return 0;
+	}
+
+	@Override
+	public Root operDevInfo(Map<String, Object> params) {
+
+		Root root = new Root();
+		String strdes = houseControl(params);
+		if(!strdes.equals("1")){
+			if (!strdes.isEmpty()) {
+				root.setCode(1);
+				root.setMsg(strdes);
+			}
+			return root;
+		}
+		
+		if (params.size() <= 4) {
+			root.setCode(1);
+			root.setMsg("缺少必要的参数");
+			return root;
+		}
+		convertTypeLocation(params); // 转换接口
+		houseControlDao.operDevInfo(params);
+		root.setData(getControlTime(params));
+		return root;
+	}
+
+	private String getInListString(List<String> list) {
+		if (list.size() > 0) {
+			String str = "'" + list.get(0) + "'";
+			for (int i = 1; i < list.size(); i++) {
+				str += ",'" + list.get(i) + "'";
+			}
+			return str;
+		}
+		return "";
+	}
+
+	@Override
+	public void getUserDeviceIdToParams(Map<String, Object> params) {
+		Object oid = params.get("id");
+		if(oid == null){
+			return;
+		}
+		ArrayList<String> ids =  (ArrayList<String>) oid;
+		List<String> idsMeter = meterService.getAllIdsByConsumerIds(ids);
+		params.put("id", idsMeter);
+	}
+
+	private List<HouseControlInfoDO> getControlInfo(Map<String, Object> params){
+		convertTypeLocation(params); // 为了造假数据屏蔽了
+		List<HouseControlInfoDO> runningDataTotalList = houseControlDao.controlInfoList(params);
+		List<TypeMst> typeMstList = typeMstService.getAllTypeMst();
+		for(HouseControlInfoDO house:runningDataTotalList){
+			house.setControlCommond(typeMstService.getTypeNameById(typeMstList, house.getControlCommond()));
+		}
+		return runningDataTotalList;
+	}
+	
+	@Override
+	public String getControlInfoToExcel(Map<String, Object> params, ServletRequest request) {
+		params.put("offset", "0");
+		params.put("limit", "50000");
+ 		return commonServiceImp.getHisDataByGridNameToExcel(request, "metervalvecontrol", "main","表阀联控", getControlInfo(params),true);
+	}
+}

@@ -1,0 +1,158 @@
+package cn.plou.web.heatManage.diagnose.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.web.common.utils.CommonServiceImp;
+import cn.plou.web.common.utils.PageUtils;
+import cn.plou.web.common.utils.Query;
+import cn.plou.web.heatManage.diagnose.dao.MeterInfoDao;
+import cn.plou.web.heatManage.diagnose.domain.MbusInfoDO;
+import cn.plou.web.heatManage.diagnose.domain.MeterInfoDO;
+import cn.plou.web.heatManage.diagnose.service.MbusInfoService;
+import cn.plou.web.heatManage.diagnose.service.MeterInfoService;
+import cn.plou.web.heatManage.diagnose.vo.MeterInfoVO;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+
+
+
+@Service
+public class MeterInfoServiceImpl implements MeterInfoService {
+	@Autowired
+	private MeterInfoDao meterInfoDao;
+	@Autowired
+	private MeterInfoService meterInfoService;
+	@Autowired
+	private TypeMstService typeMstService;
+	@Autowired
+	private MbusInfoService mbusInfoService;
+	@Autowired
+	private CommonServiceImp commonService;
+	
+	@Override
+	public MeterInfoDO get(String meterId){
+		return meterInfoDao.get(meterId);
+	}
+	
+	@Override
+	public List<MeterInfoDO> list(Map<String, Object> map){
+		return meterInfoDao.list(map);
+	}
+	
+	@Override
+	public int count(Map<String, Object> map){
+		return meterInfoDao.count(map);
+	}
+	
+	@Override
+	public int save(MeterInfoDO meterInfo){
+		return meterInfoDao.save(meterInfo);
+	}
+	
+	@Override
+	public int update(MeterInfoDO meterInfo){
+		return meterInfoDao.update(meterInfo);
+	}
+	
+	@Override
+	public int remove(String meterId){
+		return meterInfoDao.remove(meterId);
+	}
+	
+	@Override
+	public int batchRemove(String[] meterIds){
+		return meterInfoDao.batchRemove(meterIds);
+	}
+
+	@Override
+	public List<MeterInfoDO> groupList(Map<String, Object> map) {
+		return meterInfoDao.groupList(map);
+	}
+
+	@Override
+	public MeterInfoVO getByBuilding(String consumerId) {
+		return meterInfoDao.getByBuilding(consumerId);
+	}
+
+	@Override
+	public int netErrorCount(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return meterInfoDao.netErrorCount(map);
+	}
+
+	@Override
+	public int deviceErrorCount(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return meterInfoDao.deviceErrorCount(map);
+	}
+	
+	@Override
+	public JSONArray getMeterStatusDetail(Map<String, Object> params) {
+		Query query = new Query(params);
+		List<MeterInfoDO> meterInfoList = meterInfoService.list(query);
+
+		JSONArray array = new JSONArray();
+		List<TypeMst> typeMstList = typeMstService.getAllTypeMst();
+		
+		for (MeterInfoDO meter : meterInfoList) {
+			JSONObject jsonObject = new JSONObject();
+			// 一户的信息
+			jsonObject.put("meterId", meter.getMeterId());
+			jsonObject.put("source", meter.getAddress());
+			jsonObject.put("deviceStatus", typeMstService.getTypeNameById(typeMstList, meter.getRunningState()));
+			if(meter.getMeterErrorTime()!=null) {
+				jsonObject.put("errorTime",  DateFormatUtils.format(meter.getMeterErrorTime(), "yyyy-MM-dd HH:mm:ss"));
+				jsonObject.put("errorDays",
+						Math.abs((new Date().getTime() - meter.getMeterErrorTime().getTime()) / 86400000));
+			}
+			MbusInfoDO mbus = mbusInfoService.get(meter.getMbusId());
+			if(mbus != null){
+				jsonObject.put("mbusCode", mbus.getMbusCode());
+				jsonObject.put("mbusNetState",typeMstService.getTypeNameById(typeMstList, mbus.getRunningState()));
+			}
+			jsonObject.put("compName", meter.getFactory());
+
+			array.add(jsonObject);
+		}
+		return array;
+	}
+	
+	@Override
+	public String diagnoseMeterToExcel(Map<String, Object> params, ServletRequest request) {
+		params.put("offset", "0");
+		params.put("limit", "50000");
+		JSONArray array = getMeterStatusDetail(params);
+ 		return commonService.getHisJSONArrayToExcel(request, "diagnoseMeter", "热表故障诊断",array);
+	}
+
+	@Override
+	public String diagnoseTmpToExcel(Map<String, Object> params, ServletRequest request) {
+		params.put("offset", "0");
+		params.put("limit", "50000");
+		JSONArray array = getMeterStatusDetail(params);
+ 		return commonService.getHisJSONArrayToExcel(request, "diagnoseTmp", "温控器故障诊断",array);
+	}
+
+	@Override
+	public String diagnoseWkToExcel(Map<String, Object> params, ServletRequest request) {
+		params.put("offset", "0");
+		params.put("limit", "50000");
+		JSONArray array = getMeterStatusDetail(params);
+ 		return commonService.getHisJSONArrayToExcel(request, "diagnoseWk", "温控阀故障诊断",array);
+	}
+	
+}

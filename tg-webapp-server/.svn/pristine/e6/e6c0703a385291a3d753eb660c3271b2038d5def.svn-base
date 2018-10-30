@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.diagnose.dao.MeterInfoDao">
+
+	<select id="get" resultType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
+		select
+		`meter_id`,`rowno`,`consumer_id`,`address_1st`,`address_2nd`,`protocol`,`mbus_id`,`mbus_pro`,`mbus_readmodel_id`,`repeater_id`,`meter_type`,`sim_card`,`running_state`,`install_address`,`meter_error_time`,`meter_position`,`super_meter_id`,`valve_meter_id`,`main_meter_id`,`use_start_date`,`next_check_time`,`install_height`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`memo3`,`memo4`,`create_date`,`create_user`,`update_date`,`update_user`,`basecode`,`meter_subtype`,`steel`,`water_address`,`meter_state`,`factory`,`diameter`,`precisiona`,`soft_ver`,`hard_ver`,`common_flow`,`minimum_flow`,`temperature_differ`,`temperature_range`,`baud_rate`,`max_bound`,`limtspeed`,`ctrlflag`,`isvalid`
+		from meter_info where meter_id = #{value}
+	</select>
+
+	<select id="getByBuilding" resultType="cn.plou.web.heatManage.diagnose.vo.MeterInfoVO">
+		select
+		sum(case meter_type when 'metertype_01' then 1 else 0 end) totalMeterCnts,
+		sum(case meter_type when 'metertype_04' then 1 else 0 end) totalFlowMeterCnts,
+		sum(case meter_type when 'metertype_02' then 1 else 0 end) totalWkfCnts,
+		sum(case meter_type when 'metertype_08' then 1 else 0 end) totalMbusCnts,
+		sum(case meter_type when 'metertype_09' then 1 else 0 end) totalPhfCnts,
+		sum(case meter_type when 'metertype_07' then 1 else 0 end) totalTmpCollectorCnts
+		from meter_info
+		<where>
+			<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+		</where>
+	</select>
+
+	<select id="list" resultType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
+		select
+		`meter_id`,`rowno`,`consumer_id`,`address_1st`,`address_2nd`,`protocol`,`mbus_id`,`mbus_pro`,`mbus_readmodel_id`,`repeater_id`,`meter_type`,`sim_card`,`running_state`,`install_address`,`meter_error_time`,`meter_position`,`super_meter_id`,`valve_meter_id`,`main_meter_id`,`use_start_date`,`next_check_time`,`install_height`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`memo3`,`memo4`,`create_date`,`create_user`,`update_date`,`update_user`,`basecode`,`meter_subtype`,`steel`,`water_address`,`meter_state`,`factory`,`diameter`,`precisiona`,`soft_ver`,`hard_ver`,`common_flow`,`minimum_flow`,`temperature_differ`,`temperature_range`,`baud_rate`,`max_bound`,`limtspeed`,`ctrlflag`,`isvalid`
+		from meter_info n
+		<where>
+			<if test="meterId != null and meterId != ''"> and meter_id = #{meterId} </if>
+			<if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and n.company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(n.consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<choose>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="address1st != null and address1st != ''"> and address_1st = #{address1st} </if>
+			<if test="address2nd != null and address2nd != ''"> and address_2nd = #{address2nd} </if>
+			<if test="protocol != null and protocol != ''"> and protocol = #{protocol} </if>
+			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
+			<if test="mbusPro != null and mbusPro != ''"> and mbus_pro = #{mbusPro} </if>
+			<if test="mbusReadmodelId != null and mbusReadmodelId != ''"> and mbus_readmodel_id = #{mbusReadmodelId} </if>
+			<if test="repeaterId != null and repeaterId != ''"> and repeater_id = #{repeaterId} </if>
+			<if test="meterType != null and meterType != ''"> and meter_type = #{meterType} </if>
+			<if test="simCard != null and simCard != ''"> and sim_card = #{simCard} </if>
+			<if test="runningState != null and runningState != ''"> and running_state = #{runningState} </if>
+			<if test="installAddress != null and installAddress != ''"> and install_address = #{installAddress} </if>
+			<if test="meterErrorTime != null and meterErrorTime != ''"> and meter_error_time = #{meterErrorTime} </if>
+			<if test="meterPosition != null and meterPosition != ''"> and meter_position = #{meterPosition} </if>
+			<if test="superMeterId != null and superMeterId != ''"> and super_meter_id = #{superMeterId} </if>
+			<if test="valveMeterId != null and valveMeterId != ''"> and valve_meter_id = #{valveMeterId} </if>
+			<if test="mainMeterId != null and mainMeterId != ''"> and main_meter_id = #{mainMeterId} </if>
+			<if test="useStartDate != null and useStartDate != ''"> and use_start_date = #{useStartDate} </if>
+			<if test="nextCheckTime != null and nextCheckTime != ''"> and next_check_time = #{nextCheckTime} </if>
+			<if test="installHeight != null and installHeight != ''"> and install_height = #{installHeight} </if>
+			<if test="longitude != null and longitude != ''"> and longitude = #{longitude} </if>
+			<if test="latitude != null and latitude != ''"> and latitude = #{latitude} </if>
+			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+			<if test="address != null and address != ''"> and address = #{address} </if>
+			<if test="notes != null and notes != ''"> and notes = #{notes} </if>
+			<if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
+			<if test="createUser != null and createUser != ''"> and create_user = #{createUser} </if>
+			<if test="updateDate != null and updateDate != ''"> and update_date = #{updateDate} </if>
+			<if test="updateUser != null and updateUser != ''"> and update_user = #{updateUser} </if>
+			<if test="basecode != null and basecode != ''"> and basecode = #{basecode} </if>
+			<if test="meterSubtype != null and meterSubtype != ''"> and meter_subtype = #{meterSubtype} </if>
+			<if test="steel != null and steel != ''"> and steel = #{steel} </if>
+			<if test="waterAddress != null and waterAddress != ''"> and water_address = #{waterAddress} </if>
+			<if test="meterState != null and meterState != ''"> and meter_state = #{meterState} </if>
+			<if test="factory != null and factory != ''"> and factory = #{factory} </if>
+			<if test="diameter != null and diameter != ''"> and diameter = #{diameter} </if>
+			<if test="precisiona != null and precisiona != ''"> and precisiona = #{precisiona} </if>
+			<if test="softVer != null and softVer != ''"> and soft_ver = #{softVer} </if>
+			<if test="hardVer != null and hardVer != ''"> and hard_ver = #{hardVer} </if>
+			<if test="commonFlow != null and commonFlow != ''"> and common_flow = #{commonFlow} </if>
+			<if test="minimumFlow != null and minimumFlow != ''"> and minimum_flow = #{minimumFlow} </if>
+			<if test="temperatureDiffer != null and temperatureDiffer != ''"> and temperature_differ = #{temperatureDiffer} </if>
+			<if test="temperatureRange != null and temperatureRange != ''"> and temperature_range = #{temperatureRange} </if>
+			<if test="baudRate != null and baudRate != ''"> and baud_rate = #{baudRate} </if>
+			<if test="maxBound != null and maxBound != ''"> and max_bound = #{maxBound} </if>
+			<if test="limtspeed != null and limtspeed != ''"> and limtspeed = #{limtspeed} </if>
+			<if test="ctrlflag != null and ctrlflag != ''"> and ctrlflag = #{ctrlflag} </if>
+			<if test="isvalid != null and isvalid != ''"> and isvalid = #{isvalid} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by meter_id desc
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="offset != null and limit != null">
+				limit #{offset}, #{limit}
+			</when>
+			<otherwise>
+				limit 0, 1000000
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="groupList" resultType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
+		select (select m.type_name from type_mst m where m.id =
+		n.running_state) name,
+		`running_state`,count(*) as cnts
+		from meter_info
+		n
+		<where>
+			<if test="meterType != null and meterType != ''"> and meter_type = #{meterType} </if>
+
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="meterType=='metertype_1'">
+					and n.running_state in
+					('meter_status_ERR','meter_status_ERR1','meter_status_ERR2','meter_status_ERR3','meter_status_ERR4','meter_status_ERR5','meter_status_ERR6','meter_status_ERR7','meter_status_F1','meter_status_F2','meter_status_F3','meter_status_F4','meter_status_F5','meter_status_F6','meter_status_F7')
+				</when>
+				<when test="meterType=='metertype_2'">
+					and n.running_state in
+					('valve_read_status_ERR1','valve_read_status_ERR2')
+				</when>
+				<when test="meterType=='metertype_7'">
+					and n.running_state =
+					'room_temperature_read_status_ERR1'
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+		group by running_state
+	</select>
+
+	<select id="netErrorCount" resultType="int">
+		select count(*) from meter_info m
+		<where>
+			meter_type = #{meterType}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="meterType=='metertype_1'">
+					and m.running_state in
+					('meter_status_ERR','meter_status_F5')
+				</when>
+				<when test="meterType=='metertype_2'">
+					and m.running_state = 'valve_read_status_ERR'
+				</when>
+				<when test="meterType=='metertype_7'">
+					and m.running_state =
+					'room_temperature_read_status_ERR'
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="deviceErrorCount" resultType="int">
+		select count(*) from meter_info m
+		<where>
+			meter_type = #{meterType}
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="meterType=='metertype_1'">
+					and m.running_state in
+					('meter_status_ERR','meter_status_ERR1','meter_status_ERR2','meter_status_ERR3','meter_status_ERR4','meter_status_ERR5','meter_status_ERR6','meter_status_ERR7','meter_status_F1','meter_status_F2','meter_status_F3','meter_status_F4','meter_status_F5','meter_status_F6','meter_status_F7')
+				</when>
+				<when test="meterType=='metertype_2'">
+					and m.running_state in
+					('valve_read_status_ERR1','valve_read_status_ERR2')
+				</when>
+				<when test="meterType=='metertype_7'">
+					and m.running_state =
+					'room_temperature_read_status_ERR1'
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from meter_info
+		<where>
+			<if test="meterId != null and meterId != ''"> and meter_id = #{meterId} </if>
+			<if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
+
+			<choose>
+				<when test="type=='company'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
+				</when>
+				<when test="type=='station'">
+					<if test="consumerId != null and consumerId != ''">
+						and substr(consumer_id,1,10) in(
+						select commuity_id from
+						commuity_info where station_id = #{consumerId}
+						)
+					</if>
+				</when>
+				<when test="type=='commuity'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
+				</when>
+				<when test="type=='building'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+
+			<if test="mbusId != null and mbusId != ''"> and mbus_id = #{mbusId} </if>
+			<if test="mbusPro != null and mbusPro != ''"> and mbus_pro = #{mbusPro} </if>
+			<if test="mbusReadmodelId != null and mbusReadmodelId != ''"> and mbus_readmodel_id = #{mbusReadmodelId} </if>
+			<if test="repeaterId != null and repeaterId != ''"> and repeater_id = #{repeaterId} </if>
+			<if test="meterType != null and meterType != ''"> and meter_type = #{meterType} </if>
+			<if test="simCard != null and simCard != ''"> and sim_card = #{simCard} </if>
+			<if test="runningState != null and runningState != ''"> and running_state = #{runningState} </if>
+			<if test="installAddress != null and installAddress != ''"> and install_address = #{installAddress} </if>
+			<if test="meterErrorTime != null and meterErrorTime != ''"> and meter_error_time = #{meterErrorTime} </if>
+			<if test="meterPosition != null and meterPosition != ''"> and meter_position = #{meterPosition} </if>
+			<if test="superMeterId != null and superMeterId != ''"> and super_meter_id = #{superMeterId} </if>
+			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+			<if test="meterState != null and meterState != ''"> and meter_state = #{meterState} </if>
+
+		</where>
+	</select>
+
+	<insert id="save" parameterType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
+		insert into meter_info
+		(
+		`meter_id`,
+		`rowno`,
+		`consumer_id`,
+		`address_1st`,
+		`address_2nd`,
+		`protocol`,
+		`mbus_id`,
+		`mbus_pro`,
+		`mbus_readmodel_id`,
+		`repeater_id`,
+		`meter_type`,
+		`sim_card`,
+		`running_state`,
+		`install_address`,
+		`meter_error_time`,
+		`meter_position`,
+		`super_meter_id`,
+		`valve_meter_id`,
+		`main_meter_id`,
+		`use_start_date`,
+		`next_check_time`,
+		`install_height`,
+		`longitude`,
+		`latitude`,
+		`company_id`,
+		`address`,
+		`notes`,
+		`memo1`,
+		`memo2`,
+		`memo3`,
+		`memo4`,
+		`create_date`,
+		`create_user`,
+		`update_date`,
+		`update_user`,
+		`basecode`,
+		`meter_subtype`,
+		`steel`,
+		`water_address`,
+		`meter_state`,
+		`factory`,
+		`diameter`,
+		`precisiona`,
+		`soft_ver`,
+		`hard_ver`,
+		`common_flow`,
+		`minimum_flow`,
+		`temperature_differ`,
+		`temperature_range`,
+		`baud_rate`,
+		`max_bound`,
+		`limtspeed`,
+		`ctrlflag`,
+		`isvalid`
+		)
+		values
+		(
+		#{meterId},
+		#{rowno},
+		#{consumerId},
+		#{address1st},
+		#{address2nd},
+		#{protocol},
+		#{mbusId},
+		#{mbusPro},
+		#{mbusReadmodelId},
+		#{repeaterId},
+		#{meterType},
+		#{simCard},
+		#{runningState},
+		#{installAddress},
+		#{meterErrorTime},
+		#{meterPosition},
+		#{superMeterId},
+		#{valveMeterId},
+		#{mainMeterId},
+		#{useStartDate},
+		#{nextCheckTime},
+		#{installHeight},
+		#{longitude},
+		#{latitude},
+		#{companyId},
+		#{address},
+		#{notes},
+		#{memo1},
+		#{memo2},
+		#{memo3},
+		#{memo4},
+		#{createDate},
+		#{createUser},
+		#{updateDate},
+		#{updateUser},
+		#{basecode},
+		#{meterSubtype},
+		#{steel},
+		#{waterAddress},
+		#{meterState},
+		#{factory},
+		#{diameter},
+		#{precisiona},
+		#{softVer},
+		#{hardVer},
+		#{commonFlow},
+		#{minimumFlow},
+		#{temperatureDiffer},
+		#{temperatureRange},
+		#{baudRate},
+		#{maxBound},
+		#{limtspeed},
+		#{ctrlflag},
+		#{isvalid}
+		)
+	</insert>
+
+	<update id="update" parameterType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
+		update meter_info
+		<set>
+			<if test="rowno != null">`rowno` = #{rowno}, </if>
+			<if test="consumerId != null">`consumer_id` = #{consumerId}, </if>
+			<if test="address1st != null">`address_1st` = #{address1st}, </if>
+			<if test="address2nd != null">`address_2nd` = #{address2nd}, </if>
+			<if test="protocol != null">`protocol` = #{protocol}, </if>
+			<if test="mbusId != null">`mbus_id` = #{mbusId}, </if>
+			<if test="mbusPro != null">`mbus_pro` = #{mbusPro}, </if>
+			<if test="mbusReadmodelId != null">`mbus_readmodel_id` = #{mbusReadmodelId}, </if>
+			<if test="repeaterId != null">`repeater_id` = #{repeaterId}, </if>
+			<if test="meterType != null">`meter_type` = #{meterType}, </if>
+			<if test="simCard != null">`sim_card` = #{simCard}, </if>
+			<if test="runningState != null">`running_state` = #{runningState}, </if>
+			<if test="installAddress != null">`install_address` = #{installAddress}, </if>
+			<if test="meterErrorTime != null">`meter_error_time` = #{meterErrorTime}, </if>
+			<if test="meterPosition != null">`meter_position` = #{meterPosition}, </if>
+			<if test="superMeterId != null">`super_meter_id` = #{superMeterId}, </if>
+			<if test="valveMeterId != null">`valve_meter_id` = #{valveMeterId}, </if>
+			<if test="mainMeterId != null">`main_meter_id` = #{mainMeterId}, </if>
+			<if test="useStartDate != null">`use_start_date` = #{useStartDate}, </if>
+			<if test="nextCheckTime != null">`next_check_time` = #{nextCheckTime}, </if>
+			<if test="installHeight != null">`install_height` = #{installHeight}, </if>
+			<if test="longitude != null">`longitude` = #{longitude}, </if>
+			<if test="latitude != null">`latitude` = #{latitude}, </if>
+			<if test="companyId != null">`company_id` = #{companyId}, </if>
+			<if test="address != null">`address` = #{address}, </if>
+			<if test="notes != null">`notes` = #{notes}, </if>
+			<if test="memo1 != null">`memo1` = #{memo1}, </if>
+			<if test="memo2 != null">`memo2` = #{memo2}, </if>
+			<if test="memo3 != null">`memo3` = #{memo3}, </if>
+			<if test="memo4 != null">`memo4` = #{memo4}, </if>
+			<if test="createDate != null">`create_date` = #{createDate}, </if>
+			<if test="createUser != null">`create_user` = #{createUser}, </if>
+			<if test="updateDate != null">`update_date` = #{updateDate}, </if>
+			<if test="updateUser != null">`update_user` = #{updateUser}, </if>
+			<if test="basecode != null">`basecode` = #{basecode}, </if>
+			<if test="meterSubtype != null">`meter_subtype` = #{meterSubtype}, </if>
+			<if test="steel != null">`steel` = #{steel}, </if>
+			<if test="waterAddress != null">`water_address` = #{waterAddress}, </if>
+			<if test="meterState != null">`meter_state` = #{meterState}, </if>
+			<if test="factory != null">`factory` = #{factory}, </if>
+			<if test="diameter != null">`diameter` = #{diameter}, </if>
+			<if test="precisiona != null">`precisiona` = #{precisiona}, </if>
+			<if test="softVer != null">`soft_ver` = #{softVer}, </if>
+			<if test="hardVer != null">`hard_ver` = #{hardVer}, </if>
+			<if test="commonFlow != null">`common_flow` = #{commonFlow}, </if>
+			<if test="minimumFlow != null">`minimum_flow` = #{minimumFlow}, </if>
+			<if test="temperatureDiffer != null">`temperature_differ` = #{temperatureDiffer}, </if>
+			<if test="temperatureRange != null">`temperature_range` = #{temperatureRange}, </if>
+			<if test="baudRate != null">`baud_rate` = #{baudRate}, </if>
+			<if test="maxBound != null">`max_bound` = #{maxBound}, </if>
+			<if test="limtspeed != null">`limtspeed` = #{limtspeed}, </if>
+			<if test="ctrlflag != null">`ctrlflag` = #{ctrlflag}, </if>
+			<if test="isvalid != null">`isvalid` = #{isvalid}</if>
+		</set>
+		where meter_id = #{meterId}
+	</update>
+
+	<delete id="remove">
+		delete from meter_info where meter_id = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from meter_info where meter_id in
+		<foreach item="meterId" collection="array" open="(" separator=","
+			close=")">
+			#{meterId}
+		</foreach>
+	</delete>
+</mapper>

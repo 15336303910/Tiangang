@@ -1,0 +1,106 @@
+package cn.plou.web.balance.dataAnalysis.entity;
+
+import java.math.BigDecimal;
+
+public class HeatDistributionData {
+
+    private String companyId;
+
+    // 换热站Id
+    private String stationId;
+
+    private String station;
+
+    // 楼号
+    private String buildNo;
+
+    // 瞬时流量
+    private BigDecimal flowSpeed;
+
+    // 累计热量
+    private String heat;
+
+    // 耗热指标
+    private BigDecimal heatingIndex;
+
+    // 流量指标指标
+    private BigDecimal flowingIndex;
+
+    // 室温指标
+    private BigDecimal roomTemperatureRead;
+
+    // 设备故障
+    private String equipmentIssue;
+
+    // 通讯故障
+    private String communicationIssue;
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String primaryId) {
+        this.companyId = companyId == null ? null : companyId.trim();
+    }
+
+    public String getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(String stationId) {
+        this.stationId = stationId == null ? null : stationId.trim();
+    }
+
+    public String getStation() {
+        return station;
+    }
+
+    public void setStation(String station) {
+        this.station = station ;
+    }
+
+    public String getBuildNo() {
+        return buildNo;
+    }
+
+    public void setBuildNo(String buildNo) {
+        this.buildNo = buildNo;
+    }
+
+    public BigDecimal getFlowSpeed() {
+        return flowSpeed;
+    }
+
+    public void setFlowSpeed(BigDecimal flowSpeed) {
+        this.flowSpeed = flowSpeed;
+    }
+    public String getHeat() {
+        return heat;
+    }
+
+    public void setHeat(String heat) {
+        this.heat = heat;
+    }
+    public BigDecimal getHeatingIndex() {
+        return heatingIndex;
+    }
+
+    public void setHeatingIndex(BigDecimal heatingIndex) {
+        this.heatingIndex = heatingIndex;
+    }
+    public BigDecimal getFlowingIndex() {
+        return flowingIndex;
+    }
+
+    public void setFlowingIndex(BigDecimal flowingIndex) {
+        this.flowingIndex = flowingIndex;
+    }
+
+    public BigDecimal getRoomTemperatureRead() {
+        return roomTemperatureRead;
+    }
+
+    public void setRoomTemperatureRead(BigDecimal roomTemperatureRead) {
+        this.roomTemperatureRead = roomTemperatureRead;
+    }
+}

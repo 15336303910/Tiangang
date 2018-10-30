@@ -1,0 +1,151 @@
+package cn.plou.web.balance.regulate.controller;
+import cn.plou.web.balance.distribution.vo.BalanceValveDataNowSelectInfo;
+import cn.plou.web.balance.distribution.vo.SearchCondition;
+import cn.plou.web.balance.regulate.service.RegulateService;
+import cn.plou.web.balance.regulate.vo.BalanceValveDataNowBatch;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.system.permission.userDataHistory.entity.UserDataHistory;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.UserPageHistoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@EnableSwagger2
+//@RequestMapping("${balancePath}/regulate")
+@RequestMapping("balance/regulate")
+@Api(description = "平衡控制")
+public class RegulateController {
+    @Autowired
+    private RegulateService regulateService;
+    @Autowired
+    private UserPageHistoryService userPageHistoryService;
+    @ApiOperation(value = "获取平衡阀值列表")
+    @PostMapping("/getBalanceDataList")
+    //@RequiresPermissions("")
+    public Root getBalanceDataList(@RequestBody BalanceValveDataNowSelectInfo balanceValveDataNowSelectInfo){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("getBalanceDataList");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        Root root =  regulateService.getBalanceDataList(balanceValveDataNowSelectInfo.getSearchCondition()
+            ,balanceValveDataNowSelectInfo.getCompanyId(),balanceValveDataNowSelectInfo.getStationId(),balanceValveDataNowSelectInfo.getCommuityId(),balanceValveDataNowSelectInfo.getBuildingId(),balanceValveDataNowSelectInfo.getSortby(),balanceValveDataNowSelectInfo.getOrder(),
+            balanceValveDataNowSelectInfo.getPage(),balanceValveDataNowSelectInfo.getPageSize());
+        return root;
+    }
+
+    public String getStringByIds(List<String> meterIdList,String consumerId){
+        String meterIds = "";
+        if(meterIdList != null){
+            if(meterIdList.size()==1){
+                meterIds += meterIdList.get(0);
+            }else{
+                for(int i=0;i<meterIdList.size();i++){
+                    if(i<meterIdList.size()-1){
+                        meterIds += meterIdList.get(i) +",";
+                    }else{
+                        meterIds += meterIdList.get(i);
+                    }
+                }
+            }
+        }else{
+            meterIds +=  consumerId +"整个层级的仪表";
+        }
+        return meterIds;
+    }
+
+    @ApiOperation(value = "控制操作")
+    @PostMapping("/operationSingle")
+    //@RequiresPermissions("")
+    public Root regulateOperationSingle(@RequestBody BalanceValveDataNowBatch balanceValveDataNowBatch){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("regulateOperationSingle");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        UserDataHistory userDataHistory = new UserDataHistory();
+        userDataHistory.setPage("regulate");
+        userDataHistory.setInfo("平衡阀控制操作，平衡阀表号:"+getStringByIds(balanceValveDataNowBatch.getMeterIds(),balanceValveDataNowBatch.getBatchModifyId()));
+        Root root = new Root();
+        if(balanceValveDataNowBatch.getMeterIds() == null){
+        	List<String> meterIds = new ArrayList<String>();
+        	meterIds.add(balanceValveDataNowBatch.getMeterId());
+        	balanceValveDataNowBatch.setMeterIds(meterIds);
+        }
+        regulateService.operControl(balanceValveDataNowBatch);
+        root.setData(regulateService.modifyBalanceValveParamBatch(balanceValveDataNowBatch));
+        return root;
+    }
+    
+    @ApiOperation(value = "批量控制操作")
+    @PostMapping("/operationBatch")
+    //@RequiresPermissions("")
+    public Root regulateOperationBatch(@RequestBody BalanceValveDataNowBatch balanceValveDataNowBatch){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("regulateOperationBatch");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        UserDataHistory userDataHistory = new UserDataHistory();
+        userDataHistory.setPage("regulate");
+        userDataHistory.setInfo("平衡阀批量控制操作，平衡阀表号:"+getStringByIds(balanceValveDataNowBatch.getMeterIds(),balanceValveDataNowBatch.getBatchModifyId()));
+        Root root = new Root();
+        regulateService.operControl(balanceValveDataNowBatch);
+        root.setData(regulateService.modifyBalanceValveParamBatch(balanceValveDataNowBatch));
+        return root;
+    }
+    
+    @ApiOperation(value = "设备参数")
+    @PostMapping("/meterParam")
+    //@RequiresPermissions("")
+    public Root regulateMeterParam(@RequestBody BalanceValveDataNowBatch balanceValveDataNowBatch){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("regulateMeterParam");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        UserDataHistory userDataHistory = new UserDataHistory();
+        userDataHistory.setPage("regulate");
+        userDataHistory.setInfo("平衡阀设备参数，平衡阀表号:"+getStringByIds(balanceValveDataNowBatch.getMeterIds(),balanceValveDataNowBatch.getBatchModifyId()));
+        Root root = new Root();
+        root.setData(regulateService.modifyBalanceValveParamBatch(balanceValveDataNowBatch));
+        return root;
+    }
+
+    @ApiOperation(value = "曲线参数")
+    @PostMapping("/curveParam")
+    //@RequiresPermissions("")
+    public Root regulateCurveParam(@RequestBody BalanceValveDataNowBatch balanceValveDataNowBatch){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("regulateCurveParam");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        UserDataHistory userDataHistory = new UserDataHistory();
+        userDataHistory.setPage("regulate");
+        userDataHistory.setInfo("平衡阀曲线参数，平衡阀表号:"+getStringByIds(balanceValveDataNowBatch.getMeterIds(),balanceValveDataNowBatch.getBatchModifyId()));
+        Root root = new Root();
+        root.setData(regulateService.modifyBalanceValveParamBatch(balanceValveDataNowBatch));
+        return root;
+    }
+
+    @ApiOperation(value="获取阀的偏差值")
+    @GetMapping("/deviation")
+    public Root getDeviationsByBalanceValve(){
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("balance-regulate");
+        userPageHistory.setAct("deviation");
+        userPageHistoryService.addUserPageHistory(userPageHistory);
+        Root root = new Root();
+        SearchCondition searchCondition = new SearchCondition();
+        searchCondition.setFlowingIndex("20|");
+        searchCondition.setHeatingIndex("20|");
+        searchCondition.setFlowingDeviation("20|");
+        searchCondition.setPressureDeviation("20|");
+        searchCondition.setTemperatureDeviation("20|");
+        root.setData(searchCondition);
+        return root;
+    }
+}

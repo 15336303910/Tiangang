@@ -120,5 +120,4 @@
 			#{rowno}
 		</foreach>
 	</delete>
-
 </mapper>

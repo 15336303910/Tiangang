@@ -127,5 +127,6 @@
   <!--values (#{id,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, #{valveId,jdbcType=VARCHAR}, -->
   <!--#{valveType,jdbcType=VARCHAR})-->
   <!--</insert>-->
-
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

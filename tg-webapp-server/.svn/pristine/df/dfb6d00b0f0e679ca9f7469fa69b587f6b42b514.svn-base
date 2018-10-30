@@ -1,0 +1,148 @@
+package cn.plou.web.heatManage.history.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.common.utils.DateUtil;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.heatManage.history.domain.CurveParam;
+import cn.plou.web.heatManage.history.service.HistoryDataService;
+import cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO;
+
+@RestController
+@RequestMapping("${heatManagePath}/historyCurve")
+public class CurveController {
+
+    @Autowired
+    HistoryDataService historyDataService;
+
+    /**
+     * 参数曲线
+     *
+     * @param type
+     * @param id
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    @GetMapping("/getParamCurve/{consumerId}/{type}/{beginTime}/{endTime}")
+    public Object getParamCurve(@PathVariable("consumerId") String consumerId, @PathVariable("type") String type,
+                                @PathVariable("beginTime") String beginTime, @PathVariable("endTime") String endTime) {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("consumerId", consumerId);
+        params.put("type", type);
+        params.put("beginTime", beginTime);
+        params.put("endTime", endTime);
+
+        JSONArray jsonArray = orderCurveJSONTest(null);
+//		List<RunningDataTotalDO> runningDataHistoryList = historyDataService.listTotal(params);
+//		RunningDataTotalDO total = new RunningDataTotalDO();
+//		JSONArray jsonArray = orderCurveJSON(runningDataHistoryList);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", jsonArray);
+        return jsonObject;
+
+    }
+
+    /**
+     * 对比曲线
+     *传递参数形式
+     * url======   /getCompareCurve?beginTime=xxx&endTime=xxx
+     * 参数====== [{type:xxx,id:xxx}，{type:xxx,id:xxx}，{type:xxx,id:xxx}]  注：无参数名，参数就是个数组
+     *
+     * }
+     *
+
+     */
+    @PostMapping("/getCompareCurve")
+    public Object getCompareCurve(@RequestBody List<CurveParam> curveParamList, HttpServletRequest request) {
+
+        String beginTime = request.getParameter("beginTime");
+        String endTime = request.getParameter("endTime");
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("beginTime",beginTime);
+        params.put("endTime", endTime);
+        JSONArray jsonArrays = new JSONArray();
+        for (CurveParam  curveParam:curveParamList) {
+            params.put("consumerId", curveParam.getId());
+            params.put("type", curveParam.getType());
+            JSONArray jsonArray = orderCurveJSONTest(null);
+            //		List<RunningDataTotalDO> runningDataHistoryList = historyDataService.listTotal(params);
+            //		RunningDataTotalDO total = new RunningDataTotalDO();
+            //		JSONArray jsonArray = orderCurveJSON(runningDataHistoryList);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("data", jsonArray);
+            jsonObject.put("consumerId", curveParam.getId());
+        }
+        return jsonArrays;
+    }
+
+    private JSONArray orderCurveJSON(List<RunningDataTotalDO> runningDataHistoryList) {
+        RunningDataTotalDO total = new RunningDataTotalDO();
+        JSONArray jsonArray = new JSONArray();
+        if (runningDataHistoryList.size() == 0) {
+            return jsonArray;
+        }
+        for (RunningDataTotalDO data : runningDataHistoryList) {
+            JSONObject jsonHouseObject = new JSONObject();
+            jsonHouseObject.put("inTmp", data.getRoomTemperatureRead());
+            jsonHouseObject.put("outTmp", data.getOutdoorTemperature());
+            jsonHouseObject.put("inWaterTmp", data.getInTemperature());
+            jsonHouseObject.put("outWaterTmp", data.getOutTemperature());
+            jsonHouseObject.put("tmpDiff", data.getInTemperature().subtract(data.getOutTemperature()));
+            jsonHouseObject.put("power", data.getPower());
+            jsonHouseObject.put("flow", data.getFlowSpeed());
+            jsonHouseObject.put("time", DateUtil.toDateHourString(data.getSystemReadTime().getTime()));
+            jsonHouseObject.put("adjHeatingIndex", data.getAdjHeatingIndex());
+
+            jsonHouseObject.put("stepTotal", 0);
+            jsonHouseObject.put("executionStep", 0);
+            jsonArray.add(jsonHouseObject);
+        }
+        return jsonArray;
+    }
+
+    private JSONArray orderCurveJSONTest(List<RunningDataTotalDO> runningDataHistoryList) {
+        RunningDataTotalDO total = new RunningDataTotalDO();
+        JSONArray jsonArray = new JSONArray();
+//		if(runningDataHistoryList.size() == 0){
+//			return jsonArray;
+//		}
+        for (int i = 0; i < 40; i++) {
+            JSONObject jsonHouseObject = new JSONObject();
+            jsonHouseObject.put("inTmp", 20 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("outTmp", 18 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("inWaterTmp", 65 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("outWaterTmp", 45 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("tmpDiff", 2 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("power", 75 + i / 3 + 2 * Math.random());
+            jsonHouseObject.put("flow", 15 + i / 2 + 2 * Math.random());
+            jsonHouseObject.put("time", DateUtil.getSysdateLong() - i * 60 * 1000 * 60);
+            jsonHouseObject.put("adjHeatingIndex", 15 + i / 2 + 2 * Math.random());
+
+            jsonHouseObject.put("stepTotal", 1000 + i);
+            jsonHouseObject.put("executionStep", 100 + i);
+            jsonArray.add(jsonHouseObject);
+        }
+        return jsonArray;
+    }
+
+}

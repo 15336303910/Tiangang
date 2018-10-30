@@ -1,0 +1,214 @@
+package cn.plou.web.mobile.station.service.heatrun.impl;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.google.common.collect.Maps;
+import cn.plou.web.common.constant.CKey;
+import cn.plou.web.mobile.common.AppConstant;
+import cn.plou.web.mobile.common.AppTools;
+import cn.plou.web.mobile.station.query.AlarmsQuery;
+import cn.plou.web.mobile.station.query.EventInfoQuery;
+import cn.plou.web.mobile.station.service.heatrun.AlarmService;
+import cn.plou.web.station.alarm.dao.AlarmInfoMapper;
+import cn.plou.web.station.alarm.vo.AlarmInfoVo;
+import cn.plou.web.station.alarm.vo.AlarmStatistics;
+import cn.plou.web.station.event.dao.EventInfoMapper;
+import cn.plou.web.station.event.entity.EventInfo;
+import cn.plou.web.system.baseMessage.system.dao.SystemMapper;
+import cn.plou.web.system.baseMessage.system.vo.SystemInfoVo;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.permission.userLogin.dao.UserLoginMapper;
+import cn.plou.web.system.permission.userLogin.entity.UserLogin;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : AlarmServiceImpl.java
+ * @Author : WangJiWei
+ * @Date : 2018年10月9日下午12:54:15
+ *
+ * @Comments : notes:报警的基于站id
+ * 
+ */
+@Service
+public class AlarmServiceImpl implements AlarmService {
+
+    @Autowired
+    AlarmInfoMapper alarmInfoMapper;
+
+    @Autowired
+    EventInfoMapper eventInfoMapper;
+
+    @Autowired
+    TypeMstService typeMstService;
+    
+    @Autowired
+    SystemMapper systemMapper;
+
+    @Autowired
+    UserLoginMapper userLoginMapper;
+
+    /**
+     * 今日报警统计
+     */
+    @Override
+    public Map<String, Object> findAlarmStatistics(List<String> systemIds) throws Exception {
+	if (AppTools.isEmpty(systemIds)) {
+	    return null;
+	}
+	List<String> stationIds_ = systemIdToStationId(systemIds);
+
+	/** 最新报警数量 */
+	int latestAlarmCount = alarmInfoMapper.findLatestAlarmCount(stationIds_, null,
+		AppConstant.ALARM_RESULT_0);
+	String now = AppTools.curDateStr(CKey.YMD_);
+	Date start = AppTools.formatDate(now + AppTools.TIME_LEFT, CKey.YMDHMS__);
+	Date end = AppTools.formatDate(now + AppTools.TIME_RIGHT, CKey.YMDHMS__);
+	/** 低值报警、高值报警、低低值报警、高高值报警 */
+	List<AlarmStatistics> typeAlarmStat = alarmInfoMapper
+		.findAlarmStatisticsGroupByType(stationIds_, start, end);
+	if (AppTools.isNotEmpty(typeAlarmStat)) {
+	    List<TypeMst> typeMsts = typeMstService
+		    .getDownInfoByTypeKbns(Arrays.asList("station_alarm_type"));
+	    Map<String, TypeMst> typeMap = AppTools.listToMap(typeMsts, TypeMst::getTypeId,
+		    __ -> __);
+	    typeAlarmStat.forEach(t -> {
+		TypeMst tm = typeMap.get(t.getType());
+		t.setTypeName(tm == null ? null : tm.getTypeName());
+	    });
+	}
+	/** 今日报警数 = 所有类型的报警和 */
+	Integer todayStat = typeAlarmStat.stream()
+		.collect(Collectors.summingInt(AlarmStatistics::getTotal));
+	/** 今日已处理 */
+	Integer todayFinish = alarmInfoMapper.getCountByResult(stationIds_, 1, start, end);
+	/** 今日未处理 */
+	Integer todayNoFinish = (todayStat != null && todayFinish != null)
+		? (todayStat - todayFinish) : null;
+	/** 正常报警、紧急报警 */ //
+	List<AlarmStatistics> levelAlarmStat = alarmInfoMapper
+		.findAlarmStatisticsGroupByLevel(stationIds_, start, end);
+	Map<String, Object> result = Maps.newHashMap();
+	result.put("newestAlarm", latestAlarmCount);// 最新报警
+	result.put("todayAlarm", todayStat);// 今日报警
+	result.put("finishAlarm", todayFinish);// 已处理
+	result.put("noFinishAlarm", todayNoFinish);// 未处理
+	result.put("type", typeAlarmStat);// 报警类型:{低值报警、高值报警、低低值报警、高高值报警}
+	levelAlarmStat.forEach(_l -> { // level: normal=正常,exigency=紧急
+	    result.put(_l.getType(), _l.getTotal());
+	});
+	return result;
+
+    }
+
+    public List<TypeMst> getTypeMst(List<String> typeKbns) {
+	List<TypeMst> typeMsts = typeMstService.getDownInfoByTypeKbns(typeKbns);
+	return typeMsts;
+    }
+
+    /**
+     * 报警、操作日志
+     *
+     */
+    @Override
+    public List<AlarmInfoVo> findAlarms(AlarmsQuery query) throws Exception {
+	alarmCondition(query);
+	List<AlarmInfoVo> alarms = alarmInfoMapper.findAlarms(query);
+	List<SystemInfoVo> systems = systemMapper.getSystemBySystemIds(query.getSystemIds());
+	Map<String, SystemInfoVo> map = AppTools.listToMap(systems, SystemInfoVo::getSystemId,
+		__ -> __);
+	List<TypeMst> typeMst = typeMstService
+		.getDownInfoByTypeKbns(Arrays.asList("station_alarm_type"));
+	Map<String, TypeMst> typeMap = null;
+	if (AppTools.isNotEmpty(typeMst)) {
+	    typeMap = AppTools.listToMap(typeMst, TypeMst::getTypeId, __ -> __);
+	}
+	for (AlarmInfoVo a : alarms) {
+	    SystemInfoVo si = map.get(a.getSysId());
+	    if (null != si) {
+		a.setSysName(si.getSystemName());
+		a.setStationName(si.getStationName());
+	    }
+	    if (typeMap != null) {
+		TypeMst tm = typeMap.get(a.getType());
+		a.setTypeName(tm == null ? null : tm.getTypeName());
+	    }
+	}
+	return alarms;
+    }
+
+    @Override
+    public void verifyAlarm(String userId, List<String> alarmIds) {
+	UserLogin user = userLoginMapper.selectByPrimaryKey(userId);
+	List<String> ids = alarmInfoMapper.findByResult(alarmIds, AppConstant.ALARM_RESULT_1);
+	alarmIds.removeAll(ids);
+	if (alarmIds != null && alarmIds.size() != 0) {
+	    alarmInfoMapper.updateAlarms(user.getUsername(), AppConstant.ALARM_RESULT_1, alarmIds);
+	}
+    }
+
+    @Override
+    public Integer alarmCount(List<String> systemIds) {
+
+	return alarmInfoMapper.findLatestAlarmCount(systemIdToStationId(systemIds), null, 0);
+    }
+
+    @Override
+    public Integer alarmTotal(AlarmsQuery query) throws Exception {
+	alarmCondition(query);
+	return alarmInfoMapper.alarmTotal(query);
+    }
+
+    private void alarmCondition(AlarmsQuery query) throws ParseException {
+	query.setStationIds(systemIdToStationId(query.getSystemIds()));
+	String alarmTime = query.getAlarmTime();
+	if (StringUtils.isNotBlank(alarmTime)) {
+	    query.setStartTime(AppTools.formatDate(alarmTime + AppTools.TIME_LEFT, CKey.YMDHMS__));
+	    query.setEndTime(AppTools.formatDate(alarmTime + AppTools.TIME_RIGHT, CKey.YMDHMS__));
+	}
+    }
+
+    private List<String> systemIdToStationId(List<String> systemIds) {
+	Set<String> sets = systemIds.stream().map(c -> {
+	    return c.substring(0, c.length() - 2);
+	}).collect(Collectors.toSet());
+	return new ArrayList<>(sets);
+    }
+
+    @Override
+    public Integer eventTotal(EventInfoQuery query) throws Exception {
+	eventCondition(query);
+	return eventInfoMapper.eventCount(query);
+
+    }
+
+    private void eventCondition(EventInfoQuery query) throws ParseException {
+	List<String> sourceids = query.getSourceids();
+	List<String> stationids = systemIdToStationId(sourceids);
+	sourceids.addAll(stationids);
+	query.setSourceids(sourceids);
+	if (StringUtils.isNotBlank(query.getEventTime())) {
+	    query.setStartTime(
+		    AppTools.formatDate(query.getEventTime() + AppTools.TIME_LEFT, CKey.YMDHMS__));
+	    query.setEndTime(
+		    AppTools.formatDate(query.getEventTime() + AppTools.TIME_RIGHT, CKey.YMDHMS__));
+	}
+    }
+
+    @Override
+    public List<EventInfo> findEvents(EventInfoQuery query) throws Exception {
+	eventCondition(query);
+	List<EventInfo> eventInfos = eventInfoMapper.findEventInfos(query);
+	return eventInfos;
+    }
+
+}

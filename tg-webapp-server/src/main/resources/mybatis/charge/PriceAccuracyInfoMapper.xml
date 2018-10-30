@@ -177,4 +177,6 @@
     from price_accuracy_info
     where `company_id`=#{companyId,jdbcType=VARCHAR}
   </select>
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

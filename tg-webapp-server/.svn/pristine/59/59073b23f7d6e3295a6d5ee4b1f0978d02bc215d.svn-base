@@ -1,0 +1,291 @@
+package cn.plou.web.charge.chargeconfig.controller;
+
+import cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO;
+import cn.plou.web.charge.chargeconfig.dto.InfoObject;
+import cn.plou.web.charge.chargeconfig.service.PriceDefineService;
+import cn.plou.web.charge.chargeconfig.service.UserYearHeatService;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+
+import cn.plou.web.charge.chargeconfig.util.MoneyConverter;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.system.baseMessage.build.entity.Build;
+import cn.plou.web.system.baseMessage.build.service.BuildService;
+import cn.plou.web.system.baseMessage.commuity.entity.Commuity;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.house.service.HouseService;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.baseMessage.unit.service.UnitService;
+import com.github.pagehelper.PageInfo;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/30 16:02
+ */
+
+@RestController
+@RequestMapping("${chargePath}/useryearheat")
+public class UserYearHeatController {
+
+
+    @Resource
+    private UserYearHeatService userYearHeatService;
+    @Resource
+    private PriceDefineService priceDefineService;
+
+
+    @Resource
+    private CommuityService commuityService;
+    @Resource
+    private UnitService unitService;
+    @Resource
+    private BuildService buildService;
+
+
+    @Resource
+    private HouseService houseService;
+
+    @Resource
+    private StationService stationService;
+
+    public UserYearHeatController() {
+    }
+
+    /**
+     * 考虑到数据量不是很大，但业务较为复杂，故先把数据取出再计算。后取若有需要再调整
+     *
+     * @return 获取清欠中心首页总的统计数据
+     */
+    @RequestMapping("/getStatisticalData")
+    public Object getStatisticalData(@RequestParam("id") String id) {
+
+        //参数为公司id,得到供暖年度
+
+        String companyId = "";
+        if (id.length() == 6) {
+            companyId = stationService.getStationById(id).getCompanyId();
+        } else {
+            companyId = id.substring(0, 5);
+        }
+        String annual = priceDefineService.findCurrentHeatAnnual(companyId);
+        if (annual == null) {
+            throw new BusinessException("该公司没有采暖季信息，无法进行统计");
+        }
+        //获取所以统计数据
+        long stratTime = System.nanoTime();
+        List<ClearTaskDTO> clearTaskDTOS = userYearHeatService.getStatisticalData(id);//站的情况已在service层处理
+        long endTime = System.nanoTime();
+        System.out.println("查询所有统计数据耗时：" + (endTime - stratTime));
+        stratTime = System.nanoTime();
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        //总采暖面积
+        BigDecimal totalPayarea = new BigDecimal("0");
+        //总应收金额
+        BigDecimal totalSumReceivable = new BigDecimal("0");
+        //总欠费金额
+        BigDecimal totalArrearage = new BigDecimal("0");
+        //当年欠费金额
+        BigDecimal thisyearArrearage = new BigDecimal("0");
+        //往年欠费金额
+        BigDecimal pastArrearage = new BigDecimal("0");
+        //收费率
+        BigDecimal chargeRate = new BigDecimal("0");
+        //总户数
+        int totalHouseCount = houseService.findCountByConsumerIdlike(id);//houseService.findByConsumerIdlike(id).size();
+        //供暖欠费户数
+        int arrearageCount = 0;
+        //强停户数
+        int forceStopCount = 0;
+        //陈欠户数
+        int pastArrearageCount = 0;
+
+        //总实收金额（未显示）
+        BigDecimal totalSumAccount = new BigDecimal("0");
+        //当年应收金额（未显示）
+        BigDecimal thisyearSumReceivable = new BigDecimal("0");
+        //当年实收金额（未显示）
+        BigDecimal thisyearSumAccount = new BigDecimal("0");
+        //往年应收金额（未显示）
+        BigDecimal pastSumReceivable = new BigDecimal("0");
+        //往年实收金额（未显示）
+        BigDecimal pastSumAccount = new BigDecimal("0");
+
+        List<String> pastArrearageCountLsit = new ArrayList<>();
+        System.out.println("数据总量======================" + clearTaskDTOS.size());
+        for (ClearTaskDTO clearTaskDTO : clearTaskDTOS) {
+            //System.out.println("采暖季是======================" + clearTaskDTO.getAnnual());
+            //当前采暖季
+            if (clearTaskDTO.getAnnual().equals(annual)) {
+                if (clearTaskDTO.getPayArea() != null) {
+                    //总采暖面积
+                    totalPayarea = totalPayarea.add(clearTaskDTO.getPayArea());
+                }
+                if (clearTaskDTO.getSumReceivable() != null) {
+                    //当年应收金额
+                    thisyearSumReceivable = thisyearSumReceivable.add(clearTaskDTO.getSumReceivable());
+                }
+                if (clearTaskDTO.getSumAccount() != null) {
+                    //当年实收金额
+                    thisyearSumAccount = thisyearSumAccount.add(clearTaskDTO.getSumAccount());
+                }
+                arrearageCount = getArrearageCount(arrearageCount, clearTaskDTO, null);
+            } else {//往年采暖季
+                if (clearTaskDTO.getSumReceivable() != null) {
+                    //往年年应收金额
+                    pastSumReceivable = pastSumReceivable.add(clearTaskDTO.getSumReceivable());
+                }
+                if (clearTaskDTO.getSumAccount() != null) {
+                    //往年年实收金额
+                    pastSumAccount = pastSumAccount.add(clearTaskDTO.getSumAccount());
+                }
+                if (!pastArrearageCountLsit.contains(clearTaskDTO.getConsumerId())) {
+                    pastArrearageCount = getArrearageCount(pastArrearageCount, clearTaskDTO, pastArrearageCountLsit);
+                }
+            }
+
+            if ("heating_status_2".equals(clearTaskDTO.getHeatingStatus())) {
+                forceStopCount++;
+            }
+        }
+        thisyearArrearage = thisyearSumReceivable.subtract(thisyearSumAccount);
+        pastArrearage = pastSumReceivable.subtract(pastSumAccount);
+        totalArrearage = thisyearArrearage.add(pastArrearage);
+        totalSumReceivable = thisyearSumReceivable.add(pastSumReceivable);
+        totalSumAccount = thisyearSumAccount.add(pastSumAccount);
+        if (totalSumReceivable.compareTo(BigDecimal.ZERO) != 0) {
+            chargeRate = totalSumAccount.divide(totalSumReceivable, 2, RoundingMode.FLOOR);
+        }
+        //总采暖面积
+        map.put("totalPayarea", MoneyConverter.handleNumber(totalPayarea, "保留到“分”四舍五入"));
+        //总应收采暖费
+        map.put("totalSumReceivable", MoneyConverter.handleNumber(totalSumReceivable, "保留到“分”四舍五入"));
+        //总欠费金额
+        map.put("totalArrearage", MoneyConverter.handleNumber(totalArrearage, "保留到“分”四舍五入"));
+        //当年欠费金额
+        map.put("thisyearArrearage", MoneyConverter.handleNumber(thisyearArrearage, "保留到“分”四舍五入"));
+        //往年欠费金额
+        map.put("pastArrearage", MoneyConverter.handleNumber(pastArrearage, "保留到“分”四舍五入"));
+        //收费率
+        map.put("chargeRate", MoneyConverter.handleNumber(chargeRate, "保留到“分”四舍五入"));
+        //总户数
+        map.put("totalHouseCount", totalHouseCount);
+        //供暖欠费户
+        map.put("arrearageCount", arrearageCount);
+        //强停户
+        map.put("forceStopCount", forceStopCount);
+        //陈欠户
+        map.put("pastArrearageCount", pastArrearageCount);
+        endTime = System.nanoTime();
+        System.out.println("逻辑处理耗时：" + (endTime - stratTime));
+        return map;
+    }
+
+    private int getArrearageCount(int arrearageCount, ClearTaskDTO clearTaskDTO, List<String> lists) {
+
+        if (clearTaskDTO.getSumReceivable() != null && clearTaskDTO.getSumAccount() != null) {
+            if (clearTaskDTO.getSumReceivable().compareTo(clearTaskDTO.getSumAccount()) == 1) {
+                arrearageCount++;
+                if (lists != null) {
+                    lists.add(clearTaskDTO.getConsumerId());
+                }
+            }
+        } else if (clearTaskDTO.getSumAccount() == null) {
+            arrearageCount++;
+            if (lists != null) {
+                lists.add(clearTaskDTO.getConsumerId());
+            }
+        }
+        return arrearageCount;
+    }
+
+
+    /**
+     * @param id
+     * @return 清欠中心按小区获取各楼的简要统计数据
+     * <p>
+     * 左侧详情是按照小区列表来显示，，传来的id需要考虑以下3种情况：
+     * 1小区以上级别  2 小区及小区以下级别
+     */
+    @RequestMapping("/getDetailData")
+    public Object getDetailData(@RequestParam("id") String id) {
+
+        List<InfoObject> infoObjectList = new ArrayList<>();
+        InfoObject infoObjectForCommuity = new InfoObject();
+
+        List <Commuity> commuityList =new ArrayList<Commuity>();
+        if (id.length() < 10) {//即小区以上的级别（需要处理站的特殊情况）
+           if(id.length()==6){//说明是站
+               commuityList=commuityService.selectCommuityByStationIds(new ArrayList<>(Collections.singletonList(id)));
+           }else{
+               commuityList=commuityService.findByCompanyId(id);
+
+           }
+        } else {//即小区及以下的级别
+            id=id.substring(0,10);
+            Commuity commuity = commuityService.getCommuityById(id);
+            commuityList.add(commuity);
+        }
+
+        for (Commuity commuity : commuityList) {
+            infoObjectForCommuity = userYearHeatService.handleListData(userYearHeatService.getStatisticalData(commuity.getCommuityId()), null);
+            infoObjectForCommuity.setObjectNo(commuity.getCommuityId());
+            infoObjectForCommuity.setObjectName(commuity.getCommuityName());
+            List<Build> buildList = buildService.getBuildTree(commuity.getCommuityId());
+            InfoObject infoObjectTemp = null;
+            List<InfoObject> infoObjectListForBuild = new ArrayList<>();
+            for (Build build : buildList) {
+                infoObjectTemp = userYearHeatService.handleListData(userYearHeatService.getStatisticalData(build.getBuildingNo()), null);;
+                infoObjectTemp.setObjectNo(build.getBuildingNo());
+                infoObjectTemp.setObjectName(build.getBuildingName());
+                infoObjectListForBuild.add(infoObjectTemp);
+            }
+            infoObjectForCommuity.setInfoList(infoObjectListForBuild);
+            infoObjectList.add(infoObjectForCommuity);
+        }
+
+        return infoObjectList;
+    }
+
+
+    /**
+     * @param id
+     * @return 点击首页统计页面的楼图标 进入该楼内所有用户的的欠费列表
+     * id （必传）
+     * page  （必传）
+     * pageSize  （必传）
+     * soryby
+     * order
+     */
+    @RequestMapping("/getAarrearageDataForBuild")
+    public Object getHeatDataForBuild(@RequestParam(value = "id", required = false) String id,
+                                      @RequestParam(value = "minPriceValue", required = false) BigDecimal minPriceValue,
+                                      @RequestParam(value = "isMin", required = false) boolean isMin,
+                                      @RequestParam(value = "annual", required = false) String annual,
+                                      @RequestParam(value = "userType", required = false) String userType,
+                                      HttpServletRequest request) {
+        BasePageEntity basePageEntity = new BasePageEntity();
+        basePageEntity.setPageParams(request);
+        Root root = new Root();
+        PageInfo pageInfo = userYearHeatService.findFeeLessByBuildingNo(id, basePageEntity);
+        root.setData(pageInfo.getList());
+        root.setCond(getCond(basePageEntity.getPage(), basePageEntity.getPageSize(), (int) pageInfo.getTotal(),
+                basePageEntity.getSortby(), basePageEntity.getOrder()));
+        return root;
+    }
+
+
+}

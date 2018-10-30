@@ -1,0 +1,58 @@
+2018-10-18 08:39:02 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@14cf81db].  Returning null to indicate a session could not be found.
+2018-10-18 08:39:02 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-18 08:39:02 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005} created. 
+SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid = ? and 
+		system_point.valided = ? and system_point.showlevel <= ?
+		and system_point.showdevtype = ?
+2018-10-18 08:39:02 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005} Parameters : [1, 1, 2, 1]
+2018-10-18 08:39:02 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005} Types : [VARCHAR, INTEGER, INTEGER, VARCHAR]
+2018-10-18 08:39:02 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005} executed. 39.237629 millis. 
+SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid = ? and 
+		system_point.valided = ? and system_point.showlevel <= ?
+		and system_point.showdevtype = ?
+2018-10-18 08:39:02 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005, rs-50005} open
+2018-10-18 08:39:02 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005, rs-50005} Header: [sourceid, pointid, showdevtype, unit, point_name, val, time]
+2018-10-18 08:39:02 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005, rs-50005} closed
+2018-10-18 08:39:02 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20005} closed
+2018-10-18 08:39:02 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-18 08:39:02 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 
+2018-10-18 08:39:06 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@4405017f].  Returning null to indicate a session could not be found.
+2018-10-18 08:39:06 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-connect
+2018-10-18 08:39:06 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006} created. 
+SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid = ? and 
+		system_point.valided = ? and system_point.showlevel <= ?
+		and system_point.showdevtype = ?
+2018-10-18 08:39:06 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006} Parameters : [1, 1, 2, 1]
+2018-10-18 08:39:06 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006} Types : [VARCHAR, INTEGER, INTEGER, VARCHAR]
+2018-10-18 08:39:06 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006} executed. 15.817719 millis. 
+SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid = ? and 
+		system_point.valided = ? and system_point.showlevel <= ?
+		and system_point.showdevtype = ?
+2018-10-18 08:39:06 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006, rs-50006} open
+2018-10-18 08:39:06 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006, rs-50006} Header: [sourceid, pointid, showdevtype, unit, point_name, val, time]
+2018-10-18 08:39:06 [DEBUG](ResultSet                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006, rs-50006} closed
+2018-10-18 08:39:06 [DEBUG](Statement                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001, pstmt-20006} closed
+2018-10-18 08:39:06 [DEBUG](Connection                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] {conn-10001} pool-recycle
+2018-10-18 08:39:06 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 
+2018-10-18 08:39:10 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 08:39:35 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

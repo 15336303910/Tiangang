@@ -1,0 +1,15 @@
+package cn.plou.web.balance.regulate.vo;
+
+import cn.plou.web.balance.distribution.entity.BalanceValveDataNow;
+import lombok.Data;
+
+import java.util.List;
+@Data
+public class BalanceValveDataNowBatch extends BalanceValveDataNow {
+    List<String> meterIds;
+  	private Boolean batchCheckbox = false;
+  	private String batchModifyId;
+  	private String batchModifyType;	//
+  	private String balanceValveControl;		//平衡阀控制
+  	
+}

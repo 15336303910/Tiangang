@@ -1,0 +1,391 @@
+package cn.plou.web.charge.heatingmanage.domain;
+
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 用户稽查
+ */
+
+@Data
+public class HeatCheckDetail {
+  /**
+   * 供热稽查流水号ＩＤ：用户ＩＤ＋任务安排日期
+   */
+  private String primaryId;
+
+  /**
+   * 采暖年度
+   */
+  private String annual;
+
+  /**
+   * 用户ＩＤ
+   */
+  private String consumerId;
+
+  /**
+   * 公司ＩＤ
+   */
+  private String companyId;
+
+  /**
+   * 供暖状态：供暖、停暖
+   */
+  private String heatingStatus;
+
+  /**
+   * 供暖状态：供暖、停暖值
+   */
+  private String heatingStatusValue;
+
+  /**
+   * 封堵面积
+   */
+  private BigDecimal sealArea;
+
+  /**
+   * 任务类型
+   */
+  private String taskType;
+
+  /**
+   * 任务类型值
+   */
+  private String taskTypeValue;
+
+  /**
+   * 任务安排日期
+   */
+  @DateTimeFormat(pattern="yyyy-MM-dd HH:mm")
+  private Date taskDate;
+
+  /**
+   * 执行部门
+   */
+  private String executDept;
+
+  /**
+   * 执行人
+   */
+  private String executPerson;
+  /**
+   * 执行部门名称
+   */
+  private String executDeptName;
+
+
+  /**
+   * 任务内容
+   */
+  private String executContent;
+
+  /**
+   * 用户姓名
+   */
+  private String userName;
+
+  /**
+   * 用户电话
+   */
+  private String userTelephone;
+
+  /**
+   * 执行人签名
+   */
+  private String executPersonName;
+
+  /**
+   * 执行情况
+   */
+  private String executRecord;
+
+  /**
+   * 执行日期
+   */
+  private Date executTime;
+
+  /**
+   * 稽查结论：正常、不正常、不确定
+   */
+  private String inspectionConclusion;
+
+  /**
+   * 稽查结论：正常、不正常、不确定值
+   */
+  private String inspectionConclusionValue;
+
+  /**
+   * 维修负责人：取自用户信息
+   */
+  private String repairPerson;
+
+  /**
+   * 备注
+   */
+  private String notes;
+
+  /**
+   * 创建者
+   */
+  private String createUser;
+  /**
+   * 创建时间
+   */
+
+  private Date createDate;
+
+  /**
+   * 更新者
+   */
+  private String updateUser;
+
+  /**
+   * 更新时间
+   */
+  private Date updateDate;
+
+
+  /**
+   * 用户地址
+   */
+  private String address;
+  
+  private String showTaskDate;
+
+
+  public String getExecutDeptName() {
+    return executDeptName;
+  }
+
+  public void setExecutDeptName(String executDeptName) {
+    this.executDeptName = executDeptName;
+  }
+
+  public String getShowTaskDate() {
+    return showTaskDate;
+  }
+
+  public void setShowTaskDate(String showTaskDate) {
+    this.showTaskDate = showTaskDate;
+  }
+
+  public String getPrimaryId() {
+    return primaryId;
+  }
+
+  public void setPrimaryId(String primaryId) {
+    this.primaryId = primaryId;
+  }
+
+  public String getAnnual() {
+    return annual;
+  }
+
+  public void setAnnual(String annual) {
+    this.annual = annual;
+  }
+
+  public String getConsumerId() {
+    return consumerId;
+  }
+
+  public void setConsumerId(String consumerId) {
+    this.consumerId = consumerId;
+  }
+
+  public String getCompanyId() {
+    return companyId;
+  }
+
+  public void setCompanyId(String companyId) {
+    this.companyId = companyId;
+  }
+
+  public String getHeatingStatus() {
+    return heatingStatus;
+  }
+
+  public void setHeatingStatus(String heatingStatus) {
+    this.heatingStatus = heatingStatus;
+  }
+
+  public String getHeatingStatusValue() {
+    return heatingStatusValue;
+  }
+
+  public void setHeatingStatusValue(String heatingStatusValue) {
+    this.heatingStatusValue = heatingStatusValue;
+  }
+
+  public BigDecimal getSealArea() {
+    return sealArea;
+  }
+
+  public void setSealArea(BigDecimal sealArea) {
+    this.sealArea = sealArea;
+  }
+
+  public String getTaskType() {
+    return taskType;
+  }
+
+  public void setTaskType(String taskType) {
+    this.taskType = taskType;
+  }
+
+  public String getTaskTypeValue() {
+    return taskTypeValue;
+  }
+
+  public void setTaskTypeValue(String taskTypeValue) {
+    this.taskTypeValue = taskTypeValue;
+  }
+
+  public Date getTaskDate() {
+    return taskDate;
+  }
+
+  public void setTaskDate(Date taskDate) {
+    this.taskDate = taskDate;
+  }
+
+  public String getExecutDept() {
+    return executDept;
+  }
+
+  public void setExecutDept(String executDept) {
+    this.executDept = executDept;
+  }
+
+  public String getExecutPerson() {
+    return executPerson;
+  }
+
+  public void setExecutPerson(String executPerson) {
+    this.executPerson = executPerson;
+  }
+
+  public String getExecutContent() {
+    return executContent;
+  }
+
+  public void setExecutContent(String executContent) {
+    this.executContent = executContent;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  public String getUserTelephone() {
+    return userTelephone;
+  }
+
+  public void setUserTelephone(String userTelephone) {
+    this.userTelephone = userTelephone;
+  }
+
+  public String getExecutPersonName() {
+    return executPersonName;
+  }
+
+  public void setExecutPersonName(String executPersonName) {
+    this.executPersonName = executPersonName;
+  }
+
+  public String getExecutRecord() {
+    return executRecord;
+  }
+
+  public void setExecutRecord(String executRecord) {
+    this.executRecord = executRecord;
+  }
+
+  public Date getExecutTime() {
+    return executTime;
+  }
+
+  public void setExecutTime(Date executTime) {
+    this.executTime = executTime;
+  }
+
+  public String getInspectionConclusion() {
+    return inspectionConclusion;
+  }
+
+  public void setInspectionConclusion(String inspectionConclusion) {
+    this.inspectionConclusion = inspectionConclusion;
+  }
+
+  public String getInspectionConclusionValue() {
+    return inspectionConclusionValue;
+  }
+
+  public void setInspectionConclusionValue(String inspectionConclusionValue) {
+    this.inspectionConclusionValue = inspectionConclusionValue;
+  }
+
+  public String getRepairPerson() {
+    return repairPerson;
+  }
+
+  public void setRepairPerson(String repairPerson) {
+    this.repairPerson = repairPerson;
+  }
+
+  public String getNotes() {
+    return notes;
+  }
+
+  public void setNotes(String notes) {
+    this.notes = notes;
+  }
+
+  public String getCreateUser() {
+    return createUser;
+  }
+
+  public void setCreateUser(String createUser) {
+    this.createUser = createUser;
+  }
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
+  }
+
+  public String getUpdateUser() {
+    return updateUser;
+  }
+
+  public void setUpdateUser(String updateUser) {
+    this.updateUser = updateUser;
+  }
+
+  public Date getUpdateDate() {
+    return updateDate;
+  }
+
+  public void setUpdateDate(Date updateDate) {
+    this.updateDate = updateDate;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+}

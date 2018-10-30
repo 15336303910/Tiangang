@@ -1,0 +1,210 @@
+package cn.plou.web.common.utils;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.servlet.ServletRequest;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.common.utils.DateUtil;
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.system.commonMessage.pageGrid.service.PageGridService;
+import cn.plou.web.system.commonMessage.pageGrid.vo.PageGridInfo;
+import lombok.extern.slf4j.Slf4j;
+
+@Component
+@Slf4j
+public class CommonServiceImp {
+	@Autowired
+	private PageGridService pageGridService;
+	
+	public<T> String getHisDataToExcel(ServletRequest request, String tableName,String desc, List<T> datasT) {
+		String path = desc + DateUtil.getSysdateTimeString().replace(" ", "").replace(":", "").replace("-", "") + ".xls";
+		String filePath = request.getServletContext().getRealPath("/") + path;// 文件路径
+		System.out.println("路径：" + filePath);
+		HSSFWorkbook workbook = new HSSFWorkbook();// 创建Excel文件(Workbook)
+		HSSFSheet sheet = workbook.createSheet(desc);// 创建工作表(Sheet)
+		HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+		HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+		if (!getPageHisHead(cell, row, tableName)) {
+			throw new BusinessException("未找到要到出的列名，请检查配置！");
+		}
+
+		List<PageGridInfo> infos = pageGridService.getAllPageGrid(0, 200, "asc", "colsort", null, tableName);
+		for (int i = 0; i < datasT.size(); i++) {
+			row = sheet.createRow(i + 1);// 创建行,从0开始
+			cell = row.createCell(0);// 创建行的单元格,也是从0开始
+			setObjectToCell(row, cell, datasT.get(i), infos);
+		}
+		try {
+			FileOutputStream out = new FileOutputStream(filePath);
+			workbook.write(out);// 保存Excel文件
+			out.close();// 关闭文件流
+			System.out.println("导出成功!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return path;
+	}
+	
+	private Boolean getPageHisHead(HSSFCell cell, HSSFRow row, String name) {
+		List<PageGridInfo> infos = pageGridService.getAllPageGrid(0, 200, "asc", "colsort", null, name);
+		if (infos.size() == 0) {
+			return false;
+		}
+		int index = 0;
+		Boolean flag = false;
+
+		for (int i = 0; i < infos.size(); i++) {
+			PageGridInfo info = infos.get(i);
+			if ("false".equals(info.getHide())) {
+				if (!flag) {
+					cell.setCellValue(infos.get(index).getDisplay());// 设置单元格内容
+					flag = true;
+				} else {
+					row.createCell(index).setCellValue(info.getDisplay());
+				}
+				index++;
+			}
+		}
+		return index > 0;
+	}
+
+	public Object getValue(Object dto,String name){  
+    Method[]  m = dto.getClass().getMethods();  
+    for(int i=0;i<m.length;i++){  
+    if(("get"+name).toLowerCase().equals(m[i].getName().toLowerCase())){  
+        try {
+					return  m[i].invoke(dto);
+				} catch (IllegalAccessException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}  
+     }  
+    }
+    return null;
+	}
+	
+	private <T> Boolean setObjectToCell(HSSFRow row, HSSFCell cell, T DataDO, List<PageGridInfo> infos) {
+		if (infos.size() == 0) {
+			return false;
+		}
+		int index = 0;
+		for (int i = 0; i < infos.size(); i++) {
+			PageGridInfo info  = infos.get(i);
+			if ("false".equals(info.getHide())) {
+				String gridName = info.getName();
+				Object objt = null;
+				objt = getValue(DataDO, gridName);
+				if (objt != null) {
+					cell.setCellValue(objt.toString());
+				}else{
+					cell.setCellValue("");
+				}
+				index++;
+				break;
+			}
+		}
+
+		for (int i = index; i < infos.size(); i++) {
+			PageGridInfo info  = infos.get(i);
+			if ("false".equals(info.getHide())) {
+				String gridName = info.getName();
+				Object objt = null;
+				objt = getValue(DataDO, gridName);
+				if (objt != null) {
+					row.createCell(index).setCellValue(objt.toString());
+				}else{
+					row.createCell(index).setCellValue("");
+				}
+				index++;
+			}
+		}
+		return index > 0;
+	}
+
+	public String getHisJSONArrayToExcel(ServletRequest request, String tableName,String desc, JSONArray array) {
+		String path = desc + DateUtil.getSysdateTimeString().replace(" ", "").replace(":", "").replace("-", "") + ".xls";
+		String filePath = request.getServletContext().getRealPath("/") + path;// 文件路径
+		System.out.println("路径：" + filePath);
+		HSSFWorkbook workbook = new HSSFWorkbook();// 创建Excel文件(Workbook)
+		HSSFSheet sheet = workbook.createSheet(desc);// 创建工作表(Sheet)
+		HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+		HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+		if (!getPageHisHead(cell, row, tableName)) {
+			throw new BusinessException("未找到要到出的列名，请检查配置！");
+		}
+
+		List<PageGridInfo> infos = pageGridService.getAllPageGrid(0, 200, "asc", "colsort", null, tableName);
+		for (int i = 0; i < array.size(); i++) {
+			row = sheet.createRow(i + 1);// 创建行,从0开始
+			cell = row.createCell(0);// 创建行的单元格,也是从0开始
+			setJSONObjToCell(row, cell, (JSONObject)(array.get(i)), infos);
+		}
+		try {
+			FileOutputStream out = new FileOutputStream(filePath);
+			workbook.write(out);// 保存Excel文件
+			out.close();// 关闭文件流
+			System.out.println("导出成功!");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return path;
+	}
+
+	private Boolean setJSONObjToCell(HSSFRow row, HSSFCell cell, JSONObject object, List<PageGridInfo> infos) {
+		if (infos.size() == 0) {
+			return false;
+		}
+		int index = 0;
+		for (int i = 0; i < infos.size(); i++) {
+			PageGridInfo info  = infos.get(i);
+			if ("false".equals(info.getHide())) {
+				String gridName = info.getName();
+				Object objt = null;	
+				objt = object.get(gridName);
+				if (objt != null) {
+					cell.setCellValue(objt.toString());
+				}else{
+					cell.setCellValue("");
+				}
+				index++;
+				break;
+			}
+		}
+
+		for (int i = index; i < infos.size(); i++) {
+			PageGridInfo info  = infos.get(i);
+			if ("false".equals(info.getHide())) {
+				String gridName = info.getName();
+				Object objt = null;
+				objt = object.get(gridName);
+				if (objt != null) {
+					row.createCell(index).setCellValue(objt.toString());
+				}else{
+					row.createCell(index).setCellValue("");
+				}
+				index++;
+			}
+		}
+		return index > 0;
+	}
+}

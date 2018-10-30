@@ -1574,5 +1574,8 @@
       <update id="modifyMbusAddress" parameterType="map">
     	update mbus_info
     		set address = #{address} where consumer_id = #{consumerId}
-     </update>   
+     </update>
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

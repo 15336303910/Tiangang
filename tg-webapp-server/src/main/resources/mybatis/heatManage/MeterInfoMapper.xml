@@ -28,24 +28,29 @@
 		`meter_id`,`rowno`,`consumer_id`,`address_1st`,`address_2nd`,`protocol`,`mbus_id`,`mbus_pro`,`mbus_readmodel_id`,`repeater_id`,`meter_type`,`sim_card`,`running_state`,`install_address`,`meter_error_time`,`meter_position`,`super_meter_id`,`valve_meter_id`,`main_meter_id`,`use_start_date`,`next_check_time`,`install_height`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`memo3`,`memo4`,`create_date`,`create_user`,`update_date`,`update_user`,`basecode`,`meter_subtype`,`steel`,`water_address`,`meter_state`,`factory`,`diameter`,`precisiona`,`soft_ver`,`hard_ver`,`common_flow`,`minimum_flow`,`temperature_differ`,`temperature_range`,`baud_rate`,`max_bound`,`limtspeed`,`ctrlflag`,`isvalid`
 		from meter_info n
 		<where>
+<!-- 			meter_error_time is not null and meter_error_time!='' -->
+			n.running_state!='0' and n.running_state!='' and n.running_state is not null
 			<if test="meterId != null and meterId != ''"> and meter_id = #{meterId} </if>
 			<if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
-
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and n.company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(n.consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -123,29 +128,50 @@
 	</select>
 
 	<select id="groupList" resultType="cn.plou.web.heatManage.diagnose.domain.MeterInfoDO">
-		select (select m.type_name from type_mst m where m.id =
-		n.running_state) name,
+		select m.type_name as name,
 		`running_state`,count(*) as cnts
-		from meter_info
-		n
+		from meter_info	n
+		left join
+			type_mst m
+		on
+			m.id =n.running_state
 		<where>
 			<if test="meterType != null and meterType != ''"> and meter_type = #{meterType} </if>
 
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -157,44 +183,64 @@
 			</choose>
 
 			<choose>
-				<when test="meterType=='metertype_1'">
-					and n.running_state in
-					('meter_status_ERR','meter_status_ERR1','meter_status_ERR2','meter_status_ERR3','meter_status_ERR4','meter_status_ERR5','meter_status_ERR6','meter_status_ERR7','meter_status_F1','meter_status_F2','meter_status_F3','meter_status_F4','meter_status_F5','meter_status_F6','meter_status_F7')
+				<when test="meterType=='metertype_01'">
+					and n.running_state!='0' and n.running_state!='' and n.running_state is not null
 				</when>
-				<when test="meterType=='metertype_2'">
-					and n.running_state in
-					('valve_read_status_ERR1','valve_read_status_ERR2')
+				<when test="meterType=='metertype_02'">
+				and n.running_state!='0' and n.running_state!='' and n.running_state is not null
 				</when>
-				<when test="meterType=='metertype_7'">
-					and n.running_state =
-					'room_temperature_read_status_ERR1'
+				<when test="meterType=='metertype_0D'">
+				and n.running_state!='0' and n.running_state!='' and n.running_state is not null
+				</when>
+				<when test="meterType=='metertype_09'">
+					and n.running_state!='0' and n.running_state!='' and n.running_state is not null
 				</when>
 				<otherwise>
 				</otherwise>
 			</choose>
 		</where>
-		group by running_state
+		group by running_state,m.type_name
 	</select>
 
 	<select id="netErrorCount" resultType="int">
 		select count(*) from meter_info m
 		<where>
 			meter_type = #{meterType}
+			and isvalid='1'
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -206,16 +252,17 @@
 			</choose>
 
 			<choose>
-				<when test="meterType=='metertype_1'">
-					and m.running_state in
-					('meter_status_ERR','meter_status_F5')
+				<when test="meterType=='metertype_01'">
+					and m.running_state like 'meter_status_M%'
 				</when>
-				<when test="meterType=='metertype_2'">
-					and m.running_state = 'valve_read_status_ERR'
+				<when test="meterType=='metertype_02'">
+					and m.running_state like 'valve_read_status_M%'
 				</when>
-				<when test="meterType=='metertype_7'">
-					and m.running_state =
-					'room_temperature_read_status_ERR'
+				<when test="meterType=='metertype_0D'">
+					and m.running_state like 'room_temperature_read_status_M%'
+				</when>
+				<when test="meterType=='metertype_09'">
+					and m.running_state like  'balance_valve_state_M%'
 				</when>
 				<otherwise>
 				</otherwise>
@@ -227,21 +274,41 @@
 		select count(*) from meter_info m
 		<where>
 			meter_type = #{meterType}
+			and isvalid='1'
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -253,17 +320,17 @@
 			</choose>
 
 			<choose>
-				<when test="meterType=='metertype_1'">
-					and m.running_state in
-					('meter_status_ERR','meter_status_ERR1','meter_status_ERR2','meter_status_ERR3','meter_status_ERR4','meter_status_ERR5','meter_status_ERR6','meter_status_ERR7','meter_status_F1','meter_status_F2','meter_status_F3','meter_status_F4','meter_status_F5','meter_status_F6','meter_status_F7')
+				<when test="meterType=='metertype_01'">
+					and (m.running_state like 'meter_status_E%' or m.running_state like 'meter_status_F%')
 				</when>
-				<when test="meterType=='metertype_2'">
-					and m.running_state in
-					('valve_read_status_ERR1','valve_read_status_ERR2')
+				<when test="meterType=='metertype_02'">
+					and (m.running_state like 'valve_read_status_E%' or m.running_state like 'valve_read_status_F%')
 				</when>
-				<when test="meterType=='metertype_7'">
-					and m.running_state =
-					'room_temperature_read_status_ERR1'
+				<when test="meterType=='metertype_0D'">
+					and (m.running_state like 'room_temperature_read_status_E%' or m.running_state like 'room_temperature_read_status_F%')
+				</when>
+				<when test="meterType=='metertype_09'"> 
+					and (m.running_state like  'balance_valve_state_E%' or m.running_state like 'balance_valve_state_F%')
 				</when>
 				<otherwise>
 				</otherwise>
@@ -274,24 +341,45 @@
 	<select id="count" resultType="int">
 		select count(*) from meter_info
 		<where>
+			<if test="errorFlay != null and errorFlay != ''">running_state!='0' and running_state!='' and running_state is not null</if>
 			<if test="meterId != null and meterId != ''"> and meter_id = #{meterId} </if>
 			<if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
 
+<!-- 			<choose> -->
+<!-- 				<when test="type=='company'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='station'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> -->
+<!-- 						and substr(consumer_id,1,10) in( -->
+<!-- 						select commuity_id from -->
+<!-- 						commuity_info where station_id = #{consumerId} -->
+<!-- 						) -->
+<!-- 					</if> -->
+<!-- 				</when> -->
+<!-- 				<when test="type=='commuity'"> -->
+<!-- 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if> -->
+<!-- 				</when> -->
+
+			<if test="companyIds!=null">
+				<if test="companyIds.size()>0">
+					and company_id in
+					<foreach collection="companyIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
+			<if test="commuityIds!=null">
+				<if test="commuityIds.size()>0">
+					and substring(consumer_id,1,10) in
+					<foreach collection="commuityIds" item="item" index="index"
+						open="(" separator="," close=")">
+						#{item}
+					</foreach>
+				</if>
+			</if>
 			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
-					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} </if>
-				</when>
 				<when test="type=='building'">
 					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -315,7 +403,7 @@
 			<if test="superMeterId != null and superMeterId != ''"> and super_meter_id = #{superMeterId} </if>
 			<if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
 			<if test="meterState != null and meterState != ''"> and meter_state = #{meterState} </if>
-
+			<if test="isvalid != null and isvalid != ''">and isvalid = #{isvalid}</if>
 		</where>
 	</select>
 
@@ -507,5 +595,4 @@
 			#{meterId}
 		</foreach>
 	</delete>
-
 </mapper>

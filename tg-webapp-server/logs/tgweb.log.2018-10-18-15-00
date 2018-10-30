@@ -1,0 +1,4 @@
+2018-10-18 15:00:00 [WARN ](LateFeeJob                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 未找到文件列表！
+2018-10-18 15:00:16 [WARN ](ControllerMethodHander        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 控制器：StationAppController的方法：paramHistoryDataList调用结束,消耗时间：94.918s,需要优化！！！！！
+2018-10-18 15:00:17 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 15:00:45 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

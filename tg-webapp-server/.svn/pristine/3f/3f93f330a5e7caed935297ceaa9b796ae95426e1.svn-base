@@ -1,0 +1,589 @@
+package cn.plou.web.system.baseMessage.company.service.impl;
+
+import cn.plou.web.common.config.common.BusinessException;
+import cn.plou.web.common.importDataBatch.ErrorInfo;
+import cn.plou.web.common.utils.ExcelTools;
+import cn.plou.web.common.utils.RedisUtil;
+import cn.plou.web.common.utils.SerializeUtil;
+import cn.plou.web.common.utils.TreeNode;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.system.baseMessage.commuity.entity.Commuity;
+import cn.plou.web.system.baseMessage.commuity.service.CommuityService;
+import cn.plou.web.system.baseMessage.company.dao.CompanyMapper;
+import cn.plou.web.system.baseMessage.company.entity.Company;
+import cn.plou.web.system.baseMessage.company.service.CompanyService;
+import cn.plou.web.system.baseMessage.company.vo.CompanyInfo;
+import cn.plou.web.system.baseMessage.company.vo.CompanyListInfo;
+import cn.plou.web.system.baseMessage.company.vo.CompanyVo;
+import cn.plou.web.common.idgenerater.service.IDGenerater;
+import cn.plou.web.system.baseMessage.producer.entity.Producer;
+import cn.plou.web.system.baseMessage.producer.service.ProducerService;
+import cn.plou.web.system.baseMessage.station.dao.StationMapper;
+import cn.plou.web.system.baseMessage.station.entity.Station;
+import cn.plou.web.system.baseMessage.station.info.StationInfo;
+import cn.plou.web.system.baseMessage.station.service.StationService;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.organizationMessage.department.entity.Department;
+import cn.plou.web.system.organizationMessage.department.service.DepartmentService;
+import cn.plou.web.system.permission.rlRoleData.entity.RlRoleData;
+import cn.plou.web.system.permission.rlRoleData.service.RlRoleDataService;
+import cn.plou.web.system.permission.rlUserRole.service.RlUserRoleService;
+import cn.plou.web.system.permission.userPageHistory.entity.UserPageHistory;
+import cn.plou.web.system.permission.userPageHistory.service.impl.UserPageHistoryServiceImpl;
+
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static cn.plou.web.common.utils.Tools.getMaxId;
+import static cn.plou.web.common.utils.Tools.removeDuplicate;
+
+@Component
+public class CompanyServiceImpl implements CompanyService {
+
+
+
+
+
+
+    @Autowired
+    CompanyMapper companyMapper;
+    @Autowired
+    private StationService stationService;
+    @Autowired
+    private StationMapper stationMapper;
+    @Autowired
+    private CommuityService commuityService;
+    @Autowired
+    RlRoleDataService rlRoleDataService;
+    @Autowired
+    RlUserRoleService rlUserRoleService;
+    @Autowired
+    private UserPageHistoryServiceImpl userPageHistoryServiceImpl;
+    @Autowired
+    private ProducerService producerService;
+    @Autowired
+    private DepartmentService departmentService;
+    @Autowired
+    private TypeMstService typeMstService;
+    @Autowired
+    private IDGenerater idGenerater;
+    @Override
+    public Company get(String comapnyId) {
+        Company company = companyMapper.selectByPrimaryKey(comapnyId);
+       /* if(companyInfo.getSuperCompanyId().equals("0")){
+            companyInfo.setSuperCompanyName(null);
+        }else{
+            companyInfo.setSuperCompanyName(get(companyInfo.getSuperCompanyId()).getCompanyName());
+        }*/
+        return company;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertSelective(Company company) {
+        if ((company.getTel() != null && company.getTel().length() > 13) || (company.getServiceTel() != null && company.getServiceTel().length() > 13)) {
+            throw new BusinessException("请输入正确的电话号码");
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("company");
+        userPageHistory.setAct("insertSelective");
+        
+        company.setCompanyId(idGenerater.generateCompanyId());
+        company.setRowno(company.getCompanyId());
+        company.setCreateUser(UserUtils.getUserId());
+        company.setCreateDate(new Date());
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return companyMapper.insertSelective(company);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBatchByIds(List<String> companyIds) {
+        for (String companyId : companyIds) {
+            List<Producer> producers = producerService.getProducerByCompanyId(companyId);
+            List<Station> stations = stationService.getStationDownInfo(companyId);
+            List<Department> departments = departmentService.getDepartmentDownInfo(companyId);
+            List<String> companies = getCompanyIdsByPid(companyId);
+            if (producers.size() != 0 || stations.size() != 0 || departments.size() != 0 || companies.size() > 1) {
+                throw new BusinessException(get(companyId).getCompanyName() + "公司下有关联项，不能删除");
+            }
+            if (rlRoleDataService.getRlRoleData().contains(companyId)) {
+                rlRoleDataService.deleteRlRoleDataByColumn(companyId);
+            }
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("company");
+        userPageHistory.setAct("deleteBatchByIds");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return companyMapper.deleteBatchByIds(companyIds);
+    }
+
+    @Override
+    public CompanyListInfo getAllCompany(Integer page, Integer pageSize, String order, String sortby, String companyId, CompanyVo companyVo) {
+        List<String> companyIds = new ArrayList<String>();
+        CompanyListInfo companyListInfo = new CompanyListInfo();
+        String roleId = rlUserRoleService.getRoleByUserId(UserUtils.getUserId());
+        Integer start = null;
+        if (page != null) {
+            start = (page - 1) * pageSize;
+        }
+        List<CompanyInfo> companyInfoList = new ArrayList<>();
+        if (companyId == null) {
+            if (roleId.equals("1")) {
+                companyInfoList = companyMapper.selectAllCompany(start, pageSize, order, sortby, companyIds, companyVo);
+                companyListInfo.setCount(companyMapper.selectCompanyListCount(companyIds, companyVo));
+            } else {
+                if(getCompanyByRole(roleId).size() != 0){
+                    for (Company company : getCompanyByRole(roleId)) {
+                        companyIds.add(company.getCompanyId());
+                    }
+                    companyInfoList = companyMapper.selectAllCompany(start, pageSize, order, sortby, companyIds, companyVo);
+                    companyListInfo.setCount(companyMapper.selectCompanyListCount(companyIds, companyVo));
+                }else{
+                    companyListInfo.setCount(0);
+                }
+            }
+        } else {
+                /*TreeNode<Company> nodes = getRootTree(getTree(roleId,companyId),companyId);
+                List<String> companyIdList = getAll(nodes);*/
+            List<String> companyIdList = getCompanyIdsByPid(companyId);
+            companyInfoList = companyMapper.selectAllCompany(start, pageSize, order, sortby, companyIdList, companyVo);
+            companyListInfo.setCount(companyMapper.selectCompanyListCount(companyIdList, companyVo));
+        }
+
+        if (companyInfoList.size() != 0) {
+            List<TypeMst> typeMstList = typeMstService.getAllTypeMstByRedis();
+            for (CompanyInfo companyInfo : companyInfoList) {
+                companyInfo.setCompanyNatureName(typeMstService.getTypeNameById(typeMstList, companyInfo.getCompanyNature()));
+                companyInfo.setCompanyTypeName(typeMstService.getTypeNameById(typeMstList, companyInfo.getCompanyType()));
+                companyInfo.setIndustryName(typeMstService.getTypeNameById(typeMstList, companyInfo.getIndustry()));
+//                if(companyInfo.getCompanyNature()!=null){
+//                    if(typeMstService.getTypeMstById(companyInfo.getCompanyNature())==null){
+//                        companyInfo.setCompanyNatureName(null);
+//                    }else{
+//                        companyInfo.setCompanyNatureName(typeMstService.getTypeMstById(companyInfo.getCompanyNature()).getTypeName());
+//                    }
+//                }
+//                if(companyInfo.getCompanyType()!=null){
+//                    if(typeMstService.getTypeMstById(companyInfo.getCompanyType())==null){
+//                        companyInfo.setCompanyTypeName(null);
+//                    }else{
+//                        companyInfo.setCompanyTypeName(typeMstService.getTypeMstById(companyInfo.getCompanyType()).getTypeName());
+//                    }
+//                }
+//                if(companyInfo.getIndustry()!=null){
+//                    if(typeMstService.getTypeMstById(companyInfo.getIndustry())==null){
+//                        companyInfo.setIndustryName(null);
+//                    }else{
+//                        companyInfo.setIndustryName(typeMstService.getTypeMstById(companyInfo.getIndustry()).getTypeName());
+//                    }
+//                }
+            }
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("company");
+        userPageHistory.setAct("getAllCompany");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        companyListInfo.setCompanyInfoList(companyInfoList);
+        return companyListInfo;
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateBatch(CompanyVo companyVo) {
+        for (String companyId : companyVo.getCompanyIds()) {
+            List<String> companyIds = getCompanyIdsByPid(companyId);
+            if (companyIds.contains(companyVo.getSuperCompanyId())) {
+                throw new BusinessException("不能添加下级公司作为上级公司");
+            }
+        }
+        if ((companyVo.getTel() != null && companyVo.getTel().length() > 13) || (companyVo.getServiceTel() != null && companyVo.getServiceTel().length() > 13)) {
+            throw new BusinessException("请输入正确的电话号码");
+        }
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("company");
+        userPageHistory.setAct("updateBatch");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        companyVo.setUpdateUser(UserUtils.getUserId());
+        companyVo.setUpdateDate(new Date());
+        return companyMapper.updateBatch(companyVo);
+    }
+
+    @Override
+    public List<Company> getDownInfo(String roleId) {
+       /* List<Company> companyList = new ArrayList<Company>();
+        for(Company company:getCompanyByPid(companyId)){
+            Company companyVo = new Company();
+            companyVo.setCompanyId(company.getCompanyId());
+            companyVo.setCompanyName(company.getCompanyName());
+            companyList.add(companyVo);
+        }*/
+        List<Company> companyList = new ArrayList<Company>();
+        List<Company> allcompanyList = new ArrayList<>();
+        if (roleId.equals("1")) {
+            allcompanyList = companyMapper.selectAllCompanys();
+        } else {
+            allcompanyList = getCompanyByRole(roleId);
+        }
+        for (Company company : allcompanyList) {
+            Company companyVo = new Company();
+            companyVo.setCompanyId(company.getCompanyId());
+            companyVo.setCompanyName(company.getCompanyName());
+            companyList.add(companyVo);
+        }
+        return companyList;
+    }
+
+    public List<StationInfo> getStationInfo(String companyId) {
+        List<Station> stationList = stationService.getStationDownInfo(companyId);
+        List<StationInfo> stationInfos = new ArrayList<StationInfo>();
+        for (Station station : stationList) {
+            StationInfo stationInfo = new StationInfo();
+            stationInfo.setStationId(station.getStationId());
+            stationInfo.setStationName(station.getStationName());
+            stationInfo.setCommuityList(commuityService.getTreeList(station.getStationId()));
+            stationInfos.add(stationInfo);
+        }
+        return stationInfos;
+    }
+
+    /*public TreeNode<Company> buildCompanyTree(String companyId){
+        List<TreeNode<Company>> nodes = new ArrayList<>();
+        //Company companyPatent = get(companyId);
+        List<Company> list = new ArrayList<Company>();
+        //list.add(companyPatent);
+        list.addAll(getCompanyByPid(companyId)); //获取所有企业
+
+        for(Company aList : list){
+            TreeNode<Company> node = new TreeNode<>();
+            node.setCompanyId(aList.getCompanyId());
+            node.setSuperCompanyId(aList.getSuperCompanyId());
+            node.setCompanyName(aList.getCompanyName());
+            if(getChildrenCompany(aList.getCompanyId()).size()==0){
+                node.setStationList(getStationInfo(aList.getCompanyId()));
+            }
+            nodes.add(node);
+        }
+        return TreeNode.buildTree(nodes);
+    }*/
+    @Cacheable(key = "#roleId")
+    public TreeNode<Company> buildCompanyTree(String roleId) {
+        List<TreeNode<Company>> nodes = new ArrayList<>();
+        List<Company> list = new ArrayList<>();
+        //Company companyPatent = get(companyId);
+        if (roleId.equals("1")) {
+            list.addAll(companyMapper.selectAllCompanys());
+        } else {
+            list = getCompanyByRole(roleId);
+        }
+        for (Company aList : list) {
+            TreeNode<Company> node = new TreeNode<>();
+            node.setCompanyId(aList.getCompanyId());
+            node.setSuperCompanyId(aList.getSuperCompanyId());
+            node.setCompanyName(aList.getCompanyName());
+            if (getChildrenCompany(aList.getCompanyId()).size() == 0) {
+                node.setStationList(getStationInfo(aList.getCompanyId()));
+            }
+            nodes.add(node);
+        }
+        if(nodes.size()==0){
+            TreeNode<Company> node = new TreeNode<>();
+            node.setSuperCompanyId("0");
+            node.setCompanyName("暂无数据");
+            nodes.add(node);
+        }
+        return TreeNode.buildTree(nodes);
+    }
+
+    /*@Override
+    public List<TreeNode<Company>> getTree(String roleId,String companyId) {
+        return getRootTree(buildCompanyTree(roleId),companyId);
+
+    }*/
+
+    public List<Company> getChildrenCompany(String companyId) {
+        return companyMapper.selectChildrenCompany(companyId);
+    }
+    /*
+     * 获取本企业的全部子企业以及子企业的下级企业
+     */
+    public List<Company> getAllJuniorCompany(String companyId) {
+        List<Company> pCompanyList = companyMapper.selectChildrenCompany(companyId);
+        if (pCompanyList.size() > 0) {
+            List<String> idList = new ArrayList<String>();
+            for (Company company : pCompanyList) {
+                idList.add(company.getCompanyId());
+            }
+            for (int i = 0; i < idList.size(); i++) {
+                pCompanyList.addAll(getAllJuniorCompany(idList.get(i)));
+            }
+        }
+        return pCompanyList;
+    }
+
+    /*
+   获取本企业的全部企业的id列表
+    */
+    public List<String> getAllCompanyIds(String companyId) {
+        List<CompanyInfo> companyList = getAllCompany(null, null, null, null, companyId, null).getCompanyInfoList();
+        List<String> companyIds = new ArrayList<String>();
+        for (CompanyInfo companyInfo : companyList) {
+            companyIds.add(companyInfo.getCompanyId());
+        }
+        return companyIds;
+    }
+
+
+    /*
+    获取本企业以及本企业的全部子企业以及子企业的下级企业的id列表
+     */
+    public List<String> getCompanyIdsByPid(String companyId) {
+        List<Company> allCompanyList = getCompanyAndSelfByPid(companyId);
+        List<String> companyIds = new ArrayList<String>();
+        for (Company company : allCompanyList) {
+            companyIds.add(company.getCompanyId());
+        }
+        return companyIds;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateByIdSelective(Company company) {
+        List<String> companyIds = getCompanyIdsByPid(company.getCompanyId());
+        if (companyIds.contains(company.getSuperCompanyId())) {
+            throw new BusinessException("不能添加下级公司作为上级公司");
+        }
+        if ((company.getTel() != null && company.getTel().length() > 13) || (company.getServiceTel() != null && company.getServiceTel().length() > 13)) {
+            throw new BusinessException("请输入正确的电话号码");
+        }
+        company.setUpdateUser(UserUtils.getUserId());
+        company.setUpdateDate(new Date());
+        UserPageHistory userPageHistory = new UserPageHistory();
+        userPageHistory.setCol("company");
+        userPageHistory.setAct("updateByIdSelective");
+        userPageHistoryServiceImpl.addUserPageHistory(userPageHistory);
+        return companyMapper.updateByPrimaryKeySelective(company);
+    }
+
+    @Override
+    public List<Company> getCompanyByPid(String companyId) {
+        List<Company> allCompanyList = new ArrayList<Company>();
+        //allCompanyList.add(get(companyId));
+        if (getAllJuniorCompany(companyId).size() > 0) {
+            allCompanyList.addAll(getAllJuniorCompany(companyId));
+        }
+        return allCompanyList;
+    }
+
+    @Override
+    public List<Company> getCompanyAndSelfByPid(String companyId) {
+        List<Company> allCompanyList = getCompanyByPid(companyId);
+        allCompanyList.add(get(companyId));
+        return allCompanyList;
+    }
+
+    public List<Company> getCompanyByRole(String roleId) {
+        List<Company> companies = new ArrayList<>();
+        List<Station> stations = new ArrayList<>();
+        List<Commuity> commuities = new ArrayList<>();
+        List<Company> allCompany = new ArrayList<>();
+        List<RlRoleData> rlRoleDataList = rlRoleDataService.getRlRoleDataByRoleId(roleId);
+        for (RlRoleData rlRoleData : rlRoleDataList) {
+            if (rlRoleData.getColumnType().equals("A")) {
+	            	Company companyrlR = get(rlRoleData.getColumnValue());
+								if(companyrlR == null){
+									continue;
+								}
+                companies.add(companyrlR);
+                for (Company company : companies) {
+                    if(getAllJuniorCompany(company.getCompanyId())!=null){
+                        allCompany.addAll(getAllJuniorCompany(company.getCompanyId()));
+                    }
+                    if(getAllSuperCompanys(company)!=null){
+                        allCompany.addAll(getAllSuperCompanys(company));
+                    }
+                }
+            }
+            if (rlRoleData.getColumnType().equals("E")) {
+                stations.add(stationService.getStationById(rlRoleData.getColumnValue()));
+                for (Station station : stations) {
+                    allCompany.addAll(getAllSuperCompanys(get(station.getCompanyId())));
+                }
+            }
+            if (rlRoleData.getColumnType().equals("F")) {
+                commuities.add(commuityService.getCommuityById(rlRoleData.getColumnValue()));
+                for (Commuity commuity : commuities) {
+                    allCompany.addAll(getAllSuperCompanys(get(commuity.getCompanyId())));
+                }
+            }
+        }
+        allCompany = removeDuplicate(allCompany);
+        return allCompany;
+    }
+
+    public List<String> getCompanyIdsByCompanyId(String companyId) {
+        List<CompanyInfo> allCompanys = getAllCompany(null, null, null, null, companyId, null).getCompanyInfoList();
+        List<String> allCompanyIds = new ArrayList<>();
+        if (allCompanys.size() > 0) {
+            for (Company company : allCompanys) {
+                allCompanyIds.add(company.getCompanyId());
+            }
+        }
+        return allCompanyIds;
+    }
+
+    @Override
+    public Company getCompanyByName(String companyName) {
+        return companyMapper.selectCompanyByName(companyName);
+    }
+
+    public List<Station> getStationByRole(String roleId) {
+        List<Station> stations = new ArrayList<>();
+        if (roleId.equals("1")) {
+            if (stationMapper.selectAllStation(null, null, null, null, null).size() > 0) {
+                stations.addAll(stationMapper.selectAllStation(null, null, null, null, null));
+            }
+        }
+        List<RlRoleData> rlRoleDataList = rlRoleDataService.getRlRoleDataByRoleId(roleId);
+        for (RlRoleData rlRoleData : rlRoleDataList) {
+            if (rlRoleData.getColumnType().equals("A")) {
+                List<String> companyIds = getCompanyIdsByCompanyId(rlRoleData.getColumnValue());
+                for (String id : companyIds) {
+                    stations.addAll(stationService.getStationDownInfo(id));
+                }
+            }
+            if (rlRoleData.getColumnType().equals("E")) {
+                stations.add(stationService.getStationById(rlRoleData.getColumnValue()));
+            }
+            if (rlRoleData.getColumnType().equals("F")) {
+                stations.add(stationService.getStationById(commuityService.getCommuityById(rlRoleData.getColumnValue()).getStationId()));
+            }
+        }
+        return stations;
+    }
+
+    public List<String> getAllStationIdsByRole(String roleId) {
+        List<String> allstationIds = new ArrayList<>();
+        for (Station station : getStationByRole(roleId)) {
+            allstationIds.add(station.getStationId());
+        }
+        return allstationIds;
+    }
+
+    public List<Commuity> getCommuityByRole(String roleId) {
+        List<Commuity> commuities = new ArrayList<>();
+        List<RlRoleData> rlRoleDataList = rlRoleDataService.getRlRoleDataByRoleId(roleId);
+        if (roleId.equals("1")) {
+            commuities.addAll(commuityService.getAllCommuity(null, null, null, null, null, null, null, null).getCommuityInfoList());
+        } else {
+            for (RlRoleData rlRoleData : rlRoleDataList) {
+                if (rlRoleData.getColumnType().equals("A")) {
+                    commuities.addAll(commuityService.getAllCommuity(null, null, null, null, rlRoleData.getColumnValue(), null, null, null).getCommuityInfoList());
+                }
+                if (rlRoleData.getColumnType().equals("E")) {
+                    commuities.addAll(commuityService.getAllCommuity(null, null, null, null, null, rlRoleData.getColumnValue(), null, null).getCommuityInfoList());
+                }
+                if (rlRoleData.getColumnType().equals("F")) {
+                    commuities.add(commuityService.getCommuityById(rlRoleData.getColumnValue()));
+                }
+            }
+        }
+        return commuities;
+    }
+
+	public List<String> getAllCommuityIdsByRole(String roleId) {
+        List<String> allCommuityIds = new ArrayList<>();
+        List<Commuity> lists =  getCommuityByRole(roleId);
+        for (Commuity commuity : lists) {
+            allCommuityIds.add(commuity.getCommuityId());
+        }
+        return allCommuityIds;
+    }
+
+    public List<Company> getAllSuperCompanys(Company company) {
+        List<Company> companies = new ArrayList<>();
+        /*while(company.getSuperCompanyId()!="00001" || company.getSuperCompanyId()!="0"|| company!=null){*/
+        while (company != null) {
+            companies.add(company);
+            company = get(company.getSuperCompanyId());
+        }
+        return companies;
+    }
+
+		@Override
+		public Company getCompanyByNameAndToMap(String companyName, Map<String, Company> mapCompany) {
+				Company company = mapCompany.get(companyName);
+				if (company == null) {
+					company = getCompanyByName(companyName);
+					mapCompany.put(company.getCompanyName(), company);
+				}
+				return company;
+		}
+
+		@Override
+		public Integer getMaxCompanyId() {
+			Integer index = 0;
+			String id = companyMapper.getMaxCompanyId();
+			if (id != null && !id.isEmpty()) {
+				index = Integer.valueOf(id);
+			}
+			return index;
+		}
+
+		@Override
+		public List<Company> selectChildrenCompany(String companyId) {
+			return companyMapper.selectChildrenCompany(companyId);
+		}
+		
+		@Override
+		public List<Company> selectChildrenCompanyAll(List<String> companyIds){
+			List<Company> companys = companyMapper.selectChildrenCompanys(companyIds);
+			if(companys == null || companys.size() == 0){
+				return null;
+			}
+			List<String> companyIds2 = new ArrayList<String>();
+			for(Company company:companys){
+				companyIds2.add(company.getCompanyId());
+			}
+			List<Company> companys2 = selectChildrenCompanyAll(companyIds2);
+			if(companys2 != null){
+				companys.addAll(companys2);
+			}
+			return companys;
+		}
+		
+		@Override
+		public List<String> selectParentIdsByIdAll(List<String> companyIds){
+			List<String> companys = new ArrayList<String>();
+			for (String id : companyIds) {
+				List<String> companysIds = companyMapper.selectParentIdsById(id);
+				companys.addAll(companysIds);
+			}
+			if(companys == null || companys.size() == 0){
+				return null;
+			}
+			List<String> companys2 = selectParentIdsByIdAll(companys);
+			if(companys2 != null){
+				companys.addAll(companys2);
+			}
+			return companys;
+		}
+		
+		@Override
+		public List<CompanyInfo> selectAllCompany(){
+			return companyMapper.selectAllCompany(1,100000,
+	        null, null,null,null);
+		}
+}

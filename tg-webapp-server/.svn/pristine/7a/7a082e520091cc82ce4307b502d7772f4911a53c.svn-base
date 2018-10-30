@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.stationshowdevtype.dao.StationShowDevTypeMapper" >
+  <resultMap id="BaseResultMap" type="cn.plou.web.station.stationshowdevtype.entity.StationShowDevType" >
+    <id column="dev_type" property="devType" jdbcType="VARCHAR" />
+    <result column="dev_name" property="devName" jdbcType="VARCHAR" />
+    <result column="isshow" property="isshow" jdbcType="INTEGER" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="memo1" property="memo1" jdbcType="VARCHAR" />
+    <result column="memo2" property="memo2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    dev_type, dev_name, isshow, notes, memo1, memo2
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from station_show_dev_type
+    where dev_type = #{devType,jdbcType=VARCHAR}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from station_show_dev_type
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from station_show_dev_type
+    where dev_type = #{devType,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.station.stationshowdevtype.entity.StationShowDevType" >
+    insert into station_show_dev_type (dev_type, dev_name, isshow, 
+      notes, memo1, memo2
+      )
+    values (#{devType,jdbcType=VARCHAR}, #{devName,jdbcType=VARCHAR}, #{isshow,jdbcType=INTEGER}, 
+      #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.station.stationshowdevtype.entity.StationShowDevType" >
+    insert into station_show_dev_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="devType != null" >
+        dev_type,
+      </if>
+      <if test="devName != null" >
+        dev_name,
+      </if>
+      <if test="isshow != null" >
+        isshow,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="memo1 != null" >
+        memo1,
+      </if>
+      <if test="memo2 != null" >
+        memo2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="devType != null" >
+        #{devType,jdbcType=VARCHAR},
+      </if>
+      <if test="devName != null" >
+        #{devName,jdbcType=VARCHAR},
+      </if>
+      <if test="isshow != null" >
+        #{isshow,jdbcType=INTEGER},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null" >
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null" >
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.stationshowdevtype.entity.StationShowDevType" >
+    update station_show_dev_type
+    <set >
+      <if test="devName != null" >
+        dev_name = #{devName,jdbcType=VARCHAR},
+      </if>
+      <if test="isshow != null" >
+        isshow = #{isshow,jdbcType=INTEGER},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null" >
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null" >
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dev_type = #{devType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.station.stationshowdevtype.entity.StationShowDevType" >
+    update station_show_dev_type
+    set dev_name = #{devName,jdbcType=VARCHAR},
+      isshow = #{isshow,jdbcType=INTEGER},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR}
+    where dev_type = #{devType,jdbcType=VARCHAR}
+  </update>
+</mapper>

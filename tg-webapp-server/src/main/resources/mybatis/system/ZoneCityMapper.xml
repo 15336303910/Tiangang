@@ -101,4 +101,6 @@
       z_c_provinceid = #{zCProvinceid,jdbcType=VARCHAR}
     where z_c_id = #{zCId,jdbcType=VARCHAR}
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

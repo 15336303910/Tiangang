@@ -765,6 +765,7 @@
     consumer_id,room_name,name
     from houses_info
     where substring(consumer_id,1,15)=#{unitId}
+    order by room_name+0
   </select>
 
     <select id="getAllCompanyId"  resultType="java.lang.String">
@@ -796,7 +797,7 @@
         h.in_build_area in_build_area,h.user_build_area user_build_area,h.contract_heat_id contract_heat_id,
         h.heating_area heating_area,
         h.charge_type charge_type,b.building_no building_no,
-        u.unit_name unit_name,b.building_name building_name,s.station_id station_id,s.station_name station_name,
+        u.unit_name unit_name,b.building_name building_name,s.station_id station_id,s.station_name station_name,com.commuity_id commuity_id,com.commuity_name commuity_name,
         h.unit_price_type unit_price_type, h.heat_user_type heat_user_type,
         h.charge_area charge_area,h.name name, h.email email, h.user_company user_company,
         h.tel tel, h.heating_form heating_form,
@@ -2386,5 +2387,8 @@
      <update id="modifyHouseNameByAddress" parameterType="map">
     	update houses_info
     		set address = replace(address,#{orgAddress},#{changedAdress}) where consumer_id like (concat(#{consumerId},'%'))
-     </update>    
+     </update>
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

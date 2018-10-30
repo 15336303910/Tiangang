@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.balance.trendCurve.dao.BuildRunningDataMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.balance.trendCurve.entity.BuildRunningData">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="system_id" jdbcType="VARCHAR" property="systemId" />
+    <result column="heat" jdbcType="VARCHAR" property="heat" />
+    <result column="power" jdbcType="DECIMAL" property="power" />
+    <result column="flow_speed" jdbcType="DECIMAL" property="flowSpeed" />
+    <result column="in_temperature" jdbcType="DECIMAL" property="inTemperature" />
+    <result column="out_temperature" jdbcType="DECIMAL" property="outTemperature" />
+    <result column="room_temperature" jdbcType="DECIMAL" property="roomTemperature" />
+    <result column="outdoor_temperature" jdbcType="DECIMAL" property="outdoorTemperature" />
+    <result column="heating_area" jdbcType="DECIMAL" property="heatingArea" />
+    <result column="heating_index" jdbcType="DECIMAL" property="heatingIndex" />
+    <result column="flowing_index" jdbcType="DECIMAL" property="flowingIndex" />
+    <result column="system_read_time" jdbcType="TIMESTAMP" property="systemReadTime" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="adj_heating_index" jdbcType="DECIMAL" property="adjHeatingIndex" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType" />
+    <result column="in_pressure" jdbcType="DECIMAL" property="inPressure" />
+    <result column="out_pressure" jdbcType="DECIMAL" property="outPressure" />
+    <result column="pressure_diff" jdbcType="DECIMAL" property="pressureDiff" />
+    <result column="temperature_diff" jdbcType="DECIMAL" property="temperatureDiff" />
+    <result column="set_pressure_diff" jdbcType="DECIMAL" property="setPressureDiff" />
+    <result column="set_temperature" jdbcType="DECIMAL" property="setTemperature" />
+    <result column="sample_flow_speed" jdbcType="DECIMAL" property="sampleFlowSpeed" />
+    <result column="limit_speed" jdbcType="DECIMAL" property="limitSpeed" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, consumer_id, system_id, heat, power, flow_speed, in_temperature, out_temperature, 
+    room_temperature, outdoor_temperature, heating_area, heating_index, flowing_index, 
+    system_read_time, company_id, adj_heating_index, source_type,in_pressure,out_pressure,
+    pressure_diff,set_pressure_diff,set_temperature,limit_speed,temperature_diff,sample_flow_speed
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from build_running_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByBuildingId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from build_running_data
+    where consumer_id = #{buildingId,jdbcType=VARCHAR}
+
+  </select>
+
+  <select id="selectBuildRuuningDataList" parameterType="map" resultType="cn.plou.web.balance.trendCurve.vo.RunningData">
+    select
+    <include refid="Base_Column_List" />
+    from build_running_data
+    where consumer_id = #{buildingNo,jdbcType=VARCHAR}
+    <if test="startDate !=null and endDate != null">
+      and system_read_time between #{startDate} and #{endDate}
+    </if>
+    order by system_read_time
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from build_running_data
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.balance.trendCurve.entity.BuildRunningData">
+    insert into build_running_data (primary_id, consumer_id, system_id, 
+      heat, power, flow_speed, 
+      in_temperature, out_temperature, room_temperature, 
+      outdoor_temperature, heating_area, heating_index, 
+      flowing_index, system_read_time, company_id,
+      adj_heating_index, source_type,in_pressure,out_pressure,
+    pressure_diff,set_pressure_diff,set_temperature,limit_speed,temperature_diff)
+    values (#{primaryId,jdbcType=VARCHAR}, #{consumerId,jdbcType=VARCHAR}, #{systemId,jdbcType=VARCHAR}, 
+      #{heat,jdbcType=VARCHAR}, #{power,jdbcType=DECIMAL}, #{flowSpeed,jdbcType=DECIMAL}, 
+      #{inTemperature,jdbcType=DECIMAL}, #{outTemperature,jdbcType=DECIMAL}, #{roomTemperature,jdbcType=DECIMAL}, 
+      #{outdoorTemperature,jdbcType=DECIMAL}, #{heatingArea,jdbcType=DECIMAL}, #{heatingIndex,jdbcType=DECIMAL}, 
+      #{flowingIndex,jdbcType=DECIMAL}, #{systemReadTime,jdbcType=TIMESTAMP}, #{companyId,jdbcType=VARCHAR}, 
+      #{adjHeatingIndex,jdbcType=DECIMAL}, #{sourceType,jdbcType=VARCHAR},#{inPressure},#{outPressure},#{pressureDiff},
+      #{setPressureDiff},#{setTemperature},#{limitSpeed},#{temperatureDiff})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.balance.trendCurve.entity.BuildRunningData">
+    insert into build_running_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="heat != null">
+        heat,
+      </if>
+      <if test="power != null">
+        power,
+      </if>
+      <if test="flowSpeed != null">
+        flow_speed,
+      </if>
+      <if test="inTemperature != null">
+        in_temperature,
+      </if>
+      <if test="outTemperature != null">
+        out_temperature,
+      </if>
+      <if test="roomTemperature != null">
+        room_temperature,
+      </if>
+      <if test="outdoorTemperature != null">
+        outdoor_temperature,
+      </if>
+      <if test="heatingArea != null">
+        heating_area,
+      </if>
+      <if test="heatingIndex != null">
+        heating_index,
+      </if>
+      <if test="flowingIndex != null">
+        flowing_index,
+      </if>
+      <if test="systemReadTime != null">
+        system_read_time,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="adjHeatingIndex != null">
+        adj_heating_index,
+      </if>
+      <if test="sourceType != null">
+        source_type,
+      </if>
+      <if test="inPressure != null">
+        in_pressure,
+      </if>
+      <if test="outPressure != null">
+        out_pressure,
+      </if>
+      <if test="pressureDiff != null">
+        pressure_diff,
+      </if>
+      <if test="temperatureDiff != null">
+        temperature_diff,
+      </if>
+      <if test="setPressureDiff != null">
+        set_pressure_diff,
+      </if>
+      <if test="setTemperature != null">
+        set_temperature,
+      </if>
+      <if test="limitFlow != null">
+        limit_flow,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="heat != null">
+        #{heat,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null">
+        #{power,jdbcType=DECIMAL},
+      </if>
+      <if test="flowSpeed != null">
+        #{flowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="inTemperature != null">
+        #{inTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outTemperature != null">
+        #{outTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="roomTemperature != null">
+        #{roomTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outdoorTemperature != null">
+        #{outdoorTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingArea != null">
+        #{heatingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingIndex != null">
+        #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="flowingIndex != null">
+        #{flowingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="systemReadTime != null">
+        #{systemReadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="adjHeatingIndex != null">
+        #{adjHeatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null">
+        #{sourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="inPressure != null">
+        #{inPressure},
+      </if>
+      <if test="outPressure != null">
+        #{outPressure},
+      </if>
+      <if test="pressureDiff != null">
+        #{pressureDiff},
+      </if>
+      <if test="temperatureDiff != null">
+        #{temperatureDiff},
+      </if>
+      <if test="setPressureDiff != null">
+        #{setPressureDiff},
+      </if>
+      <if test="setTemperature != null">
+        #{setTemperature},
+      </if>
+      <if test="limitFlow != null">
+        #{limitFlow},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.balance.trendCurve.entity.BuildRunningData">
+    update build_running_data
+    <set>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="heat != null">
+        heat = #{heat,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null">
+        power = #{power,jdbcType=DECIMAL},
+      </if>
+      <if test="flowSpeed != null">
+        flow_speed = #{flowSpeed,jdbcType=DECIMAL},
+      </if>
+      <if test="inTemperature != null">
+        in_temperature = #{inTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outTemperature != null">
+        out_temperature = #{outTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="roomTemperature != null">
+        room_temperature = #{roomTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outdoorTemperature != null">
+        outdoor_temperature = #{outdoorTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingArea != null">
+        heating_area = #{heatingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="flowingIndex != null">
+        flowing_index = #{flowingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="systemReadTime != null">
+        system_read_time = #{systemReadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="adjHeatingIndex != null">
+        adj_heating_index = #{adjHeatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="sourceType != null">
+        source_type = #{sourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="inPressure != null">
+        in_pressure = #{inPressure},
+      </if>
+      <if test="outPressure != null">
+        out_pressure = #{outPressure},
+      </if>
+      <if test="pressureDiff != null">
+        pressure_diff = #{pressureDiff},
+      </if>
+      <if test="temperatureDiff != null">
+        temperature_diff = #{temperatureDiff},
+      </if>
+      <if test="setPressureDiff != null">
+        set_pressure_diff = #{setPressureDiff},
+      </if>
+      <if test="setTemperature != null">
+        set_temperature = #{setTemperature},
+      </if>
+      <if test="limitFlow != null">
+        limit_flow = #{limitFlow},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.balance.trendCurve.entity.BuildRunningData">
+    update build_running_data
+    set consumer_id = #{consumerId,jdbcType=VARCHAR},
+      system_id = #{systemId,jdbcType=VARCHAR},
+      heat = #{heat,jdbcType=VARCHAR},
+      power = #{power,jdbcType=DECIMAL},
+      flow_speed = #{flowSpeed,jdbcType=DECIMAL},
+      in_temperature = #{inTemperature,jdbcType=DECIMAL},
+      out_temperature = #{outTemperature,jdbcType=DECIMAL},
+      room_temperature = #{roomTemperature,jdbcType=DECIMAL},
+      outdoor_temperature = #{outdoorTemperature,jdbcType=DECIMAL},
+      heating_area = #{heatingArea,jdbcType=DECIMAL},
+      heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      flowing_index = #{flowingIndex,jdbcType=DECIMAL},
+      system_read_time = #{systemReadTime,jdbcType=TIMESTAMP},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      adj_heating_index = #{adjHeatingIndex,jdbcType=DECIMAL},
+      source_type = #{sourceType,jdbcType=VARCHAR},
+      in_pressure = #{inPressure},
+      out_pressure = #{outPressure},
+      pressure_diff = #{pressureDiff},
+      temperature_diff = #{temperatureDiff},
+      set_pressure_diff = #{setPressureDiff},
+      set_temperature = #{setTemperature},
+      limit_flow = #{limitFlow}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

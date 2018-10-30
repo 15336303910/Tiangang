@@ -1,0 +1,244 @@
+package cn.plou.web.charge.heatingmanage.service.impl;
+
+import cn.plou.web.charge.heatingmanage.dao.HeatCheckDetailMapper;
+import cn.plou.web.charge.heatingmanage.domain.HeatCheckDetail;
+import cn.plou.web.charge.heatingmanage.service.HeatCheckDetailService;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.config.common.Constant;
+import cn.plou.web.common.utils.IDWorker;
+import cn.plou.web.common.utils.a1.DateUtil;
+import cn.plou.web.system.baseMessage.commuity.dao.CommuityMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.xssf.usermodel.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 2018/8/23 8:56
+ */
+
+@Service
+@Transactional(rollbackFor = Exception.class)
+public class HeatCheckDetailServiceImpl implements HeatCheckDetailService {
+
+  @Resource
+  private HeatCheckDetailMapper heatCheckDetailMapper;
+
+  @Resource
+  private CommuityMapper commuityMapper;
+
+  @Override
+  public PageInfo<HeatCheckDetail> getList(String beginCreateDate, String endCreateDate, HeatCheckDetail heatCheckDetail, BasePageEntity basePageEntity) {
+    PageHelper.startPage(basePageEntity.getPage(), basePageEntity.getPageSize());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    ParsePosition pos = new ParsePosition(0);
+    Date begin = null;
+    try {
+      begin = sdf.parse(beginCreateDate, pos);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+    ParsePosition pos2 = new ParsePosition(0);
+    Date end = null;
+    try {
+      end = sdf.parse(endCreateDate, pos2);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+
+    String rangeId = heatCheckDetail.getRangeId();
+    List<HeatCheckDetail> list = new ArrayList<>();
+    //站特殊处理
+    if (rangeId != null) {
+      if (rangeId.length() == Constant.STATION_ID_LENGTH) {
+        List<String> commuityIds = commuityMapper.selectCommuityIdsByStationId(rangeId);
+        if (commuityIds.size() > 0) {
+          list = heatCheckDetailMapper.findOfStation(begin, end, heatCheckDetail, basePageEntity, commuityIds);
+        }
+      } else {
+        list = heatCheckDetailMapper.find(begin, end, heatCheckDetail, basePageEntity);
+      }
+    }
+    //处理任务安排时间为 2018/10/19 08:20
+    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    for (HeatCheckDetail heatCheckDetail1 : list) {
+      if (heatCheckDetail1.getTaskDate() != null) {
+        heatCheckDetail1.setShowTaskDate(sdf2.format(heatCheckDetail1.getTaskDate()));
+      }
+      if (heatCheckDetail1.getExecutTime() != null) {
+        heatCheckDetail1.setShowExecutTime(sdf2.format(heatCheckDetail1.getExecutTime()));
+      }
+    }
+    return new PageInfo<>(list);
+  }
+
+  @Override
+  public List<HeatCheckDetail> list(String beginCreateDate, String endCreateDate, HeatCheckDetail heatCheckDetail) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    ParsePosition pos = new ParsePosition(0);
+    Date begin = null;
+    try {
+      begin = sdf.parse(beginCreateDate, pos);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+    ParsePosition pos2 = new ParsePosition(0);
+    Date end = null;
+    try {
+      end = sdf.parse(endCreateDate, pos2);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+    List<HeatCheckDetail> list = heatCheckDetailMapper.find(begin, end, heatCheckDetail, null);
+    return list;
+  }
+
+  @Override
+  public List<HeatCheckDetail> listOfStation(String beginCreateDate, String endCreateDate, HeatCheckDetail heatCheckDetail, List<String> ids) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    ParsePosition pos = new ParsePosition(0);
+    Date begin = null;
+    try {
+      begin = sdf.parse(beginCreateDate, pos);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+    ParsePosition pos2 = new ParsePosition(0);
+    Date end = null;
+    try {
+      end = sdf.parse(endCreateDate, pos2);
+    } catch (Exception e) {
+      //e.printStackTrace();
+    }
+    List<HeatCheckDetail> list = heatCheckDetailMapper.findOfStation(begin, end, heatCheckDetail, null, ids);
+    return list;
+  }
+
+  @Override
+  public int addHeatCheckDetail(HeatCheckDetail heatCheckDetail) {
+    return heatCheckDetailMapper.insert(heatCheckDetail);
+  }
+
+  @Override
+  public int updateHeatCheckDetail(HeatCheckDetail heatCheckDetail) {
+    return heatCheckDetailMapper.updateByPrimaryKeySelective(heatCheckDetail);
+  }
+
+  @Override
+  public String exportList(ServletRequest request, List<HeatCheckDetail> list) {
+    String path1 = IDWorker.uuid() + "-HeatCheck.xlsx";
+    // 第一步，创建一个webbook，对应一个Excel文件
+    XSSFWorkbook wb = new XSSFWorkbook();
+    // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+    XSSFSheet sheet = wb.createSheet("Sheet1");
+    sheet.setColumnWidth(0, 5388);
+    sheet.setColumnWidth(1, 7224);
+    sheet.setColumnWidth(2, 2549);
+    sheet.setColumnWidth(3, 2613);
+    sheet.setColumnWidth(4, 3194);
+    sheet.setColumnWidth(5, 3129);
+    sheet.setColumnWidth(6, 14061);
+    sheet.setColumnWidth(7, 4515);
+    sheet.setColumnWidth(8, 5095);
+    sheet.setColumnWidth(9, 2257);
+    
+    // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+    XSSFRow row = sheet.createRow(0);
+    // 第四步，创建单元格，并设置值表头 设置表头居中
+    XSSFCellStyle style = wb.createCellStyle();
+    style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+
+    XSSFCell cell = row.createCell(0);
+    cell.setCellValue("任务安排时间");
+    cell.setCellStyle(style);
+    cell = row.createCell(1);
+    cell.setCellValue("用户地址");
+    cell.setCellStyle(style);
+    cell = row.createCell(2);
+    cell.setCellValue("采暖年度");
+    cell.setCellStyle(style);
+    cell = row.createCell(3);
+    cell.setCellValue("供暖状态");
+    cell.setCellStyle(style);
+    cell = row.createCell(4);
+    cell.setCellValue("封堵面积(㎡)");
+    cell.setCellStyle(style);
+    cell = row.createCell(5);
+    cell.setCellValue("任务类型");
+    cell.setCellStyle(style);
+    cell = row.createCell(6);
+    cell.setCellValue("任务内容");
+    cell.setCellStyle(style);
+    cell = row.createCell(7);
+    cell.setCellValue("执行部门");
+    cell.setCellStyle(style);
+    cell = row.createCell(8);
+    cell.setCellValue("执行人");
+    cell.setCellStyle(style);
+    cell = row.createCell(9);
+    cell.setCellValue("执行情况");
+    cell.setCellStyle(style);
+
+
+    // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
+    for (int i = 0; i < list.size(); i++) {
+      row = sheet.createRow(i + 1);
+      HeatCheckDetail hcd = list.get(i);
+      if (hcd.getTaskDate() != null) {
+        row.createCell(0).setCellValue(DateUtil.toDateTimeString(hcd.getTaskDate()));
+      }
+      if (hcd.getAddress() != null) {
+        row.createCell(1).setCellValue(hcd.getAddress());
+      }
+      if (hcd.getAnnual() != null) {
+        row.createCell(2).setCellValue(hcd.getAnnual());
+      }
+      if (hcd.getHeatingStatusValue() != null) {
+        row.createCell(3).setCellValue(hcd.getHeatingStatusValue());
+      }
+      if (hcd.getSealArea() != null) {
+        row.createCell(4).setCellValue(hcd.getSealArea().toString());
+      }
+      if (hcd.getTaskTypeValue() != null) {
+        row.createCell(5).setCellValue(hcd.getTaskTypeValue());
+      }
+      if (hcd.getExecutContent() != null) {
+        row.createCell(6).setCellValue(hcd.getExecutContent());
+      }
+      if (hcd.getExecutDeptName() != null) {
+        row.createCell(7).setCellValue(hcd.getExecutDeptName());
+      }
+      if (hcd.getExecutPersonName() != null) {
+        row.createCell(8).setCellValue(hcd.getExecutPersonName());
+      }
+      if (hcd.getExecutRecord() != null) {
+        row.createCell(9).setCellValue(hcd.getExecutRecord());
+      }
+    }
+
+    //第六步,输出Excel文件
+    OutputStream output;
+    String path = request.getServletContext().getRealPath("/");
+    try {
+      output = new FileOutputStream(path + path1);
+      wb.write(output);
+      output.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return path1;
+  }
+}

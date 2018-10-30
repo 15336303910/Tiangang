@@ -187,7 +187,7 @@
     m.longitude, m.latitude, m.company_id,c.company_name companyName, m.address, m.notes, m.basecode,
     m.meter_subtype meterSubtype, m.steel, m.meter_state meterState, m.factory, m.diameter, m.precisiona,
     m.hard_ver hardVer, m.common_flow commonFlow, m.minimum_flow minimumFlow, m.temperature_differ temperatureDiffer,
-    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag, m.system_id, s.system_name 
+    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag, m.system_id systemId, s.system_name systemName
     from meter_info m
     left JOIN company_info c ON m.company_id=c.company_id 
     left JOIN system_info s ON m.system_id=s.system_id 
@@ -1690,7 +1690,7 @@
     m.longitude, m.latitude, m.company_id,c.company_name companyName, m.address, m.notes, m.basecode,
     m.meter_subtype meterSubtype, m.steel, m.meter_state meterState, m.factory, m.diameter, m.precisiona,
     m.hard_ver hardVer, m.common_flow commonFlow, m.minimum_flow minimumFlow, m.temperature_differ temperatureDiffer,
-    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag,m.system_id,s.system_name 
+    m.temperature_range temperatureRange, m.baud_rate baudRate,m.max_bound maxBound, m.limtspeed, m.ctrlflag,m.system_id systemId,s.system_name systemName
     from meter_info m
     left JOIN company_info c ON m.company_id=c.company_id
     left JOIN system_info s ON m.system_id=s.system_id 
@@ -2065,8 +2065,11 @@
     from meter_info
     where 
     consumer_id in
-    <foreach collection="list" item="item" open="(" separator="," close=")">
+    <foreach collection="consumerIds" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
   </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

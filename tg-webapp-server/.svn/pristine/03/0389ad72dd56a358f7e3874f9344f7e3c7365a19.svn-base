@@ -1,0 +1,146 @@
+package cn.plou.web.heatManage.diagnose.service.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletRequest;
+
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import cn.plou.web.common.utils.CommonServiceImp;
+import cn.plou.web.common.utils.PageUtils;
+import cn.plou.web.common.utils.Query;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.heatManage.diagnose.dao.MbusInfoDao;
+import cn.plou.web.heatManage.diagnose.domain.MbusInfoDO;
+import cn.plou.web.heatManage.diagnose.service.MbusInfoService;
+import cn.plou.web.system.commonMessage.typeMst.entity.TypeMst;
+import cn.plou.web.system.commonMessage.typeMst.service.TypeMstService;
+import cn.plou.web.system.permission.role.service.DataRoleService;
+
+
+
+@Service
+public class MbusInfoServiceImpl implements MbusInfoService {
+	@Autowired
+	private MbusInfoDao mbusInfoDao;
+	@Autowired
+	private TypeMstService typeMstService;
+	@Autowired
+	private CommonServiceImp commonService;
+	@Autowired
+	private DataRoleService dataRoleService;
+	
+	@Override
+	public MbusInfoDO get(String mbusId){
+		return mbusInfoDao.get(mbusId);
+	}
+	
+	@Override
+	public List<MbusInfoDO> list(Map<String, Object> map){
+		return mbusInfoDao.list(map);
+	}
+	
+	@Override
+	public int count(Map<String, Object> map){
+		return mbusInfoDao.count(map);
+	}
+	
+	@Override
+	public int save(MbusInfoDO mbusInfo){
+		return mbusInfoDao.save(mbusInfo);
+	}
+	
+	@Override
+	public int update(MbusInfoDO mbusInfo){
+		return mbusInfoDao.update(mbusInfo);
+	}
+	
+	@Override
+	public int remove(String mbusId){
+		return mbusInfoDao.remove(mbusId);
+	}
+	
+	@Override
+	public int batchRemove(String[] mbusIds){
+		return mbusInfoDao.batchRemove(mbusIds);
+	}
+
+	@Override
+	public int errorCount(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return mbusInfoDao.errorCount(map);
+	}
+
+	@Override
+	public List<MbusInfoDO> groupList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return mbusInfoDao.groupList(map);
+	}
+
+	@Override
+	public String diagnoseMubsToExcel(Map<String, Object> params, ServletRequest request) {
+		params.put("offset", "0");
+		params.put("limit", "50000");
+		JSONArray array = getMbusStatusDetail(params);
+ 		return commonService.getHisJSONArrayToExcel(request, "diagnoseMubs", "集中器设备诊断",array);
+	}
+	/**
+	 * 获取集中器状态信息
+	 * 
+	 * @param params
+	 * @return
+	 */
+	@Override
+	public JSONArray getMbusStatusDetail(Map<String, Object> params) {
+		// String type, String consumerId, String mbusId, String runningState
+		// String limit,String offset
+		params.remove("mbusId");
+		params.remove("runningState");
+    Boolean flag = dataRoleService.getDataRoleItemsType(UserUtils.getUserId(), params);
+		List<MbusInfoDO> mbusInfoList = mbusInfoDao.list(params);
+		JSONArray array = new JSONArray();
+		
+		List<TypeMst> typeMstList = typeMstService.getAllTypeMst();
+		for (MbusInfoDO mbus : mbusInfoList) {
+			JSONObject jsonObject = new JSONObject();
+			// 一户的信息
+			jsonObject.put("consumerId", mbus.getConsumerId());
+			jsonObject.put("mbusCode", mbus.getMbusCode());
+			jsonObject.put("deviceStatus",  typeMstService.getTypeNameById(typeMstList, mbus.getRunningState()));
+			jsonObject.put("lineStatus", typeMstService.getTypeNameById(typeMstList, mbus.getBusyStatus()));
+
+			if(mbus.getOnlineTime()!=null)
+			jsonObject.put("onlineTime", DateFormatUtils.format(mbus.getOnlineTime(), "yyyy-MM-dd HH:mm:ss"));
+			if(mbus.getOfflineTime()!=null)
+			jsonObject.put("offlineTime", DateFormatUtils.format(mbus.getOfflineTime(), "yyyy-MM-dd HH:mm:ss"));
+			jsonObject.put("sendInterval", mbus.getSendInterval());
+
+			if (mbus.getOfflineTime() != null) {
+				jsonObject.put("errorTime",  DateFormatUtils.format(mbus.getOfflineTime(), "yyyy-MM-dd HH:mm:ss"));
+				jsonObject.put("errorDays",
+						Math.abs((new Date().getTime() - mbus.getOfflineTime().getTime()) / 86400000));
+			}
+			
+			jsonObject.put("cardFlow", mbus.getCardFlow());
+			jsonObject.put("transType",  typeMstService.getTypeNameById(typeMstList, mbus.getTransMode()));
+			jsonObject.put("uploadType", typeMstService.getTypeNameById(typeMstList, mbus.getUpCommMode()));
+			jsonObject.put("isVirtual",typeMstService.getTypeNameById(typeMstList, mbus.getChannlMode()));
+
+			jsonObject.put("companyName", typeMstService.getTypeNameById(typeMstList, mbus.getFactory()));
+			jsonObject.put("remark", mbus.getNotes());
+			jsonObject.put("isFirstSearch", mbus.getIsFirst());
+			jsonObject.put("address", mbus.getAddress());
+			array.add(jsonObject);
+		}
+		return array;
+	}
+}

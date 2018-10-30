@@ -1,0 +1,3 @@
+2018-10-18 14:26:04 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unparseable date: "11:20:30"
+2018-10-18 14:26:24 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 14:26:48 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

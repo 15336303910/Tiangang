@@ -1,0 +1,37 @@
+package cn.plou.web.charge.heatingmanage.service;
+
+import cn.plou.web.charge.heatingmanage.domain.HeatCheckDetail;
+import cn.plou.web.common.config.common.BasePageEntity;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * 2018/8/23 8:55
+ */
+public interface HeatCheckDetailService {
+
+  /**
+   * 获取稽查记录
+   *
+   * @param beginCreateDate
+   * @param endCreateDate
+   * @param heatCheckDetail
+   * @param basePageEntity
+   * @return
+   */
+  PageInfo<HeatCheckDetail> getList(String beginCreateDate, String endCreateDate, HeatCheckDetail heatCheckDetail, BasePageEntity basePageEntity);
+
+
+  /**
+   * @param heatCheckDetail
+   * @return 稽查申请
+   */
+  int addHeatCheckDetail(HeatCheckDetail heatCheckDetail);
+
+
+  /**
+   * @param heatCheckDetail
+   * @return 稽查反馈
+   */
+  int updateHeatCheckDetail(HeatCheckDetail heatCheckDetail);
+
+}

@@ -51,17 +51,6 @@
         left outer join type_mst as wireles on wireles.id = a.wireless 
 		    <where>
 		         1=1  
-				 <if test="companyId != null">
-			      and substring(a.consumer_id,1,5)=#{companyId}
-			    </if> 
-				 <if test="stationId != null">
-			      and substring(a.consumer_id,1,10) in (
-			      select commuity_id from commuity_info where station_id=#{stationId}
-			      )
-			    </if>
-			    <if test="commuityId != null">
-			      and substring(a.consumer_id,1,10)=#{commuityId}
-			    </if>
 			    <if test="buildingNo != null">
 			      and substring(a.consumer_id,1,13)=#{buildingNo}
 			    </if>
@@ -91,7 +80,25 @@
 			    </if>
 				<if test="adjustModel != null">
 			      and a.adjust_model =#{adjustModel}
-			    </if>		
+			    </if>
+				<if test="companyIds!=null">
+					<if test="companyIds.size()>0">
+						and a.company_id in
+						<foreach collection="companyIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
+				<if test="commuityIds!=null">
+					<if test="commuityIds.size()>0">
+						and substring(a.consumer_id,1,10) in
+						<foreach collection="commuityIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>		
 		  	</where>
         <choose>
             <when test="sortby != null and sortby.trim() != ''">
@@ -177,17 +184,24 @@
 		select count(*) from valve_data_now as a
 		    <where>
 		         1=1 
-				 <if test="companyId != null">
-			      and substring(a.consumer_id,1,5)=#{companyId}
-			    </if> 
-				 <if test="stationId != null">
-			      and substring(a.consumer_id,1,10) in (
-			      select commuity_id from commuity_info where station_id=#{stationId}
-			      )
-			    </if>
-			    <if test="commuityId != null">
-			      and substring(a.consumer_id,1,10)=#{commuityId}
-			    </if>
+				 <if test="companyIds!=null">
+					<if test="companyIds.size()>0">
+						and a.company_id in
+						<foreach collection="companyIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
+				<if test="commuityIds!=null">
+					<if test="commuityIds.size()>0">
+						and substring(a.consumer_id,1,10) in
+						<foreach collection="commuityIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+				</if>
 			    <if test="buildingNo != null">
 			      and substring(a.consumer_id,1,13)=#{buildingNo}
 			    </if>

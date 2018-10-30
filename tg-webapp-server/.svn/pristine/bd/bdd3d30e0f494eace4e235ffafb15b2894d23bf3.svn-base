@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.history.dao.HistoryDataDao">
+<resultMap id="BaseInfoMap" type="cn.plou.web.system.baseMessage.house.vo.HouseInfo">
+    <id column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <id column="unit_id" jdbcType="VARCHAR" property="unitId" />
+    <id column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <id column="building_name" jdbcType="VARCHAR" property="buildingName" />
+    <id column="station_name" jdbcType="VARCHAR" property="stationName" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="room_name" jdbcType="VARCHAR" property="roomName" />
+    <result column="system_id" jdbcType="VARCHAR" property="systemId" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="building_area" jdbcType="DECIMAL" property="buildingArea" />
+    <result column="in_build_area" jdbcType="DECIMAL" property="inBuildArea" />
+    <result column="user_build_area" jdbcType="DECIMAL" property="userBuildArea" />
+    <result column="contract_heat_id" jdbcType="VARCHAR" property="contractHeatId" />
+    <result column="heating_area" jdbcType="DECIMAL" property="heatingArea" />
+    <result column="charge_type" jdbcType="VARCHAR" property="chargeType" />
+    <result column="charge_type_name" jdbcType="VARCHAR" property="chargeTypeName" />
+    <result column="unit_price_type" jdbcType="VARCHAR" property="unitPriceType" />
+    <result column="heat_user_type" jdbcType="VARCHAR" property="heatUserType" />
+    <result column="heat_user_type_name" jdbcType="VARCHAR" property="heatUserTypeName" />
+    <result column="charge_area" jdbcType="DECIMAL" property="chargeArea" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="user_company" jdbcType="VARCHAR" property="userCompany" />
+    <result column="tel" jdbcType="VARCHAR" property="tel" />
+    <result column="heating_form" jdbcType="VARCHAR" property="heatingForm" />
+    <result column="heating_form_name" jdbcType="VARCHAR" property="heatingFormName" />
+    <result column="net_status" jdbcType="VARCHAR" property="netStatus" />
+    <result column="net_status_name" jdbcType="VARCHAR" property="netStatusName" />
+    <result column="heat_exchange_status" jdbcType="VARCHAR" property="heatExchangeStatus" />
+    <result column="heat_exchange_status_name" jdbcType="VARCHAR" property="heatExchangeStatusName" />
+    <result column="issample" jdbcType="VARCHAR" property="issample" />
+    <result column="house_type" jdbcType="VARCHAR" property="houseType" />
+    <result column="house_type_name" jdbcType="VARCHAR" property="houseTypeName" />
+    <result column="diameter" jdbcType="VARCHAR" property="diameter" />
+    <result column="has_heat_meter" jdbcType="DECIMAL" property="hasHeatMeter" />
+    <result column="has_valve" jdbcType="DECIMAL" property="hasValve" />
+    <result column="house_structure_id" jdbcType="VARCHAR" property="houseStructureId" />
+    <result column="charge_id" jdbcType="VARCHAR" property="chargeId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_Name" jdbcType="VARCHAR" property="companyName" />
+    <result column="sec_pipe_id" jdbcType="VARCHAR" property="secPipeId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="memo3" jdbcType="VARCHAR" property="memo3" />
+    <result column="memo4" jdbcType="VARCHAR" property="memo4" />
+    <result column="memo5" jdbcType="VARCHAR" property="memo5" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="floor_high" jdbcType="VARCHAR" property="floorHigh" />
+    <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+    <result column="passwod" jdbcType="VARCHAR" property="passwod" />
+    <result column="person_sum" jdbcType="DECIMAL" property="personSum" />
+    <result column="person_type" jdbcType="VARCHAR" property="personType" />
+    <result column="color_no" jdbcType="VARCHAR" property="colorNo" />
+    <result column="personcard_id" jdbcType="VARCHAR" property="personcardId" />
+    <result column="lowinsure_name" jdbcType="VARCHAR" property="lowinsureName" />
+    <result column="lowinsure_no" jdbcType="VARCHAR" property="lowinsureNo" />
+    <result column="water_type" jdbcType="VARCHAR" property="waterType" />
+    <result column="open_acc_type" jdbcType="VARCHAR" property="openAccType" />
+    <result column="tot_meter_clientno" jdbcType="VARCHAR" property="totMeterClientno" />
+    <result column="step_begin" jdbcType="TIMESTAMP" property="stepBegin" />
+    <result column="step_end" jdbcType="TIMESTAMP" property="stepEnd" />
+    <result column="step_adj_type" jdbcType="VARCHAR" property="stepAdjType" />
+    <result column="contry_factor_begin" jdbcType="TIMESTAMP" property="contryFactorBegin" />
+    <result column="contry_factor_end" jdbcType="TIMESTAMP" property="contryFactorEnd" />
+    <result column="contry_factor" jdbcType="VARCHAR" property="contryFactor" />
+    <result column="contry_type" jdbcType="VARCHAR" property="contryType" />
+    <result column="contry_person" jdbcType="VARCHAR" property="contryPerson" />
+    <result column="contry_stat" jdbcType="VARCHAR" property="contryStat" />
+    <result column="destroy_date" jdbcType="TIMESTAMP" property="destroyDate" />
+    <result column="approve_state" jdbcType="VARCHAR" property="approveState" />
+    <result column="water_state" jdbcType="VARCHAR" property="waterState" />
+    <result column="contry_id" jdbcType="VARCHAR" property="contryId" />
+    <result column="house_direct" jdbcType="VARCHAR" property="houseDirect" />
+    <result column="house_direct_name" jdbcType="VARCHAR" property="houseDirectName" />
+    <result column="house_key" jdbcType="VARCHAR" property="houseKey" />
+    <result column="serviceman" jdbcType="VARCHAR" property="serviceman" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+  </resultMap>
+
+	<select id="getMeterHisData" resultType="cn.plou.web.heatManage.history.domain.HeatMeterDataDO">
+	
+	</select>
+	<select id="getMeterHisDataCount" resultType="int">
+
+	</select>
+	<select id="getMeterNowData" resultType="cn.plou.web.heatManage.history.domain.HeatMeterDataDO">
+		select 
+		a.meter_id as meterId,
+		a.consumer_id as usingId,
+		a.heat,
+		a.cool,
+		a.in_flow as inFlow,
+		a.out_flow as outFlow,
+		a.flow_speed as flowSpeed,
+		a.in_temperature as inTemperature,
+		a.out_temperature as outTemperature,
+		a.power,
+		a.all_work_time as allWorkTime,
+		a.all_time as allTime,
+		a.sys_read_time as sysReadTime,
+		a.running_state as runningState,
+		a.meter_time as meterTime,
+		a.avg_flow_speed as avgFlowSpeed,
+		a.avg_power as avgPower,
+		a.company_id as companyId,
+		'0' as isfreeze,
+		b.heating_area as areas,
+		b.address as source,
+		a.in_temperature - a.out_temperature as tmpDiff
+		from heat_meter_data_now as a,houses_info as b 
+		<if test="useHeatStatus != null">
+			      ,user_year_heat as c 
+		</if>
+		    <where>
+		    	   b.consumer_id = a.consumer_id 
+				 <if test="stationId != null">
+			      and substring(b.consumer_id,1,5)=#{companyId}
+			    </if> 
+				 <if test="stationId != null">
+			      and substring(b.consumer_id,1,10) in (
+			      select commuity_id from commuity_info where station_id=#{stationId}
+			      )
+			    </if>
+			    <if test="commuityId != null">
+			      and substring(b.consumer_id,1,10)=#{commuityId}
+			    </if>
+			    <if test="buildingNo != null">
+			      and substring(b.consumer_id,1,13)=#{buildingNo}
+			    </if>
+			    <if test="unitId != null">
+			     and substring(b.consumer_id,1,15)=#{unitId}
+			    </if>
+			    <if test="houseIds != null">
+			     and b.consumer_id in(#{houseIds})
+			    </if> 
+			    <if test="useHeatStatus != null">
+			      and c.consumer_id = b.consumer_id and c.heating_status =#{useHeatStatus} and c.year = (select max(year) from user_year_heat)
+			    </if>
+			    <if test="houseType != null">
+			      and b.houseType =#{houseType}
+			    </if>
+			    
+		  	</where>
+        <choose>
+            <when test="sortby != null and sortby.trim() != ''">
+                order by ${sortby} ${order}
+            </when>
+			<otherwise>
+                order by consumer_id asc
+			</otherwise>
+        </choose>
+        <choose>
+            <when  test="page != null and pageSize != null">
+                limit #{page}, #{pageSize}
+            </when>
+			<otherwise>
+                limit 500000
+			</otherwise>
+        </choose>
+	</select>
+	  <select id="selectAllHouse" parameterType="map" resultMap="BaseInfoMap">
+    select
+    h.consumer_id consumer_id, h.rowno rowno, h.room_name room_name, h.system_id system_id, h.building_area building_area,
+    h.in_build_area in_build_area,h.user_build_area user_build_area,h.contract_heat_id contract_heat_id, h.heating_area heating_area,
+    h.charge_type charge_type,
+    h.heat_exchange_status heat_exchange_status,
+    h.issample issample,h.house_type house_type,
+    h.diameter diameter, h.has_heat_meter has_heat_meter, h.has_valve has_valve, h.house_structure_id house_structure_id,
+    h.charge_id charge_id, h.company_id company_id, h.sec_pipe_id sec_pipe_id, h.address address, h.notes notes, h.memo1 memo1,
+    h.memo2 memo2, h.memo3 memo3, h.memo4 memo4, h.memo5 , h.create_date create_date,h.create_user create_user,h.update_date update_date,
+    h.update_user update_user, h.floor_high floor_high, h.idcard idcard, h.passwod passwod, h.person_sum person_sum,h.person_type person_type,
+    h.color_no color_no,h.personcard_id personcard_id, h.lowinsure_name lowinsure_name, h.lowinsure_no lowinsure_no, h.water_type water_type, h.open_acc_type open_acc_type,
+    h.tot_meter_clientno tot_meter_clientno,h.step_begin step_begin, h.step_end step_end, h.step_adj_type step_adj_type, h.contry_factor_begin contry_factor_begin, h.contry_factor_end contry_factor_end,
+    h.contry_factor contry_factor,h.contry_type contry_type, h.contry_person contry_person, h.contry_stat contry_stat, h.destroy_date destroy_date,
+    h.approve_state approve_state,h.water_state water_state,h.contry_id contry_id, h.house_direct house_direct,
+    h.house_key house_key, h.serviceman serviceman, h.isvalid isvalid
+    from houses_info h
+    where h.isvalid=1
+    <if test="companyIds.size()>0">
+      and h.company_id in
+      <foreach collection="companyIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="stationIds.size()>0">
+      and substring(h.consumer_id,1,10) in (
+      select commuity_id from commuity_info where station_id in 
+       <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      )
+    </if>
+    <if test="commuityIds.size()>0">
+      and substring(h.consumer_id,1,10) in
+       <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="buildingNo != null">
+      and substring(h.consumer_id,1,13)=#{buildingNo}
+    </if>
+    <if test="unitId != null">
+    and substring(h.consumer_id,1,15)=#{unitId}
+    </if>
+    <if test="houseVo!=null">
+    <if test="houseVo.roomName != null">
+      and h.room_name like concat('%',#{houseVo.roomName},'%')
+    </if>
+    <if test="houseVo.buildingArea != null">
+      and h.building_area =#{houseVo.buildingArea}
+    </if>
+    <if test="houseVo.buildingNo != null">
+      and substring(h.consumer_id,1,13)=#{houseVo.buildingNo}
+    </if>
+    <if test="houseVo.unitId != null">
+      and substring(h.consumer_id,1,15)=#{houseVo.unitId}
+    </if>
+    <if test="houseVo.stationId != null">
+      and substring(consumer_id,1,10) in (
+      select h.commuity_id from commuity_info where station_id=#{houseVo.stationId}
+      )
+    </if>
+    <if test="houseVo.heatingForm != null">
+      and h.heating_form =#{houseVo.heatingForm}
+    </if>
+    <if test="houseVo.netStatus != null">
+      and h.net_status =#{houseVo.netStatus}
+    </if>
+    <if test="houseVo.hasHeatMeter != null">
+      and h.has_heat_meter =#{houseVo.hasHeatMeter}
+    </if>
+    <if test="houseVo.hasValve != null">
+      and h.has_valve =#{houseVo.hasValve}
+    </if>
+    <if test="houseVo.companyId != null">
+      and h.company_id =#{houseVo.companyId}
+    </if>
+    <if test="houseVo.rownos != null">
+      and h.rowno in
+       <foreach collection="houseVo.rownos" index="index" item="item" open="(" separator="," close=")">
+        substr(#{item},3,19)
+      </foreach>
+    </if>
+    </if>
+        limit 500000
+  </select>
+  <select id="getAreasByStationId" parameterType="java.util.Map" resultType="String">
+  	select commuity_id from commuity_info 
+  	<where> 1=1
+  	<if test="stationId != null and stationId != ''"> 
+  		and	station_id=#{stationId}
+  	</if>
+  	</where>
+  </select>
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

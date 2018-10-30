@@ -1,0 +1,190 @@
+package cn.plou.web.charge.chargeconfig.dao;
+
+import cn.plou.web.charge.chargeconfig.dto.ClearTaskDTO;
+import cn.plou.web.charge.chargeconfig.dto.HeatingSummarySearchDTO;
+import cn.plou.web.charge.chargeconfig.entity.UserYearHeat;
+import cn.plou.web.charge.chargeconfig.vo.*;
+import cn.plou.web.common.config.common.BasePageEntity;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+public interface UserYearHeatMapper {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(UserYearHeat record);
+
+    int insertSelective(UserYearHeat record);
+
+    void insertByBatch(List<UserYearHeat> userYearHeats);
+
+    UserYearHeat selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(UserYearHeat record);
+
+    int updateByConsumerIdSelective(UserYearHeat record);
+
+    int updateHeatingStatus(UserYearHeat userYearHeat);
+
+    int updateByPrimaryKey(UserYearHeat record);
+
+    List<UserYearHeat> findAllUserYearHeats();
+
+    UserYearHeat findLastUserYearHeats();
+
+    List<UserYearHeat> findAllUserYearHeatsByAnnual(String annual);
+
+    UserYearHeat findByUserAndAnnual(@Param("consumerId")String consumerId, @Param("annual")String annual);
+
+    List<UserYearHeat> findByUser(@Param("consumerId")String consumerId,@Param("annual")String annual,@Param("order")String order, @Param("sortby")String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+    List<UserYearHeatDetailInfo> findUserYearHeatDetailInfo(@Param("consumerId")String consumerId,@Param("annual")String annual,@Param("order")String order, @Param("sortby")String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+
+    List<ClearTaskDTO>   getStatisticalDataBycommuityIds  (@Param("list")List<String> ids);
+
+
+    List<UserYearHeat> findByUserForOldAnnual(@Param("consumerId")String consumerId,@Param("annual")String annual,@Param("order")String order, @Param("sortby")String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+
+    List<UserYearHeat> findFeeLessByBuildingNo(@Param("buildingNo") String buildingNo, @Param("minPriceValue") BigDecimal minPriceValue , @Param("annual") String annual, @Param("userType") String userType,@Param("ignoreHasTask") boolean ignoreHasTask , @Param("base")BasePageEntity basePageEntity);
+
+    List<UserYearHeat> findFeeLessBycommuityIdList(@Param("list") List<String> commuityIdList, @Param("minPriceValue") BigDecimal minPriceValue , @Param("annual") String annual, @Param("userType") String userType, @Param("ignoreHasTask") boolean ignoreHasTask , @Param("base")BasePageEntity basePageEntity);
+
+    int deleteByConsumerIds(@Param("consumerIds") List<String> consumerIds, @Param("commuityIds") List<String> commuityIds, @Param("annual")String annual);
+
+    int deleteByConsumerId(@Param("consumerId")String consumerId, @Param("communityId")String communityId, @Param("annual")String annual);
+
+    BigDecimal getOldYearOwe(@Param("consumerId")String consumerId, @Param("annual")String annual);
+    BigDecimal getchoosedYearOwe(@Param("consumerId")String consumerId, @Param("annuals")List<String> annuals);
+    List<UserYearHeatLateFee> calcLateFee(@Param("dateNow")String dateNow,@Param("order")String order, @Param("sortby")String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+
+    List<ClearTaskDTO> getStatisticalData(@Param("id")String id);
+
+
+    List<UserYearHeat> findAllUserYearHeatsByConsumerIds(@Param("consumerIds")List<String> consumerIds);
+
+    Integer getCountByAnnual(@Param("companyId")String companyId,@Param("annual")String annual);
+
+    List<ChargeSumVO> getChargeSumByAnnual(@Param("companyId")String companyId,@Param("annual")String annual,
+                                           @Param("order") String order, @Param("sortby") String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+    List<HeatInfoVO> getHeatInfoByCompanyId(@Param("companyId")String companyId,@Param("areaPriceType")String areaPriceType,
+                                            @Param("chargeType")String chargeType,
+                                            @Param("heatUserType")String heatUserType,
+                                            @Param("heatingStatus")String heatingStatus,
+                                            @Param("floorHigh")String floorHigh,
+                                            @Param("order") String order, @Param("sortby") String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+
+
+    int batchUpdateHeatPriceByCommunityId(BatchAdjustHeatInfoVO batchAdjustHeatInfoVO);
+
+    int batchUpdateHeatTimeByCommunityId(BatchAdjustHeatInfoVO batchAdjustHeatInfoVO);
+
+    List<ChargeHouseDataVO> getChargeHouseDataList(@Param("stationIds") List<String> stationIds,
+                                                   @Param("commuityIds") List<String> commuityIds,
+                                                   @Param("hasGenerated") String hasGenerated, @Param("annual") String annual,
+                                                   @Param("order") String order, @Param("sortby") String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+    List<ChargeHouseDataVO> getChargeHouseDataAllList(@Param("stationIds") List<String> stationIds,
+                                                   @Param("commuityIds") List<String> commuityIds,
+                                                   @Param("hasGenerated") String hasGenerated, @Param("annual") String annual,
+                                                   @Param("order") String order, @Param("sortby") String sortby, @Param("page")Integer page, @Param("pageSize")Integer pageSize);
+
+
+    Integer selectCountByChargeType(@Param("companyId")String companyId,@Param("annual")String annual,@Param("chargeType")String chargeType);
+
+
+    Integer selectCountNotHeating(@Param("companyId")String companyId,@Param("annual")String annual);
+
+
+
+    int deleteByCompanyId(@Param("companyId")String companyId,@Param("annual")String annual);
+
+    int deleteByCommuityIds(@Param("commuityIds")List<String> commuityIds, @Param("annual")String annual);
+
+
+    int deleteByStationIds(@Param("stationIds")List<String> stationIds, @Param("annual")String annual);
+
+
+    int insertForGenerated1(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+    int insertForGenerated2(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+    int insertForGenerated3(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+
+
+
+
+    int insertForGenerated1ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual,@Param("createUser")String createUser);
+    int insertForGenerated2ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual,@Param("createUser")String createUser);
+    int insertForGenerated3ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual,@Param("createUser")String createUser);
+
+    int insertForGenerated1ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual, @Param("createUser")String createUser);
+    int insertForGenerated2ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual, @Param("createUser")String createUser);
+    int insertForGenerated3ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual, @Param("createUser")String createUser);
+
+    int insertForGenerated1ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual, @Param("createUser")String createUser);
+    int insertForGenerated2ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual, @Param("createUser")String createUser);
+    int insertForGenerated3ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual, @Param("createUser")String createUser);
+
+
+
+
+    int insertForGeneratedHeatingStatus1(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+    int insertForGeneratedHeatingStatusNull(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+    int insertForGeneratedNotHeatingStatus1(@Param("companyId")String companyId, @Param("annual")String annual,@Param("lastannual")String lastannual,  @Param("createUser")String createUser);
+
+
+
+    int updateForGenerated2(@Param("companyId")String companyId, @Param("annual")String annual);
+    int updateForGenerated3(@Param("companyId")String companyId, @Param("annual")String annual, @Param("startTime")Date startTime);
+    int updateForGenerated4(@Param("companyId")String companyId, @Param("annual")String annual, @Param("endTime")Date endTime);
+
+
+    int updateForGenerated2ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual);
+    int updateForGenerated3ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual, @Param("startTime")Date startTime);
+    int updateForGenerated4ForOneStationAllCommunity(@Param("stationId")String stationId, @Param("annual")String annual, @Param("endTime")Date endTime);
+
+
+    int updateForGenerated2ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual);
+    int updateForGenerated3ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual, @Param("startTime")Date startTime);
+    int updateForGenerated4ForSelectedCommunity(@Param("commuityIds")List<String>  commuityIds, @Param("annual")String annual, @Param("endTime")Date endTime);
+
+    int updateForGenerated2ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual);
+    int updateForGenerated3ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual, @Param("startTime")Date startTime);
+    int updateForGenerated4ForSelectedConsumer(@Param("consumerIds")List<String>  consumerIds, @Param("annual")String annual, @Param("endTime")Date endTime);
+
+
+
+    List<HomePageTopLeftVO> getHomePageTopLeftChart(@Param("companyId")String companyId);
+
+    HomePageTopMiddleVO getHomePageTopMiddleChart(@Param("companyId")String companyId);
+
+
+    List<HomePageTopRightVO> getHomePageTopRightChart(@Param("companyId")String companyId);
+
+
+    List<HomePageMiddleLeftVO> getHomePageMiddleLeftChart(@Param("companyId")String companyId,@Param("startAnnual")String startAnnual,@Param("endAnnual")String endAnnual);
+
+
+    List<HomePageMiddleMiddleVO> getHomePageMiddleMiddleChart(@Param("companyId")String companyId);
+
+    List<HomePageMiddleRightVO> getHomePageMiddleRightChart(@Param("companyId")String companyId);
+
+    List<HomePageBottomLeftVO> getHomePageBottomLeftChart(@Param("companyId")String companyId,@Param("startAnnual")String startAnnual,@Param("endAnnual")String endAnnual);
+
+
+
+    List<HomePageBottomMiddleVO> getHomePageBottomMiddleChart(@Param("companyId")String companyId);
+
+    List<HomePageBottomRightVO> getHomePageBottomRightChart(@Param("companyId")String companyId,@Param("startTime")Date startTime,@Param("endTime")Date endTime);
+
+    List<HeatingSummaryListVO> heatingSummary20(HeatingSummarySearchDTO heatingSummarySearchDTO);
+
+    List<HeatingSummaryListVO> heatingSummary30(HeatingSummarySearchDTO heatingSummarySearchDTO);
+
+    List<HeatingSummaryListVO> heatingSummary40(HeatingSummarySearchDTO heatingSummarySearchDTO);
+
+    List<HeatingSummaryListVO> heatingSummary50(HeatingSummarySearchDTO heatingSummarySearchDTO);
+}

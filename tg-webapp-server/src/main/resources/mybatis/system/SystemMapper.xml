@@ -545,10 +545,23 @@
 left join company_info c on s.company_id = c.company_id
 left join station_info si on s.station_id = si.station_id  
 where s.station_id in
-    <foreach collection="systemIds" item="systemId" open="(" close=")" separator=",">
-    #{systemId}
+    <foreach collection="stationIds" item="item" open="(" close=")" separator=",">
+    #{item}
    </foreach>
+   order by s.system_name asc
   </select>
+  
+  <select id="getSystemBySystemIds" resultMap="InfoMap2">
+    select s.system_id , s.system_name,s.station_id,si.station_name from system_info s 
+left join station_info si on s.station_id = si.station_id
+where s.system_id in 
+    <foreach collection="systemIds" item="item" open="(" close=")" separator=",">
+    #{item}
+   </foreach>
+   order by s.system_name asc
+  </select>
+  
+  
   
     <select id="getSystemByCompanyIds" resultMap="InfoMap2">
     select s.system_id , s.system_name,s.company_id,c.company_name,s.station_id,si.station_name from system_info s 
@@ -558,11 +571,15 @@ where s.company_id in
     <foreach collection="companyIds" item="companyId" open="(" close=")" separator=",">
     #{companyId}
    </foreach>
+   order by s.system_name asc
   </select>
   
-  <select id="getMaxSystemId"  resultType="java.lang.String">
+  <select id="getMaxSystemId" parameterType="java.lang.String"  resultType="java.lang.String">
         select
         	max(system_id)
-        from system_info
+        from system_info where station_id=#{stationId}
   </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

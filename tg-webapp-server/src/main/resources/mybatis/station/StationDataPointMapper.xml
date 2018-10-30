@@ -39,7 +39,22 @@
 		station_data_point on system_point.pointid=station_data_point.pointid and
 		system_point.sourceid=station_data_point.sourceid
 		WHERE system_point.sourceid = #{sourceid,jdbcType=VARCHAR} and 
-		system_point.valided = #{valided,jdbcType=VARCHAR} and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+		system_point.valided = #{valided} and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+	</select>
+	
+	<select id="findDataBySystemIdAndShowdevtype" resultMap="pointDataMap">
+		SELECT
+		system_point.sourceid,system_point.pointid,system_point.showdevtype,system_point.unit,system_point.point_name,station_data_point.val,station_data_point.time
+		FROM system_point LEFT JOIN
+		station_data_point on system_point.pointid=station_data_point.pointid and
+		system_point.sourceid=station_data_point.sourceid
+		WHERE system_point.sourceid in
+		<foreach collection="sourceids" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+		  and 
+		system_point.valided = #{valided} and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
+		and system_point.showdevtype = #{showdevtype,jdbcType=VARCHAR}
 	</select>
 	
 	<select id="findDataBySystemIds" resultMap="pointDataMap">
@@ -52,7 +67,8 @@
         <foreach collection="sourceids" item="item" open="(" separator="," close=")">
           #{item}
         </foreach>
-		and system_point.valided = #{valided,jdbcType=VARCHAR}
+		and system_point.valided = #{valided,jdbcType=VARCHAR} 
+		and system_point.showlevel &lt;= #{showlevel,jdbcType=INTEGER}
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -129,4 +145,5 @@
 		time = #{time,jdbcType=TIMESTAMP}
 		where primary_id = #{primaryId,jdbcType=VARCHAR}
 	</update>
+
 </mapper>

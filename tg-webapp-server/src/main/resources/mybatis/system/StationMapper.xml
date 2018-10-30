@@ -745,4 +745,9 @@
         	max(station_id)
         from station_info
     </select>
+
+
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true"/>
 </mapper>

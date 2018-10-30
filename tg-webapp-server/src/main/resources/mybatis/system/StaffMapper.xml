@@ -49,7 +49,14 @@
     from staff_info
     where staff_id = #{staffId,jdbcType=VARCHAR}
   </select>
-
+  
+  <select id="getStructureByStationAndName" parameterType="map" resultMap="BaseResultMap">
+    select
+    a.staff_name, a.tel1
+    from staff_info a, station_info b,department_info c
+    where a.staff_name = #{chargePerson,jdbcType=VARCHAR} and b.station_id = #{stationId,jdbcType=VARCHAR} and c.company_id = b.company_id and c.department_id = a.department_id
+  </select>	
+  
   <select id="selectStaffByDepartmentId" parameterType="java.lang.String" resultMap = "BaseResultMap">
     select staff_id,staff_name
     from staff_info
@@ -312,4 +319,6 @@
      <!--</if>-->
    <!--</if>-->
  </select>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

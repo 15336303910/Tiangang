@@ -1,0 +1,7 @@
+2018-10-18 08:43:03 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 08:43:07 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@63b63461].  Returning null to indicate a session could not be found.
+2018-10-18 08:43:07 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] The collection must not be null
+2018-10-18 08:43:32 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-18 08:43:45 [DEBUG](DefaultSessionManager         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Unable to resolve session ID from SessionKey [org.apache.shiro.web.session.mgt.WebSessionKey@452d4e25].  Returning null to indicate a session could not be found.
+2018-10-18 08:43:45 [ERROR](MyResponseBodyAdvice          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] The collection must not be null
+2018-10-18 08:43:59 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

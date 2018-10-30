@@ -174,4 +174,7 @@
       update_user = #{updateUser,jdbcType=VARCHAR}
     where primary_id = #{primaryId,jdbcType=VARCHAR}
   </update>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

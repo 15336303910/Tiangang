@@ -39,26 +39,48 @@
 	<select id="houseList"
 		resultType="cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO">
 		select
-		m.consumer_id,a.heat,a.power,a.flow_speed,a.flow_upper_limit,a.in_temperature,a.out_temperature,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness,a.open_status,a.heating_area,a.heating_index,a.flowing_index,a.heat_status,a.control_role,a.regulation_mode,a.action_limit,a.system_read_time,a.company_id,m.address,a.flow,a.adj_heating_index
+		m.consumer_id
+		, a.heat
+		,a.power,a.flow_speed,a.flow_upper_limit,a.in_temperature,a.out_temperature
+		,FORMAT(a.out_temperature-a.in_temperature,2) as temperature_diff
+		,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness
+		,a.open_status
+		,t1.type_kbn_name as open_status_name
+		,a.heating_area,a.heating_index,a.flowing_index
+		,a.heat_status
+		,t2.type_kbn_name as heat_status_name
+		,a.control_role,a.regulation_mode
+		,a.action_limit
+		,DATE_FORMAT(a.system_read_time,'%Y-%m-%d %H:%i:%s') as system_read_time
+		,a.company_id,m.address,a.flow,a.adj_heating_index
 		from houses_info as m 
-		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id and a.system_read_time between #{beginTime} and #{endTime}
+		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id
+		left join type_mst t1 on t1.id=a.open_status
+		left join type_mst t2 on t2.id=a.heat_status
 		<where>
-			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(m.consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
+			<if test="beginTime != null and endTime != null">
+			 	and a.system_read_time between #{beginTime} and #{endTime}
+			</if>
+			<if test="companyIds!=null">
+					<if test="companyIds.size()>0">
+						and m.company_id in
+						<foreach collection="companyIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
 					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,10) = #{consumerId} </if>
-				</when>
-				<when test="type=='building'">
+			</if>
+			<if test="commuityIds!=null">
+					<if test="commuityIds.size()>0">
+						and substring(m.consumer_id,1,10) in
+						<foreach collection="commuityIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+			</if>
+			<choose>			
+				<when test="type=='build'">
 					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,13) = #{consumerId} </if>
 				</when>
 				<when test="type=='unit'">
@@ -94,7 +116,7 @@
 		</where>
 		<choose>
 			<when test="sort != null and sort.trim() != ''">
-				order by ${sort} ${order}
+				order by a.${sort} ${order}
 			</when>
 			<otherwise>
 				order by m.consumer_id + 0
@@ -108,49 +130,66 @@
 	<select id="statisticsData"
 		resultType="cn.plou.web.heatManage.monitor.vo.BuildingRunningDataTotalVO">
 		select
-		count(distinct substr(consumer_id,1,15))
-		unitCnts,count(consumer_id) houseCnts,
-		sum(heating_area)
-		totalArea,(select sum(h.heating_area) from user_running_data_total h
-		where h.heating_area = 'heating_status_1') totalHeatArea,
-		avg(power)
-		power,avg(flow_speed) flow,avg(in_temperature)
-		inWaterTmp,avg(out_temperature) outWaterTmp,
-		avg(room_temperature_read) houseTmp,avg(outdoor_temperature)
-		outsideTmp,avg(heating_index) heatIndex,avg(flowing_index)
-		flowIndex,avg(adj_heating_index) adjHeatingIndex
-		from
-		user_running_data_total u
+		count(distinct substr(b.consumer_id,1,15))
+		unitCnts,count(b.consumer_id) houseCnts,
+		sum(b.heating_area)		totalArea,
+		sum(case when b.heating_status = 'heating_status_1' then b.heating_area else 0 end) totalHeatArea,
+		avg(u.power)
+		power,avg(u.flow_speed) flow,avg(u.in_temperature)
+		inWaterTmp,avg(u.out_temperature) outWaterTmp,
+		avg(u.room_temperature_read) houseTmp,avg(u.outdoor_temperature)
+		outsideTmp,avg(u.heating_index) heatIndex,avg(u.flowing_index)
+		flowIndex,avg(u.adj_heating_index) adjHeatingIndex
+		from houses_info b left join 
+		user_running_data_total u on b.consumer_id = u.consumer_id 
 		<where>
 	
 			<choose>
 				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and company_id = #{consumerId} and system_read_time >date_add((
+					<if test="consumerId != null and consumerId != ''"> and b.company_id = #{consumerId} and u.system_read_time >date_add((
 						select max(system_read_time) 
 						from
-						commuity_info where company_id = #{consumerId}
-						), interval -2 hour) 
+						user_running_data_total where company_id = #{consumerId}
+						), interval -24 hour) 
 						</if>
 				</when>
 				<when test="type=='station'">
 					<if test="consumerId != null and consumerId != ''">
-						and substr(consumer_id,1,10) in (
+						and substr(b.consumer_id,1,10) in (
 						select commuity_id
 						from
 						commuity_info where station_id = #{consumerId}
-						) and system_read_time > date_add((
-						select max(system_read_time) 
+						) and u.system_read_time > date_add((
+						select max(u.system_read_time) 
 						from
-						commuity_info where company_id = substr(#{consumerId},1,5)
-						), interval -2 hour) 
+						user_running_data_total u
+						inner join station_info s on u.company_id=s.company_id
+						where s.station_id = #{consumerId}
+						), interval -24 hour) 
 					</if>
 				</when>
 				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,10) = #{consumerId} and system_read_time > date_add((
+					<if test="consumerId != null and consumerId != ''"> and substr(b.consumer_id,1,10) = #{consumerId} and u.system_read_time > date_add((
 						select max(system_read_time) 
 						from
-						commuity_info where company_id = substr(#{consumerId},1,5)
-						), interval -2 hour) 
+						user_running_data_total where substr(consumer_id,1,10) = #{consumerId} 
+						), interval -24 hour) 
+						</if>
+				</when>
+				<when test="type=='build'">
+					<if test="consumerId != null and consumerId != ''"> and substr(b.consumer_id,1,13) = #{consumerId} and u.system_read_time > date_add((
+						select max(system_read_time) 
+						from
+						user_running_data_total where substr(consumer_id,1,13) = #{consumerId}
+						), interval -24 hour) 
+						</if>
+				</when>
+				<when test="type=='unit'">
+					<if test="consumerId != null and consumerId != ''"> and substr(b.consumer_id,1,15) = #{consumerId} and u.system_read_time > date_add((
+						select max(system_read_time) 
+						from
+						user_running_data_total where substr(consumer_id,1,15) = #{consumerId}
+						), interval -24 hour) 
 						</if>
 				</when>
 				<otherwise>
@@ -224,6 +263,22 @@
 				<otherwise>
 				</otherwise>
 			</choose>
+		<if test="companyIds!=null">
+	      <if test="companyIds.size()>0">
+	        and company_id in
+	        <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+	          #{item}
+	        </foreach>
+	      </if>
+	    </if>
+	    <if test="commuityIds!=null">
+	      <if test="commuityIds.size()>0">
+	        and commuity_id in
+	        <foreach collection="commuityIds" item="item" index="index" open="(" separator="," close=")">
+	          #{item}
+	        </foreach>
+	      </if>
+	    </if>
 		</where>
 	</select>
 
@@ -337,7 +392,7 @@
 				<when test="type=='commuity'">
 					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,10) = #{consumerId} </if>
 				</when>
-				<when test="type=='building'">
+				<when test="type=='build'">
 					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,13) = #{consumerId} </if>
 				</when>
 				<when test="type=='unit'">
@@ -372,6 +427,4 @@
 			</if>
 		</where>
 	</select>
-
-
 </mapper>

@@ -1,0 +1,19 @@
+package cn.plou.web.mobile.common;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : AppConstant.java
+ * @Author : WangJiWei
+ * @Date : 2018年10月15日下午3:59:34
+ *
+ * @Comments :
+ * 
+ */
+public interface AppConstant {
+
+    /** 小时数据 */
+    public static final String PARAM_SHOW_TYPE_HOUR = "hour";
+    /** 全部数据 */
+    public static final String PARAM_SHOW_TYPE_ALL = "all";
+
+}

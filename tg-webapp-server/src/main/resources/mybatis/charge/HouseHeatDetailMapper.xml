@@ -387,5 +387,6 @@
         from house_heat_detail
         where  consumer_id = #{consumerId,jdbcType=VARCHAR} and annual =  #{annual,jdbcType=VARCHAR}
     </select>
-
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

@@ -1,0 +1,84 @@
+package cn.plou.web.charge.heatingmanage.controller;
+
+import cn.plou.web.charge.heatingmanage.domain.HeatCheckDetail;
+import cn.plou.web.charge.heatingmanage.service.HeatCheckDetailService;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.exception.BindingResultHandler;
+import com.github.pagehelper.PageInfo;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+
+/**
+ * @author yinxiaochen
+ * 2018/8/23 8:41
+ * 用户稽查相关
+ */
+
+
+@RestController
+@RequestMapping("${chargePath}/heatCheckDetail")
+public class HeatCheckDetailController {
+
+  @Resource
+  private HeatCheckDetailService heatCheckDetailService;
+
+
+  /**
+   * @param heatCheckDetail
+   * @param bindingResult
+   * @param request         page
+   *                        pageSize
+   *                        beginCreateDate
+   *                        endCreateDate
+   * @return 用户稽查列表
+   * <p>
+   * <p>
+   * /** 创建开始时间
+   */
+  @RequestMapping("/getDetailList")
+  public Object getList(@Valid HeatCheckDetail heatCheckDetail,
+                        BindingResult bindingResult,
+                        @RequestParam(value = "beginCreateDate", required = false) String beginCreateDate,
+                        @RequestParam(value = "endCreateDate", required = false) String endCreateDate,
+                        HttpServletRequest request) {
+
+    BindingResultHandler.handle(bindingResult);
+    BasePageEntity basePageEntity = new BasePageEntity();
+    basePageEntity.setPageParams(request);
+    Root root = new Root();
+    PageInfo pageInfo = heatCheckDetailService.getList(beginCreateDate, endCreateDate, heatCheckDetail, basePageEntity);
+    root.setData(pageInfo.getList());
+    root.setCond(getCond(basePageEntity.getPage(), basePageEntity.getPageSize(), (int) pageInfo.getTotal(),
+      basePageEntity.getSortby(), basePageEntity.getOrder()));
+    return root;
+  }
+
+
+  /**
+   * @param heatCheckDetail
+   * @param bindingResult
+   * @return 增加一条用户稽查
+   */
+  @RequestMapping("/addDetail")
+  public Boolean addDetail(@Valid HeatCheckDetail heatCheckDetail,
+                           BindingResult bindingResult
+  ) {
+    BindingResultHandler.handle(bindingResult);
+    return heatCheckDetailService.addHeatCheckDetail(heatCheckDetail) == 1;
+
+  }
+
+
+}

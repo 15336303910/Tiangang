@@ -1,0 +1,1236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.charge.chargeconfig.dao.UserYearReceivableDetailMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    <id column="primary_id" jdbcType="VARCHAR" property="primaryId" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
+    <result column="annual" jdbcType="VARCHAR" property="annual" />
+    <result column="charging_item" jdbcType="VARCHAR" property="chargingItem" />
+    <result column="sum" jdbcType="DECIMAL" property="sum" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+    <result column="discount" jdbcType="DECIMAL" property="discount" />
+    <result column="total" jdbcType="DECIMAL" property="total" />
+    <result column="begin_data_flag" jdbcType="VARCHAR" property="beginDataFlag" />
+    <result column="certufucate" jdbcType="VARCHAR" property="certufucate" />
+    <result column="approve_res" jdbcType="VARCHAR" property="approveRes" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="approve_serial" jdbcType="VARCHAR" property="approveSerial" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    primary_id, company_id, consumer_id, annual, charging_item, sum, unit_price, discount, 
+    total,begin_data_flag, certufucate, approve_res, notes, create_date, create_user, update_date, update_user, 
+    approve_serial
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_year_receivable_detail
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    insert into user_year_receivable_detail (primary_id, company_id, consumer_id, 
+      annual, charging_item, sum, 
+      unit_price, discount, total, 
+      begin_data_flag,certufucate, approve_res, notes, 
+      create_date, create_user, update_date, 
+      update_user, approve_serial)
+    values (#{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{consumerId,jdbcType=VARCHAR}, 
+      #{annual,jdbcType=VARCHAR}, #{chargingItem,jdbcType=VARCHAR}, #{sum,jdbcType=DECIMAL}, 
+      #{unitPrice,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL}, 
+      #{beginDataFlag,jdbcType=VARCHAR}, #{certufucate,jdbcType=VARCHAR}, #{approveRes,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateUser,jdbcType=VARCHAR}, #{approveSerial,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    insert into user_year_receivable_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        primary_id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="consumerId != null">
+        consumer_id,
+      </if>
+      <if test="annual != null">
+        annual,
+      </if>
+      <if test="chargingItem != null">
+        charging_item,
+      </if>
+      <if test="sum != null">
+        sum,
+      </if>
+      <if test="unitPrice != null">
+        unit_price,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+      <if test="beginDataFlag != null">
+        begin_data_flag,
+      </if>
+      <if test="certufucate != null">
+        certufucate,
+      </if>
+      <if test="approveRes != null">
+        approve_res,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="approveSerial != null">
+        approve_serial,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="primaryId != null">
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="chargingItem != null">
+        #{chargingItem,jdbcType=VARCHAR},
+      </if>
+      <if test="sum != null">
+        #{sum,jdbcType=DECIMAL},
+      </if>
+      <if test="unitPrice != null">
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null">
+        #{discount,jdbcType=DECIMAL},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="beginDataFlag != null">
+        #{beginDataFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="certufucate != null">
+        #{certufucate,jdbcType=VARCHAR},
+      </if>
+      <if test="approveRes != null">
+        #{approveRes,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="approveSerial != null">
+        #{approveSerial,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    update user_year_receivable_detail
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerId != null">
+        consumer_id = #{consumerId,jdbcType=VARCHAR},
+      </if>
+      <if test="annual != null">
+        annual = #{annual,jdbcType=VARCHAR},
+      </if>
+      <if test="chargingItem != null">
+        charging_item = #{chargingItem,jdbcType=VARCHAR},
+      </if>
+      <if test="sum != null">
+        sum = #{sum,jdbcType=DECIMAL},
+      </if>
+      <if test="unitPrice != null">
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null">
+        discount = #{discount,jdbcType=DECIMAL},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="beginDataFlag != null">
+        begin_data_flag = #{beginDataFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="certufucate != null">
+        certufucate = #{certufucate,jdbcType=VARCHAR},
+      </if>
+      <if test="approveRes != null">
+        approve_res = #{approveRes,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="approveSerial != null">
+        approve_serial = #{approveSerial,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    update user_year_receivable_detail
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      consumer_id = #{consumerId,jdbcType=VARCHAR},
+      annual = #{annual,jdbcType=VARCHAR},
+      charging_item = #{chargingItem,jdbcType=VARCHAR},
+      sum = #{sum,jdbcType=DECIMAL},
+      unit_price = #{unitPrice,jdbcType=DECIMAL},
+      discount = #{discount,jdbcType=DECIMAL},
+      total = #{total,jdbcType=DECIMAL},
+      begin_data_flag = #{beginDataFlag,jdbcType=VARCHAR},
+      certufucate = #{certufucate,jdbcType=VARCHAR},
+      approve_res = #{approveRes,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      approve_serial = #{approveSerial,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 批量更新滞纳-->
+  <update id="batchUpdate" parameterType="java.util.List">
+    <!-- 接收list参数，循环着组装sql语句，注意for循环的写
+         separator=";" 代表着每次循环完，在sql后面放一个分
+         item="cus" 循环List的每条的结果
+         collection="list" list 即为 map传过来的参数key -->
+    <foreach collection="list" separator=";" index="index"  item="cus">
+      update user_year_receivable_detail
+      set company_id = #{cus.companyId,jdbcType=VARCHAR},
+      sum = #{cus.sum,jdbcType=DECIMAL},
+      unit_price = #{cus.unitPrice,jdbcType=DECIMAL},
+      discount = #{cus.discount,jdbcType=DECIMAL},
+      total = #{cus.total,jdbcType=DECIMAL},
+      begin_data_flag = #{cus.beginDataFlag,jdbcType=VARCHAR},
+      certufucate = #{cus.certufucate,jdbcType=VARCHAR},
+      approve_res = #{cus.approveRes,jdbcType=VARCHAR},
+      notes = #{cus.notes,jdbcType=VARCHAR},
+      create_date = #{cus.createDate,jdbcType=TIMESTAMP},
+      create_user = #{cus.createUser,jdbcType=VARCHAR},
+      update_date = #{cus.updateDate,jdbcType=TIMESTAMP},
+      update_user = #{cus.updateUser,jdbcType=VARCHAR},
+      approve_serial = #{cus.approveSerial,jdbcType=VARCHAR}
+      where consumer_id = #{cus.consumerId,jdbcType=VARCHAR} and
+      annual = #{cus.annual,jdbcType=VARCHAR} and
+      charging_item = #{cus.chargingItem,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
+
+  <!--<update id="batchUpdate" parameterType="java.util.Map">
+    <foreach collection="list" separator=";" item="cus">
+
+      update user_year_receivable_detail
+      set company_id = #{cus.companyId,jdbcType=VARCHAR},
+      consumer_id = #{cus.consumerId,jdbcType=VARCHAR},
+      annual = #{cus.annual,jdbcType=VARCHAR},
+      charging_item = #{cus.chargingItem,jdbcType=VARCHAR},
+      sum = #{cus.sum,jdbcType=DECIMAL},
+      unit_price = #{cus.unitPrice,jdbcType=DECIMAL},
+      discount = #{cus.discount,jdbcType=DECIMAL},
+      total = #{cus.total,jdbcType=DECIMAL},
+      begin_data_flag = #{cus.beginDataFlag,jdbcType=VARCHAR},
+      certufucate = #{cus.certufucate,jdbcType=VARCHAR},
+      approve_res = #{cus.approveRes,jdbcType=VARCHAR},
+      notes = #{cus.notes,jdbcType=VARCHAR},
+      create_date = #{cus.createDate,jdbcType=TIMESTAMP},
+      create_user = #{cus.createUser,jdbcType=VARCHAR},
+      update_date = #{cus.updateDate,jdbcType=TIMESTAMP},
+      update_user = #{cus.updateUser,jdbcType=VARCHAR},
+      approve_serial = #{cus.approveSerial,jdbcType=VARCHAR}
+      where primary_id = #{cus.primaryId,jdbcType=VARCHAR}
+    </foreach>
+  </update>-->
+
+  <insert id="insertByBatch" parameterType="java.util.List">
+    insert into user_year_receivable_detail (
+      primary_id,
+      company_id,
+      consumer_id,
+      annual,
+      charging_item,
+      sum,
+      unit_price,
+      discount,
+      total,
+	begin_data_flag,
+      certufucate,
+      approve_res,
+      notes,
+      create_date,
+      create_user,
+      update_date,
+      update_user,
+      approve_serial
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.primaryId,jdbcType=VARCHAR},
+      #{item.companyId,jdbcType=VARCHAR},
+      #{item.consumerId,jdbcType=VARCHAR},
+      #{item.annual,jdbcType=VARCHAR},
+      #{item.chargingItem,jdbcType=VARCHAR},
+      #{item.sum,jdbcType=DECIMAL},
+      #{item.unitPrice,jdbcType=DECIMAL},
+      #{item.discount,jdbcType=DECIMAL},
+      #{item.total,jdbcType=DECIMAL},
+      #{item.beginDataFlag,jdbcType=VARCHAR},
+      #{item.certufucate,jdbcType=VARCHAR},
+      #{item.approveRes,jdbcType=VARCHAR},
+      #{item.notes,jdbcType=VARCHAR},
+      #{item.createDate,jdbcType=TIMESTAMP},
+      #{item.createUser,jdbcType=VARCHAR},
+      #{item.updateDate,jdbcType=TIMESTAMP},
+      #{item.updateUser,jdbcType=VARCHAR},
+      #{item.approveSerial,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <select id="findAllUserYearReceivableDetailsByAnnual" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_receivable_detail
+    where annual = #{annual,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findLastUserYearReceivableDetails" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_receivable_detail  order by primary_id desc limit 1
+  </select>
+
+  <select id="getTotalByConsumerId" resultType="java.math.BigDecimal">
+     select sum(total) from user_year_receivable_detail where consumer_id = #{consumerId,jdbcType=VARCHAR} and  annual = #{annual,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="getOtherTotalByConsumerId" resultType="java.math.BigDecimal">
+     select sum(total) from user_year_receivable_detail where consumer_id = #{consumerId,jdbcType=VARCHAR} and  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+  </select>
+
+
+  <select id="getUserYearReceivableDetailsByConsumerId" resultType="cn.plou.web.charge.chargeconfig.vo.UserYearReceivableDetailInfo">
+    select
+    d.primary_id, d.company_id, d.consumer_id, d.annual, d.charging_item,t1.type_name as charging_item_name, d.sum, d.unit_price, d.discount,
+    d.total, d.certufucate, d.approve_res,t2.type_name as approve_res_name, d.notes, d.create_date, u1.username as create_user, d.update_date, u2.username as update_user,
+    d.approve_serial
+    from user_year_receivable_detail as d
+    left join type_mst as t1 on d.charging_item = t1.id
+    left join type_mst as t2 on d.approve_res = t2.id
+    left join user_login as u1 on d.create_user = u1.user_code
+    left join user_login as u2 on d.update_user = u2.user_code
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and d.consumer_id = #{consumerId}
+    </if>
+    <if test="communityId !=null  and communityId != '' ">
+      and substring(d.consumer_id,1,10) = #{communityId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and d.annual = #{annual}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+  <select id="getUserYearReceivableDetailsByConsumerIds" resultType="cn.plou.web.charge.chargeconfig.entity.UserYearReceivableDetail">
+    select
+    <include refid="Base_Column_List" />
+    from user_year_receivable_detail
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+    <if test="sortby!=null">
+      order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+  </select>
+
+
+
+  <delete id="deleteByConsumerIds" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+  <delete id="deleteByConsumerId" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    <if test="consumerId !=null  and consumerId != '' ">
+      and consumer_id = #{consumerId}
+    </if>
+    <if test="communityId !=null  and communityId != '' ">
+      and substring(consumer_id,1,10) = #{communityId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+    <delete id="deleteGenerated" parameterType="java.lang.String">
+        delete from user_year_receivable_detail
+        where 1=1
+        and begin_data_flag = 'begin_data_flag_1'
+        <if test="consumerId !=null  and consumerId != '' ">
+            and consumer_id = #{consumerId}
+        </if>
+        <if test="annual !=null  and annual != '' ">
+            and annual = #{annual}
+        </if>
+    </delete>
+
+  <delete id="deleteByCompanyId" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    and begin_data_flag = 'begin_data_flag_1'
+    <if test="companyId !=null  and companyId != '' ">
+      and company_id = #{companyId}
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+
+  <delete id="deleteByCommuityIds" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    and begin_data_flag = 'begin_data_flag_1'
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+
+
+
+
+  <delete id="deleteByConsumerIds2" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    and begin_data_flag = 'begin_data_flag_1'
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+  <delete id="deleteByStationIds" parameterType="java.lang.String">
+    delete from user_year_receivable_detail
+    where 1=1
+    and begin_data_flag = 'begin_data_flag_1'
+    <if test="stationIds != null">
+      and substring(consumer_id,1,10) in (
+      select commuity_id from commuity_info where station_id in
+      <foreach collection="stationIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+      )
+    </if>
+    <if test="annual !=null  and annual != '' ">
+      and annual = #{annual}
+    </if>
+  </delete>
+
+
+
+
+
+  <!--auto generated by codehelper on 2018-09-12-->
+	<select id="findByConsumerIdAndCompanyIdAndAnnual" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user_year_receivable_detail
+    where consumer_id=#{consumerId,jdbcType=VARCHAR} and company_id=#{companyId,jdbcType=VARCHAR} and annual=#{annual,jdbcType=VARCHAR}
+  </select>
+
+
+  <insert id="insertChargingItem1ForGenerated" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_1')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_1'
+    ,houses_info.charge_area
+    ,pd.area_price_tmp
+    ,1
+    ,pd.area_price_tmp * houses_info.charge_area
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and net_status = 'net_status_1' and ( houses_info.charge_type = 'charge_type_1' or houses_info.charge_type = 'charge_type_2' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem2ForGenerated" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_2')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_2'
+    ,0
+    ,pd.heat_price_tmp
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and net_status = 'net_status_1' and  ( houses_info.charge_type = 'charge_type_2' or houses_info.charge_type = 'charge_type_3' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem3ForGenerated" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_3')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_3'
+      ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
+  else houses_info.heat_exchange_status
+  end
+    ,pd.exchanger_price_tmp
+    ,1
+      ,case houses_info.heat_exchange_status when  null then 0
+  else pd.exchanger_price_tmp*houses_info.heat_exchange_status
+  end
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+  <insert id="insertChargingItem7ForGenerated" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_7')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_7'
+    ,0
+    ,0
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    houses_info.company_id=#{companyId,jdbcType=VARCHAR} and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+
+  <insert id="insertChargingItem1ForGeneratedForOneStationAllCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_1')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_1'
+    ,houses_info.charge_area
+    ,pd.area_price_tmp
+    ,1
+    ,pd.area_price_tmp * houses_info.charge_area
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and net_status = 'net_status_1' and ( houses_info.charge_type = 'charge_type_1' or houses_info.charge_type = 'charge_type_2' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem2ForGeneratedForOneStationAllCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_2')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_2'
+    ,0
+    ,pd.heat_price_tmp
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and net_status = 'net_status_1' and  ( houses_info.charge_type = 'charge_type_2' or houses_info.charge_type = 'charge_type_3' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem3ForGeneratedForOneStationAllCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_3')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_3'
+      ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
+  else houses_info.heat_exchange_status
+  end
+    ,pd.exchanger_price_tmp
+    ,1
+      ,case houses_info.heat_exchange_status when  null then 0
+  else pd.exchanger_price_tmp*houses_info.heat_exchange_status
+  end
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+  <insert id="insertChargingItem7ForGeneratedForOneStationAllCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_7')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_7'
+    ,0
+    ,0
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where
+    substring(houses_info.consumer_id,1,10) in (select commuity_id from  commuity_info  where commuity_info.station_id = #{stationId,jdbcType=VARCHAR}) and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+
+  <insert id="insertChargingItem1ForGeneratedForSelectedCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_1')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_1'
+    ,houses_info.charge_area
+    ,pd.area_price_tmp
+    ,1
+    ,pd.area_price_tmp * houses_info.charge_area
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and ( houses_info.charge_type = 'charge_type_1' or houses_info.charge_type = 'charge_type_2' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem2ForGeneratedForSelectedCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_2')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_2'
+    ,0
+    ,pd.heat_price_tmp
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and  ( houses_info.charge_type = 'charge_type_2' or houses_info.charge_type = 'charge_type_3' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem3ForGeneratedForSelectedCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_3')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_3'
+    ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
+    else houses_info.heat_exchange_status
+    end
+    ,pd.exchanger_price_tmp
+    ,1
+    ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
+    else pd.exchanger_price_tmp*houses_info.heat_exchange_status
+    end
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+  <insert id="insertChargingItem7ForGeneratedForSelectedCommunity" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_7')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_7'
+    ,0
+    ,0
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(houses_info.consumer_id,1,10) in
+        <foreach collection="commuityIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+  <insert id="insertChargingItem1ForGeneratedForSelectedConsumer" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_1')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_1'
+    ,houses_info.charge_area
+    ,pd.area_price_tmp
+    ,1
+    ,pd.area_price_tmp * houses_info.charge_area
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and ( houses_info.charge_type = 'charge_type_1' or houses_info.charge_type = 'charge_type_2' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem2ForGeneratedForSelectedConsumer" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_2')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_2'
+    ,0
+    ,pd.heat_price_tmp
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and  ( houses_info.charge_type = 'charge_type_2' or houses_info.charge_type = 'charge_type_3' ) and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+  <insert id="insertChargingItem3ForGeneratedForSelectedConsumer" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_3')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_3'
+    ,case houses_info.heat_exchange_status when  null then 0
+                                            when  '' then 0
+    else houses_info.heat_exchange_status
+    end
+    ,pd.exchanger_price_tmp
+    ,1
+    ,case houses_info.heat_exchange_status when  null then 0
+    else pd.exchanger_price_tmp*houses_info.heat_exchange_status
+    end
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+
+
+  <insert id="insertChargingItem7ForGeneratedForSelectedConsumer" parameterType="java.lang.String">
+    insert into user_year_receivable_detail (
+    primary_id,
+    company_id,
+    consumer_id,
+    annual,
+    charging_item,
+    sum,
+    unit_price,
+    discount,
+    total,
+    begin_data_flag,
+    create_date,
+    create_user
+    )
+    select
+    concat(consumer_id,#{annual,jdbcType=VARCHAR},'charging_item_7')
+    ,houses_info.company_id
+    ,consumer_id
+    ,#{annual,jdbcType=VARCHAR}
+    ,'charging_item_7'
+    ,0
+    ,0
+    ,1
+    ,0
+    , 'begin_data_flag_1'
+    ,now()
+    ,#{createUser,jdbcType=VARCHAR}
+    from
+    houses_info
+    LEFT JOIN price_define pd on houses_info.unit_price_type = pd.primary_id
+    where 1=1
+    <if test="consumerIds!=null">
+      <if test="consumerIds.size()>0">
+        and houses_info.consumer_id in
+        <foreach collection="consumerIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    and net_status = 'net_status_1' and houses_info.heating_status = 'heating_status_1'
+  </insert>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+
+</mapper>

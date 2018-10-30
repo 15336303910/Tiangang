@@ -1,0 +1,4 @@
+2018-10-16 15:00:00 [WARN ](LateFeeJob                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] 未找到文件列表！
+2018-10-16 15:00:01 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-16 15:00:30 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers
+2018-10-16 15:00:54 [DEBUG](QuartzSchedulerThread         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] batch acquisition of 0 triggers

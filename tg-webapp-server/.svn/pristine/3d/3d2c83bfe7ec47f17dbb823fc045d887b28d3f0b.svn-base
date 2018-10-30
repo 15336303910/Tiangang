@@ -1,0 +1,32 @@
+package cn.plou.web.station.stationDataPoint.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import cn.plou.web.station.stationDataPoint.entity.StationDataPoint;
+import cn.plou.web.station.stationDataPoint.vo.StationDataPointVo;
+
+public interface StationDataPointMapper {
+    int deleteByPrimaryKey(String primaryId);
+
+    int insert(StationDataPoint record);
+
+    int insertSelective(StationDataPoint record);
+
+    StationDataPoint selectByPrimaryKey(String primaryId);
+
+    int updateByPrimaryKeySelective(StationDataPoint record);
+
+    int updateByPrimaryKey(StationDataPoint record);
+
+    List<StationDataPointVo> findDataBySystemId(@Param("sourceid") String sourceid,
+	    @Param("valided") Integer valided, @Param("showlevel") Integer showlevel);
+
+    List<StationDataPointVo> findDataBySystemIdAndShowdevtype(@Param("sourceid") String sourceid,
+	    @Param("valided") Integer valided, @Param("showlevel") Integer showlevel,
+	    @Param("showdevtype") String showdevtype);
+
+    List<StationDataPointVo> findDataBySystemIds(@Param("sourceids") List<String> sourceids,
+	    @Param("valided") Integer valided, @Param("showlevel") Integer showlevel);
+}

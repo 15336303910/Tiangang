@@ -363,4 +363,7 @@
     LEFT JOIN department_info d ON d.department_id = s.department_id
     where d.company_id = #{companyId,jdbcType=VARCHAR}
   </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true"/>
 </mapper>

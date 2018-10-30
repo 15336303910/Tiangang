@@ -4,7 +4,8 @@
   <resultMap id="BaseResultMap" type="cn.plou.web.balance.distribution.entity.BalanceValveDataNow">
     <id column="meter_id" jdbcType="VARCHAR" property="meterId" />
     <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
-    <result column="control_mode" jdbcType="VARCHAR" property="controlMode" />
+    <result column="control_mode" jdbcType="VARCHAR" property="controlMode" />  
+    <result column="control_role" jdbcType="VARCHAR" property="controlRole" />
     <result column="openness" jdbcType="DECIMAL" property="openness" />
     <result column="in_pressure" jdbcType="DECIMAL" property="inPressure" />
     <result column="out_pressure" jdbcType="DECIMAL" property="outPressure" />
@@ -28,7 +29,7 @@
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
-    <result column="env_time" jdbcType="DECIMAL" property="envTime" />
+    <result column="env_temp" jdbcType="DECIMAL" property="envTemp" />
     <result column="open_set" jdbcType="DECIMAL" property="openSet" />
     <result column="open_level" jdbcType="DECIMAL" property="openLevel" />
     <result column="base_open_max" jdbcType="VARCHAR" property="baseOpenMax" />
@@ -66,25 +67,26 @@
   </resultMap>
 
   <resultMap id="InfoMap" type="cn.plou.web.balance.distribution.vo.BalanceValveDataNowInfo">
-    <id column="meter_id" jdbcType="VARCHAR" property="meterId" />
-    <result column="consumer_id" jdbcType="VARCHAR" property="consumerId" />
-    <result column="control_mode" jdbcType="VARCHAR" property="controlMode" />
+    <id column="meterId" jdbcType="VARCHAR" property="meterId" />
+    <result column="consumerId" jdbcType="VARCHAR" property="consumerId" />
+    <result column="controlMode" jdbcType="VARCHAR" property="controlMode" />
+    <result column="controlRole" jdbcType="VARCHAR" property="controlRole" />
     <result column="openness" jdbcType="DECIMAL" property="openness" />
-    <result column="in_pressure" jdbcType="DECIMAL" property="inPressure" />
-    <result column="out_pressure" jdbcType="DECIMAL" property="outPressure" />
-    <result column="pressure_diff" jdbcType="DECIMAL" property="pressureDiff" />
-    <result column="set_pressure_diff" jdbcType="DECIMAL" property="setPressureDiff" />
-    <result column="pressure_diff_threshold" jdbcType="DECIMAL" property="pressureDiffThreshold" />
-    <result column="in_temperature" jdbcType="DECIMAL" property="inTemperature" />
-    <result column="out_temperature" jdbcType="DECIMAL" property="outTemperature" />
-    <result column="set_temperature" jdbcType="DECIMAL" property="setTemperature" />
+    <result column="inpressure" jdbcType="DECIMAL" property="inPressure" />
+    <result column="outpressure" jdbcType="DECIMAL" property="outPressure" />
+    <result column="pressurediff" jdbcType="DECIMAL" property="pressureDiff" />
+    <result column="setPressureDiff" jdbcType="DECIMAL" property="setPressureDiff" />
+    <result column="pressureDiffThreshold" jdbcType="DECIMAL" property="pressureDiffThreshold" />
+    <result column="inTemperature" jdbcType="DECIMAL" property="inTemperature" />
+    <result column="outTemperature" jdbcType="DECIMAL" property="outTemperature" />
+    <result column="setTemperature" jdbcType="DECIMAL" property="setTemperature" />
     <!--<result column="temperatureDiff" jdbcType="DECIMAL" property="temperatureDiff"/>-->
-    <result column="temperature_threshold" jdbcType="DECIMAL" property="temperatureThreshold" />
-    <result column="sample_flow_speed" jdbcType="DECIMAL" property="sampleFlowSpeed" />
-    <result column="unit_flow_speed" jdbcType="DECIMAL" property="unitFlowSpeed" />
-    <result column="upper_limit_flow" jdbcType="DECIMAL" property="upperLimitFlow" />
-    <result column="max_flow_threshold" jdbcType="DECIMAL" property="maxFlowThreshold" />
-    <result column="sys_read_time" jdbcType="TIMESTAMP" property="sysReadTime" />
+    <result column="temperatureThreshold" jdbcType="DECIMAL" property="temperatureThreshold" />
+    <result column="sampleFlowSpeed" jdbcType="DECIMAL" property="sampleFlowSpeed" />
+    <result column="unitFlowSpeed" jdbcType="DECIMAL" property="unitFlowSpeed" />
+    <result column="upperLimitFlow" jdbcType="DECIMAL" property="upperLimitFlow" />
+    <result column="maxFlowThreshold" jdbcType="DECIMAL" property="maxFlowThreshold" />
+    <result column="sysReadTime" jdbcType="TIMESTAMP" property="sysReadTime" />
     <result column="company_id" jdbcType="VARCHAR" property="companyId" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
     <result column="memo1" jdbcType="VARCHAR" property="memo1" />
@@ -93,49 +95,49 @@
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
-    <result column="env_time" jdbcType="DECIMAL" property="envTime" />
-    <result column="open_set" jdbcType="DECIMAL" property="openSet" />
-    <result column="open_level" jdbcType="DECIMAL" property="openLevel" />
-    <result column="base_open_max" jdbcType="VARCHAR" property="baseOpenMax" />
-    <result column="base_open_min" jdbcType="VARCHAR" property="baseOpenMin" />
-    <result column="low_temp" jdbcType="DECIMAL" property="lowTemp" />
-    <result column="com_interval" jdbcType="DECIMAL" property="comInterval" />
-    <result column="exchange_temp" jdbcType="VARCHAR" property="exchangeTemp" />
-    <result column="exchange_press" jdbcType="VARCHAR" property="exchangePress" />
+    <result column="envTemp" jdbcType="DECIMAL" property="envTemp" />
+    <result column="openSet" jdbcType="DECIMAL" property="openSet" />
+    <result column="openLevel" jdbcType="DECIMAL" property="openLevel" />
+    <result column="baseOpenMax" jdbcType="VARCHAR" property="baseOpenMax" />
+    <result column="baseOpenMin" jdbcType="VARCHAR" property="baseOpenMin" />
+    <result column="lowTemp" jdbcType="DECIMAL" property="lowTemp" />
+    <result column="comInterval" jdbcType="DECIMAL" property="comInterval" />
+    <result column="exchangeTemp" jdbcType="VARCHAR" property="exchangeTemp" />
+    <result column="exchangPpress" jdbcType="VARCHAR" property="exchangePress" />
     <result column="locks" jdbcType="VARCHAR" property="locks" />
-    <result column="time_param1" jdbcType="VARCHAR" property="timeParam1" />
-    <result column="time_param2" jdbcType="VARCHAR" property="timeParam2" />
-    <result column="time_param3" jdbcType="VARCHAR" property="timeParam3" />
-    <result column="temp_param" jdbcType="VARCHAR" property="tempParam" />
-    <result column="time_open_param1" jdbcType="VARCHAR" property="timeOpenParam1" />
-    <result column="time_open_param2" jdbcType="VARCHAR" property="timeOpenParam2" />
-    <result column="time_open_param3" jdbcType="VARCHAR" property="timeOpenParam3" />
-    <result column="time_temp_param1" jdbcType="VARCHAR" property="timeTempParam1" />
-    <result column="time_temp_param2" jdbcType="VARCHAR" property="timeTempParam2" />
-    <result column="time_temp_param3" jdbcType="VARCHAR" property="timeTempParam3" />
-    <result column="time_temp_cure_param1" jdbcType="VARCHAR" property="timeTempCureParam1" />
-    <result column="time_temp_cure_param2" jdbcType="VARCHAR" property="timeTempCureParam2" />
-    <result column="time_temp_cure_param3" jdbcType="VARCHAR" property="timeTempCureParam3" />
-    <result column="press_adj_out" jdbcType="VARCHAR" property="pressAdjOut" />
-    <result column="press_adj_in" jdbcType="VARCHAR" property="pressAdjIn" />
-    <result column="current_times" jdbcType="TIMESTAMP" property="currentTimes" />
-    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
-    <result column="meter_time" jdbcType="TIMESTAMP" property="meterTime" />
-    <result column="open_set_add" jdbcType="DECIMAL" property="openSetAdd" />
+    <result column="timeParam1" jdbcType="VARCHAR" property="timeParam1" />
+    <result column="timeParam2" jdbcType="VARCHAR" property="timeParam2" />
+    <result column="timeParam3" jdbcType="VARCHAR" property="timeParam3" />
+    <result column="tempParam" jdbcType="VARCHAR" property="tempParam" />
+    <result column="timeOpenParam1" jdbcType="VARCHAR" property="timeOpenParam1" />
+    <result column="timeOpenParam2" jdbcType="VARCHAR" property="timeOpenParam2" />
+    <result column="timeOpenParam3" jdbcType="VARCHAR" property="timeOpenParam3" />
+    <result column="timeTempParam1" jdbcType="VARCHAR" property="timeTempParam1" />
+    <result column="timeTempParam2" jdbcType="VARCHAR" property="timeTempParam2" />
+    <result column="timeTempParam3" jdbcType="VARCHAR" property="timeTempParam3" />
+    <result column="timeTempCureParam1" jdbcType="VARCHAR" property="timeTempCureParam1" />
+    <result column="timeTempCureParam2" jdbcType="VARCHAR" property="timeTempCureParam2" />
+    <result column="timeTempCureParam3" jdbcType="VARCHAR" property="timeTempCureParam3" />
+    <result column="pressAdjOut" jdbcType="VARCHAR" property="pressAdjOut" />
+    <result column="pressAdjIn" jdbcType="VARCHAR" property="pressAdjIn" />
+    <result column="currentTimes" jdbcType="TIMESTAMP" property="currentTimes" />
+    <result column="readTime" jdbcType="TIMESTAMP" property="readTime" />
+    <result column="meterTime" jdbcType="TIMESTAMP" property="meterTime" />
+    <result column="openSetAdd" jdbcType="DECIMAL" property="openSetAdd" />
     <result column="primary_id" jdbcType="VARCHAR" property="primaryId" />
-    <result column="flow_source" jdbcType="VARCHAR" property="flowSource" />
+    <result column="flowSource" jdbcType="VARCHAR" property="flowSource" />
     <result column="flowingDeviation" jdbcType="VARCHAR" property="flowingDeviation" />
-    <result column="flow_setting_mode" jdbcType="VARCHAR" property="flowSettingMode" />
-    <result column="control_addr" jdbcType="VARCHAR" property="controlAddr" />
+    <result column="flowSettingMode" jdbcType="VARCHAR" property="flowSettingMode" />
+    <result column="controlAddr" jdbcType="VARCHAR" property="controlAddr" />
     <result column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
-    <result column="address_2nd" jdbcType="VARCHAR" property="address2nd" />
+    <result column="address2nd" jdbcType="VARCHAR" property="address2nd" />
   </resultMap>
   <sql id="Base_Column_List">
-    meter_id, consumer_id, control_mode, openness, in_pressure, out_pressure, pressure_diff, 
+    meter_id, consumer_id, control_mode, control_role, openness, in_pressure, out_pressure, pressure_diff, 
     set_pressure_diff, pressure_diff__threshold, in_temperature, out_temperature, set_temperature, 
     temperature_threshold, sample_flow_speed, unit_flow_speed, upper_limit_flow, max_flow_threshold, 
     sys_read_time, company_id, notes, memo1, memo2, create_date, create_user, update_date, 
-    update_user, env_time, open_set, open_level, base_open_max, base_open_min, low_temp, 
+    update_user, env_temp, open_set, open_level, base_open_max, base_open_min, low_temp, 
     com_interval, exchange_temp, exchange_press, locks, time_param1, time_param2, time_param3,
     temp_param, time_open_param1, time_open_param2, time_open_param3, time_temp_param1, 
     time_temp_param2, time_temp_param3, time_temp_cure_param1, time_temp_cure_param2, 
@@ -157,20 +159,23 @@
     where consumer_id Like concat (#{buildId},'%')
   </select>
 
-  <select id="selectDataNowList" parameterType="map" resultType="cn.plou.web.balance.distribution.vo.BalanceValveDataNowInfo">
+  <select id="selectDataNowList" parameterType="map" resultMap="InfoMap">
     select
-    b.meter_id meterId, b.consumer_id consumerId, b.control_mode controlMode, b.openness, b.in_pressure inPressure, b.out_pressure outPressure, b.pressure_diff pressureDiff,
+    b.meter_id meterId, b.consumer_id consumerId, b.control_mode controlMode, b.control_role controlRole, b.openness, b.in_pressure inPressure, b.out_pressure outPressure, b.pressure_diff pressureDiff,
     b.set_pressure_diff setPressureDiff, b.pressure_diff_threshold pressureDiffThreshold, b.in_temperature inTemperature, b.out_temperature outTemperature, b.set_temperature setTemperature,
     b.temperature_threshold temperatureThreshold, b.sample_flow_speed sampleFlowSpeed, b.unit_flow_speed unitFlowSpeed, b.upper_limit_flow upperLimitFlow, b.max_flow_threshold maxFlowThreshold,
-    b.sys_read_time sysRead_Time, b.company_id, b.notes, b.memo1, b.memo2, b.env_time envTime, b.open_set openSet, b.open_level openLevel, b.base_open_max baseOpenMax,
+    b.sys_read_time sysReadTime, b.company_id, b.notes, b.memo1, b.memo2, b.env_temp envTemp, b.open_set openSet, b.open_level openLevel, b.base_open_max baseOpenMax,
     b.base_open_min baseOpenMin, b.low_temp lowTemp,b.com_interval comInterval, b.exchange_temp exchangeTemp, b.exchange_press exchangePress, b.locks, b.time_param1 timeParam1,
     b.time_param2 timeParam2, b.time_param3 timeParam3,b.temp_param timeParam, b.time_open_param1 timeOpenParam1, b.time_open_param2 timeOpenParam2, b.time_open_param3 timeOpenParam3,
     b.time_temp_param1 timeTempParam1,b.time_temp_param2 timeTempParam2, b.time_temp_param3 timeTempParam3, b.time_temp_cure_param1 timeTempCureParam1, b.time_temp_cure_param2 timeTempCureParam2,
     b.time_temp_cure_param3 timeTempCureParam3, b.press_adj_out pressAdjOut, b.press_adj_in pressAdjIn, b.current_times currentTimes, b.read_time readTime, b.meter_time meterTime,
     b.open_set_add openSetAdd, b.primary_id, b.flow_source flowSource, b.flow_setting_mode flowSettingMode, b.control_addr controlAddr, b.mbus_id,
-    b.address_2nd address2nd
+    b.address_2nd address2nd,m.address
     from balance_valve_data_now b
-    left join unit_running_data u on b.consumer_id = u.consumer_id
+    LEFT JOIN meter_info m on m.meter_id=b.meter_id
+    LEFT JOIN unit_running_data u on b.consumer_id = u.consumer_id
+    LEFT JOIN (select meter_id, case flow_source when 1 then (unit_flow_speed-upper_limit_flow)
+    when 2 then (sample_flow_speed-upper_limit_flow) END as flowingDiff from balance_valve_data_now) diff on b.meter_id=diff.meter_id
     where 1=1
     <if test="companyIds.size()>0">
      and substring(b.consumer_id,1,5) in 
@@ -187,31 +192,13 @@
     <if test="buildingId!=null">
       and substring(b.consumer_id,1,15) = #{buildingId}
     </if>
-    <!--<if test="deviationAndIndex != null">-->
-      <!--<if test="deviationAndIndex.minFlowingDeviation!=null or deviationAndIndex.maxFlowingDeviation!=null and unitFlowSpeed!=null and upperLimitFlow!=null">
-        <if test="flowSource == 1 ">
-          and (unitFlowSpeed-upperLimitFlow) between (deviationAndIndex.minFlowingDeviation,deviationAndIndex.maxFlowingDeviation)
-        </if>
-        <if test="flowSource == 2">-->
     <if test="deviationAndIndex != null">
-    <!--<if test="deviationAndIndex.minFlowingDeviation!=null">
-      and flowingDeviation &gt; #{deviationAndIndex.minFlowingDeviation}
-    </if>
-    <if test="deviationAndIndex.maxFlowingDeviation!=null">
-      and flowingDeviation &lt; #{deviationAndIndex.maxFlowingDeviation}
-    </if>-->
-      <!--
-        /*case when b.flow_source==1
-        then (b.unit_flow_speed-b.upper_limit_flow) &gt; #{deviationAndIndex.minFlowingDeviation}
-        when b.flow_source==2
-        then (b.sample_flow_speed-b.upper_limit_flow) &gt; #{deviationAndIndex.minFlowingDeviation}*/
+      <if test="deviationAndIndex.minFlowingDeviation!=null">
+        and diff.flowingDiff &gt; #{deviationAndIndex.minFlowingDeviation}
       </if>
-        /*case when b.flow_source==1
-        then (b.unit_flow_speed-b.upper_limit_flow) &lt; #{deviationAndIndex.maxFlowingDeviation}
-        when b.flow_source==2
-        then (b.sample_flow_speed-b.upper_limit_flow) &lt; #{deviationAndIndex.maxFlowingDeviation}*/
-        and flowingDeviation &lt; #{deviationAndIndex.maxFlowingDeviation}
-      </if>-->
+      <if test="deviationAndIndex.maxFlowingDeviation!=null">
+        and diff.flowingDiff &lt; #{deviationAndIndex.maxFlowingDeviation}
+      </if>
       <if test="deviationAndIndex.minTemperatureDeviation != null">
         and (b.temperature_threshold-b.set_temperature)  &gt; #{deviationAndIndex.minTemperatureDeviation}
       </if>
@@ -222,7 +209,7 @@
         and (b.pressure_diff_threshold-b.set_pressure_diff) &gt; #{deviationAndIndex.minPressureDeviation}
       </if>
       <if test="deviationAndIndex.maxPressureDeviation != null">
-        and (b.pressureDiffThreshold-b.set_pressure_diff) &lt; #{deviationAndIndex.maxPressureDeviation}
+        and (b.pressure_diff_threshold-b.set_pressure_diff) &lt; #{deviationAndIndex.maxPressureDeviation}
       </if>
       <if test="deviationAndIndex.minHeatingIndex != null">
         and u.heating_index &gt; #{deviationAndIndex.minHeatingIndex}
@@ -237,8 +224,6 @@
         and u.flowing_index &lt; #{deviationAndIndex.maxFlowingIndex}
       </if>
     </if>
-    <!-- </if>
-    </if>-->
     <if test="sortby!=null">
       order by ${sortby}
     </if>
@@ -250,10 +235,23 @@
     </if>
   </select>
   
-  <select id="selectDataNowListCount" parameterType="map" resultType="java.lang.Integer">
-    select count(*) 
+  <select id="selectDataNowListCount" parameterType="map" resultMap="InfoMap">
+    select
+    b.meter_id meterId, b.consumer_id consumerId, b.control_mode controlMode, b.control_role controlRole, b.openness, b.in_pressure inPressure, b.out_pressure outPressure, b.pressure_diff pressureDiff,
+    b.set_pressure_diff setPressureDiff, b.pressure_diff_threshold pressureDiffThreshold, b.in_temperature inTemperature, b.out_temperature outTemperature, b.set_temperature setTemperature,
+    b.temperature_threshold temperatureThreshold, b.sample_flow_speed sampleFlowSpeed, b.unit_flow_speed unitFlowSpeed, b.upper_limit_flow upperLimitFlow, b.max_flow_threshold maxFlowThreshold,
+    b.sys_read_time sysReadTime, b.company_id, b.notes, b.memo1, b.memo2, b.env_temp envTemp, b.open_set openSet, b.open_level openLevel, b.base_open_max baseOpenMax,
+    b.base_open_min baseOpenMin, b.low_temp lowTemp,b.com_interval comInterval, b.exchange_temp exchangeTemp, b.exchange_press exchangePress, b.locks, b.time_param1 timeParam1,
+    b.time_param2 timeParam2, b.time_param3 timeParam3,b.temp_param timeParam, b.time_open_param1 timeOpenParam1, b.time_open_param2 timeOpenParam2, b.time_open_param3 timeOpenParam3,
+    b.time_temp_param1 timeTempParam1,b.time_temp_param2 timeTempParam2, b.time_temp_param3 timeTempParam3, b.time_temp_cure_param1 timeTempCureParam1, b.time_temp_cure_param2 timeTempCureParam2,
+    b.time_temp_cure_param3 timeTempCureParam3, b.press_adj_out pressAdjOut, b.press_adj_in pressAdjIn, b.current_times currentTimes, b.read_time readTime, b.meter_time meterTime,
+    b.open_set_add openSetAdd, b.primary_id, b.flow_source flowSource, b.flow_setting_mode flowSettingMode, b.control_addr controlAddr, b.mbus_id,
+    b.address_2nd address2nd,m.address
     from balance_valve_data_now b
-    left join unit_running_data u on b.consumer_id = u.consumer_id
+    LEFT JOIN unit_running_data u on b.consumer_id = u.consumer_id
+    LEFT JOIN meter_info m on m.meter_id=b.meter_id
+    LEFT JOIN (select meter_id, case flow_source when 1 then (unit_flow_speed-upper_limit_flow)
+    when 2 then (sample_flow_speed-upper_limit_flow) END as flowingDiff from balance_valve_data_now) diff on b.meter_id=diff.meter_id
     where 1=1
     <if test="companyIds.size()>0">
      and substring(b.consumer_id,1,5) in 
@@ -270,31 +268,13 @@
     <if test="buildingId!=null">
       and substring(b.consumer_id,1,15) = #{buildingId}
     </if>
-    <!--<if test="deviationAndIndex != null">-->
-      <!--<if test="deviationAndIndex.minFlowingDeviation!=null or deviationAndIndex.maxFlowingDeviation!=null and unitFlowSpeed!=null and upperLimitFlow!=null">
-        <if test="flowSource == 1 ">
-          and (unitFlowSpeed-upperLimitFlow) between (deviationAndIndex.minFlowingDeviation,deviationAndIndex.maxFlowingDeviation)
-        </if>
-        <if test="flowSource == 2">-->
     <if test="deviationAndIndex != null">
-    <!--<if test="deviationAndIndex.minFlowingDeviation!=null">
-      and flowingDeviation &gt; #{deviationAndIndex.minFlowingDeviation}
-    </if>
-    <if test="deviationAndIndex.maxFlowingDeviation!=null">
-      and flowingDeviation &lt; #{deviationAndIndex.maxFlowingDeviation}
-    </if>-->
-      <!--
-        /*case when b.flow_source==1
-        then (b.unit_flow_speed-b.upper_limit_flow) &gt; #{deviationAndIndex.minFlowingDeviation}
-        when b.flow_source==2
-        then (b.sample_flow_speed-b.upper_limit_flow) &gt; #{deviationAndIndex.minFlowingDeviation}*/
+      <if test="deviationAndIndex.minFlowingDeviation!=null">
+        and diff.flowingDiff &gt; #{deviationAndIndex.minFlowingDeviation}
       </if>
-        /*case when b.flow_source==1
-        then (b.unit_flow_speed-b.upper_limit_flow) &lt; #{deviationAndIndex.maxFlowingDeviation}
-        when b.flow_source==2
-        then (b.sample_flow_speed-b.upper_limit_flow) &lt; #{deviationAndIndex.maxFlowingDeviation}*/
-        and flowingDeviation &lt; #{deviationAndIndex.maxFlowingDeviation}
-      </if>-->
+      <if test="deviationAndIndex.maxFlowingDeviation!=null">
+        and diff.flowingDiff &lt; #{deviationAndIndex.maxFlowingDeviation}
+      </if>
       <if test="deviationAndIndex.minTemperatureDeviation != null">
         and (b.temperature_threshold-b.set_temperature)  &gt; #{deviationAndIndex.minTemperatureDeviation}
       </if>
@@ -305,7 +285,7 @@
         and (b.pressure_diff_threshold-b.set_pressure_diff) &gt; #{deviationAndIndex.minPressureDeviation}
       </if>
       <if test="deviationAndIndex.maxPressureDeviation != null">
-        and (b.pressureDiffThreshold-b.set_pressure_diff) &lt; #{deviationAndIndex.maxPressureDeviation}
+        and (b.pressure_diff_threshold-b.set_pressure_diff) &lt; #{deviationAndIndex.maxPressureDeviation}
       </if>
       <if test="deviationAndIndex.minHeatingIndex != null">
         and u.heating_index &gt; #{deviationAndIndex.minHeatingIndex}
@@ -320,8 +300,6 @@
         and u.flowing_index &lt; #{deviationAndIndex.maxFlowingIndex}
       </if>
     </if>
-    <!-- </if>
-    </if>-->
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -331,14 +309,14 @@
   <insert id="insert" parameterType="cn.plou.web.balance.distribution.entity.BalanceValveDataNow">
     insert into balance_valve_data_now (meter_id, consumer_id, control_mode, 
       openness, in_pressure, out_pressure, 
-      pressure_diff, set_pressure_diff, pressure_diff__threshold, 
+      pressure_diff, set_pressure_diff, pressure_diff_threshold,
       in_temperature, out_temperature, set_temperature, 
       temperature_threshold, sample_flow_speed, 
       unit_flow_speed, upper_limit_flow, max_flow_threshold, 
       sys_read_time, company_id, notes, 
       memo1, memo2, create_date, 
       create_user, update_date, update_user, 
-      env_time, open_set, open_level, 
+      env_temp, open_set, open_level, 
       base_open_max, base_open_min, low_temp, 
       com_interval, exchange_temp, exchange_press, 
       locks, time_param1, time_param2, 
@@ -360,7 +338,7 @@
       #{sysReadTime,jdbcType=TIMESTAMP}, #{companyId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
       #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
       #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
-      #{envTime,jdbcType=DECIMAL}, #{openSet,jdbcType=DECIMAL}, #{openLevel,jdbcType=DECIMAL}, 
+      #{envTemp,jdbcType=DECIMAL}, #{openSet,jdbcType=DECIMAL}, #{openLevel,jdbcType=DECIMAL}, 
       #{baseOpenMax,jdbcType=VARCHAR}, #{baseOpenMin,jdbcType=VARCHAR}, #{lowTemp,jdbcType=DECIMAL}, 
       #{comInterval,jdbcType=DECIMAL}, #{exchangeTemp,jdbcType=VARCHAR}, #{exchangePress,jdbcType=VARCHAR}, 
       #{locks,jdbcType=VARCHAR}, #{timeParam1,jdbcType=VARCHAR}, #{timeParam2,jdbcType=VARCHAR}, 
@@ -402,7 +380,7 @@
         set_pressure_diff,
       </if>
       <if test="pressureDiffThreshold != null">
-        pressure_diff__threshold,
+        pressure_diff_threshold,
       </if>
       <if test="inTemperature != null">
         in_temperature,
@@ -455,8 +433,8 @@
       <if test="updateUser != null">
         update_user,
       </if>
-      <if test="envTime != null">
-        env_time,
+      <if test="envTemp != null">
+        env_temp,
       </if>
       <if test="openSet != null">
         open_set,
@@ -640,8 +618,8 @@
       <if test="updateUser != null">
         #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="envTime != null">
-        #{envTime,jdbcType=DECIMAL},
+      <if test="envTemp != null">
+        #{envTemp,jdbcType=DECIMAL},
       </if>
       <if test="openSet != null">
         #{openSet,jdbcType=DECIMAL},
@@ -772,7 +750,7 @@
         set_pressure_diff = #{setPressureDiff,jdbcType=DECIMAL},
       </if>
       <if test="pressureDiffThreshold != null">
-        pressure_diff__threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
+        pressure_diff_threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
       </if>
       <if test="inTemperature != null">
         in_temperature = #{inTemperature,jdbcType=DECIMAL},
@@ -825,8 +803,8 @@
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="envTime != null">
-        env_time = #{envTime,jdbcType=DECIMAL},
+      <if test="envTemp != null">
+        env_temp = #{envTemp,jdbcType=DECIMAL},
       </if>
       <if test="openSet != null">
         open_set = #{openSet,jdbcType=DECIMAL},
@@ -959,7 +937,7 @@
         set_pressure_diff = #{setPressureDiff,jdbcType=DECIMAL},
       </if>
       <if test="pressureDiffThreshold != null">
-        pressure_diff__threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
+        pressure_diff_threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
       </if>
       <if test="inTemperature != null">
         in_temperature = #{inTemperature,jdbcType=DECIMAL},
@@ -1012,8 +990,8 @@
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="envTime != null">
-        env_time = #{envTime,jdbcType=DECIMAL},
+      <if test="envTemp != null">
+        env_temp = #{envTemp,jdbcType=DECIMAL},
       </if>
       <if test="openSet != null">
         open_set = #{openSet,jdbcType=DECIMAL},
@@ -1118,10 +1096,15 @@
         address_2nd = #{address2nd,jdbcType=VARCHAR},
       </if>
     </set>
-    where meter_id in
-    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-    </foreach>
+    <if test="batchCheckbox != null">
+      where consumer_id like concat (#{batchModifyId},'%s')
+    </if>
+    <if test="batchCheckbox == null">
+      where meter_id in
+      <foreach collection="meterIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
   </update>
 
   <update id="updateByPrimaryKey" parameterType="cn.plou.web.balance.distribution.entity.BalanceValveDataNow">
@@ -1133,7 +1116,7 @@
       out_pressure = #{outPressure,jdbcType=DECIMAL},
       pressure_diff = #{pressureDiff,jdbcType=DECIMAL},
       set_pressure_diff = #{setPressureDiff,jdbcType=DECIMAL},
-      pressure_diff__threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
+      pressure_diff_threshold = #{pressureDiffThreshold,jdbcType=DECIMAL},
       in_temperature = #{inTemperature,jdbcType=DECIMAL},
       out_temperature = #{outTemperature,jdbcType=DECIMAL},
       set_temperature = #{setTemperature,jdbcType=DECIMAL},
@@ -1151,7 +1134,7 @@
       create_user = #{createUser,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       update_user = #{updateUser,jdbcType=VARCHAR},
-      env_time = #{envTime,jdbcType=DECIMAL},
+      env_temp = #{envTemp,jdbcType=DECIMAL},
       open_set = #{openSet,jdbcType=DECIMAL},
       open_level = #{openLevel,jdbcType=DECIMAL},
       base_open_max = #{baseOpenMax,jdbcType=VARCHAR},

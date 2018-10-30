@@ -1,0 +1,124 @@
+package cn.plou.web.mobile.station.service.impl;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Maps;
+
+import cn.plou.web.common.constant.CKey;
+import cn.plou.web.mobile.common.AppConstant;
+import cn.plou.web.mobile.common.AppTools;
+import cn.plou.web.mobile.station.query.ParamQuery;
+import cn.plou.web.mobile.station.service.AppBaseService;
+import cn.plou.web.mobile.station.service.ParamDetailService;
+import cn.plou.web.mobile.station.service.RunningDataService;
+import cn.plou.web.mobile.station.vo.LineData;
+import cn.plou.web.mobile.station.vo.ParamGroupVo;
+import cn.plou.web.mobile.station.vo.ShowDevTypeVo;
+import cn.plou.web.station.stationDataPoint.dao.StationDataPointMapper;
+import cn.plou.web.station.stationDataPoint.vo.StationDataPointVo;
+import cn.plou.web.station.stationshowdev.dao.StationShowDevMapper;
+import cn.plou.web.station.stationshowdevtype.entity.StationShowDevType;
+import cn.plou.web.station.systemPoint.dao.SystemPointMapper;
+import cn.plou.web.station.systemPoint.entity.SystemPoint;
+
+/**
+ * @Project : tg-webapp-server
+ * @File : ParamDetailServiceImpl.java
+ * @Author : WangJiWei
+ * @Date : 2018年10月11日上午10:25:11
+ *
+ * @Comments :
+ * 
+ */
+@Service
+public class ParamDetailServiceImpl extends AppBaseService implements ParamDetailService {
+
+    @Autowired
+    StationDataPointMapper stationDataPointMapper;
+    @Autowired
+    StationShowDevMapper stationShowDevMapper;
+    @Autowired
+    SystemPointMapper systemPointMapper;
+    @Autowired
+    RunningDataService runningDataService;
+
+    @Override
+    public Collection<ParamGroupVo> findParamList(String systemId) {
+	List<SystemPoint> sps = systemPointMapper.findPoints(systemId, 1, 2, null);
+	Set<String> showdevtypes = new HashSet<>();
+	sps.forEach(s -> { // 去重
+	    if (StringUtils.isNotBlank(s.getShowdevtype())) {
+		showdevtypes.add(s.getShowdevtype());
+	    }
+	});
+	Map<String, StationShowDevType> map = runningDataService.showDevTypeMap();
+	Map<String, ParamGroupVo> hashPGV = Maps.newHashMap();
+	showdevtypes.forEach(p -> {// 分类
+	    StationShowDevType ssdt = map.get(p);
+	    ShowDevTypeVo showDevTypeVo = new ShowDevTypeVo(ssdt.getDevType(), ssdt.getDevName());
+	    String memo1 = ssdt.getMemo1();
+	    if (hashPGV.containsKey(memo1)) {
+		ParamGroupVo lp = hashPGV.get(memo1);
+		lp.getShowdevtypes().add(showDevTypeVo);
+	    } else {
+		ParamGroupVo lp = new ParamGroupVo(memo1);
+		List<ShowDevTypeVo> sds = new ArrayList<>(Arrays.asList(showDevTypeVo));
+		lp.setShowdevtypes(sds);
+		hashPGV.put(memo1, lp);
+	    }
+	});
+	Collection<ParamGroupVo> values = hashPGV.values();
+	return values;
+    }
+
+    @Override
+    public List<StationDataPointVo> findRunningDataByParam(String systemId, String showdevtype) {
+	if (StringUtils.equals(showdevtype, "热泵")) {
+	    // TODO
+	    return null;
+	} else {
+	    return stationData(systemId, showdevtype);
+	}
+    }
+
+    private List<StationDataPointVo> stationData(String systemId, String showdevtype) {
+	List<StationDataPointVo> runningData = stationDataPointMapper
+		.findDataBySystemIdAndShowdevtype(systemId, 1, 2, showdevtype);
+	return runningData;
+    }
+
+    @Override
+    public List<LineData> findHistory(String stationId, String pointid, ParamQuery paramQuery)
+	    throws Exception {
+	String showType = paramQuery.getShowType();
+	showType = StringUtils.isBlank(showType) ? AppConstant.PARAM_SHOW_TYPE_ALL : showType;
+	List<LineData> datas = null;
+	if (StringUtils.equals(showType, AppConstant.PARAM_SHOW_TYPE_HOUR)) {
+	    /** 指定时间范围内的每小时第一条数据 */
+	    // datas = queryES(stationId, pointid, start, end);
+	} else {
+	    /** 指定时间范围内的所有数据 */
+	    /** TODO 前端协助拼接 */
+	    long start = AppTools.formatDate(paramQuery.getStartTime(), CKey.YMDHMS__).getTime();
+	    long end = AppTools.formatDate(paramQuery.getEndTime(), CKey.YMDHMS__).getTime();
+	    datas = queryES(stationId, pointid, start, end);
+	}
+	return datas;
+    }
+
+}

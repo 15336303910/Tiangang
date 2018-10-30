@@ -423,24 +423,26 @@
         annual,
         bank_id,
         t1.type_name as bankName,
-        platform_code, consumer_id, third_party_flow_code,
+        platform_code, d.consumer_id, third_party_flow_code,
         pay_date, pay_money, operator_code, operator_area, pay_mode, push_tel, push_mail,
         reconciliations_flag,
         t2.type_name as reconciliationsFlagName,
         d.notes, d.memo1, d.memo2, d.create_date, d.create_user, d.update_date,
-        d.update_user
+        d.update_user,
+        h.address as address
         from bank_reconciliations_detail d
         left JOIN company_info c ON d.company_id = c.company_id
+        left join houses_info h on h.consumer_id = d.consumer_id
         left join type_mst t1 on t1.id = d.bank_id
         left join type_mst t2 on t2.id = d.reconciliations_flag
         where
         <choose>
             <when test="rangeId.length == 6">
-                substring(consumer_id,1,10) in
+                substring(d.consumer_id,1,10) in
                 (select commuity_id from commuity_info where station_id = #{rangeId,jdbcType=VARCHAR})
             </when>
             <otherwise>
-                d.company_id = #{rangeId,jdbcType=VARCHAR}
+                d.consumer_id like concat(#{rangeId,jdbcType=VARCHAR},'%')
             </otherwise>
         </choose>
         <if test="payDateStart != null">and DATE_FORMAT(d.pay_date,'%Y-%m-%d') &gt;= DATE_FORMAT(#{payDateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
@@ -448,6 +450,7 @@
         <if test="bankId != ''">and d.bank_id = #{bankId,jdbcType=VARCHAR}</if>
         <if test="annual != ''">and d.annual = #{annual,jdbcType=VARCHAR}</if>
         <if test="reconciliationsFlag != ''">and d.reconciliations_flag = #{reconciliationsFlag,jdbcType=VARCHAR}</if>
+        <if test="thirdPartyFlowCode != ''">and d.third_party_flow_code = #{thirdPartyFlowCode,jdbcType=VARCHAR}</if>
         <if test="sortby != null and sortby != ''">
             order by ${sortby}
         </if>
@@ -455,5 +458,6 @@
             ${order}
         </if>
     </select>
-
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

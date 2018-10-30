@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.stationshowdev.dao.StationShowDevMapper">
+	<resultMap id="BaseResultMap"
+		type="cn.plou.web.station.stationshowdev.entity.StationShowDev">
+		<id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+		<result column="dev_type" property="devType" jdbcType="VARCHAR" />
+		<result column="dev_id" property="devId" jdbcType="VARCHAR" />
+		<result column="dev_name" property="devName" jdbcType="VARCHAR" />
+		<result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="memo1" property="memo1" jdbcType="VARCHAR" />
+		<result column="memo2" property="memo2" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		primary_id, dev_type, dev_id, dev_name, source_id, notes, memo1, memo2
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from station_show_dev
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findBySourceId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from station_show_dev
+		where source_id = #{sourceId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findBySourceIds" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from station_show_dev
+		where source_id in
+		<foreach collection="sourceids" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		and dev_type = #{devType,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from station_show_dev
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="cn.plou.web.station.stationshowdev.entity.StationShowDev">
+		insert into station_show_dev (primary_id, dev_type, dev_id,
+		dev_name, source_id, notes,
+		memo1, memo2)
+		values (#{primaryId,jdbcType=VARCHAR}, #{devType,jdbcType=VARCHAR},
+		#{devId,jdbcType=VARCHAR},
+		#{devName,jdbcType=VARCHAR}, #{sourceId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR},
+		#{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="cn.plou.web.station.stationshowdev.entity.StationShowDev">
+		insert into station_show_dev
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="primaryId != null">
+				primary_id,
+			</if>
+			<if test="devType != null">
+				dev_type,
+			</if>
+			<if test="devId != null">
+				dev_id,
+			</if>
+			<if test="devName != null">
+				dev_name,
+			</if>
+			<if test="sourceId != null">
+				source_id,
+			</if>
+			<if test="notes != null">
+				notes,
+			</if>
+			<if test="memo1 != null">
+				memo1,
+			</if>
+			<if test="memo2 != null">
+				memo2,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="primaryId != null">
+				#{primaryId,jdbcType=VARCHAR},
+			</if>
+			<if test="devType != null">
+				#{devType,jdbcType=VARCHAR},
+			</if>
+			<if test="devId != null">
+				#{devId,jdbcType=VARCHAR},
+			</if>
+			<if test="devName != null">
+				#{devName,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceId != null">
+				#{sourceId,jdbcType=VARCHAR},
+			</if>
+			<if test="notes != null">
+				#{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="memo1 != null">
+				#{memo1,jdbcType=VARCHAR},
+			</if>
+			<if test="memo2 != null">
+				#{memo2,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="cn.plou.web.station.stationshowdev.entity.StationShowDev">
+		update station_show_dev
+		<set>
+			<if test="devType != null">
+				dev_type = #{devType,jdbcType=VARCHAR},
+			</if>
+			<if test="devId != null">
+				dev_id = #{devId,jdbcType=VARCHAR},
+			</if>
+			<if test="devName != null">
+				dev_name = #{devName,jdbcType=VARCHAR},
+			</if>
+			<if test="sourceId != null">
+				source_id = #{sourceId,jdbcType=VARCHAR},
+			</if>
+			<if test="notes != null">
+				notes = #{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="memo1 != null">
+				memo1 = #{memo1,jdbcType=VARCHAR},
+			</if>
+			<if test="memo2 != null">
+				memo2 = #{memo2,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="cn.plou.web.station.stationshowdev.entity.StationShowDev">
+		update station_show_dev
+		set dev_type = #{devType,jdbcType=VARCHAR},
+		dev_id = #{devId,jdbcType=VARCHAR},
+		dev_name = #{devName,jdbcType=VARCHAR},
+		source_id = #{sourceId,jdbcType=VARCHAR},
+		notes = #{notes,jdbcType=VARCHAR},
+		memo1 = #{memo1,jdbcType=VARCHAR},
+		memo2 = #{memo2,jdbcType=VARCHAR}
+		where primary_id = #{primaryId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- ————————————————————————————————cache配置————————————————————————————  -->
+	<cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

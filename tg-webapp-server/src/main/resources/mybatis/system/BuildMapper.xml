@@ -54,6 +54,7 @@
   <result column="water_has_build_meter" jdbcType="VARCHAR" property="waterHasBuildMeter" />
   <result column="index" jdbcType="INTEGER" property="index" />
   <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
 </resultMap>
   <resultMap id="BaseInfoMap" type="cn.plou.web.system.baseMessage.build.vo.BuildInfo">
     <id column="building_no" jdbcType="VARCHAR" property="buildingNo" />
@@ -71,6 +72,7 @@
     <result column="pipe_device_name" jdbcType="VARCHAR" property="pipeDeviceName" />
     <result column="pipe_id" jdbcType="VARCHAR" property="pipeId" />
     <result column="main_diameter" jdbcType="INTEGER" property="mainDiameter" />
+    <result column="main_diameter_name" jdbcType="VARCHAR" property="mainDiameterName" />
     <result column="pipe_position" jdbcType="VARCHAR" property="pipePosition" />
     <result column="pipe_length" jdbcType="VARCHAR" property="pipeLength" />
     <result column="pipe_length_name" jdbcType="INTEGER" property="pipeLengthName" />
@@ -120,6 +122,8 @@
     <result column="water_has_build_meter" jdbcType="VARCHAR" property="waterHasBuildMeter" />
     <result column="index" jdbcType="INTEGER" property="index" />
     <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+    <result column="source_type" jdbcType="VARCHAR" property="sourceType"/>
+    <result column="source_type_name" jdbcType="VARCHAR" property="sourceTypeName"/>
   </resultMap>
   <sql id="Base_Column_List">
     building_no, rowno, building_name, unit_num, floor_num, floor_height, building_area, 
@@ -130,7 +134,7 @@
     create_date, create_user, update_date, update_user, control_type, water_preserve_heat, 
     water_pipe_id, water_main_diameter, water_pipe_position, water_pipe_length, water_index, 
     water_form, water_net_in_time, water_net_in_contract, water_has_build_meter, `index`,
-    isvalid
+    isvalid,source_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -170,24 +174,20 @@
   <select id="selectAllBuild" parameterType="map" resultMap="BaseInfoMap">
     select
     b.building_no building_no, b.rowno rowno, b.building_name building_name, b.unit_num unit_num, b.floor_num floor_num, b.floor_height floor_height,
-    b.building_area building_area,b.energy_saving energy_saving,
-    b.preserve_heat preserve_heat,
+    b.building_area building_area,b.energy_saving energy_saving,b.preserve_heat preserve_heat,
     b.begin_pipe_id begin_pipe_id,p.pipe_device_name pipe_device_name, b.pipe_id pipe_id,
     b.main_diameter main_diameter, b.pipe_position pipe_position,b.pipe_length pipe_length,
-    b.heating_index heating_index,
-    b.heating_form heating_form,
+    b.heating_index heating_index,b.heating_form heating_form,
     b.build_year build_year, b.builder builder, b.net_in_time net_in_time, b.net_in_contract net_in_contract,b.has_build_meter has_build_meter,
     b.has_balance_valve has_balance_valve, b.charge_person charge_person, b.attributes attributes,
-    b.building_right building_right,
-    b.using_right using_right,b.system_num system_num, b.rest_time rest_time,
-    b.longitude longitude,
-    b.latitude latitude,b.company_id company_id,
-    c.company_name company_name,b.address address, b.notes notes, b.memo1 memo1,b.memo2 memo2,b.create_date create_date, b.create_user create_user,
-    b.update_date update_date, b.update_user update_user, b.control_type control_type,
-    b.water_preserve_heat water_preserve_heat,
-    b.water_pipe_id water_pipe_id, b.water_main_diameter water_main_diameter, b.water_pipe_position water_pipe_position, b.water_pipe_length water_pipe_length,
-    b.water_index water_index,b.water_form water_form, b.water_net_in_time water_net_in_time, b.water_net_in_contract water_net_in_contract,
-    b.water_has_build_meter water_has_build_meter, b.`index` `index`,b.isvalid isvalid
+    b.building_right building_right,b.using_right using_right,b.system_num system_num, b.rest_time rest_time,
+    b.longitude longitude,b.latitude latitude,b.company_id company_id,
+    c.company_name company_name,b.address address, b.notes notes, b.memo1 memo1,b.memo2 memo2,b.create_date create_date,
+    b.create_user create_user,b.update_date update_date, b.update_user update_user, b.control_type control_type,
+    b.water_preserve_heat water_preserve_heat,b.water_pipe_id water_pipe_id, b.water_main_diameter water_main_diameter,
+    b.water_pipe_position water_pipe_position, b.water_pipe_length water_pipe_length,b.water_index water_index,b.water_form water_form,
+    b.water_net_in_time water_net_in_time, b.water_net_in_contract water_net_in_contract,b.water_has_build_meter water_has_build_meter,
+    b.`index` `index`,b.isvalid isvalid,b.source_type
     from build_info b
     left join company_info c on b.company_id=c.company_id
     left join pipe_device_info p on b.begin_pipe_id=p.pipe_device_id
@@ -239,6 +239,9 @@
     <if test="buildVo.controlType!=null">
       and b.control_type =#{buildVo.controlType}
     </if>
+      <if test="buildVo.sourceType != null">
+        and b.source_type = #{buildVo.sourceType}
+      </if>
     </if>
     <if test="sortby!=null">
       order by b.${sortby}
@@ -286,7 +289,7 @@
       water_main_diameter, water_pipe_position, water_pipe_length, 
       water_index, water_form, water_net_in_time, 
       water_net_in_contract, water_has_build_meter, 
-      index, isvalid)
+      index, isvalid,source_type)
     values (#{buildingNo,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, #{buildingName,jdbcType=VARCHAR}, 
       #{unitNum,jdbcType=VARCHAR}, #{floorNum,jdbcType=VARCHAR}, #{floorHeight,jdbcType=INTEGER}, 
       #{buildingArea,jdbcType=DECIMAL}, #{energySaving,jdbcType=VARCHAR}, #{preserveHeat,jdbcType=VARCHAR}, 
@@ -304,7 +307,7 @@
       #{waterMainDiameter,jdbcType=INTEGER}, #{waterPipePosition,jdbcType=VARCHAR}, #{waterPipeLength,jdbcType=INTEGER}, 
       #{waterIndex,jdbcType=DECIMAL}, #{waterForm,jdbcType=VARCHAR}, #{waterNetInTime,jdbcType=TIMESTAMP}, 
       #{waterNetInContract,jdbcType=VARCHAR}, #{waterHasBuildMeter,jdbcType=VARCHAR}, 
-      #{index,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER})
+      #{index,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER},#{sourceType})
   </insert>
   <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.build.vo.BuildInfo">
     insert into build_info
@@ -465,6 +468,9 @@
       <if test="isvalid != null">
         isvalid,
       </if>
+      <if test="sourceType != null">
+        source_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="buildingNo != null">
@@ -623,6 +629,9 @@
       <if test="isvalid != null">
         #{isvalid,jdbcType=INTEGER},
       </if>
+      <if test="sourceType != null">
+        #{sourceType},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.build.entity.Build">
@@ -778,6 +787,9 @@
       <if test="isvalid != null">
         isvalid = #{isvalid,jdbcType=INTEGER},
       </if>
+      <if test="sourceType != null">
+        source_type = #{sourceType},
+      </if>
     </set>
     where building_no = #{buildingNo,jdbcType=VARCHAR}
   </update>
@@ -832,7 +844,8 @@
       water_net_in_contract = #{waterNetInContract,jdbcType=VARCHAR},
       water_has_build_meter = #{waterHasBuildMeter,jdbcType=VARCHAR},
       index = #{index,jdbcType=INTEGER},
-      isvalid = #{isvalid,jdbcType=INTEGER}
+      isvalid = #{isvalid,jdbcType=INTEGER},
+      source_type = #{sourceType}
     where building_no = #{buildingNo,jdbcType=VARCHAR}
   </update>
 
@@ -860,7 +873,6 @@
       <if test="preserveHeat != null">
         preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
       </if>
-
       <if test="pipeId != null">
         pipe_id = #{pipeId,jdbcType=VARCHAR},
       </if>
@@ -929,6 +941,9 @@
       </if>
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceType != null">
+        source_type = #{sourceType},
       </if>
     </set>
     where building_no in
@@ -1025,7 +1040,9 @@
       <if test="notes != null">
         notes = #{notes,jdbcType=VARCHAR},
       </if>
-
+      <if test="sourceType != null">
+        source_type = #{sourceType},
+      </if>
     </set>
     where building_no like (CONCAT(#{batchModifyId,jdbcType=VARCHAR},'%'))
   </update>
@@ -1119,6 +1136,9 @@
       <if test="notes != null">
         notes = #{notes,jdbcType=VARCHAR},
       </if>
+      <if test="sourceType != null">
+        source_type = #{sourceType},
+      </if>
     </set>
     where 
 	 <foreach collection="communitys" item="item" index="index"  separator="OR">
@@ -1184,9 +1204,15 @@
     <if test="buildVo.controlType!=null">
       and b.control_type =#{buildVo.controlType}
     </if>
+      <if test="buildVo.sourceType != null">
+        and source_type = #{buildVo.sourceType}
+      </if>
     </if>
   </select>
     <update id="modifyBuildName" parameterType="map">
     	update build_info set address = concat(#{address},#{nkey},building_name) where building_no like (concat(#{commuityId},'%'))
   </update>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

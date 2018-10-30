@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.system.dao.SystemMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.system.entity.System">
+    <id column="system_id" jdbcType="VARCHAR" property="systemId" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="plan_area" jdbcType="DECIMAL" property="planArea" />
+    <result column="second_pipe_farthest" jdbcType="DECIMAL" property="secondPipeFarthest" />
+    <result column="second_in_temperature" jdbcType="DECIMAL" property="secondInTemperature" />
+    <result column="second_out_temperature" jdbcType="DECIMAL" property="secondOutTemperature" />
+    <result column="outdoor_set_temperature" jdbcType="DECIMAL" property="outdoorSetTemperature" />
+    <result column="room_set_temperature" jdbcType="DECIMAL" property="roomSetTemperature" />
+    <result column="heating_index" jdbcType="DECIMAL" property="heatingIndex" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="water_plan" jdbcType="DECIMAL" property="waterPlan" />
+    <result column="water_act" jdbcType="DECIMAL" property="waterAct" />
+    <result column="water_design" jdbcType="DECIMAL" property="waterDesign" />
+  </resultMap>
+
+  <resultMap id="InfoMap2" type="cn.plou.web.system.baseMessage.system.vo.SystemInfoVo">
+    <id column="system_id" jdbcType="VARCHAR" property="systemId" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="station_name" jdbcType="VARCHAR" property="stationName"/>
+  </resultMap>
+
+  <resultMap id="InfoMap" type="cn.plou.web.system.baseMessage.system.vo.SystemInfo">
+    <id column="system_id" jdbcType="VARCHAR" property="systemId" />
+    <result column="systemName" jdbcType="VARCHAR" property="systemName" />
+    <result column="planArea" jdbcType="DECIMAL" property="planArea" />
+    <result column="secondPipeFarthest" jdbcType="DECIMAL" property="secondPipeFarthest" />
+    <result column="secondInTemperature" jdbcType="DECIMAL" property="secondInTemperature" />
+    <result column="secondOutTemperature" jdbcType="DECIMAL" property="secondOutTemperature" />
+    <result column="outdoorSetTemperature" jdbcType="DECIMAL" property="outdoorSetTemperature" />
+    <result column="roomSetTemperature" jdbcType="DECIMAL" property="roomSetTemperature" />
+    <result column="heatingIndex" jdbcType="DECIMAL" property="heatingIndex" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName"/>
+    <result column="station_id" jdbcType="VARCHAR" property="stationId" />
+    <result column="stationName" jdbcType="VARCHAR" property="stationName"/>
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="water_plan" jdbcType="DECIMAL" property="waterPlan" />
+    <result column="water_act" jdbcType="DECIMAL" property="waterAct" />
+    <result column="water_design" jdbcType="DECIMAL" property="waterDesign" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    system_id, system_name, plan_area, second_pipe_farthest, second_in_temperature, second_out_temperature, 
+    outdoor_set_temperature, room_set_temperature, heating_index, company_id, station_id, 
+    notes, memo1, memo2, create_date, create_user, update_date, update_user, business_type, 
+    water_plan, water_act, water_design
+  </sql>
+
+  <sql id="info_List">
+    system_id, system_name, plan_area, second_pipe_farthest, second_in_temperature, second_out_temperature,
+    outdoor_set_temperature, room_set_temperature, heating_index, company_id,company_name, station_id,station_name,notes
+  </sql>
+
+  <sql id="useful_List">
+    system_id, system_name, plan_area, second_pipe_farthest, second_in_temperature, second_out_temperature,
+    outdoor_set_temperature, room_set_temperature, heating_index, company_id, station_id,
+    notes
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="useful_List" />
+    from system_info
+    where system_id = #{systemId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllSyetemIds" resultType="java.lang.String">
+    select system_id
+    from system_info
+    limit 0,100000
+  </select>
+
+  <select id="selectAllSystem" parameterType="cn.plou.web.system.baseMessage.system.vo.SystemSelectInfo" resultMap="InfoMap">
+    select
+    s.system_id, s.system_name systemName, s.plan_area planArea, s.second_pipe_farthest secondPipeFarthest,
+    s.second_in_temperature secondInTemperature, s.second_out_temperature secondOutTemperature,
+    s.outdoor_set_temperature outdoorSetTemperature, s.room_set_temperature roomSetTemperature, s.heating_index heatingIndex,
+    s.company_id,c.company_name companyName, s.station_id,sta.station_name stationName,s.notes
+    from system_info s
+    left JOIN company_info c ON s.company_id=c.company_id
+    left JOIN station_info sta ON sta.station_id=s.station_id
+    where
+    s.system_id is not null
+    <!--<if test="stationIds.size()!=0">
+      and s.station_id in
+      <foreach collection="stationIds" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>-->
+    <if test="companyIds != null">
+      <if test="companyIds.size()!=0">
+        and s.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="stationId != null">
+      and s.station_id = #{stationId}
+    </if>
+    <if test="systemVo != null">
+      <if test="systemVo.systemName != null">
+        and s.system_name LIKE concat('%',#{systemVo.systemName},'%')
+      </if>
+      <if test="systemVo.planArea != null">
+        and s.plan_area LIKE concat('%',#{systemVo.planArea},'%')
+      </if>
+      <if test="systemVo.secondPipeFarthest != null">
+        and s.second_pipe_farthest = #{systemVo.secondPipeFarthest,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.secondInTemperature != null">
+        and s.second_in_temperature = #{systemVo.secondInTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.secondOutTemperature != null">
+        and s.second_out_temperature = #{systemVo.secondOutTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.outdoorSetTemperature != null">
+        and s.outdoor_set_temperature = #{systemVo.outdoorSetTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.roomSetTemperature != null">
+        and s.room_set_temperature = #{systemVo.roomSetTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.heatingIndex != null">
+        and s.heating_index = #{systemVo.heatingIndex,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.companyId != null">
+        and s.company_id = #{systemVo.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="systemVo.stationId != null">
+        and s.station_id = #{systemVo.stationId,jdbcType=VARCHAR}
+      </if>
+      <if test="systemVo.notes != null">
+        and s.notes = #{systemVo.notes,jdbcType=VARCHAR}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>
+  </select>
+
+  <select id="selectSystemListCount" parameterType="cn.plou.web.system.baseMessage.system.vo.SystemSelectInfo" resultType="java.lang.Integer">
+    select count(*)
+    from system_info s
+    where
+    s.system_id is not null
+    <if test="companyIds != null">
+      <if test="companyIds.size()!=0">
+        and s.company_id in
+        <foreach collection="companyIds" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="systemVo != null">
+      <if test="systemVo.systemName != null">
+        and s.system_name LIKE concat('%',#{systemVo.systemName},'%')
+      </if>
+      <if test="systemVo.planArea != null">
+        and s.plan_area LIKE concat('%',#{systemVo.planArea},'%')
+      </if>
+      <if test="systemVo.secondPipeFarthest != null">
+        and s.second_pipe_farthest = #{systemVo.secondPipeFarthest,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.secondInTemperature != null">
+        and s.second_in_temperature = #{systemVo.secondInTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.secondOutTemperature != null">
+        and s.second_out_temperature = #{systemVo.secondOutTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.outdoorSetTemperature != null">
+        and s.outdoor_set_temperature = #{systemVo.outdoorSetTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.roomSetTemperature != null">
+        and s.room_set_temperature = #{systemVo.roomSetTemperature,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.heatingIndex != null">
+        and s.heating_index = #{systemVo.heatingIndex,jdbcType=DECIMAL}
+      </if>
+      <if test="systemVo.companyId != null">
+        and s.company_id = #{systemVo.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="systemVo.stationId != null">
+        and s.station_id = #{systemVo.stationId,jdbcType=VARCHAR}
+      </if>
+      <if test="systemVo.notes != null">
+        and s.notes = #{systemVo.notes,jdbcType=VARCHAR}
+      </if>
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from system_info
+    where system_id = #{systemId,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deletSystemeBatchByIds" parameterType="java.util.List">
+    delete from system_info
+    where system_id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.system.entity.System">
+    insert into system_info (system_id, system_name, plan_area, 
+      second_pipe_farthest, second_in_temperature, 
+      second_out_temperature, outdoor_set_temperature, 
+      room_set_temperature, heating_index, company_id, 
+      station_id, notes, memo1, 
+      memo2, create_date, create_user, 
+      update_date, update_user, business_type, 
+      water_plan, water_act, water_design
+      )
+    values (#{systemId,jdbcType=VARCHAR}, #{systemName,jdbcType=VARCHAR}, #{planArea,jdbcType=DECIMAL}, 
+      #{secondPipeFarthest,jdbcType=DECIMAL}, #{secondInTemperature,jdbcType=DECIMAL}, 
+      #{secondOutTemperature,jdbcType=DECIMAL}, #{outdoorSetTemperature,jdbcType=DECIMAL}, 
+      #{roomSetTemperature,jdbcType=DECIMAL}, #{heatingIndex,jdbcType=DECIMAL}, #{companyId,jdbcType=VARCHAR}, 
+      #{stationId,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, 
+      #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR}, 
+      #{waterPlan,jdbcType=DECIMAL}, #{waterAct,jdbcType=DECIMAL}, #{waterDesign,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.system.entity.System">
+    insert into system_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="systemName != null">
+        system_name,
+      </if>
+      <if test="planArea != null">
+        plan_area,
+      </if>
+      <if test="secondPipeFarthest != null">
+        second_pipe_farthest,
+      </if>
+      <if test="secondInTemperature != null">
+        second_in_temperature,
+      </if>
+      <if test="secondOutTemperature != null">
+        second_out_temperature,
+      </if>
+      <if test="outdoorSetTemperature != null">
+        outdoor_set_temperature,
+      </if>
+      <if test="roomSetTemperature != null">
+        room_set_temperature,
+      </if>
+      <if test="heatingIndex != null">
+        heating_index,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="stationId != null">
+        station_id,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="waterPlan != null">
+        water_plan,
+      </if>
+      <if test="waterAct != null">
+        water_act,
+      </if>
+      <if test="waterDesign != null">
+        water_design,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="systemId != null">
+        #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="systemName != null">
+        #{systemName,jdbcType=VARCHAR},
+      </if>
+      <if test="planArea != null">
+        #{planArea,jdbcType=DECIMAL},
+      </if>
+      <if test="secondPipeFarthest != null">
+        #{secondPipeFarthest,jdbcType=DECIMAL},
+      </if>
+      <if test="secondInTemperature != null">
+        #{secondInTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="secondOutTemperature != null">
+        #{secondOutTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outdoorSetTemperature != null">
+        #{outdoorSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="roomSetTemperature != null">
+        #{roomSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingIndex != null">
+        #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPlan != null">
+        #{waterPlan,jdbcType=DECIMAL},
+      </if>
+      <if test="waterAct != null">
+        #{waterAct,jdbcType=DECIMAL},
+      </if>
+      <if test="waterDesign != null">
+        #{waterDesign,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.system.entity.System">
+    update system_info
+    <set>
+      <if test="systemName != null">
+        system_name = #{systemName,jdbcType=VARCHAR},
+      </if>
+      <if test="planArea != null">
+        plan_area = #{planArea,jdbcType=DECIMAL},
+      </if>
+      <if test="secondPipeFarthest != null">
+        second_pipe_farthest = #{secondPipeFarthest,jdbcType=DECIMAL},
+      </if>
+      <if test="secondInTemperature != null">
+        second_in_temperature = #{secondInTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="secondOutTemperature != null">
+        second_out_temperature = #{secondOutTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outdoorSetTemperature != null">
+        outdoor_set_temperature = #{outdoorSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="roomSetTemperature != null">
+        room_set_temperature = #{roomSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPlan != null">
+        water_plan = #{waterPlan,jdbcType=DECIMAL},
+      </if>
+      <if test="waterAct != null">
+        water_act = #{waterAct,jdbcType=DECIMAL},
+      </if>
+      <if test="waterDesign != null">
+        water_design = #{waterDesign,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where system_id = #{systemId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatch" parameterType="cn.plou.web.system.baseMessage.system.vo.SystemVo">
+    update system_info
+    <set>
+      <if test="systemName != null">
+        system_name = #{systemName,jdbcType=VARCHAR},
+      </if>
+      <if test="planArea != null">
+        plan_area = #{planArea,jdbcType=DECIMAL},
+      </if>
+      <if test="secondPipeFarthest != null">
+        second_pipe_farthest = #{secondPipeFarthest,jdbcType=DECIMAL},
+      </if>
+      <if test="secondInTemperature != null">
+        second_in_temperature = #{secondInTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="secondOutTemperature != null">
+        second_out_temperature = #{secondOutTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="outdoorSetTemperature != null">
+        outdoor_set_temperature = #{outdoorSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="roomSetTemperature != null">
+        room_set_temperature = #{roomSetTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="stationId != null">
+        station_id = #{stationId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where system_id in
+    <foreach collection="systemIds" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.system.entity.System">
+    update system_info
+    set system_name = #{systemName,jdbcType=VARCHAR},
+      plan_area = #{planArea,jdbcType=DECIMAL},
+      second_pipe_farthest = #{secondPipeFarthest,jdbcType=DECIMAL},
+      second_in_temperature = #{secondInTemperature,jdbcType=DECIMAL},
+      second_out_temperature = #{secondOutTemperature,jdbcType=DECIMAL},
+      outdoor_set_temperature = #{outdoorSetTemperature,jdbcType=DECIMAL},
+      room_set_temperature = #{roomSetTemperature,jdbcType=DECIMAL},
+      heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      station_id = #{stationId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      business_type = #{businessType,jdbcType=VARCHAR},
+      water_plan = #{waterPlan,jdbcType=DECIMAL},
+      water_act = #{waterAct,jdbcType=DECIMAL},
+      water_design = #{waterDesign,jdbcType=DECIMAL}
+    where system_id = #{systemId,jdbcType=VARCHAR}
+  </update>
+  <select id="getSystemByIds" resultMap="InfoMap">
+    select 
+    <include refid="useful_List" />
+    from system_info where system_id in 
+    <foreach collection="systemIds" item="systemId" open="(" close=")" separator=",">
+    #{systemId}
+   </foreach>
+  </select>
+  <select id="getSystemByStationIds" resultMap="InfoMap2">
+    select s.system_id , s.system_name,s.company_id,c.company_name,s.station_id,si.station_name from system_info s 
+left join company_info c on s.company_id = c.company_id
+left join station_info si on s.station_id = si.station_id  
+where s.station_id in
+    <foreach collection="systemIds" item="systemId" open="(" close=")" separator=",">
+    #{systemId}
+   </foreach>
+  </select>
+  
+    <select id="getSystemByCompanyIds" resultMap="InfoMap2">
+    select s.system_id , s.system_name,s.company_id,c.company_name,s.station_id,si.station_name from system_info s 
+left join company_info c on s.company_id = c.company_id
+left join station_info si on s.station_id = si.station_id  
+where s.company_id in
+    <foreach collection="companyIds" item="companyId" open="(" close=")" separator=",">
+    #{companyId}
+   </foreach>
+  </select>
+  
+  <select id="getMaxSystemId" parameterType="java.lang.String"  resultType="java.lang.String">
+        select
+        	max(system_id)
+        from system_info where station_id=#{stationId}
+  </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

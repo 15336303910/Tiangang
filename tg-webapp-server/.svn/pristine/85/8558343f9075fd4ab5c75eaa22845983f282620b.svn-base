@@ -1,0 +1,145 @@
+
+package cn.plou.web.heatManage.dataAnalysis.service.impl;
+
+import cn.plou.common.utils.DateUtil;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.Support;
+import cn.plou.web.heatManage.dataAnalysis.vo.HeatDistributionByBuildNo;
+import cn.plou.web.heatManage.dataAnalysis.vo.HeatDistributionData;
+import cn.plou.web.heatManage.history.domain.HeatMeterDataDO;
+
+import java.sql.ResultSet;
+import java.util.*;
+
+/**
+ *
+ *
+ * @author chglee
+ * @email 1992lcg@163.com
+ * @date 2018-06-29 09:26:54
+ */
+public class HeatDistributionServiceImpl {
+
+   public List<HeatDistributionData> getHeatDistributionData(String selectId, String selectType, String selectDateType, String heatParamType, String start, String end){
+       List<HeatDistributionData> heatDistributions = getEsData(selectId,selectType,selectDateType,start,end);
+       return heatDistributions;
+   }
+
+    private List<HeatDistributionData> getEsData(String selectId,String selectType,String selectDateType,String start,String end) {
+        List<HeatDistributionData> data = new ArrayList<HeatDistributionData>();
+
+        String strsql= "";
+        if(selectType=="station"){
+            strsql ="select company_id, commuity_id, sum(heat)heat , sum(flow_speed) flow_speed,sum(heating_index) heating_index,sum(flowing_index) flowing_index,\n" +
+                    "sum (room_temperature_read) room_temperature_read from (\n" +
+                    "\n" +
+                    "select consumer_id, substring(consumer_id,1,10) commuity_id, heat, flow_speed,heating_index,flowing_index, room_temperature_read,company_id\n" +
+                    " from user_running_data_total \n" +
+                    "\n" +
+                    "where 1=1 and systemReadTimeLong >= %s and systemReadTimeLong <=%s  \n" +
+                    "\n" +
+                    ")s group by company_id, commuity_id\n";
+        }
+        if(selectType=="community"){
+            strsql ="select company_id, commuity_id, consumer_id, sum(heat)heat , sum(flow_speed) flow_speed,sum(heating_index) heating_index,sum(flowing_index) flowing_index,\n" +
+                    "sum (room_temperature_read) room_temperature_read from (\n" +
+                    "\n" +
+                    "select consumer_id, substring(consumer_id,1,10) commuity_id, heat, flow_speed,heating_index,flowing_index, room_temperature_read,company_id\n" +
+                    " from user_running_data_total \n" +
+                    "\n" +
+                    "where 1=1 and systemReadTimeLong >= %s and systemReadTimeLong <=%s  \n" +
+                    "\n" +
+                    ")s group by company_id, commuity_id,consumer_id\n";
+        }
+       strsql = filterTime(strsql, selectDateType,start,end);
+        try {
+            ResultSet res = Support.querryFromEs(strsql);
+            if (res == null) {
+                return data;
+            }
+            while (res.next()) {
+               // HeatMeterDataDO dat = orderHeatMeterData(res);
+               // if (dat != null) {
+                //    data.add(dat);
+               // }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("es user running data total error");
+        }
+        return data;
+    }
+
+    private String filterTime(String strsql,String selectDateType,String start, String end) {
+       String startDate ="";
+        String endDate = "";
+        Calendar calendar= Calendar.getInstance();
+        calendar.setTime(new Date());
+
+       if(selectDateType=="yesterday"){
+           calendar.setTime(new Date());
+            calendar.add(Calendar.DATE,-1);
+           startDate = DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))) ;
+           endDate =  DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }else if (selectDateType =="beforeThreeDays"){
+           calendar.setTime(new Date());
+           calendar.add(Calendar.DATE,-3);
+           startDate = DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))) ;
+           endDate =  DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }   else if (selectDateType =="beforeSevenDays"){
+           calendar.setTime(new Date());
+           calendar.add(Calendar.DATE,-7);
+           startDate = DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))) ;
+           endDate =  DateUtil.toDateTimeString(new Date(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }
+       else if (selectDateType =="thisWeek"){
+           calendar.setTime(new Date());
+           int dayWeek = calendar.get(Calendar.DAY_OF_WEEK);
+           if(1==dayWeek){
+               calendar.add(calendar.DAY_OF_MONTH,-1);
+           }
+           calendar.setFirstDayOfWeek(calendar.MONDAY);
+           int day= calendar.get(Calendar.DAY_OF_WEEK);
+           calendar.add(Calendar.DATE,calendar.getFirstDayOfWeek()-day);
+           startDate = DateUtil.toDateTimeString(calendar.getTime()) ;
+           calendar.add(Calendar.DATE, 6);
+           endDate =  DateUtil.toDateTimeString(calendar.getTime()) ;
+       }
+       else if (selectDateType =="thisMonth"){
+           Calendar c = Calendar.getInstance();
+           c.add(Calendar.MONTH, 0);
+           c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+           startDate = DateUtil.toDateTimeString(new Date(c.get(Calendar.YEAR),c.get(Calendar.MONTH),1)) ;
+
+           Calendar ca = Calendar.getInstance();
+           ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+           endDate =  DateUtil.toDateTimeString(new Date(ca.get(Calendar.YEAR),ca.get(Calendar.MONTH),ca.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }
+       else if (selectDateType =="lastMonth"){
+           Calendar c = Calendar.getInstance();
+           c.add(Calendar.MONTH, -1);
+           c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+           startDate = DateUtil.toDateTimeString(new Date(c.get(Calendar.YEAR),c.get(Calendar.MONTH),1)) ;
+
+           Calendar ca = Calendar.getInstance();
+           ca.set(Calendar.DAY_OF_MONTH,0);
+           endDate =  DateUtil.toDateTimeString(new Date(ca.get(Calendar.YEAR),ca.get(Calendar.MONTH),ca.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }
+       else if (selectDateType =="forNow"){
+           startDate = DateUtil.toDateTimeString(new Date(1990,1,1)) ;
+
+           Calendar ca = Calendar.getInstance();
+           ca.setTime(new Date());
+           endDate =  DateUtil.toDateTimeString(new Date(ca.get(Calendar.YEAR),ca.get(Calendar.MONTH),ca.get(Calendar.DAY_OF_MONTH),23,59,59)) ;
+       }
+       else if (selectDateType=="others"){
+            startDate=start;
+            endDate= end;
+       }
+        strsql = String.format(strsql, Long.toString(DateUtil.fromString(startDate,true).getTime()),
+                Long.toString(DateUtil.fromString(endDate,true).getTime()));
+        return strsql;
+    }
+
+   // List<HeatDistributionByBuildNo> getHeatDistributionByBuildNo(Map<String, Object> map);
+}

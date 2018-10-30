@@ -258,7 +258,9 @@
         select
         <include refid="Base_Column_List"/>
         from bank_reconciliations_head
-        where company_id=#{companyId,jdbcType=VARCHAR}
+        where
+        DATE_FORMAT(transaction_date,'%Y-%m-%d') = DATE_FORMAT(#{transactionDate,jdbcType=TIMESTAMP},'%Y-%m-%d')
+        and company_id=#{companyId,jdbcType=VARCHAR}
         and annual=#{annual,jdbcType=VARCHAR}
         and bank_id=#{bankId,jdbcType=VARCHAR}
         and platform_code=#{platformCode,jdbcType=VARCHAR}
@@ -303,4 +305,7 @@
             ${order}
         </if>
     </select>
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true"/>
 </mapper>

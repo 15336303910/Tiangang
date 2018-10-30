@@ -319,4 +319,7 @@
         and DATE_FORMAT(reconciliations_date,'%Y-%m-%d') = DATE_FORMAT(#{accountTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
         and account_channel = #{payChannel,jdbcType=VARCHAR}
     </select>
+
+    <!-- ————————————————————————————————cache配置————————————————————————————  -->
+    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

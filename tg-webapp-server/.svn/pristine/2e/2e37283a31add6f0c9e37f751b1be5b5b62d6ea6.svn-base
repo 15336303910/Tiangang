@@ -1,0 +1,67 @@
+package cn.plou.web.charge.heatingmanage.service.impl;
+
+import cn.plou.web.charge.heatingmanage.dao.HeatCheckDetailMapper;
+import cn.plou.web.charge.heatingmanage.domain.HeatCheckDetail;
+import cn.plou.web.charge.heatingmanage.service.HeatCheckDetailService;
+import cn.plou.web.common.config.common.BasePageEntity;
+import cn.plou.web.common.utils.FlowIdTool;
+import cn.plou.web.common.utils.a1.DateUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 2018/8/23 8:56
+ */
+
+@Service
+@Transactional(rollbackFor = Exception.class)
+public class HeatCheckDetailServiceImpl implements HeatCheckDetailService {
+
+  @Resource
+  private HeatCheckDetailMapper heatCheckDetailMapper;
+
+  @Override
+  public PageInfo<HeatCheckDetail> getList(String beginCreateDate, String endCreateDate, HeatCheckDetail heatCheckDetail, BasePageEntity basePageEntity) {
+    PageHelper.startPage(basePageEntity.getPage(), basePageEntity.getPageSize());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    ParsePosition pos = new ParsePosition(0);
+    Date begin = null;
+    try {
+      begin = sdf.parse(beginCreateDate, pos);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    ParsePosition pos2 = new ParsePosition(0);
+    Date end = null;
+    try {
+      end = sdf.parse(endCreateDate, pos2);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    List<HeatCheckDetail> list = heatCheckDetailMapper.find(begin, end, heatCheckDetail, basePageEntity);
+    //处理任务安排时间为 2018/10/19 08:20
+    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+    for (HeatCheckDetail heatCheckDetail1 : list) {
+      heatCheckDetail1.setShowTaskDate(sdf2.format(heatCheckDetail1.getTaskDate()));
+    }
+    return new PageInfo<>(list);
+  }
+
+  @Override
+  public int addHeatCheckDetail(HeatCheckDetail heatCheckDetail) {
+    return heatCheckDetailMapper.insert(heatCheckDetail);
+  }
+
+  @Override
+  public int updateHeatCheckDetail(HeatCheckDetail heatCheckDetail) {
+    return heatCheckDetailMapper.updateByPrimaryKeySelective(heatCheckDetail);
+  }
+}

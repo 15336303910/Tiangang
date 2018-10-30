@@ -1,0 +1,1195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.baseMessage.build.dao.BuildMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.baseMessage.build.entity.Build">
+  <id column="building_no" jdbcType="VARCHAR" property="buildingNo" />
+  <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+  <result column="building_name" jdbcType="VARCHAR" property="buildingName" />
+  <result column="unit_num" jdbcType="VARCHAR" property="unitNum" />
+  <result column="floor_num" jdbcType="VARCHAR" property="floorNum" />
+  <result column="floor_height" jdbcType="INTEGER" property="floorHeight" />
+  <result column="building_area" jdbcType="DECIMAL" property="buildingArea" />
+  <result column="energy_saving" jdbcType="VARCHAR" property="energySaving" />
+  <result column="preserve_heat" jdbcType="VARCHAR" property="preserveHeat" />
+  <result column="begin_pipe_id" jdbcType="VARCHAR" property="beginPipeId" />
+  <result column="pipe_id" jdbcType="VARCHAR" property="pipeId" />
+  <result column="main_diameter" jdbcType="INTEGER" property="mainDiameter" />
+  <result column="pipe_position" jdbcType="VARCHAR" property="pipePosition" />
+  <result column="pipe_length" jdbcType="VARCHAR" property="pipeLength" />
+  <result column="heating_index" jdbcType="DECIMAL" property="heatingIndex" />
+  <result column="heating_form" jdbcType="VARCHAR" property="heatingForm" />
+  <result column="build_year" jdbcType="VARCHAR" property="buildYear" />
+  <result column="builder" jdbcType="VARCHAR" property="builder" />
+  <result column="net_in_time" jdbcType="TIMESTAMP" property="netInTime" />
+  <result column="net_in_contract" jdbcType="VARCHAR" property="netInContract" />
+  <result column="has_build_meter" jdbcType="VARCHAR" property="hasBuildMeter" />
+  <result column="has_balance_valve" jdbcType="VARCHAR" property="hasBalanceValve" />
+  <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+  <result column="attributes" jdbcType="VARCHAR" property="attributes" />
+  <result column="building_right" jdbcType="VARCHAR" property="buildingRight" />
+  <result column="using_right" jdbcType="VARCHAR" property="usingRight" />
+  <result column="system_num" jdbcType="INTEGER" property="systemNum" />
+  <result column="rest_time" jdbcType="VARCHAR" property="restTime" />
+  <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+  <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+  <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+  <result column="address" jdbcType="VARCHAR" property="address" />
+  <result column="notes" jdbcType="VARCHAR" property="notes" />
+  <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+  <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+  <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+  <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  <result column="control_type" jdbcType="VARCHAR" property="controlType" />
+  <result column="water_preserve_heat" jdbcType="VARCHAR" property="waterPreserveHeat" />
+  <result column="water_pipe_id" jdbcType="VARCHAR" property="waterPipeId" />
+  <result column="water_main_diameter" jdbcType="INTEGER" property="waterMainDiameter" />
+  <result column="water_pipe_position" jdbcType="VARCHAR" property="waterPipePosition" />
+  <result column="water_pipe_length" jdbcType="INTEGER" property="waterPipeLength" />
+  <result column="water_index" jdbcType="DECIMAL" property="waterIndex" />
+  <result column="water_form" jdbcType="VARCHAR" property="waterForm" />
+  <result column="water_net_in_time" jdbcType="TIMESTAMP" property="waterNetInTime" />
+  <result column="water_net_in_contract" jdbcType="VARCHAR" property="waterNetInContract" />
+  <result column="water_has_build_meter" jdbcType="VARCHAR" property="waterHasBuildMeter" />
+  <result column="index" jdbcType="INTEGER" property="index" />
+  <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+</resultMap>
+  <resultMap id="BaseInfoMap" type="cn.plou.web.system.baseMessage.build.vo.BuildInfo">
+    <id column="building_no" jdbcType="VARCHAR" property="buildingNo" />
+    <id column="rowno" jdbcType="VARCHAR" property="rowno" />
+    <result column="building_name" jdbcType="VARCHAR" property="buildingName" />
+    <result column="unit_num" jdbcType="VARCHAR" property="unitNum" />
+    <result column="floor_num" jdbcType="VARCHAR" property="floorNum" />
+    <result column="floor_height" jdbcType="INTEGER" property="floorHeight" />
+    <result column="building_area" jdbcType="DECIMAL" property="buildingArea" />
+    <result column="energy_saving" jdbcType="VARCHAR" property="energySaving" />
+    <result column="energy_saving_name" jdbcType="VARCHAR" property="energySavingName" />
+    <result column="preserve_heat" jdbcType="VARCHAR" property="preserveHeat" />
+    <result column="preserve_heat_name" jdbcType="VARCHAR" property="preserveHeatName" />
+    <result column="begin_pipe_id" jdbcType="VARCHAR" property="beginPipeId" />
+    <result column="pipe_device_name" jdbcType="VARCHAR" property="pipeDeviceName" />
+    <result column="pipe_id" jdbcType="VARCHAR" property="pipeId" />
+    <result column="main_diameter" jdbcType="INTEGER" property="mainDiameter" />
+    <result column="pipe_position" jdbcType="VARCHAR" property="pipePosition" />
+    <result column="pipe_length" jdbcType="VARCHAR" property="pipeLength" />
+    <result column="pipe_length_name" jdbcType="INTEGER" property="pipeLengthName" />
+    <result column="heating_index" jdbcType="DECIMAL" property="heatingIndex" />
+    <result column="heating_form" jdbcType="VARCHAR" property="heatingForm" />
+    <result column="heating_form_name" jdbcType="VARCHAR" property="heatingFormName" />
+    <result column="build_year" jdbcType="VARCHAR" property="buildYear" />
+    <result column="builder" jdbcType="VARCHAR" property="builder" />
+    <result column="net_in_time" jdbcType="TIMESTAMP" property="netInTime" />
+    <result column="net_in_contract" jdbcType="VARCHAR" property="netInContract" />
+    <result column="has_build_meter" jdbcType="VARCHAR" property="hasBuildMeter" />
+    <result column="has_build_meter_name" jdbcType="VARCHAR" property="hasBuildMeterName" />
+    <result column="has_balance_valve" jdbcType="VARCHAR" property="hasBalanceValve" />
+    <result column="has_balance_valve_name" jdbcType="VARCHAR" property="hasBalanceValveName" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="attributes" jdbcType="VARCHAR" property="attributes" />
+    <result column="attributes_name" jdbcType="VARCHAR" property="attributesName" />
+    <result column="building_right" jdbcType="VARCHAR" property="buildingRight" />
+    <result column="using_right" jdbcType="VARCHAR" property="usingRight" />
+    <result column="system_num" jdbcType="INTEGER" property="systemNum" />
+    <result column="rest_time" jdbcType="VARCHAR" property="restTime" />
+    <result column="rest_time_name" jdbcType="VARCHAR" property="restTimeName" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="control_type" jdbcType="VARCHAR" property="controlType" />
+    <result column="control_type_name" jdbcType="VARCHAR" property="controlTypeName" />
+    <result column="water_preserve_heat" jdbcType="VARCHAR" property="waterPreserveHeat" />
+    <result column="water_pipe_id" jdbcType="VARCHAR" property="waterPipeId" />
+    <result column="water_main_diameter" jdbcType="INTEGER" property="waterMainDiameter" />
+    <result column="water_pipe_position" jdbcType="VARCHAR" property="waterPipePosition" />
+    <result column="water_pipe_length" jdbcType="INTEGER" property="waterPipeLength" />
+    <result column="water_index" jdbcType="DECIMAL" property="waterIndex" />
+    <result column="commuity_id" jdbcType="VARCHAR" property="commuityId" />
+    <result column="water_form" jdbcType="VARCHAR" property="waterForm" />
+    <result column="water_net_in_time" jdbcType="TIMESTAMP" property="waterNetInTime" />
+    <result column="water_net_in_contract" jdbcType="VARCHAR" property="waterNetInContract" />
+    <result column="water_has_build_meter" jdbcType="VARCHAR" property="waterHasBuildMeter" />
+    <result column="index" jdbcType="INTEGER" property="index" />
+    <result column="isvalid" jdbcType="INTEGER" property="isvalid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    building_no, rowno, building_name, unit_num, floor_num, floor_height, building_area, 
+    energy_saving, preserve_heat, begin_pipe_id, pipe_id, main_diameter, pipe_position, 
+    pipe_length, heating_index, heating_form, build_year, builder, net_in_time, net_in_contract, 
+    has_build_meter, has_balance_valve, charge_person, attributes, building_right, using_right, 
+    system_num, rest_time, longitude, latitude, company_id, address, notes, memo1, memo2, 
+    create_date, create_user, update_date, update_user, control_type, water_preserve_heat, 
+    water_pipe_id, water_main_diameter, water_pipe_position, water_pipe_length, water_index, 
+    water_form, water_net_in_time, water_net_in_contract, water_has_build_meter, `index`,
+    isvalid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from build_info
+    where building_no = #{buildingNo,jdbcType=VARCHAR}
+  </select>
+  <select id="getBuildNosByCommuityIds" parameterType="java.util.List" resultType="java.lang.String">
+	select building_no
+    from build_info
+    <if test="list!=null">
+      <if test="list.size()==0">
+        where 0=1
+      </if>
+      <if test="list.size()>0">
+        where substring(building_no,1,10) in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+  </select>
+  <select id="selectBuildByCommuityId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    building_no, building_name
+    from build_info
+    where substring(building_no,1,10)=#{commuityId}
+  </select>
+
+  <select id="selectBuildByName" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from build_info
+    where substring(building_no,1,10)=#{commuityId} and building_name = #{buildingName}
+  </select>
+
+  <select id="selectAllBuild" parameterType="map" resultMap="BaseInfoMap">
+    select
+    b.building_no building_no, b.rowno rowno, b.building_name building_name, b.unit_num unit_num, b.floor_num floor_num, b.floor_height floor_height,
+    b.building_area building_area,b.energy_saving energy_saving,
+    b.preserve_heat preserve_heat,
+    b.begin_pipe_id begin_pipe_id,p.pipe_device_name pipe_device_name, b.pipe_id pipe_id,
+    b.main_diameter main_diameter, b.pipe_position pipe_position,b.pipe_length pipe_length,
+    b.heating_index heating_index,
+    b.heating_form heating_form,
+    b.build_year build_year, b.builder builder, b.net_in_time net_in_time, b.net_in_contract net_in_contract,b.has_build_meter has_build_meter,
+    b.has_balance_valve has_balance_valve, b.charge_person charge_person, b.attributes attributes,
+    b.building_right building_right,
+    b.using_right using_right,b.system_num system_num, b.rest_time rest_time,
+    b.longitude longitude,
+    b.latitude latitude,b.company_id company_id,
+    c.company_name company_name,b.address address, b.notes notes, b.memo1 memo1,b.memo2 memo2,b.create_date create_date, b.create_user create_user,
+    b.update_date update_date, b.update_user update_user, b.control_type control_type,
+    b.water_preserve_heat water_preserve_heat,
+    b.water_pipe_id water_pipe_id, b.water_main_diameter water_main_diameter, b.water_pipe_position water_pipe_position, b.water_pipe_length water_pipe_length,
+    b.water_index water_index,b.water_form water_form, b.water_net_in_time water_net_in_time, b.water_net_in_contract water_net_in_contract,
+    b.water_has_build_meter water_has_build_meter, b.`index` `index`,b.isvalid isvalid
+    from build_info b
+    left join company_info c on b.company_id=c.company_id
+    left join pipe_device_info p on b.begin_pipe_id=p.pipe_device_id
+    where 1=1
+    <if test="companyIds!=null">
+      <if test="companyIds.size()>0">
+        and b.company_id in
+        <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(b.building_no,1,10) in
+        <foreach collection="commuityIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="buildVo!=null">
+    <if test="buildVo.buildingName!=null">
+      and b.building_name like concat('%',#{buildVo.buildingName},'%')
+    </if>
+    <if test="buildVo.attributes!=null">
+      and b.attributes =#{buildVo.attributes}
+    </if>
+    <if test="buildVo.floorNum!=null">
+      and b.floor_num =#{buildVo.floorNum}
+    </if>
+    <if test="buildVo.buildingRight!=null">
+      and b.building_right =#{buildVo.buildingRight}
+    </if>
+    <if test="buildVo.companyId!=null">
+      and b.company_id =#{buildVo.companyId}
+    </if>
+    <if test="buildVo.energySaving!=null">
+      and b.energy_saving =#{buildVo.energySaving}
+    </if>
+    <if test="buildVo.heatingForm!=null">
+      and b.heating_form =#{buildVo.heatingForm}
+    </if>
+    <if test="buildVo.hasBuildMeter!=null">
+      and b.has_build_meter =#{buildVo.hasBuildMeter}
+    </if>
+    <if test="buildVo.hasBalanceValve!=null">
+      and b.has_balance_valve =#{buildVo.hasBalanceValve}
+    </if>
+    <if test="buildVo.controlType!=null">
+      and b.control_type =#{buildVo.controlType}
+    </if>
+    </if>
+    <if test="sortby!=null">
+      order by b.${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <if test="page!=null">
+      <if test="pageSize!=null">
+        limit ${page},${pageSize}
+      </if>
+     </if>
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.build.entity.Build">
+    delete from build_info
+    where building_no = #{buildingNo,jdbcType=VARCHAR}
+      and rowno = #{rowno,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteBuildBatchByIds" parameterType="java.util.List">
+    delete from build_info
+    where building_no in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.baseMessage.build.entity.Build">
+    insert into build_info (building_no, rowno, building_name, 
+      unit_num, floor_num, floor_height, 
+      building_area, energy_saving, preserve_heat, 
+      begin_pipe_id, pipe_id, main_diameter, 
+      pipe_position, pipe_length, heating_index, 
+      heating_form, build_year, builder, 
+      net_in_time, net_in_contract, has_build_meter, 
+      has_balance_valve, charge_person, attributes, 
+      building_right, using_right, system_num, 
+      rest_time, longitude, latitude, 
+      company_id, address, notes, 
+      memo1, memo2, create_date, 
+      create_user, update_date, update_user, 
+      control_type, water_preserve_heat, water_pipe_id, 
+      water_main_diameter, water_pipe_position, water_pipe_length, 
+      water_index, water_form, water_net_in_time, 
+      water_net_in_contract, water_has_build_meter, 
+      index, isvalid)
+    values (#{buildingNo,jdbcType=VARCHAR}, #{rowno,jdbcType=VARCHAR}, #{buildingName,jdbcType=VARCHAR}, 
+      #{unitNum,jdbcType=VARCHAR}, #{floorNum,jdbcType=VARCHAR}, #{floorHeight,jdbcType=INTEGER}, 
+      #{buildingArea,jdbcType=DECIMAL}, #{energySaving,jdbcType=VARCHAR}, #{preserveHeat,jdbcType=VARCHAR}, 
+      #{beginPipeId,jdbcType=VARCHAR}, #{pipeId,jdbcType=VARCHAR}, #{mainDiameter,jdbcType=INTEGER}, 
+      #{pipePosition,jdbcType=VARCHAR}, #{pipeLength,jdbcType=VARCHAR}, #{heatingIndex,jdbcType=DECIMAL},
+      #{heatingForm,jdbcType=VARCHAR}, #{buildYear,jdbcType=VARCHAR}, #{builder,jdbcType=VARCHAR}, 
+      #{netInTime,jdbcType=TIMESTAMP}, #{netInContract,jdbcType=VARCHAR}, #{hasBuildMeter,jdbcType=VARCHAR}, 
+      #{hasBalanceValve,jdbcType=VARCHAR}, #{chargePerson,jdbcType=VARCHAR}, #{attributes,jdbcType=VARCHAR}, 
+      #{buildingRight,jdbcType=VARCHAR}, #{usingRight,jdbcType=VARCHAR}, #{systemNum,jdbcType=INTEGER}, 
+      #{restTime,jdbcType=VARCHAR}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{memo1,jdbcType=VARCHAR}, #{memo2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{controlType,jdbcType=VARCHAR}, #{waterPreserveHeat,jdbcType=VARCHAR}, #{waterPipeId,jdbcType=VARCHAR}, 
+      #{waterMainDiameter,jdbcType=INTEGER}, #{waterPipePosition,jdbcType=VARCHAR}, #{waterPipeLength,jdbcType=INTEGER}, 
+      #{waterIndex,jdbcType=DECIMAL}, #{waterForm,jdbcType=VARCHAR}, #{waterNetInTime,jdbcType=TIMESTAMP}, 
+      #{waterNetInContract,jdbcType=VARCHAR}, #{waterHasBuildMeter,jdbcType=VARCHAR}, 
+      #{index,jdbcType=INTEGER}, #{isvalid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.baseMessage.build.vo.BuildInfo">
+    insert into build_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="buildingNo != null">
+        building_no,
+      </if>
+      <if test="rowno != null">
+        rowno,
+      </if>
+      <if test="buildingName != null">
+        building_name,
+      </if>
+      <if test="unitNum != null">
+        unit_num,
+      </if>
+      <if test="floorNum != null">
+        floor_num,
+      </if>
+      <if test="floorHeight != null">
+        floor_height,
+      </if>
+      <if test="buildingArea != null">
+        building_area,
+      </if>
+      <if test="energySaving != null">
+        energy_saving,
+      </if>
+      <if test="preserveHeat != null">
+        preserve_heat,
+      </if>
+      <if test="beginPipeId != null">
+        begin_pipe_id,
+      </if>
+      <if test="pipeId != null">
+        pipe_id,
+      </if>
+      <if test="mainDiameter != null">
+        main_diameter,
+      </if>
+      <if test="pipePosition != null">
+        pipe_position,
+      </if>
+      <if test="pipeLength != null">
+        pipe_length,
+      </if>
+      <if test="heatingIndex != null">
+        heating_index,
+      </if>
+      <if test="heatingForm != null">
+        heating_form,
+      </if>
+      <if test="buildYear != null">
+        build_year,
+      </if>
+      <if test="builder != null">
+        builder,
+      </if>
+      <if test="netInTime != null">
+        net_in_time,
+      </if>
+      <if test="netInContract != null">
+        net_in_contract,
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter,
+      </if>
+      <if test="hasBalanceValve != null">
+        has_balance_valve,
+      </if>
+      <if test="chargePerson != null">
+        charge_person,
+      </if>
+      <if test="attributes != null">
+        attributes,
+      </if>
+      <if test="buildingRight != null">
+        building_right,
+      </if>
+      <if test="usingRight != null">
+        using_right,
+      </if>
+      <if test="systemNum != null">
+        system_num,
+      </if>
+      <if test="restTime != null">
+        rest_time,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="controlType != null">
+        control_type,
+      </if>
+      <if test="waterPreserveHeat != null">
+        water_preserve_heat,
+      </if>
+      <if test="waterPipeId != null">
+        water_pipe_id,
+      </if>
+      <if test="waterMainDiameter != null">
+        water_main_diameter,
+      </if>
+      <if test="waterPipePosition != null">
+        water_pipe_position,
+      </if>
+      <if test="waterPipeLength != null">
+        water_pipe_length,
+      </if>
+      <if test="waterIndex != null">
+        water_index,
+      </if>
+      <if test="waterForm != null">
+        water_form,
+      </if>
+      <if test="waterNetInTime != null">
+        water_net_in_time,
+      </if>
+      <if test="waterNetInContract != null">
+        water_net_in_contract,
+      </if>
+      <if test="waterHasBuildMeter != null">
+        water_has_build_meter,
+      </if>
+      <if test="index != null">
+        `index`,
+      </if>
+      <if test="isvalid != null">
+        isvalid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="buildingNo != null">
+        #{buildingNo,jdbcType=VARCHAR},
+      </if>
+      <if test="rowno != null">
+        #{rowno,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingName != null">
+        #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNum != null">
+        #{unitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNum != null">
+        #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorHeight != null">
+        #{floorHeight,jdbcType=INTEGER},
+      </if>
+      <if test="buildingArea != null">
+        #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="energySaving != null">
+        #{energySaving,jdbcType=VARCHAR},
+      </if>
+      <if test="preserveHeat != null">
+        #{preserveHeat,jdbcType=VARCHAR},
+      </if>
+      <if test="beginPipeId != null">
+        #{beginPipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeId != null">
+        #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainDiameter != null">
+        #{mainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="pipePosition != null">
+        #{pipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingIndex != null">
+        #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingForm != null">
+        #{heatingForm,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="builder != null">
+        #{builder,jdbcType=VARCHAR},
+      </if>
+      <if test="netInTime != null">
+        #{netInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netInContract != null">
+        #{netInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBalanceValve != null">
+        #{hasBalanceValve,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="attributes != null">
+        #{attributes,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingRight != null">
+        #{buildingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="usingRight != null">
+        #{usingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="systemNum != null">
+        #{systemNum,jdbcType=INTEGER},
+      </if>
+      <if test="restTime != null">
+        #{restTime,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        #{controlType,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPreserveHeat != null">
+        #{waterPreserveHeat,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPipeId != null">
+        #{waterPipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="waterMainDiameter != null">
+        #{waterMainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="waterPipePosition != null">
+        #{waterPipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPipeLength != null">
+        #{waterPipeLength,jdbcType=INTEGER},
+      </if>
+      <if test="waterIndex != null">
+        #{waterIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="waterForm != null">
+        #{waterForm,jdbcType=VARCHAR},
+      </if>
+      <if test="waterNetInTime != null">
+        #{waterNetInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="waterNetInContract != null">
+        #{waterNetInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="waterHasBuildMeter != null">
+        #{waterHasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null">
+        #{index,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.baseMessage.build.entity.Build">
+    update build_info
+    <set>
+      <if test="buildingName != null">
+        building_name = #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNum != null">
+        floor_num = #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorHeight != null">
+        floor_height = #{floorHeight,jdbcType=INTEGER},
+      </if>
+      <if test="buildingArea != null">
+        building_area = #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="energySaving != null">
+        energy_saving = #{energySaving,jdbcType=VARCHAR},
+      </if>
+      <if test="preserveHeat != null">
+        preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
+      </if>
+      <if test="beginPipeId != null">
+        begin_pipe_id = #{beginPipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainDiameter != null">
+        main_diameter = #{mainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="pipePosition != null">
+        pipe_position = #{pipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingForm != null">
+        heating_form = #{heatingForm,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="builder != null">
+        builder = #{builder,jdbcType=VARCHAR},
+      </if>
+      <if test="netInTime != null">
+        net_in_time = #{netInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netInContract != null">
+        net_in_contract = #{netInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBalanceValve != null">
+        has_balance_valve = #{hasBalanceValve,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="attributes != null">
+        attributes = #{attributes,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingRight != null">
+        building_right = #{buildingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="usingRight != null">
+        using_right = #{usingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="systemNum != null">
+        system_num = #{systemNum,jdbcType=INTEGER},
+      </if>
+      <if test="restTime != null">
+        rest_time = #{restTime,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="controlType != null">
+        control_type = #{controlType,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPreserveHeat != null">
+        water_preserve_heat = #{waterPreserveHeat,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPipeId != null">
+        water_pipe_id = #{waterPipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="waterMainDiameter != null">
+        water_main_diameter = #{waterMainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="waterPipePosition != null">
+        water_pipe_position = #{waterPipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="waterPipeLength != null">
+        water_pipe_length = #{waterPipeLength,jdbcType=INTEGER},
+      </if>
+      <if test="waterIndex != null">
+        water_index = #{waterIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="waterForm != null">
+        water_form = #{waterForm,jdbcType=VARCHAR},
+      </if>
+      <if test="waterNetInTime != null">
+        water_net_in_time = #{waterNetInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="waterNetInContract != null">
+        water_net_in_contract = #{waterNetInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="waterHasBuildMeter != null">
+        water_has_build_meter = #{waterHasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null">
+        index = #{index,jdbcType=INTEGER},
+      </if>
+      <if test="isvalid != null">
+        isvalid = #{isvalid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where building_no = #{buildingNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.baseMessage.build.entity.Build">
+    update build_info
+    set building_name = #{buildingName,jdbcType=VARCHAR},
+      unit_num = #{unitNum,jdbcType=VARCHAR},
+      floor_num = #{floorNum,jdbcType=VARCHAR},
+      floor_height = #{floorHeight,jdbcType=INTEGER},
+      building_area = #{buildingArea,jdbcType=DECIMAL},
+      energy_saving = #{energySaving,jdbcType=VARCHAR},
+      preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
+      begin_pipe_id = #{beginPipeId,jdbcType=VARCHAR},
+      pipe_id = #{pipeId,jdbcType=VARCHAR},
+      main_diameter = #{mainDiameter,jdbcType=INTEGER},
+      pipe_position = #{pipePosition,jdbcType=VARCHAR},
+      pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      heating_form = #{heatingForm,jdbcType=VARCHAR},
+      build_year = #{buildYear,jdbcType=VARCHAR},
+      builder = #{builder,jdbcType=VARCHAR},
+      net_in_time = #{netInTime,jdbcType=TIMESTAMP},
+      net_in_contract = #{netInContract,jdbcType=VARCHAR},
+      has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      has_balance_valve = #{hasBalanceValve,jdbcType=VARCHAR},
+      charge_person = #{chargePerson,jdbcType=VARCHAR},
+      attributes = #{attributes,jdbcType=VARCHAR},
+      building_right = #{buildingRight,jdbcType=VARCHAR},
+      using_right = #{usingRight,jdbcType=VARCHAR},
+      system_num = #{systemNum,jdbcType=INTEGER},
+      rest_time = #{restTime,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      control_type = #{controlType,jdbcType=VARCHAR},
+      water_preserve_heat = #{waterPreserveHeat,jdbcType=VARCHAR},
+      water_pipe_id = #{waterPipeId,jdbcType=VARCHAR},
+      water_main_diameter = #{waterMainDiameter,jdbcType=INTEGER},
+      water_pipe_position = #{waterPipePosition,jdbcType=VARCHAR},
+      water_pipe_length = #{waterPipeLength,jdbcType=INTEGER},
+      water_index = #{waterIndex,jdbcType=DECIMAL},
+      water_form = #{waterForm,jdbcType=VARCHAR},
+      water_net_in_time = #{waterNetInTime,jdbcType=TIMESTAMP},
+      water_net_in_contract = #{waterNetInContract,jdbcType=VARCHAR},
+      water_has_build_meter = #{waterHasBuildMeter,jdbcType=VARCHAR},
+      index = #{index,jdbcType=INTEGER},
+      isvalid = #{isvalid,jdbcType=INTEGER}
+    where building_no = #{buildingNo,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBuildBatch" parameterType="cn.plou.web.system.baseMessage.build.vo.BuildVo">
+    update build_info
+    <set>
+      <if test="buildingName != null">
+        building_name = #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNum != null">
+        floor_num = #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorHeight != null">
+        floor_height = #{floorHeight,jdbcType=INTEGER},
+      </if>
+      <if test="buildingArea != null">
+        building_area = #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="energySaving != null">
+        energy_saving = #{energySaving,jdbcType=VARCHAR},
+      </if>
+      <if test="preserveHeat != null">
+        preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
+      </if>
+
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainDiameter != null">
+        main_diameter = #{mainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="pipePosition != null">
+        pipe_position = #{pipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingForm != null">
+        heating_form = #{heatingForm,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="builder != null">
+        builder = #{builder,jdbcType=VARCHAR},
+      </if>
+      <if test="netInTime != null">
+        net_in_time = #{netInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netInContract != null">
+        net_in_contract = #{netInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBalanceValve != null">
+        has_balance_valve = #{hasBalanceValve,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="attributes != null">
+        attributes = #{attributes,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingRight != null">
+        building_right = #{buildingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="usingRight != null">
+        using_right = #{usingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="systemNum != null">
+        system_num = #{systemNum,jdbcType=INTEGER},
+      </if>
+      <if test="restTime != null">
+        rest_time = #{restTime,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where building_no in
+    <foreach collection="buildingNos" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateBuildBatchAll" parameterType="cn.plou.web.system.baseMessage.build.vo.BuildVo">
+    update build_info
+    <set>
+      <if test="buildingName != null">
+        building_name = #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNum != null">
+        floor_num = #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorHeight != null">
+        floor_height = #{floorHeight,jdbcType=INTEGER},
+      </if>
+      <if test="buildingArea != null">
+        building_area = #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="energySaving != null">
+        energy_saving = #{energySaving,jdbcType=VARCHAR},
+      </if>
+      <if test="preserveHeat != null">
+        preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
+      </if>
+
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainDiameter != null">
+        main_diameter = #{mainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="pipePosition != null">
+        pipe_position = #{pipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingForm != null">
+        heating_form = #{heatingForm,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="builder != null">
+        builder = #{builder,jdbcType=VARCHAR},
+      </if>
+      <if test="netInTime != null">
+        net_in_time = #{netInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netInContract != null">
+        net_in_contract = #{netInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBalanceValve != null">
+        has_balance_valve = #{hasBalanceValve,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="attributes != null">
+        attributes = #{attributes,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingRight != null">
+        building_right = #{buildingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="usingRight != null">
+        using_right = #{usingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="systemNum != null">
+        system_num = #{systemNum,jdbcType=INTEGER},
+      </if>
+      <if test="restTime != null">
+        rest_time = #{restTime,jdbcType=VARCHAR},
+      </if>
+
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where building_no like (CONCAT(#{batchModifyId,jdbcType=VARCHAR},'%'))
+  </update>
+  
+  <update id="updateBuildBatchAllStation" parameterType="cn.plou.web.system.baseMessage.build.vo.BuildVo">
+    update build_info
+    <set>
+      <if test="buildingName != null">
+        building_name = #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNum != null">
+        unit_num = #{unitNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorNum != null">
+        floor_num = #{floorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="floorHeight != null">
+        floor_height = #{floorHeight,jdbcType=INTEGER},
+      </if>
+      <if test="buildingArea != null">
+        building_area = #{buildingArea,jdbcType=DECIMAL},
+      </if>
+      <if test="energySaving != null">
+        energy_saving = #{energySaving,jdbcType=VARCHAR},
+      </if>
+      <if test="preserveHeat != null">
+        preserve_heat = #{preserveHeat,jdbcType=VARCHAR},
+      </if>
+
+      <if test="pipeId != null">
+        pipe_id = #{pipeId,jdbcType=VARCHAR},
+      </if>
+      <if test="mainDiameter != null">
+        main_diameter = #{mainDiameter,jdbcType=INTEGER},
+      </if>
+      <if test="pipePosition != null">
+        pipe_position = #{pipePosition,jdbcType=VARCHAR},
+      </if>
+      <if test="pipeLength != null">
+        pipe_length = #{pipeLength,jdbcType=VARCHAR},
+      </if>
+      <if test="heatingIndex != null">
+        heating_index = #{heatingIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="heatingForm != null">
+        heating_form = #{heatingForm,jdbcType=VARCHAR},
+      </if>
+      <if test="buildYear != null">
+        build_year = #{buildYear,jdbcType=VARCHAR},
+      </if>
+      <if test="builder != null">
+        builder = #{builder,jdbcType=VARCHAR},
+      </if>
+      <if test="netInTime != null">
+        net_in_time = #{netInTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="netInContract != null">
+        net_in_contract = #{netInContract,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBuildMeter != null">
+        has_build_meter = #{hasBuildMeter,jdbcType=VARCHAR},
+      </if>
+      <if test="hasBalanceValve != null">
+        has_balance_valve = #{hasBalanceValve,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="attributes != null">
+        attributes = #{attributes,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingRight != null">
+        building_right = #{buildingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="usingRight != null">
+        using_right = #{usingRight,jdbcType=VARCHAR},
+      </if>
+      <if test="systemNum != null">
+        system_num = #{systemNum,jdbcType=INTEGER},
+      </if>
+      <if test="restTime != null">
+        rest_time = #{restTime,jdbcType=VARCHAR},
+      </if>
+
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 
+	 <foreach collection="communitys" item="item" index="index"  separator="OR">
+              `building_no` LIKE CONCAT(#{item},'%')
+     </foreach>
+  </update>
+  
+    <select id="getMaxBuildId" parameterType="java.lang.String" resultType="java.lang.String">
+     select
+       max(building_no)
+     from build_info
+     where substring(building_no,1,10)=#{commuityId}
+  </select>
+  
+  <select id="selectAllBuildCount" parameterType="map" resultType="java.lang.Integer">
+    select
+    count(*) from build_info b
+    where 1=1
+    <if test="companyIds!=null">
+      <if test="companyIds.size()>0">
+        and b.company_id in
+        <foreach collection="companyIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="commuityIds!=null">
+      <if test="commuityIds.size()>0">
+        and substring(b.building_no,1,10) in
+        <foreach collection="commuityIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </if>
+    <if test="buildVo!=null">
+    <if test="buildVo.buildingName!=null">
+      and b.building_name like concat('%',#{buildVo.buildingName},'%')
+    </if>
+    <if test="buildVo.attributes!=null">
+      and b.attributes =#{buildVo.attributes}
+    </if>
+    <if test="buildVo.floorNum!=null">
+      and b.floor_num =#{buildVo.floorNum}
+    </if>
+    <if test="buildVo.buildingRight!=null">
+      and b.building_right =#{buildVo.buildingRight}
+    </if>
+    <if test="buildVo.companyId!=null">
+      and b.company_id =#{buildVo.companyId}
+    </if>
+    <if test="buildVo.energySaving!=null">
+      and b.energy_saving =#{buildVo.energySaving}
+    </if>
+    <if test="buildVo.heatingForm!=null">
+      and b.heating_form =#{buildVo.heatingForm}
+    </if>
+    <if test="buildVo.hasBuildMeter!=null">
+      and b.has_build_meter =#{buildVo.hasBuildMeter}
+    </if>
+    <if test="buildVo.hasBalanceValve!=null">
+      and b.has_balance_valve =#{buildVo.hasBalanceValve}
+    </if>
+    <if test="buildVo.controlType!=null">
+      and b.control_type =#{buildVo.controlType}
+    </if>
+    </if>
+  </select>
+    <update id="modifyBuildName" parameterType="map">
+    	update build_info set address = concat(#{address},#{nkey},building_name) where building_no like (concat(#{commuityId},'%'))
+  </update>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

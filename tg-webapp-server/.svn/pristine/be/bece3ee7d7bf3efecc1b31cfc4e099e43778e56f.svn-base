@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.plou.web.heatManage.monitor.dao.SystemMarkersDao">
+
+	<select id="get" resultType="cn.plou.web.heatManage.monitor.domain.SystemMarkersDO">
+		select `id`,`company_id`,`field`,`data`,`source_id` from system_markers where id = #{value}
+	</select>
+
+	<select id="list" resultType="cn.plou.web.heatManage.monitor.domain.SystemMarkersDO">
+		select `id`,`company_id`,`field`,`data`,`source_id` from system_markers
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+		  		  <if test="field != null and field != ''"> and id = #{field} </if>
+		  		  <if test="data != null and data != ''"> and data = #{data} </if>
+		  		  <if test="sourceId != null and sourceId != ''"> and source_id = #{sourceId} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from system_markers
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="field != null and field != ''"> and id = #{field} </if>
+		  		  <if test="companyId != null and companyId != ''"> and company_id = #{companyId} </if>
+		  		   <if test="data != null and data != ''"> and data = #{data} </if>
+		  		  <if test="sourceId != null and sourceId != ''"> and source_id = #{sourceId} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="cn.plou.web.heatManage.monitor.domain.SystemMarkersDO">
+		insert into system_markers
+		(
+			`id`, 
+			`company_id`,
+			`field`, 
+			`data`, 
+			`source_id`
+		)
+		values
+		(
+			#{id}, 
+			#{companyId}, 
+			#{field},
+			#{data}, 
+			#{sourceId}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="cn.plou.web.heatManage.monitor.domain.SystemMarkersDO">
+		update system_markers 
+		<set>
+			<if test="companyId != null">`company_id` = #{companyId}, </if>
+			<if test="field != null">`field` = #{field}, </if>
+			<if test="data != null">`data` = #{data}, </if>
+			<if test="sourceId != null">`source_id` = #{sourceId}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from system_markers where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from system_markers where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<!-- ————————————————————————————————cache配置————————————————————————————  -->
+	<cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

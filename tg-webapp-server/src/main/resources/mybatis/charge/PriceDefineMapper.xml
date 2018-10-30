@@ -578,7 +578,5 @@
             and   company_id = #{companyId}
         </if>
     </select>
-
-
 </mapper>
 

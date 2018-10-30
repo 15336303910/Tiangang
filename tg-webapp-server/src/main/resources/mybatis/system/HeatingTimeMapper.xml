@@ -397,4 +397,7 @@
   <select id="getAnnualByCompanyId" resultType="java.lang.String">
     SELECT DISTINCT(year)  FROM `heating_time` WHERE company_id=#{companyId}  order by  year  desc
   </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

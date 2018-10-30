@@ -47,6 +47,12 @@
     where rmr.role_id = #{roleId} and rmr.isshow = 'true'
   </select>
 
+  <select id="selectAllMenuList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from menu_define
+  </select>
+
   <select id="selectFmenuByMenu" resultMap="ResultInfo">
     select
     md.m_id,md.f_m_id, md.m_name, md.m_url, md.page_name, md.pagesort, md.ismenu,m.page_name f_page_name
@@ -68,11 +74,18 @@
     limit 0,10000
   </select>
 
-  <select id="selectAllMenu"  resultMap="BaseResultMap">
-    select
+  <select id="selectAllMenu" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--select
     <include refid="Base_Column_List"/>
     from menu_define
-    limit 0,10000
+    limit 0,10000-->
+    select
+    md.m_id,md.f_m_id, md.m_name, md.m_url, md.page_name, md.pagesort, md.ismenu
+    from menu_define md
+    join rl_menu_role rmr on
+    md.page_name = rmr.page_name
+    left join menu_define m on m.m_id=md.f_m_id
+    where rmr.role_id = #{roleId} and rmr.isshow = 'true'
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
@@ -192,4 +205,6 @@
       perms = #{perms,jdbcType=VARCHAR}
     where m_id = #{mId,jdbcType=VARCHAR}
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

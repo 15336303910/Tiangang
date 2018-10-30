@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.plou.web.station.event.dao.EventInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.plou.web.station.event.entity.EventInfo" >
+    <id column="primary_id" property="primaryId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+    <result column="dev_id" property="devId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+    <result column="des" property="des" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="VARCHAR" />
+    <result column="result_person" property="resultPerson" jdbcType="VARCHAR" />
+    <result column="current_val" property="currentVal" jdbcType="VARCHAR" />
+    <result column="org_val" property="orgVal" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="computer" property="computer" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    primary_id, company_id, source_id, dev_id, type, begin_time, des, result, result_person, 
+    current_val, org_val, ip, computer
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from event_info
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="eventCount" resultType="Integer" parameterType="cn.plou.web.mobile.station.query.EventInfoQuery" >
+    select 
+    count(primary_id) as total
+    from event_info
+    where 1=1 
+    <if test="query.sourceids != null" >
+     and source_id in 
+     <foreach collection="query.sourceids" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="query.eventTime !=null and query.endTime != null and query.startTime != null" >
+  		and begin_time &lt;= #{query.endTime,jdbcType=TIMESTAMP} and begin_time &gt;= #{query.startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="query.result !=null and query.endTime != null and query.startTime != null" >
+  		and result = #{query.result,jdbcType=VARCHAR}
+    </if>
+    </select>
+  <select id="findEventInfos" resultMap="BaseResultMap" parameterType="cn.plou.web.mobile.station.query.EventInfoQuery" >
+    select 
+     <include refid="Base_Column_List" />
+    from event_info
+    where 1=1 
+    <if test="query.sourceids != null" >
+     and source_id in 
+     <foreach collection="query.sourceids" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    </if>
+    <if test="query.eventTime !=null and query.endTime != null and query.startTime != null" >
+  		and begin_time &lt;= #{query.endTime,jdbcType=TIMESTAMP} and begin_time &gt;= #{query.startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="query.result !=null and query.endTime != null and query.startTime != null" >
+  		and result = #{query.result,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from event_info
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.plou.web.station.event.entity.EventInfo" >
+    insert into event_info (primary_id, company_id, source_id, 
+      dev_id, type, begin_time, 
+      des, result, result_person, 
+      current_val, org_val, ip, 
+      computer)
+    values (#{primaryId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{sourceId,jdbcType=VARCHAR}, 
+      #{devId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{beginTime,jdbcType=TIMESTAMP}, 
+      #{des,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{resultPerson,jdbcType=VARCHAR}, 
+      #{currentVal,jdbcType=VARCHAR}, #{orgVal,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{computer,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.station.event.entity.EventInfo" >
+    insert into event_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        primary_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="sourceId != null" >
+        source_id,
+      </if>
+      <if test="devId != null" >
+        dev_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="beginTime != null" >
+        begin_time,
+      </if>
+      <if test="des != null" >
+        des,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+      <if test="resultPerson != null" >
+        result_person,
+      </if>
+      <if test="currentVal != null" >
+        current_val,
+      </if>
+      <if test="orgVal != null" >
+        org_val,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="computer != null" >
+        computer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="primaryId != null" >
+        #{primaryId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null" >
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="devId != null" >
+        #{devId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null" >
+        #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="resultPerson != null" >
+        #{resultPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="currentVal != null" >
+        #{currentVal,jdbcType=VARCHAR},
+      </if>
+      <if test="orgVal != null" >
+        #{orgVal,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="computer != null" >
+        #{computer,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.station.event.entity.EventInfo" >
+    update event_info
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null" >
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="devId != null" >
+        dev_id = #{devId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="des != null" >
+        des = #{des,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        result = #{result,jdbcType=VARCHAR},
+      </if>
+      <if test="resultPerson != null" >
+        result_person = #{resultPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="currentVal != null" >
+        current_val = #{currentVal,jdbcType=VARCHAR},
+      </if>
+      <if test="orgVal != null" >
+        org_val = #{orgVal,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="computer != null" >
+        computer = #{computer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.station.event.entity.EventInfo" >
+    update event_info
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      source_id = #{sourceId,jdbcType=VARCHAR},
+      dev_id = #{devId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      des = #{des,jdbcType=VARCHAR},
+      result = #{result,jdbcType=VARCHAR},
+      result_person = #{resultPerson,jdbcType=VARCHAR},
+      current_val = #{currentVal,jdbcType=VARCHAR},
+      org_val = #{orgVal,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      computer = #{computer,jdbcType=VARCHAR}
+    where primary_id = #{primaryId,jdbcType=VARCHAR}
+  </update>
+</mapper>

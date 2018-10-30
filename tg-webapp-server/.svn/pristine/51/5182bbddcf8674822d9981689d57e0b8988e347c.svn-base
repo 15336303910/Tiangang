@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.pageGrid.dao.PageGridMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.pageGrid.entity.PageGrid">
+    <id column="page_no" jdbcType="VARCHAR" property="pageNo" />
+    <id column="grid_name" jdbcType="VARCHAR" property="gridName" />
+    <id column="name" jdbcType="VARCHAR" property="name" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="display" jdbcType="VARCHAR" property="display" />
+    <result column="colid" jdbcType="VARCHAR" property="colid" />
+    <result column="align" jdbcType="VARCHAR" property="align" />
+    <result column="width" jdbcType="VARCHAR" property="width" />
+    <result column="issort" jdbcType="VARCHAR" property="issort" />
+    <result column="hide" jdbcType="VARCHAR" property="hide" />
+    <result column="colsort" jdbcType="INTEGER" property="colsort" />
+    <result column="format" jdbcType="VARCHAR" property="format" />
+    <result column="frozen" jdbcType="VARCHAR" property="frozen" />
+    <result column="site_type" jdbcType="VARCHAR" property="siteType" />
+    <result column="others" jdbcType="VARCHAR" property="others" />
+  </resultMap>
+  <resultMap id="InfoMap" type="cn.plou.web.system.commonMessage.pageGrid.vo.PageGridInfo">
+    <id column="pageNo" jdbcType="VARCHAR" property="pageNo" />
+    <id column="gridName" jdbcType="VARCHAR" property="gridName" />
+    <id column="name" jdbcType="VARCHAR" property="name" />
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="display" jdbcType="VARCHAR" property="display" />
+    <result column="colid" jdbcType="VARCHAR" property="colid" />
+    <result column="align" jdbcType="VARCHAR" property="align" />
+    <result column="alignName" jdbcType="VARCHAR" property="alignName" />
+    <result column="width" jdbcType="VARCHAR" property="width" />
+    <result column="issort" jdbcType="VARCHAR" property="issort" />
+    <result column="hide" jdbcType="VARCHAR" property="hide" />
+    <result column="colsort" jdbcType="INTEGER" property="colsort" />
+    <result column="format" jdbcType="VARCHAR" property="format" />
+    <result column="frozen" jdbcType="VARCHAR" property="frozen" />
+    <result column="site_type" jdbcType="VARCHAR" property="siteType" />
+    <result column="others" jdbcType="VARCHAR" property="others" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    page_no, grid_name, name, id, display, colid, align, width, issort, hide, colsort,
+    format, frozen, site_type, others
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGridKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from grid_col
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+      and grid_name = #{gridName,jdbcType=VARCHAR}
+      and name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllPageGrid" parameterType="map" resultMap="BaseResultMap">
+    select
+    page_no, grid_name, name, id, display, colid, align, width, issort, hide, colsort,
+    format, frozen, site_type, others
+    from grid_col
+    where page_no = #{pageNo}
+    <if test="searchCondition!=null">
+      <if test="searchCondition.display != null">
+        and   display LIKE concat('%',#{searchCondition.display},'%')
+      </if>
+      <if test="searchCondition.name != null">
+        and  name LIKE concat('%',#{searchCondition.name},'%')
+      </if>
+      <if test="searchCondition.hide != null">
+        and  hide = #{searchCondition.hide}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    limit 0,1000
+    <!--<if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>-->
+  </select>
+
+  <select id="selectPageGridByUserIdCount" parameterType="map" resultType="java.lang.Integer">
+    select count(*)
+    from grid_col
+    where page_no = #{pageNo}
+    <if test="searchCondition!=null">
+      <if test="searchCondition.display != null">
+        and   display LIKE concat('%',#{searchCondition.display},'%')
+      </if>
+      <if test="searchCondition.name != null">
+        and  name LIKE concat('%',#{searchCondition.name},'%')
+      </if>
+      <if test="searchCondition.hide != null">
+        and  hide = #{searchCondition.hide}
+      </if>
+    </if>
+  </select>
+
+  <select id="selectAllPageGridByUserId" parameterType="map" resultMap="InfoMap">
+    select distinct
+    gc.page_no pageNo, gc.grid_name gridName, gc.name, gc.id, gc.display, gc.colid, gc.align, gc.width, gc.issort, gc.hide, gc.colsort,
+    gc.format, gc.frozen, gc.site_type, gc.others
+    from grid_col gc left JOIN
+    grid_col_user gcu ON gc.page_no=gcu.page_no and gc.grid_name=gcu.grid_name
+    where gc.name not in (SELECT name from grid_col_user where user_id=#{userId} and page_no=#{pageNo})
+    and gc.page_no = #{pageNo}
+    <if test="searchCondition!=null">
+      <if test="searchCondition.display != null">
+        and   gc.display LIKE concat('%',#{searchCondition.display},'%')
+      </if>
+      <if test="searchCondition.name != null">
+        and  gc.name LIKE concat('%',#{searchCondition.name},'%')
+      </if>
+      <if test="searchCondition.hide != null">
+        and  gc.hide = #{searchCondition.hide}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    limit 0,1000
+    <!--<if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>-->
+  </select>
+
+  <select id="selectAllPageGridNoUserId" parameterType="map" resultMap="InfoMap">
+    select
+    gc.page_no pageNo, gc.grid_name gridName, gc.name, gc.id, gc.display, gc.colid, gc.align, gc.width, gc.issort, gcu.hide, gcu.colsort,
+    gc.format, gc.frozen, gc.site_type, gc.others
+    from grid_col gc LEFT JOIN
+    grid_col_user gcu ON gc.page_no=gcu.page_no and gc.grid_name=gcu.grid_name and gc.name=gcu.name
+    where gc.page_no = #{pageNo} and gcu.user_id = #{userId}
+    <if test="searchCondition!=null">
+      <if test="searchCondition.display != null">
+        and  gc.display LIKE concat('%',#{searchCondition.display},'%')
+      </if>
+      <if test="searchCondition.name != null">
+        and  gc.name LIKE concat('%',#{searchCondition.name},'%')
+      </if>
+      <if test="searchCondition.hide != null">
+        and  gc.hide = #{searchCondition.hide}
+      </if>
+    </if>
+    <if test="sortby != null">
+      order by ${sortby}
+    </if>
+    <if test="order != null">
+      ${order}
+    </if>
+    limit 0,1000
+   <!-- <if test="start!=null and pageSize!=null">
+      limit ${start},${pageSize}
+    </if>-->
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGridKey">
+    delete from grid_col
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+      and grid_name = #{gridName,jdbcType=VARCHAR}
+      and name = #{name,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGrid">
+    insert into grid_col (page_no, grid_name, name, 
+      id, display, colid, 
+      align, width, issort, 
+      hide, colsort, format, 
+      frozen, site_type, others
+      )
+    values (#{pageNo,jdbcType=VARCHAR}, #{gridName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{id,jdbcType=VARCHAR}, #{display,jdbcType=VARCHAR}, #{colid,jdbcType=VARCHAR}, 
+      #{align,jdbcType=VARCHAR}, #{width,jdbcType=VARCHAR}, #{issort,jdbcType=VARCHAR}, 
+      #{hide,jdbcType=VARCHAR}, #{colsort,jdbcType=INTEGER}, #{format,jdbcType=VARCHAR}, 
+      #{frozen,jdbcType=VARCHAR}, #{siteType,jdbcType=VARCHAR}, #{others,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGrid">
+    insert into grid_col
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pageNo != null">
+        page_no,
+      </if>
+      <if test="gridName != null">
+        grid_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="display != null">
+        display,
+      </if>
+      <if test="colid != null">
+        colid,
+      </if>
+      <if test="align != null">
+        align,
+      </if>
+      <if test="width != null">
+        width,
+      </if>
+      <if test="issort != null">
+        issort,
+      </if>
+      <if test="hide != null">
+        hide,
+      </if>
+      <if test="colsort != null">
+        colsort,
+      </if>
+      <if test="format != null">
+        format,
+      </if>
+      <if test="frozen != null">
+        frozen,
+      </if>
+      <if test="siteType != null">
+        site_type,
+      </if>
+      <if test="others != null">
+        others,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pageNo != null">
+        #{pageNo,jdbcType=VARCHAR},
+      </if>
+      <if test="gridName != null">
+        #{gridName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="display != null">
+        #{display,jdbcType=VARCHAR},
+      </if>
+      <if test="colid != null">
+        #{colid,jdbcType=VARCHAR},
+      </if>
+      <if test="align != null">
+        #{align,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        #{width,jdbcType=VARCHAR},
+      </if>
+      <if test="issort != null">
+        #{issort,jdbcType=VARCHAR},
+      </if>
+      <if test="hide != null">
+        #{hide,jdbcType=VARCHAR},
+      </if>
+      <if test="colsort != null">
+        #{colsort,jdbcType=INTEGER},
+      </if>
+      <if test="format != null">
+        #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="frozen != null">
+        #{frozen,jdbcType=VARCHAR},
+      </if>
+      <if test="siteType != null">
+        #{siteType,jdbcType=VARCHAR},
+      </if>
+      <if test="others != null">
+        #{others,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGrid">
+    update grid_col
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="display != null">
+        display = #{display,jdbcType=VARCHAR},
+      </if>
+      <if test="colid != null">
+        colid = #{colid,jdbcType=VARCHAR},
+      </if>
+      <if test="align != null">
+        align = #{align,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        width = #{width,jdbcType=VARCHAR},
+      </if>
+      <if test="issort != null">
+        issort = #{issort,jdbcType=VARCHAR},
+      </if>
+      <if test="hide != null">
+        hide = #{hide,jdbcType=VARCHAR},
+      </if>
+      <if test="colsort != null">
+        colsort = #{colsort,jdbcType=INTEGER},
+      </if>
+      <if test="format != null">
+        format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="frozen != null">
+        frozen = #{frozen,jdbcType=VARCHAR},
+      </if>
+      <if test="siteType != null">
+        site_type = #{siteType,jdbcType=VARCHAR},
+      </if>
+      <if test="others != null">
+        others = #{others,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+      and grid_name = #{gridName,jdbcType=VARCHAR}
+      and name = #{name,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatch" parameterType="cn.plou.web.system.commonMessage.pageGrid.vo.PageGridVo">
+    update grid_col
+    <set>
+      <if test="display != null">
+        display = #{display,jdbcType=VARCHAR},
+      </if>
+      <if test="colid != null">
+        colid = #{colid,jdbcType=VARCHAR},
+      </if>
+      <if test="align != null">
+        align = #{align,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        width = #{width,jdbcType=VARCHAR},
+      </if>
+      <if test="issort != null">
+        issort = #{issort,jdbcType=VARCHAR},
+      </if>
+      <if test="hide != null">
+        hide = #{hide,jdbcType=VARCHAR},
+      </if>
+      <if test="colsort != null">
+        colsort = #{colsort,jdbcType=INTEGER},
+      </if>
+      <if test="format != null">
+        format = #{format,jdbcType=VARCHAR},
+      </if>
+      <if test="frozen != null">
+        frozen = #{frozen,jdbcType=VARCHAR},
+      </if>
+      <if test="siteType != null">
+        site_type = #{siteType,jdbcType=VARCHAR},
+      </if>
+      <if test="others != null">
+        others = #{others,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+    <if test="pageGridKeys.size()==1">
+      <foreach collection="pageGridKeys" item="item" index="index">
+        page_no = #{item.pageNo,jdbcType=VARCHAR}
+        and grid_name = #{item.gridName,jdbcType=VARCHAR}
+        and name = #{item.name,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="pageGridKeys.size()!= 1">
+      <foreach collection="pageGridKeys" item="item" index="index">
+        <if test="index != pageGridKeys.size()-1" >
+          page_no = #{item.pageNo,jdbcType=VARCHAR}
+          and grid_name = #{item.gridName,jdbcType=VARCHAR}
+          and name = #{item.name,jdbcType=VARCHAR} or
+        </if>
+        <if test="index == pageGridKeys.size()-1" >
+          page_no = #{item.pageNo,jdbcType=VARCHAR}
+          and grid_name = #{item.gridName,jdbcType=VARCHAR}
+          and name = #{item.name,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.pageGrid.entity.PageGrid">
+    update grid_col
+    set id = #{id,jdbcType=VARCHAR},
+      display = #{display,jdbcType=VARCHAR},
+      colid = #{colid,jdbcType=VARCHAR},
+      align = #{align,jdbcType=VARCHAR},
+      width = #{width,jdbcType=VARCHAR},
+      issort = #{issort,jdbcType=VARCHAR},
+      hide = #{hide,jdbcType=VARCHAR},
+      colsort = #{colsort,jdbcType=INTEGER},
+      format = #{format,jdbcType=VARCHAR},
+      frozen = #{frozen,jdbcType=VARCHAR},
+      site_type = #{siteType,jdbcType=VARCHAR},
+      others = #{others,jdbcType=VARCHAR}
+    where page_no = #{pageNo,jdbcType=VARCHAR}
+      and grid_name = #{gridName,jdbcType=VARCHAR}
+      and name = #{name,jdbcType=VARCHAR}
+  </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

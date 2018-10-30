@@ -1,0 +1,160 @@
+2018-10-18 08:32:34 [INFO ](RepositoryConfigurationDelegate) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-10-18 08:32:34 [INFO ](RepositoryConfigurationDelegate) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Multiple Spring Data modules found, entering strict repository configuration mode!
+2018-10-18 08:32:37 [WARN ](DefaultWebSecurityManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] The org.apache.shiro.web.mgt.DefaultWebSecurityManager implementation expects SessionManager instances that implement the org.apache.shiro.web.session.mgt.WebSessionManager interface.  The configured instance is of type [org.apache.shiro.session.mgt.DefaultSessionManager] which does not implement this interface..  This may cause unexpected behavior.
+2018-10-18 08:32:38 [DEBUG](LogFactory                    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+2018-10-18 08:32:38 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Class not found: org.jboss.vfs.VFS
+2018-10-18 08:32:38 [DEBUG](JBoss6VFS                     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] JBoss 6 VFS API is not available in this environment.
+2018-10-18 08:32:38 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Class not found: org.jboss.vfs.VirtualFile
+2018-10-18 08:32:38 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] VFS implementation org.apache.ibatis.io.JBoss6VFS is not valid in this environment.
+2018-10-18 08:32:38 [DEBUG](VFS                           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Using VFS adapter org.apache.ibatis.io.DefaultVFS
+2018-10-18 08:32:38 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Scanned package: 'cn.plou.**.domain' for aliases
+2018-10-18 08:32:38 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed configuration file: 'class path resource [mybatis-config.xml]'
+2018-10-18 08:32:38 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveControlTempHMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveDataMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BalanceValveDataNowMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\BuildRunningDataMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\balance\UnitRunningDataMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankInterfaceHistoryMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankInterfaceInfoMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankReconciliationsDetailMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\BankReconciliationsHeadMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatInfoMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatInfoTmpMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ContractHeatMoneyDetailMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HeatCheckDetailMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HouseHeatDetailMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\HouseYearHeatstateDetailMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\MoneyClearTaskMapper.xml]'
+2018-10-18 08:32:39 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\MoneyStateInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\PriceAccuracyInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\PriceDefineMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\ReconciliationsHistoryMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\SmsInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\SmsTemplateMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearAccountDetailMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearHeatMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\charge\UserYearReceivableDetailMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HistoryDataMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HouseControlMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\HouseRunningDataAnalysisTotalMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\MbusInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\MeterInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\ParamIntervalMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\RunningDataTotalMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\SystemMarkersMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\heatManage\WeatherDataMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\AlarmInfoMapper.xml]'
+2018-10-18 08:32:40 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationDataPointMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationDevRelativeMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationShowDevMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\StationShowDevTypeMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\station\SystemPointMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\BuildMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\CommuityMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\CompanyMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\DepartmentMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\HeatingTimeMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\HouseMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MapLineMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MapPointMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusReadmodelMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MbusTestMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MenuMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterKeyMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterModifyDataMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\MeterTimingDefineMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PageGridMapper.xml]'
+2018-10-18 08:32:41 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\pageGridUserMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PipeDeviceMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PipeMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\PriceDefineMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ProducerMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlMenuRoleMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlRoleDataMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlRoleValveMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RlUserRoleMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\RoleMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\SewageStationMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\StaffMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\StationMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\SystemMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\TypeMstMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UnitMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserDataHistoryMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserLoginHistoryMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserLoginMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\UserPageHistoryMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherFurMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\WeatherNowMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneAreaMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneCityMapper.xml]'
+2018-10-18 08:32:42 [DEBUG](SqlSessionFactoryBean         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Parsed mapper file: 'file [I:\work1\tg-webapp-server\target\classes\mybatis\system\ZoneProvinceMapper.xml]'
+2018-10-18 08:32:42 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] [location] null
+2018-10-18 08:32:42 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] [configuration] org.apache.ibatis.session.Configuration@4fba8eec
+2018-10-18 08:32:42 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] MapperLocation's length:84
+2018-10-18 08:32:42 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Location:I:/work1/tg-webapp-server/target/classes/mybatis
+2018-10-18 08:32:42 [INFO ](MapperRefresh                 ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Locarion's size:1
+2018-10-18 08:32:44 [DEBUG](LifecycleBeanPostProcessor    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Initializing bean [userRealm]...
+2018-10-18 08:32:44 [DEBUG](AuthorizingRealm              ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No authorizationCache instance set.  Checking for a cacheManager...
+2018-10-18 08:32:44 [DEBUG](AuthorizingRealm              ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No cache or cacheManager properties have been set.  Authorization cache cannot be obtained.
+2018-10-18 08:32:45 [DEBUG](ConfigurationFactory          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Configuring ehcache from ehcache.xml found in the classpath: file:/I:/work1/tg-webapp-server/target/classes/ehcache.xml
+2018-10-18 08:32:45 [DEBUG](ConfigurationFactory          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Configuring ehcache from URL: file:/I:/work1/tg-webapp-server/target/classes/ehcache.xml
+2018-10-18 08:32:45 [DEBUG](ConfigurationFactory          ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Configuring ehcache from InputStream
+2018-10-18 08:32:45 [DEBUG](PropertyUtil                  ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] propertiesString is null.
+2018-10-18 08:32:45 [DEBUG](ConfigurationHelper           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No CacheManagerEventListenerFactory class specified. Skipping...
+2018-10-18 08:32:45 [DEBUG](Cache                         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No BootstrapCacheLoaderFactory class specified. Skipping...
+2018-10-18 08:32:45 [DEBUG](Cache                         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] CacheWriter factory not configured. Skipping...
+2018-10-18 08:32:45 [DEBUG](ConfigurationHelper           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No CacheExceptionHandlerFactory class specified. Skipping...
+2018-10-18 08:32:45 [DEBUG](Cache                         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No BootstrapCacheLoaderFactory class specified. Skipping...
+2018-10-18 08:32:45 [DEBUG](Cache                         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] CacheWriter factory not configured. Skipping...
+2018-10-18 08:32:45 [DEBUG](ConfigurationHelper           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] No CacheExceptionHandlerFactory class specified. Skipping...
+2018-10-18 08:32:45 [INFO ](AnnotationSizeOfFilter        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Using regular expression provided through VM argument net.sf.ehcache.pool.sizeof.ignore.pattern for IgnoreSizeOf annotation : ^.*cache\..*IgnoreSizeOf$
+2018-10-18 08:32:45 [INFO ](AgentLoader                   ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Located valid 'tools.jar' at 'C:\Program Files\Java\jdk1.8.0_181\jre\..\lib\tools.jar'
+2018-10-18 08:32:45 [INFO ](JvmInformation                ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Detected JVM data model settings of: 64-Bit HotSpot JVM with Compressed OOPs
+2018-10-18 08:32:45 [INFO ](AgentLoader                   ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Extracted agent jar to temporary file C:\Users\wuzidong\AppData\Local\Temp\ehcache-sizeof-agent8906556496088955960.jar
+2018-10-18 08:32:45 [INFO ](AgentLoader                   ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Trying to load agent @ C:\Users\wuzidong\AppData\Local\Temp\ehcache-sizeof-agent8906556496088955960.jar
+2018-10-18 08:32:45 [INFO ](DefaultSizeOfEngine           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] using Agent sizeof engine
+2018-10-18 08:32:45 [DEBUG](MemoryStore                   ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Initialized net.sf.ehcache.store.MemoryStore for company
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: LOCAL_OFFHEAP_SIZE
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: LOCAL_OFFHEAP_SIZE_BYTES
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: LOCAL_DISK_SIZE
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: LOCAL_DISK_SIZE_BYTES
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: WRITER_QUEUE_LENGTH
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: REMOTE_SIZE
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Pass-Through Statistic: LAST_REJOIN_TIMESTAMP
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: OFFHEAP_GET
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: OFFHEAP_PUT
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: OFFHEAP_REMOVE
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: DISK_GET
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: DISK_PUT
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: DISK_REMOVE
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: XA_COMMIT
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: XA_ROLLBACK
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: XA_RECOVERY
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: CLUSTER_EVENT
+2018-10-18 08:32:45 [DEBUG](ExtendedStatisticsImpl        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Mocking Operation Statistic: NONSTOP
+2018-10-18 08:32:46 [DEBUG](Cache                         ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Initialised cache: company
+2018-10-18 08:32:46 [DEBUG](ConfigurationHelper           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] CacheDecoratorFactory not configured. Skipping for 'company'.
+2018-10-18 08:32:46 [DEBUG](ConfigurationHelper           ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] CacheDecoratorFactory not configured for defaultCache. Skipping for 'company'.
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'corsFilterFilter'
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating Shiro Filter instance.
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/swagger-ui.html#/**] from String definition [statelessAuthc]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/swagger-ui.html#/**] to filter [statelessAuthc] with config [null]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/system/**] from String definition [statelessAuthc]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/system/**] to filter [statelessAuthc] with config [null]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/heatManage/**] from String definition [statelessAuthc]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/heatManage/**] to filter [statelessAuthc] with config [null]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/charge/**] from String definition [statelessAuthc]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/charge/**] to filter [statelessAuthc] with config [null]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Creating chain [/balance/**] from String definition [statelessAuthc]
+2018-10-18 08:32:48 [DEBUG](DefaultFilterChainManager     ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Attempting to apply path [/balance/**] to filter [statelessAuthc] with config [null]
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'requestContextFilter'
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'hiddenHttpMethodFilter'
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'httpPutFormContentFilter'
+2018-10-18 08:32:48 [DEBUG](ShiroFilterFactoryBean        ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] Found filter chain candidate filter 'characterEncodingFilter'
+2018-10-18 08:32:51 [DEBUG](ApplicationContextRegister    ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] ApplicationContext registed-->org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@5b38c1ec: startup date [Thu Oct 18 08:32:27 CST 2018]; root of context hierarchy
+2018-10-18 08:32:54 [INFO ](EnvUtils                      ) [TxId :  , SpanId : ] [ET:,AN:,SN:,CN:,CI:] register environment instance: StandardServletEnvironment {activeProfiles=[qa], defaultProfiles=[default], propertySources=[ConfigurationPropertySourcesPropertySource {name='configurationProperties'}, StubPropertySource {name='servletConfigInitParams'}, ServletContextPropertySource {name='servletContextInitParams'}, MapPropertySource {name='systemProperties'}, OriginAwareSystemEnvironmentPropertySource {name='systemEnvironment'}, RandomValuePropertySource {name='random'}, OriginTrackedMapPropertySource {name='applicationConfig: [classpath:/application-qa.yml]'}, OriginTrackedMapPropertySource {name='applicationConfig: [classpath:/application.yml]'}]}

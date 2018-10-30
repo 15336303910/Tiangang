@@ -1,0 +1,617 @@
+package cn.plou.web.balance.dataAnalysis.service.impl;
+import cn.plou.common.utils.DateUtil;
+import cn.plou.web.balance.dataAnalysis.entity.BalanceValveData;
+import cn.plou.web.balance.dataAnalysis.service.BalanceValveDataService;
+import cn.plou.web.balance.dataAnalysis.vo.BalanceValveDataInfo;
+import cn.plou.web.common.config.common.Cond;
+import cn.plou.web.common.config.common.Root;
+import cn.plou.web.common.utils.Support;
+import cn.plou.web.common.utils.Tools;
+import cn.plou.web.common.utils.UserUtils;
+import cn.plou.web.heatManage.history.domain.HeatMeterDataDO;
+import cn.plou.web.system.permission.role.service.DataRoleService;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletRequest;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static cn.plou.web.common.config.common.Cond.getCond;
+import static cn.plou.web.common.utils.Tools.formatBigDecimalTo2;
+import static java.lang.Double.NaN;
+
+@Component
+public class BalanceValveDataServiceImpl implements BalanceValveDataService {
+    @Autowired
+    private DataRoleService dataRoleService;
+   /* @Autowired
+    private BalanceValveDataMapper balanceValveDataMapper;*/
+    private Root esBalanceValveData(Date startDate, Date endDate, String companyId, String stationId, String commuityId,
+                                    String buildingId , String sortby, String order, Integer page, Integer pageSize,String controlMode){
+        List<BalanceValveDataInfo> balanceValveDataInfos = new ArrayList<>();
+        Root root = new Root();
+        Integer count = esCount(startDate,endDate,companyId,stationId,commuityId,buildingId,controlMode);
+        if (count == 0) {
+            return root;
+        }
+        String sql = "select * from balance_valve_data where 1=1 " ;
+        sql = filterTime(sql,startDate,endDate);
+        sql = controlType(sql,controlMode);
+        sql = levelAdjust(sql,companyId,stationId,commuityId,buildingId);
+        sql = filterSortAndLimit(sql,sortby,order,page,pageSize);
+        try {
+            ResultSet res = Support.querryFromEs(sql);
+            if (res == null) {
+                return root;
+            }
+            while (res.next()) {
+                BalanceValveDataInfo balanceValveDataInfo = getBalanceValveFromEs(res);
+                if (balanceValveDataInfo != null) {
+                    if(balanceValveDataInfo.getInPressure()!=null&&balanceValveDataInfo.getOutPressure()!=null){
+                        balanceValveDataInfo.setPressureDiff(balanceValveDataInfo.getOutPressure().subtract(balanceValveDataInfo.getInPressure()));
+                    }
+                    if(balanceValveDataInfo.getInTemperature()!=null&&balanceValveDataInfo.getOutTemperature()!=null){
+                        balanceValveDataInfo.setTempuratureDiff(balanceValveDataInfo.getOutTemperature().subtract(balanceValveDataInfo.getInTemperature()));
+                    }
+                    balanceValveDataInfos.add(balanceValveDataInfo);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        root.setData(balanceValveDataInfos);
+        root.setCond(getCond(page,pageSize,count,order,sortby));
+        return root;
+    }
+
+    public Root esAvgBalanceValveData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                                            String buildingId ,String sortby, String order,Integer page,Integer pageSize){
+        List<BalanceValveDataInfo> balanceValveDataInfos = new ArrayList<>();
+        Root root = new Root();
+        Integer count = esAvgCount(startDate,endDate,companyId,stationId,commuityId,buildingId);
+        if (count == 0) {
+            return root;
+        }
+        String sql = "select meterId, address2nd ,avg(inPressure) as inPressure,avg(outPressure) as outPressure,avg(pressureDiff) as pressureDiff," +
+                "avg(inTemperature) as inTemperature,avg(outTemperature) as outTemperature,avg(upperLimitFlow) as upperLimitFlow," +
+                "avg(temperatureSet) as temperatureSet from balance_valve_data where 1=1 ";
+        sql = filterTime(sql,startDate,endDate);
+        sql = levelAdjust(sql,companyId,stationId,commuityId,buildingId);
+        sql = sql + " group by meterId";
+        sql = filterSortAndLimit(sql,sortby,order,page,pageSize);
+        try {
+            ResultSet res = Support.querryFromEs(sql);
+            if (res == null) {
+                return root;
+            }
+            while (res.next()) {
+                BalanceValveDataInfo balanceValveDataInfo = getAvgBalanceValveFromEs(res);
+                if (balanceValveDataInfo != null) {
+                    if(balanceValveDataInfo.getInPressure()!=null&&balanceValveDataInfo.getOutPressure()!=null){
+                        balanceValveDataInfo.setPressureDiff(balanceValveDataInfo.getOutPressure().subtract(balanceValveDataInfo.getInPressure()));
+                    }
+                    if(balanceValveDataInfo.getInTemperature()!=null&&balanceValveDataInfo.getOutTemperature()!=null){
+                        balanceValveDataInfo.setTempuratureDiff(balanceValveDataInfo.getOutTemperature().subtract(balanceValveDataInfo.getInTemperature()));
+                    }
+                    balanceValveDataInfos.add(balanceValveDataInfo);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        root.setData(balanceValveDataInfos);
+        root.setCond(getCond(page,pageSize,count,order,sortby));
+        return root;
+    }
+
+    private Integer esCount(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                            String buildingId,String controlMode){
+        String sql = "select count(*) as count from balance_valve_data where 1=1 ";
+        sql = filterTime(sql,startDate,endDate);
+        sql = controlType(sql,controlMode);
+        sql = levelAdjust(sql,companyId,stationId,commuityId,buildingId);
+        sql = filterSortAndLimit(sql,null,null,0,50000);
+        ResultSet resCount = Support.querryFromEs(sql);
+        Integer count = 0;
+        if (resCount != null) {
+            try {
+                if (resCount.next()) {
+                    Double contd = resCount.getDouble("count");
+                    count = (int) (contd.intValue());
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+		return count;
+    }
+
+    private Integer esAvgCount(Date startDate,Date endDate,String companyId,String stationId,String commuityId,String building){
+        String sql = "select count(distinct(meterId)) as count from balance_valve_data where 1=1 ";
+        sql = filterTime(sql,startDate,endDate);
+        sql = levelAdjust(sql,companyId,stationId,commuityId,building);
+        sql = filterSortAndLimit(sql,null,null,0,50000);
+        ResultSet resCount = Support.querryFromEs(sql);
+        Integer count = 0;
+        if (resCount != null) {
+            try {
+                if (resCount.next()) {
+                    Double contd = resCount.getDouble("count");
+                    count = (int) (contd.intValue());
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
+    private BalanceValveDataInfo getBalanceValveFromEs(ResultSet res) throws SQLException {
+        BalanceValveDataInfo balanceValveDataInfo = new BalanceValveDataInfo();
+        balanceValveDataInfo.setNotes(getResultString(res, "notes"));
+        balanceValveDataInfo.setInPressure(getResultBigDecimal(res, "inPressure"));
+        balanceValveDataInfo.setPrimaryId(getResultString(res, "primaryId"));
+        balanceValveDataInfo.setLocks(getResultString(res, "locks"));
+        balanceValveDataInfo.setMeterId(getResultString(res,"meterId"));
+        balanceValveDataInfo.setConsumerId(getResultString(res, "consumerId"));
+        balanceValveDataInfo.setSetTemperature(getResultBigDecimal(res,"setTemperature"));
+        balanceValveDataInfo.setOpenSet(getResultBigDecimal(res, "openSet"));
+        balanceValveDataInfo.setOpenness(getResultBigDecimal(res, "openness"));
+        balanceValveDataInfo.setAddress2nd(getResultString(res, "address2nd"));
+        balanceValveDataInfo.setBaseOpen(getResultString(res, "baseOpen"));
+        balanceValveDataInfo.setSetTemperature(getResultBigDecimal(res, "setTemperature"));
+        balanceValveDataInfo.setComInterval(getResultBigDecimal(res, "comInterval"));
+        balanceValveDataInfo.setComInterval(getResultBigDecimal(res, "pressureDiff"));
+        balanceValveDataInfo.setControlMode(getResultString(res, "controlMode"));
+        balanceValveDataInfo.setCurrentTimes(getResultDate(res,"currentTimes"));
+        balanceValveDataInfo.setRowno(getResultString(res, "rowno"));
+        balanceValveDataInfo.setEnvTemp(getResultBigDecimal(res,"envTemp"));
+        balanceValveDataInfo.setSampleFlowSpeed(getResultBigDecimal(res,"sampleFlowSpeed"));
+        balanceValveDataInfo.setUpperLimitFlow(getResultBigDecimal(res,"upperLimitFlow"));
+        balanceValveDataInfo.setSysReadTime(getResultDate(res,"sysReadTime"));
+        balanceValveDataInfo.setConsumerId(getResultString(res, "consumerId"));
+        balanceValveDataInfo.setInTemperature(getResultBigDecimal(res, "inTemperature"));
+        balanceValveDataInfo.setOutTemperature(getResultBigDecimal(res, "outTemperature"));
+        balanceValveDataInfo.setCompanyId(getResultString(res, "companyId"));
+        balanceValveDataInfo.setMeterId(getResultString(res, "meterId"));
+        balanceValveDataInfo.setOutPressure(getResultBigDecimal(res, "outPressure"));
+        balanceValveDataInfo.setSetPressureDiff(getResultBigDecimal(res, "setPressureDiff"));
+        balanceValveDataInfo.setHouseAvgOutTemp(getResultBigDecimal(res,"outTemperature"));
+        if (balanceValveDataInfo.getInTemperature() != null && balanceValveDataInfo.getOutTemperature() != null)
+            balanceValveDataInfo.setTempuratureDiff(balanceValveDataInfo.getInTemperature().subtract(balanceValveDataInfo.getOutTemperature()));
+        return balanceValveDataInfo;
+    }
+
+    private BalanceValveDataInfo getAvgBalanceValveFromEs(ResultSet res){
+        BalanceValveDataInfo balanceValveDataInfo = new BalanceValveDataInfo();
+        //balanceValveDataInfo.setNotes(getResultString(res, "notes"));
+        balanceValveDataInfo.setInPressure(getResultBigDecimal(res, "inPressure"));
+        balanceValveDataInfo.setComInterval(getResultBigDecimal(res, "pressureDiff"));
+        //balanceValveDataInfo.setLocks(getResultString(res, "locks"));
+        //balanceValveDataInfo.setOpenSet(getResultBigDecimal(res, "openSet"));
+        //balanceValveDataInfo.setOpenness(getResultBigDecimal(res, "openness"));
+        balanceValveDataInfo.setMeterId(getResultString(res,"meterId"));
+        balanceValveDataInfo.setConsumerId(getResultString(res, "consumerId"));
+        balanceValveDataInfo.setAddress2nd(getResultString(res, "address2nd"));
+        balanceValveDataInfo.setEnvTemp(getResultBigDecimal(res,"envTemp"));
+        balanceValveDataInfo.setSampleFlowSpeed(getResultBigDecimal(res,"sampleFlowSpeed"));
+        balanceValveDataInfo.setUpperLimitFlow(getResultBigDecimal(res,"upperLimitFlow"));
+        //balanceValveDataInfo.setBaseOpen(getResultString(res, "baseOpen"));
+        balanceValveDataInfo.setSetTemperature(getResultBigDecimal(res, "setTemperature"));
+        //balanceValveDataInfo.setComInterval(getResultBigDecimal(res, "comInterval"));
+        //balanceValveDataInfo.setControlMode(getResultString(res, "controlMode"));
+        //balanceValveDataInfo.setCurrentTimes(getResultDate(res,"currentTimes"));
+        balanceValveDataInfo.setInTemperature(getResultBigDecimal(res, "inTemperature"));
+        balanceValveDataInfo.setOutTemperature(getResultBigDecimal(res, "outTemperature"));
+        balanceValveDataInfo.setOutPressure(getResultBigDecimal(res, "outPressure"));
+        balanceValveDataInfo.setSetPressureDiff(getResultBigDecimal(res, "setPressureDiff"));
+        balanceValveDataInfo.setHouseAvgOutTemp(getResultBigDecimal(res,"outTemperature"));
+        if (balanceValveDataInfo.getInTemperature() != null && balanceValveDataInfo.getOutTemperature() != null)
+            balanceValveDataInfo.setTempuratureDiff(balanceValveDataInfo.getInTemperature().subtract(balanceValveDataInfo.getOutTemperature()));
+        return balanceValveDataInfo;
+    }
+
+    private String getResultString(ResultSet res, String index) {
+        try {
+            if (res.getObject(index) != null) {
+                return res.getString(index);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private Date getResultDate(ResultSet res,String index){
+        try {
+            if(res.getObject(index)!=null){
+                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                //return simpleDateFormat.format(res.getDate(index));
+                String getString = res.getString(index);
+                SimpleDateFormat sdf =   new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+                Date date = sdf.parse(getString);
+                return date;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Double getResultDouble(ResultSet res, String index) {
+        try {
+            if (res.getObject(index) != null ) {
+                Double dou = res.getDouble(index);
+                if(dou!=null && !dou.isNaN() && !dou.isInfinite()){
+                    BigDecimal bg = new BigDecimal(dou);
+                    Double dou1 = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                    return dou1;
+                }else{
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0d;
+    }
+
+    private BigDecimal getResultBigDecimal(ResultSet res, String index) {
+        if(getResultDouble(res, index)!=null){
+            return new BigDecimal(getResultDouble(res, index) + "");
+        }
+        return null;
+    }
+
+    private String filterSortAndLimit(String sql,String sortby, String order,Integer page,Integer pageSize) {
+        if (sortby != null && !sortby.isEmpty()) {
+            sql += " order by " + sortby + " " + order;
+        }
+
+        if (page != null) {
+            sql += " limit " + page + "," + pageSize;
+        }
+        return sql;
+    }
+    private String filterTime(String sql,Date startDate,Date endDate){
+        if(startDate!=null&&endDate!=null){
+            sql = sql + " and sysReadTimeLong <= %s and sysReadTimeLong >=%s ";
+            String endTime = DateUtil.toDateTimeString(startDate);
+            String beginTime = DateUtil.toDateTimeString(endDate);
+            sql = String.format(sql, Long.toString(DateUtil.fromString(beginTime,true).getTime()),
+                    Long.toString(DateUtil.fromString(endTime,true).getTime()));
+        }
+        return sql;
+    }
+
+    private String controlType(String sql,String controlMode){
+        if(controlMode!=null){
+            sql += " and controlMode =" +controlMode;
+        }
+        return sql;
+    }
+
+    private String levelAdjust(String sql,String companyId,String stationId,String commuityId,String buildingId){
+        List<String> companyIds = new ArrayList<>();
+        List<String> stationIds = new ArrayList<String>();
+        List<String> commuityIds = new ArrayList<String>();
+        Boolean flag = dataRoleService.getDataRoleItems(companyIds, stationIds, commuityIds
+                ,UserUtils.getUserId(),companyId, stationId,commuityId);
+        if(companyIds.size()!=0){
+            sql += " and consumerId like ('" + companyIds.get(0) +"%s')";
+            if(companyIds.size()>1){
+                for(int i=1;i<companyIds.size();i++){
+                    sql += " or consumerId like ('" + companyIds.get(i) +"%s')";
+                }
+            }
+            //sql += "and substring(consumerId,0,5) in " + companyIds;
+        }
+        if(stationIds.size()!=0){
+            sql += " and consumerId like ('" + stationIds.get(0) +"%s')";
+            if(stationIds.size()>1){
+                for(int i=1;i<stationIds.size();i++){
+                    sql += " or consumerId like ('" + stationIds.get(i) +"%s')";
+                }
+            }
+        }
+        if(commuityIds.size()!=0){
+            sql += " and consumerId like ('" + commuityIds.get(0) +"%s')";
+            if(commuityIds.size()>1){
+                for(int i=1;i<commuityIds.size();i++){
+                    sql += " or consumerId like ('" + commuityIds.get(i) +"%s')";
+                }
+            }
+        }
+        if(buildingId!=null){
+            sql += "and substring(consumerId,0,13) ='" + buildingId +"'";
+        }
+        return sql;
+    }
+
+    @Override
+    public Root getBalanceDataList(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                                         String building,String sortby, String order,Integer page,Integer pageSize,String controlMode) {
+        return esBalanceValveData(startDate, endDate, companyId,stationId,commuityId,building, sortby, order, page, pageSize,controlMode);
+    }
+
+    @Override
+    public Root getAvgHistoryData(Date startDate,Date endDate,String companyId,String stationId,String commuityId, String building,String sortby, String order,Integer page,Integer pageSize) {
+        return esAvgBalanceValveData(startDate, endDate, companyId,stationId,commuityId,building, sortby, order, page, pageSize);
+    }
+
+    @Override
+    public String exportExcelData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                  String building, ServletRequest request) {
+        String path = ("balanceVlaveDate_"+ UUID.randomUUID().toString().replace("-", "")) + ".xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("平衡阀历史数据");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        getPageBalanceValveData(cell, row);
+        List<BalanceValveDataInfo> infos = (List<BalanceValveDataInfo>) getBalanceDataList(startDate,endDate,companyId,stationId,commuityId,building,null,null,0,50000,null).getData();
+        if (infos!=null&&infos.size()>0){
+            for (int i = 0; i < infos.size(); i++) {
+                row = sheet.createRow(i+1);// 创建行,从0开始
+                cell = row.createCell(0);// 创建行的单元格,也是从0开始
+                setBalanceValveDataToCell(row, cell, infos.get(i));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("导出成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+    private void setBalanceValveDataToCell(HSSFRow row, HSSFCell cell, BalanceValveDataInfo balanceValveDataInfo) {
+        if(balanceValveDataInfo.getSysReadTime()!=null){
+            cell.setCellValue(balanceValveDataInfo.getSysReadTime().toString());// 设置单元格内容
+        }
+        row.createCell(1).setCellValue(Tools.convertNullToEmpty(balanceValveDataInfo.getAddress2nd()));
+        row.createCell(2).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getInPressure())));
+        row.createCell(3).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOutPressure())));
+        row.createCell(4).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getPressureDiff())));
+        row.createCell(5).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSetPressureDiff())));
+        row.createCell(6).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getInTemperature())));
+        row.createCell(7).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOutTemperature())));
+        row.createCell(8).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getTempuratureDiff())));
+        row.createCell(9).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSetTemperature())));
+        row.createCell(10).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getEnvTemp())));
+        row.createCell(11).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSampleFlowSpeed())));
+        row.createCell(12).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getUnitFlowSpeed())));
+        row.createCell(13).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOutTemperature())));
+        row.createCell(14).setCellValue(balanceValveDataInfo.getControlMode());
+
+    }
+    private void getPageBalanceValveData(HSSFCell cell, HSSFRow row) {
+        cell.setCellValue("时间");// 设置单元格内容
+        row.createCell(1).setCellValue("平衡阀名称");
+        row.createCell(2).setCellValue("供水压力");
+        row.createCell(3).setCellValue("回水压力");
+        row.createCell(4).setCellValue("供回水压差");
+        row.createCell(5).setCellValue("压差设定");
+        row.createCell(6).setCellValue("供水温度");
+        row.createCell(7).setCellValue("回水温度");
+        row.createCell(8).setCellValue("供回水温差");
+        row.createCell(9).setCellValue("温度设定");
+        row.createCell(10).setCellValue("室外天气");
+        row.createCell(11).setCellValue("流量值");
+        row.createCell(12).setCellValue("流量设定");
+        row.createCell(13).setCellValue("用户平均回温");
+        row.createCell(14).setCellValue("控制模式");
+    }
+
+    private void setBalanceValvePressureDataToCell(HSSFRow row, HSSFCell cell, BalanceValveDataInfo balanceValveDataInfo) {
+        if(balanceValveDataInfo.getSysReadTime()!=null){
+            cell.setCellValue(balanceValveDataInfo.getSysReadTime().toString());// 设置单元格内容
+        }
+        row.createCell(1).setCellValue(Tools.convertNullToEmpty(balanceValveDataInfo.getAddress2nd()));
+        row.createCell(2).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getInPressure())));
+        row.createCell(3).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOutPressure())));
+        row.createCell(4).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getPressureDiff())));
+        row.createCell(5).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSetPressureDiff())));
+        row.createCell(6).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getPressureDiff().subtract(balanceValveDataInfo.getSetPressureDiff()))));
+        row.createCell(7).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOpenness())));
+        row.createCell(8).setCellValue(balanceValveDataInfo.getControlMode());
+        row.createCell(9).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getEnvTemp())));
+    }
+    private void getPageBalanceValvePressureData(HSSFCell cell, HSSFRow row) {
+        cell.setCellValue("时间");// 设置单元格内容
+        row.createCell(1).setCellValue("平衡阀名称");
+        row.createCell(2).setCellValue("供水压力");
+        row.createCell(3).setCellValue("回水压力");
+        row.createCell(4).setCellValue("供回水压差");
+        row.createCell(5).setCellValue("压差设定");
+        row.createCell(6).setCellValue("控制偏差");
+        row.createCell(7).setCellValue("开度");
+        row.createCell(8).setCellValue("控制模式");
+        row.createCell(9).setCellValue("室外天气");
+    }
+
+    private void setBalanceValveTemperatureDataToCell(HSSFRow row, HSSFCell cell, BalanceValveDataInfo balanceValveDataInfo) {
+        if(balanceValveDataInfo.getSysReadTime()!=null){
+            cell.setCellValue(balanceValveDataInfo.getSysReadTime().toString());// 设置单元格内容
+        }
+        row.createCell(1).setCellValue(Tools.convertNullToEmpty(balanceValveDataInfo.getAddress2nd()));
+        row.createCell(2).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getInTemperature())));
+        row.createCell(3).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOutTemperature())));
+        row.createCell(4).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getTempuratureDiff())));
+        row.createCell(5).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSetTemperature())));
+        row.createCell(6).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getTempuratureDiff().subtract(balanceValveDataInfo.getSetTemperature()))));
+        row.createCell(7).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOpenness())));
+        row.createCell(8).setCellValue(balanceValveDataInfo.getControlMode());
+        row.createCell(9).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getEnvTemp())));
+    }
+    private void getPageBalanceValveTemperatureData(HSSFCell cell, HSSFRow row) {
+        cell.setCellValue("时间");// 设置单元格内容
+        row.createCell(1).setCellValue("平衡阀名称");
+        row.createCell(2).setCellValue("供水温度");
+        row.createCell(3).setCellValue("回水温度");
+        row.createCell(4).setCellValue("供回水温差");
+        row.createCell(5).setCellValue("温度设定");
+        row.createCell(6).setCellValue("控制偏差");
+        row.createCell(7).setCellValue("开度");
+        row.createCell(8).setCellValue("控制模式");
+        row.createCell(9).setCellValue("室外天气");
+    }
+
+    private void setBalanceValveFlowDataToCell(HSSFRow row, HSSFCell cell, BalanceValveDataInfo balanceValveDataInfo) {
+        if(balanceValveDataInfo.getSysReadTime()!=null){
+            cell.setCellValue(balanceValveDataInfo.getSysReadTime().toString());// 设置单元格内容
+        }
+        row.createCell(1).setCellValue(Tools.convertNullToEmpty(balanceValveDataInfo.getAddress2nd()));
+        row.createCell(2).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSampleFlowSpeed())));
+        row.createCell(3).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getUpperLimitFlow())));
+        row.createCell(4).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getSampleFlowSpeed().subtract(balanceValveDataInfo.getUpperLimitFlow()))));
+        row.createCell(5).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getOpenness())));
+        row.createCell(6).setCellValue(balanceValveDataInfo.getControlMode());
+        row.createCell(7).setCellValue(Tools.convertNoInt(formatBigDecimalTo2(balanceValveDataInfo.getEnvTemp())));
+}
+    private void getPageBalanceValveFlowData(HSSFCell cell, HSSFRow row) {
+        cell.setCellValue("时间");// 设置单元格内容
+        row.createCell(1).setCellValue("平衡阀名称");
+        row.createCell(2).setCellValue("流量值");
+        row.createCell(3).setCellValue("流量设定");
+        row.createCell(4).setCellValue("控制偏差");
+        row.createCell(5).setCellValue("开度");
+        row.createCell(6).setCellValue("控制模式");
+        row.createCell(7).setCellValue("室外天气");
+    }
+
+    @Override
+    public String exportExcelAvgData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                     String building, ServletRequest request) {
+        String path = ("balanceValveAvgDate_"+ UUID.randomUUID().toString().replace("-", "")) + ".xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("平衡阀数据汇总");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        getPageBalanceValveData(cell, row);
+        List<BalanceValveDataInfo> infos = (List<BalanceValveDataInfo>) esAvgBalanceValveData(startDate,endDate,companyId,stationId,commuityId,building,null,null,0,50000).getData();
+        if (infos!=null&&infos.size()>0){
+            for (int i = 0; i < infos.size(); i++) {
+                row = sheet.createRow(i+1);// 创建行,从0开始
+                cell = row.createCell(0);// 创建行的单元格,也是从0开始
+                setBalanceValveDataToCell(row, cell, infos.get(i));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("导出成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    @Override
+    public String exportExcelPressureData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                          String building, String controlMode,ServletRequest request) {
+        String path = ("pressureControlData_"+ UUID.randomUUID().toString().replace("-", "")) + ".xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("压差控制分析");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        getPageBalanceValvePressureData(cell, row);
+        List<BalanceValveDataInfo> infos = (List<BalanceValveDataInfo>) getBalanceDataList(startDate,endDate,companyId,stationId,commuityId,building,null,null,0,50000,controlMode).getData();
+        if (infos!=null&&infos.size()>0){
+            for (int i = 0; i < infos.size(); i++) {
+                row = sheet.createRow(i+1);// 创建行,从0开始
+                cell = row.createCell(0);// 创建行的单元格,也是从0开始
+                setBalanceValvePressureDataToCell(row, cell, infos.get(i));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("导出成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    @Override
+    public String exportExcelTemperatureData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                             String building, String controlMode, ServletRequest request) {
+        String path = ("temperatureControlData_"+ UUID.randomUUID().toString().replace("-", "")) + ".xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("温度控制分析");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        getPageBalanceValveTemperatureData(cell, row);
+        List<BalanceValveDataInfo> infos = (List<BalanceValveDataInfo>) getBalanceDataList(startDate,endDate,companyId,stationId,commuityId,building,null,null,0,50000,controlMode).getData();
+        if (infos!=null&&infos.size()>0){
+            for (int i = 0; i < infos.size(); i++) {
+                row = sheet.createRow(i+1);// 创建行,从0开始
+                cell = row.createCell(0);// 创建行的单元格,也是从0开始
+                setBalanceValveTemperatureDataToCell(row, cell, infos.get(i));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("导出成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    @Override
+    public String exportExcelFlowData(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                      String building, String controlMode, ServletRequest request) {
+        String path = ("flowControlData_"+ UUID.randomUUID().toString().replace("-", "")) + ".xls";
+        String filePath = request.getServletContext().getRealPath("/") + path;//文件路径
+        HSSFWorkbook workbook = new HSSFWorkbook();//创建Excel文件(Workbook)
+        HSSFSheet sheet = workbook.createSheet("流量控制分析");//创建工作表(Sheet)
+        HSSFRow row = sheet.createRow(0);// 创建行,从0开始
+        HSSFCell cell = row.createCell(0);// 创建行的单元格,也是从0开始
+        getPageBalanceValveFlowData(cell, row);
+        List<BalanceValveDataInfo> infos = (List<BalanceValveDataInfo>) getBalanceDataList(startDate,endDate,companyId,stationId,commuityId,building,null,null,0,50000,controlMode).getData();
+        if (infos!=null&&infos.size()>0){
+            for (int i = 0; i < infos.size(); i++) {
+                row = sheet.createRow(i+1);// 创建行,从0开始
+                cell = row.createCell(0);// 创建行的单元格,也是从0开始
+                setBalanceValveFlowDataToCell(row, cell, infos.get(i));
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(filePath);
+            workbook.write(out);//保存Excel文件
+            out.close();//关闭文件流
+            System.out.println("导出成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    @Override
+    public List<BalanceValveData> getHistoryDataByDate(Date startDate,Date endDate,String companyId,String stationId,String commuityId,
+                                                       String building,Date systemReadTime) {
+        return null;
+    }
+
+}

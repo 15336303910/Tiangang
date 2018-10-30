@@ -87,4 +87,6 @@
       z_a_cityid = #{zACityid,jdbcType=VARCHAR}
     where z_a_id = #{zAId,jdbcType=VARCHAR}
   </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>

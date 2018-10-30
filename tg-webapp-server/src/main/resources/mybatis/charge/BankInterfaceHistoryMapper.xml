@@ -344,4 +344,7 @@
       <if test="dto.content != null and dto.content != ''">and CONCAT(h.request_data,h.return_data) like CONCAT('%',#{dto.content,jdbcType=VARCHAR},'%')</if>
     </where>
   </select>
+
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
 </mapper>
