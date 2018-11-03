@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.plou.web.system.commonMessage.typeMst.dao.TypeMstMapper">
+  <resultMap id="BaseResultMap" type="cn.plou.web.system.commonMessage.typeMst.entity.TypeMst">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="type_kbn" jdbcType="VARCHAR" property="typeKbn" />
+    <result column="type_kbn_name" jdbcType="VARCHAR" property="typeKbnName" />
+    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="parent_type_id" jdbcType="VARCHAR" property="parentTypeId" />
+    <result column="order_by" jdbcType="VARCHAR" property="orderBy" />
+    <result column="show_flg" jdbcType="VARCHAR" property="showFlg" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="memo1" jdbcType="VARCHAR" property="memo1" />
+    <result column="memo2" jdbcType="VARCHAR" property="memo2" />
+    <result column="memo3" jdbcType="VARCHAR" property="memo3" />
+    <result column="memo4" jdbcType="VARCHAR" property="memo4" />
+    <result column="memo5" jdbcType="VARCHAR" property="memo5" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+   id,type_kbn,type_kbn_name, type_id, type_name, parent_type_id, order_by, show_flg, notes, memo1,
+    memo2, memo3, memo4, memo5, create_date, create_user, update_date, update_user
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getByTypeKbnAndTypeName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst
+    where type_kbn = #{typeKbn,jdbcType=VARCHAR}
+    and type_name = #{typeName,jdbcType=VARCHAR}
+  </select>
+
+ <select id="findTypeMstsByKbns"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst where type_kbn in
+      <foreach collection="typeKbns" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    and show_flg=1 order by order_by
+  </select>
+
+  <select id="selectAllTypeMst"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst limit 0,10000
+  </select>
+
+  <!--<select id="selectAllTypeMst"  resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from type_mst-->
+  <!--</select>-->
+
+  <select id="selectDownInfoByTypeKbn" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    id,type_kbn,type_kbn_name, type_id, type_name,notes,order_by
+    from type_mst
+    where type_kbn=#{typeKbn} and show_flg=1 order by order_by
+  </select>
+
+  <select id="selectTypeMstByTypeKbn"  parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst
+    where 1=1
+    <if test="typeKbn!=null">
+     and type_kbn=#{typeKbn}
+    </if>
+    <if test="typeMstVo!=null">
+      <if test="typeMstVo.typeId!=null">
+       and type_id=#{typeMstVo.typeId}
+      </if>
+      <if test="typeMstVo.typeName!=null">
+      and  type_name like concat ('%',#{typeMstVo.typeName},'%')
+      </if>
+      <if test="typeMstVo.showFlg!=null">
+        and show_flg=#{typeMstVo.showFlg}
+      </if>
+      <if test="typeMstVo.notes!=null">
+        and  notes like concat ('%',#{typeMstVo.notes},'%')
+      </if>
+    </if>
+    <if test="sortby!=null">
+     order by ${sortby}
+    </if>
+    <if test="order!=null">
+      ${order}
+    </if>
+    <!--<if test="page!=null">-->
+      <!--<if test="pageSize!=null">-->
+        <!--limit ${page},${pageSize}-->
+      <!--</if>-->
+    <!--</if>-->
+  </select>
+
+  <select id="selectTypeMstAllType"  resultMap="BaseResultMap">
+    select type_kbn,type_kbn_name from type_mst group by type_kbn,type_kbn_name
+    limit 0,10000
+  </select>
+
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.String">-->
+    <!--delete from type_mst-->
+    <!--where id = #{id,jdbcType=VARCHAR}-->
+  <!--</delete>-->
+
+  <delete id="deleteTypeMstBatchByIds" parameterType="java.util.List">
+    delete from type_mst
+    where
+    <if test="list.size()==1">
+      <foreach collection="list" item="item">
+        type_kbn=#{item.typeKbn} and type_id=#{item.typeId}
+      </foreach>
+    </if>
+    <if test="list.size()>1">
+      <foreach collection="list" index="index" item="item"  >
+        <if test="index!=list.size()-1">
+        type_kbn=#{item.typeKbn} and type_id=#{item.typeId} or
+        </if>
+        <if test="index==list.size()-1">
+          type_kbn=#{item.typeKbn} and type_id=#{item.typeId}
+        </if>
+      </foreach>
+    </if>
+
+  </delete>
+
+  <insert id="insert" parameterType="cn.plou.web.system.commonMessage.typeMst.entity.TypeMst">
+    insert into type_mst (id, type_kbn, type_id, 
+      type_name, parent_type_id, order_by, 
+      show_flg, notes, memo1, 
+      memo2, memo3, memo4, 
+      memo5, create_date, create_user, 
+      update_date, update_user)
+    values (#{id,jdbcType=VARCHAR}, #{typeKbn,jdbcType=VARCHAR}, #{typeId,jdbcType=VARCHAR}, 
+      #{typeName,jdbcType=VARCHAR}, #{parentTypeId,jdbcType=VARCHAR}, #{orderBy,jdbcType=VARCHAR}, 
+      #{showFlg,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{memo1,jdbcType=VARCHAR}, 
+      #{memo2,jdbcType=VARCHAR}, #{memo3,jdbcType=VARCHAR}, #{memo4,jdbcType=VARCHAR}, 
+      #{memo5,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.plou.web.system.commonMessage.typeMst.entity.TypeMst">
+    insert into type_mst
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="typeKbn != null">
+        type_kbn,
+      </if>
+      <if test="typeKbnName != null">
+        type_kbn_name,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="typeName != null">
+        type_name,
+      </if>
+      <if test="parentTypeId != null">
+        parent_type_id,
+      </if>
+      <if test="orderBy != null">
+        order_by,
+      </if>
+      <if test="showFlg != null">
+        show_flg,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="memo1 != null">
+        memo1,
+      </if>
+      <if test="memo2 != null">
+        memo2,
+      </if>
+      <if test="memo3 != null">
+        memo3,
+      </if>
+      <if test="memo4 != null">
+        memo4,
+      </if>
+      <if test="memo5 != null">
+        memo5,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="typeKbn != null">
+        #{typeKbn,jdbcType=VARCHAR},
+      </if>
+      <if test="typeKbnName != null">
+        #{typeKbnName},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTypeId != null">
+        #{parentTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderBy != null">
+        #{orderBy,jdbcType=VARCHAR},
+      </if>
+      <if test="showFlg != null">
+        #{showFlg,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="memo3 != null">
+        #{memo3,jdbcType=VARCHAR},
+      </if>
+      <if test="memo4 != null">
+        #{memo4,jdbcType=VARCHAR},
+      </if>
+      <if test="memo5 != null">
+        #{memo5,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.plou.web.system.commonMessage.typeMst.entity.TypeMst">
+    update type_mst
+    <set>
+      <if test="typeKbn != null">
+        type_kbn = #{typeKbn,jdbcType=VARCHAR},
+      </if>
+      <if test="typeKbnName != null">
+        type_kbn_name=#{typeKbnName},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTypeId != null">
+        parent_type_id = #{parentTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderBy != null">
+        order_by = #{orderBy,jdbcType=VARCHAR},
+      </if>
+      <if test="showFlg != null">
+        show_flg = #{showFlg,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="memo1 != null">
+        memo1 = #{memo1,jdbcType=VARCHAR},
+      </if>
+      <if test="memo2 != null">
+        memo2 = #{memo2,jdbcType=VARCHAR},
+      </if>
+      <if test="memo3 != null">
+        memo3 = #{memo3,jdbcType=VARCHAR},
+      </if>
+      <if test="memo4 != null">
+        memo4 = #{memo4,jdbcType=VARCHAR},
+      </if>
+      <if test="memo5 != null">
+        memo5 = #{memo5,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where type_kbn=#{typeKbn} and type_id=#{typeId}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.plou.web.system.commonMessage.typeMst.entity.TypeMst">
+    update type_mst
+    set type_kbn = #{typeKbn,jdbcType=VARCHAR},
+      type_id = #{typeId,jdbcType=VARCHAR},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      parent_type_id = #{parentTypeId,jdbcType=VARCHAR},
+      order_by = #{orderBy,jdbcType=VARCHAR},
+      show_flg = #{showFlg,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      memo1 = #{memo1,jdbcType=VARCHAR},
+      memo2 = #{memo2,jdbcType=VARCHAR},
+      memo3 = #{memo3,jdbcType=VARCHAR},
+      memo4 = #{memo4,jdbcType=VARCHAR},
+      memo5 = #{memo5,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateTypeMstBatch" parameterType="cn.plou.web.system.commonMessage.typeMst.vo.TypeMstVo">
+    update type_mst
+    <set>
+      <if test="typeKbn != null">
+        type_kbn = #{typeKbn,jdbcType=VARCHAR},
+      </if>
+      <if test="typeKbnName != null">
+        type_kbn_name = #{typeKbnName,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentTypeId != null">
+        parent_type_id = #{parentTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderBy != null">
+        order_by = #{orderBy,jdbcType=VARCHAR},
+      </if>
+      <if test="showFlg != null">
+        show_flg = #{showFlg,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where
+    <if test="typeMstKeys.size()==1">
+      <foreach collection="typeMstKeys" item="item">
+        type_kbn=#{item.typeKbn} and type_id=#{item.typeId}
+      </foreach>
+    </if>
+
+    <if test="typeMstKeys.size()>1">
+      <foreach collection="typeMstKeys" index="index" item="item"  >
+        <if test="index!=typeMstKeys.size()-1">
+          (type_kbn=#{item.typeKbn} and type_id=#{item.typeId}) or
+        </if>
+        <if test="index==typeMstKeys.size()-1">
+          (type_kbn=#{item.typeKbn} and type_id=#{item.typeId})
+        </if>
+      </foreach>
+    </if>
+  </update>
+  <!-- ————————————————————————————————cache配置————————————————————————————  -->
+  <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+</mapper>

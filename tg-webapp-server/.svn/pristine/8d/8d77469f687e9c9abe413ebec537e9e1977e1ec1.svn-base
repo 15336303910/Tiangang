@@ -1,0 +1,103 @@
+package cn.plou.web.heatManage.monitor.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import lombok.Data;
+
+/**
+ * 
+ * @author admin
+ *
+ */
+@Data
+public class RunningDataTotalDO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	//用户ＩＤ
+	private String consumerId;
+	//累计热量
+	private String heat;
+	//功率
+	private BigDecimal power;
+	
+	private BigDecimal flow;
+	//瞬时流量
+	private BigDecimal flowSpeed;
+	//流量上限
+	private BigDecimal flowUpperLimit;
+	//进水温度
+	private BigDecimal inTemperature;
+	//回水温度
+	private BigDecimal outTemperature;
+	//温差
+	private BigDecimal temperatureDiff;
+	//室温测量值
+	private BigDecimal roomTemperatureRead;
+	//室温设置值
+	private BigDecimal roomTemperatureSet;
+	//室外温度值
+	private BigDecimal outdoorTemperature;
+	//开度
+	private BigDecimal openness;
+	//开关状态：全开、中间、全关
+	private String openStatus;
+	private String openStatusName;
+	//供暖面积
+	private BigDecimal heatingArea;
+	//耗热指标
+	private BigDecimal heatingIndex;
+	//流量指标
+	private BigDecimal flowingIndex;
+	//供暖状态：供暖、停暖
+	private String heatStatus;
+	private String heatStatusName;
+	//控制权限：上位控制／就地控制
+	private String controlRole;
+	//调节方式：动态调节／通断调节
+	private String regulationMode;
+	//动作限制：
+	private String actionLimit;
+	//时间
+	private Date systemReadTime;
+	//公司ＩＤ
+	private String companyId;
+	//地址全称：小区名＋楼名＋单元名＋楼名＋单元名＋室名
+	private String address;
+	//
+  /*累计步长*/
+  private BigDecimal stepTotal;
+  
+  /*执行步长*/
+  private BigDecimal executionStep; 
+	
+	
+	//备注
+	private String notes;
+//	//保留１
+//	private String memo1;
+//	//保留２
+//	private String memo2;
+//	//保留３
+//	private String memo3;
+//	//保留４
+//	private String memo4;
+//	//保留５
+//	private String memo5;
+//	//保留６
+//	private String memo6;
+//	//创建时间
+//	private Date createDate;
+//	//创建者
+//	private String createUser;
+//	//更新时间
+//	private Date updateDate;
+//	//更新者
+//	private String updateUser;
+	//折算热指标
+	private BigDecimal adjHeatingIndex;
+	
+	private String customerServiceFlg;
+	
+}

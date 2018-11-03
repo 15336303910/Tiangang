@@ -41,10 +41,21 @@
     and type_name = #{typeName,jdbcType=VARCHAR}
   </select>
 
+ <select id="findTypeMstsByKbns"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from type_mst where type_kbn in
+      <foreach collection="typeKbns" item="item" open="("
+			separator="," close=")">
+			#{item}
+	   </foreach>
+    and show_flg=1 order by order_by
+  </select>
+
   <select id="selectAllTypeMst"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from type_mst limit 0,10000
+    from type_mst order by order_by limit 0,10000
   </select>
 
   <!--<select id="selectAllTypeMst"  resultMap="BaseResultMap">-->
@@ -88,6 +99,9 @@
     <if test="order!=null">
       ${order}
     </if>
+    <if test="sortby=null">
+      order by order_by
+    </if> 
     <!--<if test="page!=null">-->
       <!--<if test="pageSize!=null">-->
         <!--limit ${page},${pageSize}-->

@@ -2382,11 +2382,11 @@
     </select>
      <update id="modifyHouseName" parameterType="map">
     	update houses_info
-    		set address = concat(#{changedAdress},#{nkey},room_name) where consumer_id like (concat(#{consumerId},'%'))
+    		set address = concat(#{changedAddress},#{nkey},room_name) where consumer_id like (concat(#{consumerId},'%'))
      </update>
      <update id="modifyHouseNameByAddress" parameterType="map">
     	update houses_info
-    		set address = replace(address,#{orgAddress},#{changedAdress}) where consumer_id like (concat(#{consumerId},'%'))
+    		set address = replace(address,#{orgAddress},#{changedAddress}) where consumer_id like (concat(#{consumerId},'%'))
      </update>
 
     <!-- ————————————————————————————————cache配置————————————————————————————  -->

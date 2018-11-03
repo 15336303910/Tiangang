@@ -33,7 +33,7 @@
         primary_id, third_consumer_id, company_id, consumer_id, annual, account_cost, account_point_cost,
         account_time, account_type, account_channel, isbill, billno, bank_name, bank_dept,
         teller, account_user, isreconciliations, notes, create_date, create_user,
-        update_date, update_user, receiptno,corresponding_id
+        update_date, update_user, receiptno, corresponding_id
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -62,7 +62,7 @@
                                               bank_name, bank_dept, teller,
                                               account_user, isreconciliations,
                                               notes, create_date, create_user,
-                                              update_date, update_user, receiptno,corresponding_id)
+                                              update_date, update_user, receiptno, corresponding_id)
         values (#{primaryId,jdbcType=VARCHAR}, #{thirdConsumerId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
                                                #{consumerId,jdbcType=VARCHAR}, #{annual,jdbcType=VARCHAR}, #{accountCost,jdbcType=DECIMAL},
                                                #{accountPointCost,jdbcType=DECIMAL}, #{accountTime,jdbcType=TIMESTAMP}, #{accountType,jdbcType=VARCHAR},
@@ -70,7 +70,7 @@
                                                                                                                #{bankName,jdbcType=VARCHAR}, #{bankDept,jdbcType=VARCHAR}, #{teller,jdbcType=VARCHAR},
                                                                                                                #{accountUser,jdbcType=VARCHAR}, #{isreconciliations,jdbcType=VARCHAR},
                                                                                                                #{notes,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
-                                                                                                               #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{receiptno,jdbcType=VARCHAR},#{correspondingId})
+                                                                                                               #{updateDate,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{receiptno,jdbcType=VARCHAR}, #{correspondingId})
     </insert>
     <insert id="insertSelective" parameterType="cn.plou.web.charge.chargeconfig.entity.UserYearAccountDetail">
         insert into user_year_account_detail
@@ -353,7 +353,7 @@
         left join user_login as u2 on d.update_user = u2.user_code
         where 1=1
         <if test="consumerId !=null  and consumerId != '' ">
-            and d.consumer_id  like   concat(#{consumerId},'%')
+            and d.consumer_id like concat(#{consumerId},'%')
         </if>
         <if test="annual !=null  and annual != '' ">
             and d.annual = #{annual}
@@ -395,9 +395,18 @@
         left join type_mst t3 on t3.id = d.isreconciliations
         left join houses_info h on h.consumer_id = d.consumer_id
         where
-        d.consumer_id like concat(#{companyId}, '%')
+        <choose>
+            <when test="companyId.length == 6">
+                substring(d.consumer_id,1,10) in
+                (select commuity_id from commuity_info where station_id = #{companyId,jdbcType=VARCHAR})
+            </when>
+            <otherwise>
+                d.consumer_id like concat(#{companyId,jdbcType=VARCHAR},'%')
+            </otherwise>
+        </choose>
         <if test="accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
         <if test="accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="currentAnnual != null and currentAnnual != ''">and d.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
         <if test="isreconciliations != null and isreconciliations != ''">and d.isreconciliations = #{isreconciliations,jdbcType=VARCHAR}</if>
         <if test="accountType != null and accountType != ''">and d.account_type = #{accountType,jdbcType=VARCHAR}</if>
         <if test="accountChannel != null and accountChannel != ''">and d.account_channel = #{accountChannel,jdbcType=VARCHAR}</if>
@@ -407,87 +416,6 @@
         <if test="order != null and order != ''">
             ${order}
         </if>
-        <if test="start != null and pageSize != null">
-            limit ${start},${pageSize}
-        </if>
-    </select>
-
-    <select id="getListCountBySearch" parameterType="cn.plou.web.charge.chargeconfig.dto.ChargeAccountSearchDTO" resultType="java.lang.Integer">
-        SELECT count(*)
-        FROM
-        user_year_account_detail d
-        where
-        d.consumer_id like concat(#{companyId}, '%')
-        <if test="accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-        <if test="accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-        <if test="isreconciliations != null and isreconciliations != ''">and d.isreconciliations = #{isreconciliations,jdbcType=VARCHAR}</if>
-        <if test="accountType != null and accountType != ''">and d.account_type = #{accountType,jdbcType=VARCHAR}</if>
-        <if test="accountChannel != null and accountChannel != ''">and d.account_channel = #{accountChannel,jdbcType=VARCHAR}</if>
-    </select>
-
-    <select id="getListBySearchOfStation" resultType="cn.plou.web.charge.chargeconfig.vo.CheckAccountListVO">
-        SELECT
-        d.primary_id,
-        d.third_consumer_id,
-        d.company_id,
-        d.consumer_id,
-        d.annual,
-        d.account_cost,
-        d.account_point_cost,
-        d.account_time,
-        d.account_type,
-        d.receiptno,
-        t1.type_name as accountTypeName,
-        d.account_channel,
-        t2.type_name as accountChannelName,
-        d.teller,
-        d.account_user,
-        d.isreconciliations,
-        t3.type_name as isreconciliationsName,
-        d.notes,
-        h.name as houseName,
-        h.address as houseAddress
-        FROM
-        user_year_account_detail d
-        left join type_mst t1 on t1.id = d.account_type
-        left join type_mst t2 on t2.id = d.account_channel
-        left join type_mst t3 on t3.id = d.isreconciliations
-        left join houses_info h on h.consumer_id = d.consumer_id
-        <where>
-            <foreach collection="list" item="id" open="and (" separator="or" close=")">
-                d.consumer_id like concat(#{id}, '%')
-            </foreach>
-            <if test="dto.accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-            <if test="dto.accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-            <if test="dto.isreconciliations != null and dto.isreconciliations != ''">and d.isreconciliations = #{dto.isreconciliations,jdbcType=VARCHAR}</if>
-            <if test="dto.accountType != null and dto.accountType != ''">and d.account_type = #{dto.accountType,jdbcType=VARCHAR}</if>
-            <if test="dto.accountChannel != null and dto.accountChannel != ''">and d.account_channel = #{dto.accountChannel,jdbcType=VARCHAR}</if>
-        </where>
-        <if test="dto.sortby != null and dto.sortby != ''">
-            order by d.${dto.sortby}
-        </if>
-        <if test="dto.order != null and dto.order != ''">
-            ${dto.order}
-        </if>
-        <if test="dto.start != null and dto.pageSize != null">
-            limit ${dto.start},${dto.pageSize}
-        </if>
-    </select>
-
-    <select id="getListCountBySearchOfStation" resultType="java.lang.Integer">
-        SELECT count(*)
-        FROM
-        user_year_account_detail d
-        <where>
-            <foreach collection="list" item="id" open="and (" separator="or" close=")">
-                d.consumer_id like concat(#{id}, '%')
-            </foreach>
-            <if test="dto.accountTimeStart != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dto.accountTimeStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-            <if test="dto.accountTimeEnd != null">and DATE_FORMAT(d.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dto.accountTimeEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
-            <if test="dto.isreconciliations != null and dto.isreconciliations != ''">and d.isreconciliations = #{dto.isreconciliations,jdbcType=VARCHAR}</if>
-            <if test="dto.accountType != null and dto.accountType != ''">and d.account_type = #{dto.accountType,jdbcType=VARCHAR}</if>
-            <if test="dto.accountChannel != null and dto.accountChannel != ''">and d.account_channel = #{dto.accountChannel,jdbcType=VARCHAR}</if>
-        </where>
     </select>
 
     <select id="getChargeAccount" parameterType="cn.plou.web.charge.chargeconfig.dto.ChargeAccountDTO" resultType="cn.plou.web.charge.chargeconfig.vo.ChargeAccountDetailListVO">
@@ -523,40 +451,42 @@
 
     <select id="businessAnalysis" parameterType="cn.plou.web.charge.chargeconfig.dto.BusinessAnalysisSearchDTO" resultType="cn.plou.web.charge.chargeconfig.vo.BusinessAnalysisListVO">
         SELECT
-            count(*) as numTotal,
-            u.account_channel as accountChannel,
-            sum(IFNULL(u.account_cost, 0)) as accountCostTotal
+        count(*) as numTotal,
+        u.account_channel as accountChannel,
+        sum(IFNULL(u.account_cost, 0)) as accountCostTotal
         FROM
-          user_year_account_detail u
+        user_year_account_detail u
         WHERE
-            u.account_channel IS NOT NULL
-            AND u.account_channel &lt;&gt; ''
-            and u.company_id = #{companyId,jdbcType=VARCHAR}
-            and DATE_FORMAT(u.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')
-            and DATE_FORMAT(u.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')
+        u.account_channel IS NOT NULL
+        AND u.account_channel &lt;&gt; ''
+        and u.company_id = #{companyId,jdbcType=VARCHAR}
+        <if test="dateStart != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dateEnd != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="currentAnnual != null and currentAnnual != ''">and u.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
         GROUP BY
-          u.account_channel
+        u.account_channel
     </select>
 
     <select id="businessAnalysisChart" parameterType="cn.plou.web.charge.chargeconfig.dto.BusinessAnalysisSearchDTO" resultType="cn.plou.web.charge.chargeconfig.vo.BusinessAnalysisChartVO">
         SELECT
-            count(*) AS times,
-            sum(IFNULL(u.account_cost, 0)) AS account,
-            DATE_FORMAT(u.account_time, '%Y-%m-%d') AS date
+        count(*) AS times,
+        sum(IFNULL(u.account_cost, 0)) AS account,
+        DATE_FORMAT(u.account_time, '%Y-%m-%d') AS date
         FROM
-          user_year_account_detail u
+        user_year_account_detail u
         WHERE
-            u.account_channel IS NOT NULL
-            AND u.account_channel &lt;&gt; ''
-            and u.company_id = #{companyId,jdbcType=VARCHAR}
-            and DATE_FORMAT(u.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')
-            and DATE_FORMAT(u.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')
-            <if test="payChannel != ''">and u.account_channel = #{payChannel}</if>
+        u.account_channel IS NOT NULL
+        AND u.account_channel &lt;&gt; ''
+        and u.company_id = #{companyId,jdbcType=VARCHAR}
+        <if test="dateStart != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="dateEnd != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d')</if>
+        <if test="currentAnnual != null and currentAnnual != ''">and u.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
+        <if test="payChannel != ''">and u.account_channel = #{payChannel}</if>
         GROUP BY
-            date
+        date
     </select>
 
-    <select id="getAccountSummaryListByConsumer"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryListByConsumer" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         t1.min_account_time,t1.max_account_time,
         CONCAT(DATE_FORMAT(t1.min_account_time,'%Y/%m/%d'),' - ',DATE_FORMAT(t1.max_account_time,'%Y/%m/%d')) as account_time_range,
@@ -576,7 +506,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -599,7 +537,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> '' and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -622,7 +568,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '') and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -643,11 +597,12 @@
         <if test="consumerId != null">
             and consumer_id =#{consumerId}
         </if>
-         group by a.consumer_id) as t_not_bill
+        group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
-        and company_id =#{companyId}
+            and company_id =#{companyId}
         </if>
         <if test="stationId != null">
             and substring(consumer_id,1,10) in (
@@ -666,14 +621,18 @@
         <if test="consumerId != null">
             and consumer_id =#{consumerId}
         </if>
-         group by user_year_receivable_detail.consumer_id) as other_charge
+        group by user_year_receivable_detail.consumer_id) as other_charge
         on other_charge.consumer_id = uyh.consumer_id
         LEFT JOIN type_mst on type_mst.id = uyh.pay_over
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -703,7 +662,7 @@
     </select>
 
 
-    <select id="getAccountSummaryListByCommuity"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryListByCommuity" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min_account_time,
         max_account_time,
@@ -760,7 +719,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -783,7 +750,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -806,7 +781,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -829,7 +812,8 @@
         </if>
         group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -855,8 +839,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -890,8 +878,7 @@
     </select>
 
 
-
-    <select id="getAccountSummaryListByBuilding"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryListByBuilding" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min_account_time,
         max_account_time,
@@ -948,7 +935,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -971,7 +966,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -994,7 +997,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1017,7 +1028,8 @@
         </if>
         group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1043,8 +1055,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1077,7 +1093,7 @@
         LEFT JOIN build_info h on h.building_no=t00.building_no
     </select>
 
-    <select id="getAccountSummaryListByStation"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryListByStation" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min_account_time,
         max_account_time,
@@ -1135,7 +1151,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1158,7 +1182,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1181,7 +1213,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1207,7 +1247,8 @@
         LEFT JOIN station_info on substring(uyh.consumer_id,1,10) in (
         select commuity_info.commuity_id from commuity_info where commuity_info.station_id=station_info.station_id
         )
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1233,8 +1274,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1268,7 +1313,7 @@
 
     </select>
 
-    <select id="getAccountSummaryListByCompany"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryListByCompany" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min_account_time,
         max_account_time,
@@ -1326,7 +1371,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1349,7 +1402,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1372,7 +1433,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1395,7 +1464,8 @@
         </if>
         group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1421,8 +1491,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1455,7 +1529,7 @@
         LEFT JOIN company_info h on h.company_id=t00.company_id
     </select>
 
-    <select id="getAccountSummaryDataByConsumer"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryDataByConsumer" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         (sum(uyh.adv_heat_cost)+sum(other_charge.other_total)) as adv_heat_cost,
         sum(uyh.sum_account) as sum_account,
@@ -1469,7 +1543,15 @@
         sum(t_not_bill.not_bill_account) as not_bill_account,
         sum(t1.account_times) as account_times
         from user_year_heat uyh
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1492,7 +1574,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1515,7 +1605,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1538,7 +1636,8 @@
         </if>
         group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1564,8 +1663,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1589,7 +1692,7 @@
     </select>
 
 
-    <select id="getAccountSummaryDataByCommuity"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryDataByCommuity" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min(min_account_time) as min_account_time,
         max(max_account_time) as max_account_time,
@@ -1651,8 +1754,14 @@
         left join houses_info h on h.consumer_id=uyh.consumer_id
         left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as
         min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1677,9 +1786,15 @@
         by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
         left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1704,9 +1819,15 @@
         by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
         left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1759,10 +1880,14 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
+            DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
+            DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1789,8 +1914,7 @@
     </select>
 
 
-
-    <select id="getAccountSummaryDataByBuilding"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryDataByBuilding" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min(min_account_time) as min_account_time,
         max(max_account_time) as max_account_time,
@@ -1852,8 +1976,14 @@
         left join houses_info h on h.consumer_id=uyh.consumer_id
         left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as
         min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1878,9 +2008,15 @@
         by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
         left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1905,9 +2041,15 @@
         by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
         left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -1960,10 +2102,14 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
+            DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
+            DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -1989,7 +2135,7 @@
         ) as t22
     </select>
 
-    <select id="getAccountSummaryDataByStation"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryDataByStation" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min(min_account_time) as min_account_time,
         max(max_account_time) as max_account_time,
@@ -2052,8 +2198,14 @@
         left join houses_info h on h.consumer_id=uyh.consumer_id
         left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as
         min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and
-        DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2078,9 +2230,15 @@
         by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
         left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2105,9 +2263,15 @@
         by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
         left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from
-        user_year_account_detail a where DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2163,10 +2327,14 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
-        DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
-        DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;=
+            DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;=
+            DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -2192,7 +2360,7 @@
         ) as t22
     </select>
 
-    <select id="getAccountSummaryDataByCompany"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
+    <select id="getAccountSummaryDataByCompany" resultType="cn.plou.web.charge.chargeconfig.vo.AccountSummaryListVO">
         select
         min(min_account_time) as min_account_time,
         max(max_account_time) as max_account_time,
@@ -2231,7 +2399,15 @@
         t1.account_times
         from user_year_heat uyh
         left join houses_info h on h.consumer_id=uyh.consumer_id
-        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')  and a.annual = #{annual}
+        left join (select count(0) as account_times,a.consumer_id,min(a.account_time) as min_account_time,max(a.account_time) as max_account_time from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2254,7 +2430,15 @@
         </if>
         group by a.consumer_id) as t1
         on t1.consumer_id = uyh.consumer_id
-        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and billno is not null and billno &lt;> ''  and a.annual = #{annual}
+        left join (select count(0) as bill_times,a.consumer_id,sum(a.account_cost) as bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and billno is not null and billno &lt;> '' and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2277,7 +2461,15 @@
         </if>
         group by a.consumer_id) as t_bill
         on t_bill.consumer_id = uyh.consumer_id
-        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where  DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T') and (billno is null or billno = '')  and a.annual = #{annual}
+        left join (select count(0) as not_bill_times,a.consumer_id,sum(a.account_cost) as not_bill_account from user_year_account_detail a where
+        1=1
+        <if test="dateStart != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(a.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        and (billno is null or billno = '') and a.annual = #{annual}
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2300,7 +2492,8 @@
         </if>
         group by a.consumer_id) as t_not_bill
         on t_not_bill.consumer_id = uyh.consumer_id
-        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail  where  annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+        left join (select consumer_id,sum(total) as other_total from user_year_receivable_detail where annual = #{annual,jdbcType=VARCHAR} and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or charging_item =
+        'charging_item_3' or charging_item = 'charging_item_7' )
         <if test="companyId != null">
             and company_id =#{companyId}
         </if>
@@ -2326,8 +2519,12 @@
         where 1=1
         and uyh.heating_status = 'heating_status_1'
         and uyh.annual = #{annual}
-        and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
-        and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        <if test="dateStart != null">
+            and DATE_FORMAT(t1.min_account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
+        <if test="dateEnd != null">
+            and DATE_FORMAT(t1.max_account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')
+        </if>
         <if test="companyId != null">
             and uyh.company_id =#{companyId}
         </if>
@@ -2352,8 +2549,8 @@
         GROUP BY t0.company_id
     </select>
 
-    <select id="getAccountDetailListByAccountChannel"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountDetailListVO">
-        select  account_type,t3.id as account_channel,account_times_total,account_cost_total  from
+    <select id="getAccountDetailListByAccountChannel" resultType="cn.plou.web.charge.chargeconfig.vo.AccountDetailListVO">
+        select account_type,t3.id as account_channel,account_times_total,account_cost_total from
         (
         select type_mst.id,type_mst.type_name as account_type,t2.account_times_total,t2.account_cost_total from (
         SELECT
@@ -2398,8 +2595,8 @@
     </select>
 
 
-    <select id="getAccountDetailListByAccountType"  resultType="cn.plou.web.charge.chargeconfig.vo.AccountDetailListVO">
-        select  account_type,t3.id as account_channel,account_times_total,account_cost_total  from
+    <select id="getAccountDetailListByAccountType" resultType="cn.plou.web.charge.chargeconfig.vo.AccountDetailListVO">
+        select account_type,t3.id as account_channel,account_times_total,account_cost_total from
         (
         select type_mst.id,type_mst.type_name as account_type,t2.account_times_total,t2.account_cost_total from (
         SELECT
@@ -2412,7 +2609,7 @@
         u.account_type IS NOT NULL
         AND u.account_type &lt;> ''
         and u.annual = #{annual}
-        and u.account_type in (select  id from type_mst where  type_kbn = 'payment_method')
+        and u.account_type in (select id from type_mst where type_kbn = 'payment_method')
         and account_channel = #{accountChannel}
         <if test="dateStart != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d-%T') &gt;= DATE_FORMAT(#{dateStart,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')</if>
         <if test="dateEnd != null">and DATE_FORMAT(u.account_time,'%Y-%m-%d-%T') &lt;= DATE_FORMAT(#{dateEnd,jdbcType=TIMESTAMP},'%Y-%m-%d-%T')</if>
@@ -2474,9 +2671,8 @@
         </if>
 
 
-
     </select>
 
     <!-- ————————————————————————————————cache配置————————————————————————————  -->
-    <cache eviction="FIFO" flushInterval="60000" size="1024"  readOnly="true"/>
+    <cache eviction="FIFO" flushInterval="60000" size="1024" readOnly="true"/>
 </mapper>

@@ -28,8 +28,8 @@
 		`meter_id`,`rowno`,`consumer_id`,`address_1st`,`address_2nd`,`protocol`,`mbus_id`,`mbus_pro`,`mbus_readmodel_id`,`repeater_id`,`meter_type`,`sim_card`,`running_state`,`install_address`,`meter_error_time`,`meter_position`,`super_meter_id`,`valve_meter_id`,`main_meter_id`,`use_start_date`,`next_check_time`,`install_height`,`longitude`,`latitude`,`company_id`,`address`,`notes`,`memo1`,`memo2`,`memo3`,`memo4`,`create_date`,`create_user`,`update_date`,`update_user`,`basecode`,`meter_subtype`,`steel`,`water_address`,`meter_state`,`factory`,`diameter`,`precisiona`,`soft_ver`,`hard_ver`,`common_flow`,`minimum_flow`,`temperature_differ`,`temperature_range`,`baud_rate`,`max_bound`,`limtspeed`,`ctrlflag`,`isvalid`
 		from meter_info n
 		<where>
-<!-- 			meter_error_time is not null and meter_error_time!='' -->
-			n.running_state!='0' and n.running_state!='' and n.running_state is not null
+			meter_error_time is not null and meter_error_time!=''
+<!-- 			n.running_state!='0' and n.running_state!='' and n.running_state is not null -->
 			<if test="meterId != null and meterId != ''"> and meter_id = #{meterId} </if>
 			<if test="rowno != null and rowno != ''"> and rowno = #{rowno} </if>
 			<if test="companyIds!=null">

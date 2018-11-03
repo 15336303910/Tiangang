@@ -283,10 +283,10 @@
         t7.type_name as printFlagName,
         d.pay_channel as payChannel,
         t8.type_name as payChannelName,
-        d.diameter,
         d.control_type as controlType,
         t9.type_name as controlTypeName,
-        d.appoint_time as appointTime
+        d.appoint_time as appointTime,
+        t10.type_name as diameterName
         from house_year_heatstate_detail d
         left join houses_info i on i.consumer_id = d.consumer_id
         left join type_mst t1 on t1.id = d.task_type
@@ -302,6 +302,7 @@
         left join type_mst t7 on t7.id = d.print_flag
         left join type_mst t8 on t8.id = d.pay_channel
         left join type_mst t9 on t9.id = d.control_type
+        left join type_mst t10 on t10.id = d.diameter
         where
         <choose>
             <when test="consumerId != null and consumerId != ''">
@@ -319,6 +320,8 @@
         <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
         <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
         <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+        <if test="currentAnnual != null and currentAnnual != ''">and d.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
+
         <if test="sortby != null and sortby != ''">
             order by d.${sortby}
         </if>
@@ -400,10 +403,10 @@
         t7.type_name as printFlagName,
         d.pay_channel as payChannel,
         t8.type_name as payChannelName,
-        d.diameter,
         d.control_type as controlType,
         t9.type_name as controlTypeName,
-        d.appoint_time as appointTime
+        d.appoint_time as appointTime,
+        t10.type_name as diameterName
         from house_year_heatstate_detail d
         left join houses_info i on i.consumer_id = d.consumer_id
         left join type_mst t1 on t1.id = d.task_type
@@ -419,6 +422,7 @@
         left join type_mst t7 on t7.id = d.print_flag
         left join type_mst t8 on t8.id = d.pay_channel
         left join type_mst t9 on t9.id = d.control_type
+        left join type_mst t10 on t10.id = d.diameter
         <where>
             <choose>
                 <when test="dto.consumerId != null and dto.consumerId != ''">
@@ -438,6 +442,7 @@
             <if test="dto.satisfy != null and dto.satisfy != ''">and d.satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
             <if test="dto.executePerson != null and dto.executePerson != ''">and d.execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
             <if test="dto.visitPerson != null and dto.visitPerson != ''">and d.visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+            <if test="dto.currentAnnual != null and dto.currentAnnual != ''">and d.annual = #{dto.currentAnnual,jdbcType=VARCHAR}</if>
         </where>
         <if test="dto.sortby != null and dto.sortby != ''">
             order by d.${dto.sortby}
@@ -504,6 +509,7 @@
         <if test="satisfy != null and satisfy != ''">and d.satisfy = #{satisfy,jdbcType=VARCHAR}</if>
         <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
         <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
+        <if test="currentAnnual != null and currentAnnual != ''">and d.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
 
         group by task_type
         order by apply_num desc
@@ -555,6 +561,7 @@
         <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
         <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
         <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+        <if test="dto.currentAnnual != null and dto.currentAnnual != ''">and annual = #{dto.currentAnnual,jdbcType=VARCHAR}</if>
 
 
         group by task_type
@@ -607,6 +614,7 @@
         <if test="executePerson != null and executePerson != ''">and d.execute_person = #{executePerson,jdbcType=VARCHAR}</if>
         <if test="visitPerson != null and visitPerson != ''">and d.visit_person = #{visitPerson,jdbcType=VARCHAR}</if>
 
+        <if test="currentAnnual != null and currentAnnual != ''">and d.annual = #{currentAnnual,jdbcType=VARCHAR}</if>
 
 
 
@@ -630,6 +638,7 @@
         <if test="dto.satisfy != null and dto.satisfy != ''">and satisfy = #{dto.satisfy,jdbcType=VARCHAR}</if>
         <if test="dto.executePerson != null and dto.executePerson != ''">and execute_person = #{dto.executePerson,jdbcType=VARCHAR}</if>
         <if test="dto.visitPerson != null and dto.visitPerson != ''">and visit_person = #{dto.visitPerson,jdbcType=VARCHAR}</if>
+        <if test="dto.currentAnnual != null and dto.currentAnnual != ''">and annual = #{dto.currentAnnual,jdbcType=VARCHAR}</if>
 
 
     </select>

@@ -3058,11 +3058,26 @@
 
     <select id="getHomePageTopMiddleChart" resultType="cn.plou.web.charge.chargeconfig.vo.HomePageTopMiddleVO">
         SELECT
-            sum(adv_heat_cost)                          AS sum_adv_heat_cost,
+            sum(adv_heat_cost)+other_total                           AS sum_adv_heat_cost,
             sum(sum_account)                            AS sum_account,
-            sum(sum_account) * 100 / sum(adv_heat_cost) AS account_rate
+            sum(sum_account) * 100 / (sum(adv_heat_cost)+other_total)  AS account_rate
         FROM
             user_year_heat
+        left join (select company_id,sum(total) as other_total from user_year_receivable_detail where annual =
+        (
+                SELECT DISTINCT (annual)
+                FROM
+                    price_define
+                WHERE
+                    yeat_flag = 1
+                    AND company_id = #{companyId}
+            ) and (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or
+        charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+            and company_id =#{companyId}
+        group by
+        user_year_receivable_detail.company_id) as other_charge
+        on other_charge.company_id = user_year_heat.company_id
+
         WHERE
             annual = (
                 SELECT DISTINCT (annual)
@@ -3072,7 +3087,7 @@
                     yeat_flag = 1
                     AND company_id = #{companyId}
             )
-            AND company_id = #{companyId};
+            AND user_year_heat.company_id = #{companyId};
     </select>
 
 
@@ -3177,105 +3192,129 @@
 
     <select id="getHomePageMiddleRightChart" resultType="cn.plou.web.charge.chargeconfig.vo.HomePageMiddleRightVO">
         select
-            '未完成供热任务' as end_state,
-            count(0)  as end_count
+        '未完成供热任务' as end_state,
+        count(0)  as end_count
         from house_year_heatstate_detail
         where company_id = #{companyId} and (end_state = 'end_state_1' or end_state is null)
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
         union
         select
-            '已完成供热任务' as end_state,
-            count(0)  as end_count
+        '已完成供热任务' as end_state,
+        count(0)  as end_count
         from house_year_heatstate_detail
         where company_id = #{companyId} and (end_state = 'end_state_2')
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
         union
         select
-            '时限内未完成任务' as end_state,
-            count(0)   as end_count
+        '时限内未完成任务' as end_state,
+        count(0)   as end_count
+        from house_year_heatstate_detail
+        where company_id = #{companyId}
+        and (DATE_FORMAT(execute_time, '%Y-%m-%d') > overtime or execute_time is null)
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
+        union
+        select
+        '超时限未完成任务' as end_state,
+        count(0)   as end_count
         from house_year_heatstate_detail
         where company_id = #{companyId} and (end_state = 'end_state_1' or end_state is null)
-              and now() >= overtime
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
+        and (execute_time is null)
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
+        and (DATE_FORMAT(now() , '%Y-%m-%d') > overtime)
         union
         select
-            '超时限未完成任务' as end_state,
-            count(0)   as end_count
-        from house_year_heatstate_detail
-        where company_id = #{companyId} and (end_state = 'end_state_1' or end_state is null)
-              and now() &lt; overtime
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
-        union
-        select
-            '时限内完成任务' as end_state,
-            count(0)  as end_count
+        '时限内完成任务' as end_state,
+        count(0)  as end_count
         from house_year_heatstate_detail
         where company_id = #{companyId} and (end_state = 'end_state_2')
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
-              and now() >= overtime
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
+        and (DATE_FORMAT(execute_time, '%Y-%m-%d') &lt;= overtime and execute_time is not null)
         union
         select
-            '超时限完成任务' as end_state,
-            count(0)  as end_count
+        '超时限完成任务' as end_state,
+        count(0)  as end_count
         from house_year_heatstate_detail
         where company_id = #{companyId} and (end_state = 'end_state_2')
-              and annual = (
-            select distinct (annual)
-            from price_define
-            where yeat_flag = 1 and company_id = #{companyId})
-              and now() &lt; overtime
+        and annual = (
+        select distinct (annual)
+        from price_define
+        where yeat_flag = 1 and company_id = #{companyId})
+        and (DATE_FORMAT(execute_time, '%Y-%m-%d') > overtime and execute_time is not null)
     </select>
 
 
     <select id="getHomePageBottomLeftChart" resultType="cn.plou.web.charge.chargeconfig.vo.HomePageBottomLeftVO">
         SELECT
-            annual,
-            sum(sum_account) * 100 / sum(adv_heat_cost) AS account_rate
+            user_year_heat.annual,
+            sum(sum_account) * 100 / (sum(adv_heat_cost)+other_total) AS account_rate
         FROM
             user_year_heat
+        left join (select annual,company_id,sum(total) as other_total from user_year_receivable_detail where  (begin_data_flag is null or begin_data_flag &lt;> 'begin_data_flag_1' or
+        charging_item = 'charging_item_3' or charging_item = 'charging_item_7' )
+            and company_id =#{companyId} and annual >= #{startAnnual} and annual &lt;= #{endAnnual}
+        group by annual,
+        user_year_receivable_detail.company_id) as other_charge
+        on other_charge.company_id = user_year_heat.company_id and other_charge.annual = user_year_heat.annual
         WHERE
-            annual >= #{startAnnual} and annual &lt;= #{endAnnual}
-            AND company_id = #{companyId}
+            user_year_heat.annual >= #{startAnnual} and user_year_heat.annual &lt;= #{endAnnual}
+            AND user_year_heat.company_id = #{companyId}
         GROUP BY
-            annual
+            user_year_heat.annual
     </select>
 
 
-    <select id="getHomePageBottomMiddleChart" resultType="cn.plou.web.charge.chargeconfig.vo.HomePageBottomMiddleVO">
-        SELECT
-            type_mst.type_name AS charge_type,
-            house_count,
-            sum_heating_area
-        FROM
-            (
-                SELECT
-                    charge_type,
-                    count(0)          AS house_count,
-                    sum(heating_area) AS sum_heating_area
-                FROM
-                    houses_info
-                WHERE
-                    1 = 1
-                    AND company_id = #{companyId}
-                GROUP BY
-                    charge_type
-            ) AS t1
-            LEFT JOIN type_mst ON t1.charge_type = type_mst.id
+    <select id="getHomePageBottomMiddleChart" resultType="cn.plou.web.charge.chargeconfig.vo.HomePageBottomMiddleVO">SELECT
+	type_mst.type_name AS charge_type,
+	house_count,
+	sum_heating_area
+    FROM
+	(
+		SELECT
+			charge_type,
+			count(0) AS house_count,
+			sum(heating_area) AS sum_heating_area
+		FROM
+			user_year_heat
+		LEFT JOIN (
+			SELECT
+				consumer_id,
+				charge_type
+			FROM
+				houses_info
+			WHERE
+				company_id = #{companyId}
+		) AS t0 ON user_year_heat.consumer_id = t0.consumer_id
+		WHERE
+			1 = 1
+		AND company_id = #{companyId}
+		AND annual = (
+			SELECT DISTINCT
+				(annual)
+			FROM
+				price_define
+			WHERE
+				yeat_flag = 1
+			AND company_id = #{companyId}
+		)
+		GROUP BY
+			t0.charge_type
+	) AS t1
+    LEFT JOIN type_mst ON t1.charge_type = type_mst.id
     </select>
 
 
@@ -4180,5 +4219,12 @@
         <if test="order!=null">
             ${order}
         </if>
+    </select>
+    <select id="findByIdAndAnnual" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_year_heat
+        where annual = #{annual,jdbcType=VARCHAR}
+        and consumer_id like concat(#{id},'%')
     </select>
 </mapper>

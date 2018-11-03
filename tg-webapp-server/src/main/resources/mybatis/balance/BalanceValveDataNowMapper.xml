@@ -131,6 +131,8 @@
     <result column="controlAddr" jdbcType="VARCHAR" property="controlAddr" />
     <result column="mbus_id" jdbcType="VARCHAR" property="mbusId" />
     <result column="address2nd" jdbcType="VARCHAR" property="address2nd" />
+    <result column="systemName" jdbcType="VARCHAR" property="systemName" />
+    <result column="companyName" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
   <sql id="Base_Column_List">
     meter_id, consumer_id, control_mode, control_role, openness, in_pressure, out_pressure, pressure_diff, 
@@ -170,10 +172,12 @@
     b.time_temp_param1 timeTempParam1,b.time_temp_param2 timeTempParam2, b.time_temp_param3 timeTempParam3, b.time_temp_cure_param1 timeTempCureParam1, b.time_temp_cure_param2 timeTempCureParam2,
     b.time_temp_cure_param3 timeTempCureParam3, b.press_adj_out pressAdjOut, b.press_adj_in pressAdjIn, b.current_times currentTimes, b.read_time readTime, b.meter_time meterTime,
     b.open_set_add openSetAdd, b.primary_id, b.flow_source flowSource, b.flow_setting_mode flowSettingMode, b.control_addr controlAddr, b.mbus_id,
-    b.address_2nd address2nd,m.address
+    b.address_2nd address2nd,m.address, comp.company_name companyName,syst.system_name systemName 
     from balance_valve_data_now b
     LEFT JOIN meter_info m on m.meter_id=b.meter_id
     LEFT JOIN unit_running_data u on b.consumer_id = u.consumer_id
+    LEFT JOIN company_info comp on b.company_id = comp.company_id
+    LEFT JOIN system_info syst on b.system_id = syst.system_id
     LEFT JOIN (select meter_id, case flow_source when 1 then (unit_flow_speed-upper_limit_flow)
     when 2 then (sample_flow_speed-upper_limit_flow) END as flowingDiff from balance_valve_data_now) diff on b.meter_id=diff.meter_id
     where 1=1
@@ -190,7 +194,7 @@
       </foreach>
     </if>
     <if test="buildingId!=null">
-      and substring(b.consumer_id,1,15) = #{buildingId}
+      and substring(b.consumer_id,1,13) = #{buildingId}
     </if>
     <if test="deviationAndIndex != null">
       <if test="deviationAndIndex.minFlowingDeviation!=null">
@@ -235,18 +239,9 @@
     </if>
   </select>
   
-  <select id="selectDataNowListCount" parameterType="map" resultMap="InfoMap">
+  <select id="selectDataNowListCount" parameterType="map" resultType="java.lang.Integer">
     select
-    b.meter_id meterId, b.consumer_id consumerId, b.control_mode controlMode, b.control_role controlRole, b.openness, b.in_pressure inPressure, b.out_pressure outPressure, b.pressure_diff pressureDiff,
-    b.set_pressure_diff setPressureDiff, b.pressure_diff_threshold pressureDiffThreshold, b.in_temperature inTemperature, b.out_temperature outTemperature, b.set_temperature setTemperature,
-    b.temperature_threshold temperatureThreshold, b.sample_flow_speed sampleFlowSpeed, b.unit_flow_speed unitFlowSpeed, b.upper_limit_flow upperLimitFlow, b.max_flow_threshold maxFlowThreshold,
-    b.sys_read_time sysReadTime, b.company_id, b.notes, b.memo1, b.memo2, b.env_temp envTemp, b.open_set openSet, b.open_level openLevel, b.base_open_max baseOpenMax,
-    b.base_open_min baseOpenMin, b.low_temp lowTemp,b.com_interval comInterval, b.exchange_temp exchangeTemp, b.exchange_press exchangePress, b.locks, b.time_param1 timeParam1,
-    b.time_param2 timeParam2, b.time_param3 timeParam3,b.temp_param timeParam, b.time_open_param1 timeOpenParam1, b.time_open_param2 timeOpenParam2, b.time_open_param3 timeOpenParam3,
-    b.time_temp_param1 timeTempParam1,b.time_temp_param2 timeTempParam2, b.time_temp_param3 timeTempParam3, b.time_temp_cure_param1 timeTempCureParam1, b.time_temp_cure_param2 timeTempCureParam2,
-    b.time_temp_cure_param3 timeTempCureParam3, b.press_adj_out pressAdjOut, b.press_adj_in pressAdjIn, b.current_times currentTimes, b.read_time readTime, b.meter_time meterTime,
-    b.open_set_add openSetAdd, b.primary_id, b.flow_source flowSource, b.flow_setting_mode flowSettingMode, b.control_addr controlAddr, b.mbus_id,
-    b.address_2nd address2nd,m.address
+    count(*)
     from balance_valve_data_now b
     LEFT JOIN unit_running_data u on b.consumer_id = u.consumer_id
     LEFT JOIN meter_info m on m.meter_id=b.meter_id
@@ -266,7 +261,7 @@
       </foreach>
     </if>
     <if test="buildingId!=null">
-      and substring(b.consumer_id,1,15) = #{buildingId}
+      and substring(b.consumer_id,1,13) = #{buildingId}
     </if>
     <if test="deviationAndIndex != null">
       <if test="deviationAndIndex.minFlowingDeviation!=null">
@@ -1096,10 +1091,10 @@
         address_2nd = #{address2nd,jdbcType=VARCHAR},
       </if>
     </set>
-    <if test="batchCheckbox != null">
-      where consumer_id like concat (#{batchModifyId},'%s')
+    <if test="batchCheckbox != false">
+      where consumer_id like concat (#{batchModifyId},'%')
     </if>
-    <if test="batchCheckbox == null">
+    <if test="batchCheckbox == false">
       where meter_id in
       <foreach collection="meterIds" index="index" item="item" open="(" separator="," close=")">
         #{item}

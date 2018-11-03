@@ -27,9 +27,14 @@
 	<select id="list"
 		resultType="cn.plou.web.heatManage.monitor.domain.RunningDataTotalDO">
         select
-		m.consumer_id,a.heat,a.power,a.flow_speed,a.flow_upper_limit,a.in_temperature,a.out_temperature,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness,a.open_status,a.heating_area,a.heating_index,a.flowing_index,a.heat_status,a.control_role,a.regulation_mode,a.action_limit,a.system_read_time,a.company_id,m.address,a.flow,a.adj_heating_index
+		m.consumer_id,a.heat,a.power,a.flow_speed,b.flow_upper_limit,a.in_temperature,a.out_temperature,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness,a.open_status,a.heating_area,a.heating_index,a.flowing_index,a.heat_status,a.control_role,a.regulation_mode,a.action_limit,a.system_read_time,a.company_id,m.address,a.flow,a.adj_heating_index
 		from houses_info as m 
 		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id and a.system_read_time between #{beginTime} and #{endTime}
+		left JOIN (select sum(flow_upper_value) as flow_upper_limit,consumer_id from valve_data_now 
+		<where>
+			<if test="consumerId != null and consumerId != ''"> and substr(consumer_id,1,15) = #{consumerId} </if>
+		</where>
+		group by consumer_id) b on m.consumer_id = b.consumer_id
 		<where>
 			<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,15) = #{consumerId} </if>
 		</where>
@@ -45,22 +50,21 @@
 		,FORMAT(a.out_temperature-a.in_temperature,2) as temperature_diff
 		,a.room_temperature_read,a.room_temperature_set,a.outdoor_temperature,a.openness
 		,a.open_status
-		,t1.type_kbn_name as open_status_name
+		,t1.type_name as open_status_name
 		,a.heating_area,a.heating_index,a.flowing_index
 		,a.heat_status
-		,t2.type_kbn_name as heat_status_name
+		,t2.type_name as heat_status_name
 		,a.control_role,a.regulation_mode
 		,a.action_limit
-		,DATE_FORMAT(a.system_read_time,'%Y-%m-%d %H:%i:%s') as system_read_time
-		,a.company_id,m.address,a.flow,a.adj_heating_index
+		,a.system_read_time as system_read_time
+		,DATE_FORMAT(a.system_read_time,'%Y-%m-%d %H:%i:%s') as system_read_time_str
+		,a.company_id,m.address,a.flow,a.adj_heating_index,'1' as customerServiceFlg
 		from houses_info as m 
-		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id
+		inner join user_running_data_total as a on m.consumer_id = a.consumer_id
 		left join type_mst t1 on t1.id=a.open_status
 		left join type_mst t2 on t2.id=a.heat_status
 		<where>
-			<if test="beginTime != null and endTime != null">
-			 	and a.system_read_time between #{beginTime} and #{endTime}
-			</if>
+
 			<if test="companyIds!=null">
 					<if test="companyIds.size()>0">
 						and m.company_id in
@@ -97,22 +101,39 @@
 				substring_index(#{flowSpeed},',',1) and
 				substring_index(#{flowSpeed},',',-1)
 			</if>
-			<if test="inTemperature != null and inTemperature != ''"> and a.in_temperature between
-				substring_index(#{inTemperature},',',1) and
-				substring_index(#{inTemperature},',',-1)
+			<if test="inWaterTmp != null and inWaterTmp != ''"> and a.in_temperature between
+				substring_index(#{inWaterTmp},',',1) and
+				substring_index(#{inWaterTmp},',',-1)
 			</if>
-			<if test="outTemperature != null and outTemperature != ''"> and a.out_temperature between
-				substring_index(#{outTemperature},',',1) and
-				substring_index(#{outTemperature},',',-1)
+			<if test="outWaterTmp != null and outWaterTmp != ''"> and a.out_temperature between
+				substring_index(#{outWaterTmp},',',1) and
+				substring_index(#{outWaterTmp},',',-1)
 			</if>
-			<if test="roomTemperatureRead != null and roomTemperatureRead != ''"> and a.room_temperature_read between
-				substring_index(#{roomTemperatureRead},',',1) and
-				substring_index(#{roomTemperatureRead},',',-1)
+			<if test="houseTmp != null and houseTmp != ''"> and a.room_temperature_read between
+				substring_index(#{houseTmp},',',1) and
+				substring_index(#{houseTmp},',',-1)
 			</if>
 			<if test="tmpDiff != null and tmpDiff != ''"> and (a.in_temperature-a.out_temperature) between
 				substring_index(#{tmpDiff},',',1) and
 				substring_index(#{tmpDiff},',',-1)
 			</if>
+			<if test="flow != null and flow != ''"> and a.flow between
+				substring_index(#{flow},',',1) and
+				substring_index(#{flow},',',-1)
+			</if>
+			<if test="heat != null and heat != ''"> and a.heat between
+				substring_index(#{heat},',',1) and
+				substring_index(#{heat},',',-1)
+			</if>
+			<if test="heatingIndex != null and heatingIndex != ''"> and a.heating_index between
+				substring_index(#{heatingIndex},',',1) and
+				substring_index(#{heatingIndex},',',-1)
+			</if>
+			<if test="flowingIndex != null and flowingIndex != ''"> and a.flowing_index between
+				substring_index(#{flowingIndex},',',1) and
+				substring_index(#{flowingIndex},',',-1)
+			</if>
+		
 		</where>
 		<choose>
 			<when test="sort != null and sort.trim() != ''">
@@ -241,6 +262,7 @@
 		<where>
 			and system_read_time between #{beginTime} and #{endTime}
 			and substr(consumer_id,1,13) = #{consumerId}
+			and flow_speed >0.02 
 		</where>
 	</select>
 
@@ -375,23 +397,30 @@
 	<select id="houseListCount" resultType="int">
 		select count(*)
 		from houses_info as m 
-		left JOIN user_running_data_total as a on m.consumer_id = a.consumer_id and a.system_read_time between #{beginTime} and #{endTime}
+		inner JOIN user_running_data_total as a on m.consumer_id = a.consumer_id
+		left join type_mst t1 on t1.id=a.open_status
+		left join type_mst t2 on t2.id=a.heat_status
 		<where>
-			<choose>
-				<when test="type=='company'">
-					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,5) = #{consumerId} </if>
-				</when>
-				<when test="type=='station'">
-					<if test="consumerId != null and consumerId != ''">
-						and substr(m.consumer_id,1,10) in(
-						select commuity_id from
-						commuity_info where station_id = #{consumerId}
-						)
+
+			<if test="companyIds!=null">
+					<if test="companyIds.size()>0">
+						and m.company_id in
+						<foreach collection="companyIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
 					</if>
-				</when>
-				<when test="type=='commuity'">
-					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,10) = #{consumerId} </if>
-				</when>
+			</if>
+			<if test="commuityIds!=null">
+					<if test="commuityIds.size()>0">
+						and substring(m.consumer_id,1,10) in
+						<foreach collection="commuityIds" item="item" index="index"
+							open="(" separator="," close=")">
+							#{item}
+						</foreach>
+					</if>
+			</if>
+			<choose>			
 				<when test="type=='build'">
 					<if test="consumerId != null and consumerId != ''"> and substr(m.consumer_id,1,13) = #{consumerId} </if>
 				</when>
@@ -409,22 +438,39 @@
 				substring_index(#{flowSpeed},',',1) and
 				substring_index(#{flowSpeed},',',-1)
 			</if>
-			<if test="inTemperature != null and inTemperature != ''"> and a.in_temperature between
-				substring_index(#{inTemperature},',',1) and
-				substring_index(#{inTemperature},',',-1)
+			<if test="inWaterTmp != null and inWaterTmp != ''"> and a.in_temperature between
+				substring_index(#{inWaterTmp},',',1) and
+				substring_index(#{inWaterTmp},',',-1)
 			</if>
-			<if test="outTemperature != null and outTemperature != ''"> and a.out_temperature between
-				substring_index(#{outTemperature},',',1) and
-				substring_index(#{outTemperature},',',-1)
+			<if test="outWaterTmp != null and outWaterTmp != ''"> and a.out_temperature between
+				substring_index(#{outWaterTmp},',',1) and
+				substring_index(#{outWaterTmp},',',-1)
 			</if>
-			<if test="roomTemperatureRead != null and roomTemperatureRead != ''"> and a.room_temperature_read between
-				substring_index(#{roomTemperatureRead},',',1) and
-				substring_index(#{roomTemperatureRead},',',-1)
+			<if test="houseTmp != null and houseTmp != ''"> and a.room_temperature_read between
+				substring_index(#{houseTmp},',',1) and
+				substring_index(#{houseTmp},',',-1)
 			</if>
 			<if test="tmpDiff != null and tmpDiff != ''"> and (a.in_temperature-a.out_temperature) between
 				substring_index(#{tmpDiff},',',1) and
 				substring_index(#{tmpDiff},',',-1)
 			</if>
+			<if test="flow != null and flow != ''"> and a.flow between
+				substring_index(#{flow},',',1) and
+				substring_index(#{flow},',',-1)
+			</if>
+			<if test="heat != null and heat != ''"> and a.heat between
+				substring_index(#{heat},',',1) and
+				substring_index(#{heat},',',-1)
+			</if>
+			<if test="heatingIndex != null and heatingIndex != ''"> and a.heating_index between
+				substring_index(#{heatingIndex},',',1) and
+				substring_index(#{heatingIndex},',',-1)
+			</if>
+			<if test="flowingIndex != null and flowingIndex != ''"> and a.flowing_index between
+				substring_index(#{flowingIndex},',',1) and
+				substring_index(#{flowingIndex},',',-1)
+			</if>
+		
 		</where>
 	</select>
 </mapper>

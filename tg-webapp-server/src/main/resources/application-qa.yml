@@ -5,7 +5,7 @@
 
 # -------- mongodb start --------------
 ## mongodb://user:pwd@ip1:port1,ip2:port2/database
-# spring.data.mongodb.uri: mongodb://test:test@192.168.2.62:27017/test
+# spring.data.mongodb.uri: mongodb://test:test@192.168.1.62:27017/test
 # -------- mongodb end ----------------
 
 # --------------- Spring start ------------------
@@ -24,10 +24,6 @@ spring.jpa.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-<<<<<<< .mine
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://58.59.67.182:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-=======
     driverClassName: com.mysql.jdbc.Driver
     #driverClassName: com.mysql.cj.jdbc.Driver
 
@@ -36,7 +32,6 @@ spring:
     # url: jdbc:mysql://localhost:3306/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
 
     #url: jdbc:mysql://58.59.67.182:60010/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
->>>>>>> .r1823
     # url: jdbc:mysql://localhost:3306/TGDB?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
 
     username: root
@@ -83,13 +78,8 @@ spring:
 # If you select "true" It means adding ElasticSearch support.
 elasticsearch.enable: true
 # ES' hosts
-<<<<<<< .mine
-elasticsearch.addr: 192.168.2.60:9300,192.168.2.61:9300,192.168.2.62:9300
-#elasticsearch.addr.http: 192.168.2.50:9200
-=======
 elasticsearch.addr: 192.168.2.60:9300,192.168.2.61:9300,192.168.2.62:9300
 #elasticsearch.addr.http: 192.168.1.50:9200
->>>>>>> .r1823
 # ES' cluster name
 elasticsearch.cluster.name: clus
 # 是否启用Client阻塞  ,如果true,在es连接池中没有可用连接时,会一直创建
@@ -104,13 +94,8 @@ elasticsearch.sql.url: 192.168.2.62:9300
 # If you select "true" It means adding redis support.
 
 redis.enable: true
-<<<<<<< .mine
-#redis.host: 192.168.2.61
-redis.host: localhost
-=======
 redis.host: 192.168.2.61
 #redis.host: localhost
->>>>>>> .r1823
 redis.port: 6379
 redis.password: 86a1b907d54bf7010394bf316e183e67
 redis.database: 6

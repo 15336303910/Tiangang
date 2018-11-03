@@ -114,7 +114,7 @@ value.serializer: org.apache.kafka.common.serialization.StringSerializer
 #####################################################
 ###############Topic#################################
 #control
-control.topic: control_topic1
+control.topic: web_control_topic
 control.groupId: control_dcgrsoup122
 # heat
 meter.heat.topic: topic12
